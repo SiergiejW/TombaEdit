@@ -24,6 +24,7 @@ a = Analysis(
     hiddenimports=['PyQt6.QtMultimedia', 'formats.movie.movie_panel',
                    'formats.audio.audio_viewer', 'formats.images.clut_viewer',
                    'formats.collision.structured_viewer',
+                   'formats.collision.whm_viewer',
                    'formats.archive.data_viewer'],
     hookspath=[],
     hooksconfig={},

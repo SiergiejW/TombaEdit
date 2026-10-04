@@ -11,6 +11,7 @@ from tombaedit.ldar import parse_ldar, Project, Asset, LoadGroup, type_name
 from tombaedit.graphics import rgba, texture_page, sprite_frames, render_sprite
 from tombaedit.wfm import Wfm
 from tombaedit.wmd import parse_wmd
+from formats.collision.whm import parse_whm
 
 
 def record(name, lba, size, directory=False):
@@ -202,6 +203,22 @@ class WmdTests(unittest.TestCase):
         self.assertEqual(vertices[3].tolist(), [1, -1, 0])
         self.assertEqual(colors[0].tolist(), [1, 1, 1])
         with self.assertRaises(FormatError): parse_wmd(data[:-1])
+
+
+class WhmTests(unittest.TestCase):
+    def test_single_plane_x_column_and_signed_y(self):
+        data = (struct.pack('<6H', 0x0111, 0, 8, 0, 0, 2)
+                + struct.pack('<H', 1)
+                + struct.pack('<HhhH', 0x1234, -64, 128, 0x80))
+        whm = parse_whm(data)
+        self.assertEqual(whm.width, 8)
+        self.assertEqual(len(whm.planes), 1)
+        span = whm.planes[0].columns[0][0]
+        self.assertEqual((span.plane, span.column, span.offset), (0, 0, 14))
+        self.assertEqual((span.attribute, span.y0, span.y1, span.parameter),
+                         (0x1234, -64, 128, 0x80))
+        with self.assertRaises(FormatError):
+            parse_whm(data[:-1])
 
 
 if __name__ == "__main__":

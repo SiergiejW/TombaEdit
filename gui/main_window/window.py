@@ -527,10 +527,14 @@ class MainWindow(QMainWindow):
                 view.restore_state(self.sprite_states.get(key, []))
                 view.selection_changed.connect(lambda state, k=key: self.sprite_states.__setitem__(k, state))
                 self.tabs.addTab(view, 'Sprites')
-            if isinstance(node, Asset) and node.kind in ('APD', 'WHM'):
+            if isinstance(node, Asset) and node.kind == 'APD':
                 from formats.collision.structured_viewer import StructuredView
-                self.tabs.addTab(StructuredView(self.current_data, node.kind),
-                                 'Placements' if node.kind == 'APD' else 'Collision data')
+                self.tabs.addTab(StructuredView(self.current_data, node.kind), 'Placements')
+            if isinstance(node, Asset) and node.kind == 'WHM':
+                from formats.collision.whm_viewer import WhmView
+                from formats.collision.structured_viewer import StructuredView
+                self.tabs.addTab(WhmView(self.current_data), 'Collision planes')
+                self.tabs.addTab(StructuredView(self.current_data, 'WHM'), 'WHM words')
             if isinstance(node, Asset) and node.kind == 'CLM':
                 from formats.archive.data_viewer import CollisionMapView
                 self.tabs.addTab(CollisionMapView(self.current_data, node.code), 'Collision map')
