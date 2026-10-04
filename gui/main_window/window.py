@@ -480,6 +480,10 @@ class MainWindow(QMainWindow):
                 view.restore_state(self.sprite_states.get(key, []))
                 view.selection_changed.connect(lambda state, k=key: self.sprite_states.__setitem__(k, state))
                 self.tabs.addTab(view, 'Sprites')
+            if (self.current_data is not None and isinstance(node, DiscEntry)
+                    and Path(node.path).name.upper().startswith('CLUT')):
+                from formats.images.clut_viewer import ClutView
+                self.tabs.addTab(ClutView(self.current_data), 'CLUT colours')
             for offset, wfm in result.get("wfms", []):
                 suffix = f" @{offset:X}" if offset else ""
                 self.tabs.addTab(DialogueView(wfm), "Dialogue" + suffix)

@@ -7,7 +7,8 @@ from PyQt6.QtCore import (QObject, QRunnable, QThreadPool, pyqtSignal,
                          QByteArray, QBuffer, QIODevice, QUrl)
 from PyQt6.QtMultimedia import QMediaPlayer, QAudioOutput
 from PyQt6.QtWidgets import (QWidget, QVBoxLayout, QHBoxLayout, QPushButton,
-    QComboBox, QLabel, QSpinBox, QFileDialog, QMessageBox)
+    QComboBox, QLabel, QSpinBox, QFileDialog, QMessageBox, QSplitter,
+    QTableWidget, QTableWidgetItem, QAbstractItemView, QHeaderView)
 from formats.audio import seq, sfx, wvd
 from gui.widgets.image_view import text_view
 
@@ -47,6 +48,17 @@ class AudioView(QWidget):
         self.pool = QThreadPool.globalInstance()
         self.pending = None
         layout = QVBoxLayout(self)
+        split = QSplitter()
+        self.bank_list = QTableWidget(0, 2)
+        self.bank_list.setHorizontalHeaderLabels(['Sound bank', 'Samples'])
+        self.bank_list.verticalHeader().hide()
+        self.bank_list.setSelectionBehavior(QAbstractItemView.SelectionBehavior.SelectRows)
+        self.bank_list.setEditTriggers(QAbstractItemView.EditTrigger.NoEditTriggers)
+        self.bank_list.horizontalHeader().setSectionResizeMode(0, QHeaderView.ResizeMode.Stretch)
+        self.bank_list.currentCellChanged.connect(lambda row, col, previous_row, previous_col: self.bank.setCurrentIndex(row))
+        split.addWidget(self.bank_list)
+        right = QWidget()
+        right_layout = QVBoxLayout(right)
         bar = QHBoxLayout()
         self.bank = QComboBox()
         if self.is_seq:
@@ -59,12 +71,20 @@ class AudioView(QWidget):
         else:
             for i, bank in enumerate(self.bank_data):
                 self.bank.addItem(f'Bank {i} | {len(sfx.samples(bank))} samples', i)
+        self.bank_list.setRowCount(self.bank.count())
+        for i in range(self.bank.count()):
+            name = self.bank.itemText(i)
+            count = '' if self.is_seq else str(len(sfx.samples(self.bank_data[i])))
+            self.bank_list.setItem(i, 0, QTableWidgetItem(name))
+            self.bank_list.setItem(i, 1, QTableWidgetItem(count))
         self.bank.currentIndexChanged.connect(self.selection_changed)
+        self.bank.currentIndexChanged.connect(lambda row: self.bank_list.setCurrentCell(row, 0) if row >= 0 and self.bank_list.currentRow() != row else None)
+        self.bank.hide()
         bar.addWidget(QLabel('Sound bank:')); bar.addWidget(self.bank, 1)
         self.sample = QComboBox(); bar.addWidget(self.sample)
         self.rate = QSpinBox(); self.rate.setRange(4000, 176400); self.rate.setValue(22050)
         self.rate.setSuffix(' Hz'); self.rate.setVisible(not self.is_seq); bar.addWidget(self.rate)
-        layout.addLayout(bar)
+        right_layout.addLayout(bar)
         controls = QHBoxLayout()
         play = QPushButton('Play'); play.clicked.connect(lambda: self.render('play'))
         stop = QPushButton('Stop'); stop.clicked.connect(self.stop)
@@ -72,15 +92,20 @@ class AudioView(QWidget):
         controls.addWidget(play); controls.addWidget(stop); controls.addWidget(export)
         if self.is_seq:
             midi = QPushButton('Export MIDI...'); midi.clicked.connect(self.export_midi); controls.addWidget(midi)
-        controls.addStretch(); layout.addLayout(controls)
-        self.status = QLabel(); self.status.setWordWrap(True); layout.addWidget(self.status)
-        self.details = text_view(''); layout.addWidget(self.details)
+        controls.addStretch(); right_layout.addLayout(controls)
+        self.status = QLabel(); self.status.setWordWrap(True); right_layout.addWidget(self.status)
+        self.details = text_view(''); right_layout.addWidget(self.details)
+        split.addWidget(right)
+        split.setSizes([300, 850])
+        layout.addWidget(split)
         self.player = QMediaPlayer(self)
         self.output = QAudioOutput(self); self.output.setVolume(.5)
         self.player.setAudioOutput(self.output)
         self.player.errorOccurred.connect(lambda error, message: self.status.setText(message))
         self.buffer = None
         self.selection_changed()
+        if self.bank.count():
+            self.bank_list.setCurrentCell(self.bank.currentIndex(), 0)
 
     def selection_changed(self):
         self.stop()

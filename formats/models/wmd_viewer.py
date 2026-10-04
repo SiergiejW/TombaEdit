@@ -6,7 +6,8 @@ from PyQt6.QtCore import Qt, QPoint, pyqtSignal
 from PyQt6.QtGui import QImage, QPixmap, QFontDatabase, QSurfaceFormat, QMatrix4x4
 from PyQt6.QtWidgets import (QWidget, QVBoxLayout, QHBoxLayout, QLabel, QComboBox,
     QCheckBox, QPushButton, QSpinBox, QSplitter, QListWidget, QPlainTextEdit,
-    QGraphicsView, QGraphicsScene, QFileDialog, QMessageBox)
+    QGraphicsView, QGraphicsScene, QFileDialog, QMessageBox, QTableWidget,
+    QTableWidgetItem, QAbstractItemView, QHeaderView)
 from PyQt6.QtOpenGLWidgets import QOpenGLWidget
 from psx.graphics import texture_page, render_sprite
 
@@ -33,6 +34,9 @@ class MeshCanvas(CameraEventMixin, QOpenGLWidget):
         self.textured = True
         self.colored = True
         self.wireframe = False
+        self.backface_culling = False
+        self.show_origin = False
+        self.visible = set()
         self.textures = {}
         self.last = QPoint()
         self.camera_controls = CameraControls(self)
@@ -43,7 +47,7 @@ class MeshCanvas(CameraEventMixin, QOpenGLWidget):
         self.setMinimumSize(200, 200)
 
     def active(self):
-        return self.meshes if self.index < 0 else [self.meshes[self.index]]
+        return [mesh for i, mesh in enumerate(self.meshes) if i in self.visible]
 
     def fit(self):
         arrays = [a[0] for m in self.active() for a in m.batches.values() if len(a[0])]
@@ -78,6 +82,10 @@ class MeshCanvas(CameraEventMixin, QOpenGLWidget):
         from OpenGL.GLU import gluPerspective
         gl.glClearColor(*view_background(), 1)
         gl.glClear(gl.GL_COLOR_BUFFER_BIT | gl.GL_DEPTH_BUFFER_BIT)
+        if self.backface_culling:
+            gl.glEnable(gl.GL_CULL_FACE)
+        else:
+            gl.glDisable(gl.GL_CULL_FACE)
         gl.glMatrixMode(gl.GL_PROJECTION)
         gl.glLoadIdentity()
         gluPerspective(45, self.width() / max(1, self.height()), max(0.01, self.radius / 1000), self.radius * 200)
@@ -127,6 +135,18 @@ class MeshCanvas(CameraEventMixin, QOpenGLWidget):
         gl.glDisableClientState(gl.GL_TEXTURE_COORD_ARRAY)
         gl.glDisable(gl.GL_TEXTURE_2D)
         gl.glPolygonMode(gl.GL_FRONT_AND_BACK, gl.GL_FILL)
+        if self.show_origin:
+            gl.glDisable(gl.GL_DEPTH_TEST)
+            gl.glLineWidth(2)
+            gl.glBegin(gl.GL_LINES)
+            for color, end in [((1, .25, .25), (self.radius, 0, 0)),
+                               ((.25, 1, .25), (0, self.radius, 0)),
+                               ((.25, .5, 1), (0, 0, self.radius))]:
+                gl.glColor3f(*color)
+                gl.glVertex3f(0, 0, 0)
+                gl.glVertex3f(*end)
+            gl.glEnd()
+            gl.glEnable(gl.GL_DEPTH_TEST)
         if self.selected is not None:
             p = self.selected[1]
             order = [0, 1, 3, 2] if len(p['vertices']) == 4 else [0, 1, 2]
@@ -154,7 +174,7 @@ class MeshCanvas(CameraEventMixin, QOpenGLWidget):
         ray = ray_through(self._model_view_projection(), event.position().x(), event.position().y(), self.width(), self.height())
         if ray is None:
             return
-        polygons = [(i, p) for i, mesh in enumerate(self.meshes) if self.index < 0 or i == self.index for p in mesh.polygons]
+        polygons = [(i, p) for i, mesh in enumerate(self.meshes) if i in self.visible for p in mesh.polygons]
         vertices, faces, lookup = [], [], []
         for pi, (_, p) in enumerate(polygons):
             base = len(vertices)
@@ -174,15 +194,14 @@ class ModelView(QWidget):
         layout = QVBoxLayout(self)
         bar = QHBoxLayout()
         self.canvas = MeshCanvas([], np.zeros((512, 1024), np.uint16))
-        self.objects = QComboBox()
-        self.objects.currentIndexChanged.connect(self.select)
-        bar.addWidget(self.objects)
-        for text, attr, state in [('Textures', 'textured', True), ('Vertex colours', 'colored', True), ('Wireframe', 'wireframe', False)]:
+        for text, attr, state in [('Textures', 'textured', True), ('Vertex colours', 'colored', True),
+                                  ('Wireframe', 'wireframe', False), ('Backface culling', 'backface_culling', False),
+                                  ('Origin', 'show_origin', False)]:
             box = QCheckBox(text)
             box.setChecked(state)
             box.toggled.connect(lambda value, name=attr: self.toggle(name, value))
             bar.addWidget(box)
-        fit = QPushButton('Fit')
+        fit = QPushButton('Frame model')
         fit.clicked.connect(self.canvas.fit)
         bar.addWidget(fit)
         export = QPushButton('Export GLB...')
@@ -190,6 +209,27 @@ class ModelView(QWidget):
         bar.addWidget(export)
         layout.addLayout(bar)
         split = QSplitter()
+        left = QWidget()
+        ll = QVBoxLayout(left)
+        ll.addWidget(QLabel('Models'))
+        self.objects = QTableWidget(0, 5)
+        self.objects.setHorizontalHeaderLabels(['Show', 'Model', 'Tris', 'Quads', 'Offset'])
+        self.objects.verticalHeader().hide()
+        self.objects.setEditTriggers(QAbstractItemView.EditTrigger.NoEditTriggers)
+        self.objects.setSelectionBehavior(QAbstractItemView.SelectionBehavior.SelectRows)
+        self.objects.setSelectionMode(QAbstractItemView.SelectionMode.SingleSelection)
+        self.objects.horizontalHeader().setSectionResizeMode(1, QHeaderView.ResizeMode.Stretch)
+        self.objects.itemChanged.connect(self.visibility_changed)
+        self.objects.currentCellChanged.connect(self.model_selected)
+        ll.addWidget(self.objects)
+        row = QHBoxLayout()
+        show_all = QPushButton('Show all')
+        show_all.clicked.connect(self.show_all)
+        isolate = QPushButton('Isolate selected')
+        isolate.clicked.connect(self.isolate)
+        row.addWidget(show_all); row.addWidget(isolate)
+        ll.addLayout(row)
+        split.addWidget(left)
         split.addWidget(self.canvas)
         side = QWidget()
         sl = QVBoxLayout(side)
@@ -198,7 +238,7 @@ class ModelView(QWidget):
         self.uv = ImageView()
         sl.addWidget(self.uv)
         split.addWidget(side)
-        split.setSizes([700, 280])
+        split.setSizes([280, 680, 300])
         layout.addWidget(split, 1)
         self.stats = QLabel()
         self.stats.setTextInteractionFlags(Qt.TextInteractionFlag.TextSelectableByMouse)
@@ -215,21 +255,56 @@ class ModelView(QWidget):
         self.canvas.meshes, self.canvas.vram = meshes, vram
         self.canvas.selected = None
         self.objects.blockSignals(True)
-        self.objects.clear()
-        self.objects.addItem(f'All {len(meshes)} objects')
+        self.objects.setRowCount(len(meshes))
         for i, mesh in enumerate(meshes):
-            self.objects.addItem(f'Object {i:03d} | @{mesh.offset:06X}')
-        index = 1 if meshes and code not in (0x5080, 0x50FF) else 0
-        self.objects.setCurrentIndex(index)
+            triangles = sum(1 for p in mesh.polygons if len(p['vertices']) == 3)
+            quads = sum(1 for p in mesh.polygons if len(p['vertices']) == 4)
+            entries = ['', f'Model {i:03d}', str(triangles), str(quads), f'0x{mesh.offset:06X}']
+            for column, value in enumerate(entries):
+                item = QTableWidgetItem(value)
+                if column == 0:
+                    item.setFlags(item.flags() | Qt.ItemFlag.ItemIsUserCheckable)
+                    item.setCheckState(Qt.CheckState.Checked)
+                self.objects.setItem(i, column, item)
+        self.canvas.visible = set(range(len(meshes)))
+        if meshes:
+            self.objects.setCurrentCell(0, 1)
         self.objects.blockSignals(False)
-        self.select(index)
+        self.canvas.fit()
         triangles = sum(len(a[0]) // 3 for m in meshes for a in m.batches.values())
         self.stats.setText(f'{triangles:,} triangles | {sum(len(m.polygons) for m in meshes):,} original polygons')
         self.show_polygon(None)
 
-    def select(self, index):
-        self.canvas.index = index - 1
+    def model_selected(self, row, column, old_row, old_column):
         self.canvas.selected = None
+        self.show_polygon(None)
+        self.canvas.update()
+
+    def visibility_changed(self, item):
+        if item.column() != 0:
+            return
+        self.canvas.visible = {row for row in range(self.objects.rowCount())
+                               if self.objects.item(row, 0).checkState() == Qt.CheckState.Checked}
+        self.canvas.selected = None
+        self.canvas.update()
+
+    def show_all(self):
+        self.objects.blockSignals(True)
+        for row in range(self.objects.rowCount()):
+            self.objects.item(row, 0).setCheckState(Qt.CheckState.Checked)
+        self.objects.blockSignals(False)
+        self.canvas.visible = set(range(self.objects.rowCount()))
+        self.canvas.fit()
+
+    def isolate(self):
+        selected = self.objects.currentRow()
+        if selected < 0:
+            return
+        self.objects.blockSignals(True)
+        for row in range(self.objects.rowCount()):
+            self.objects.item(row, 0).setCheckState(Qt.CheckState.Checked if row == selected else Qt.CheckState.Unchecked)
+        self.objects.blockSignals(False)
+        self.canvas.visible = {selected}
         self.canvas.fit()
 
     def toggle(self, name, value):
@@ -238,7 +313,7 @@ class ModelView(QWidget):
 
     def show_polygon(self, selected):
         if selected is None:
-            self.details.setPlainText('Click a triangle or quad to inspect its UVs.\n\nGLB exports the selected object or all objects, with embedded textures and vertex colours.\nPSX blend equations and overbright colours are approximated in glTF.')
+            self.details.setPlainText('Click a triangle or quad to inspect its UVs.\n\nGLB exports visible models with embedded textures and vertex colours.\nPSX blend equations and overbright colours are approximated in glTF.')
             self.uv.set_image(Image.new('RGBA', (1, 1)))
             return
         index, p = selected
@@ -250,10 +325,11 @@ class ModelView(QWidget):
         self.uv.set_image(image)
 
     def export(self):
-        path, _ = QFileDialog.getSaveFileName(self, 'Export geometry', 'model.glb', 'glTF binary (*.glb)')
+        path, mode = QFileDialog.getSaveFileName(self, 'Export geometry', 'model.glb',
+            'GLB (unlit, game colours) (*.glb);;GLB (lit, external lighting) (*.glb)')
         if path:
             try:
                 from formats.models.glb import export_glb
-                export_glb(path, self.canvas.active(), self.canvas.vram)
+                export_glb(path, self.canvas.active(), self.canvas.vram, unlit='unlit' in mode)
             except Exception as exc:
                 QMessageBox.warning(self, 'Export failed', str(exc))
