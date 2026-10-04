@@ -173,7 +173,7 @@ class PixelCanvas(QWidget):
         if event.button() == Qt.MouseButton.LeftButton:
             area = self._scroll_area()
             if area is not None:
-                self._drag_from = event.position().toPoint()
+                self._drag_from = event.globalPosition().toPoint()
                 self._scroll_from = QPoint(area.horizontalScrollBar().value(),
                                            area.verticalScrollBar().value())
                 self._dragged = False
@@ -181,7 +181,7 @@ class PixelCanvas(QWidget):
     def mouseMoveEvent(self, event):
         if self._drag_from is None:
             return
-        delta = event.position().toPoint() - self._drag_from
+        delta = event.globalPosition().toPoint() - self._drag_from
         if delta.manhattanLength() > 3:
             self._dragged = True
             self.setCursor(Qt.CursorShape.ClosedHandCursor)

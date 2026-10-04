@@ -485,7 +485,9 @@ class MainWindow(QMainWindow):
             if self.current_data is not None and (self.current_data.startswith(b'pQES') or isinstance(node, DiscEntry) and node.path.upper().endswith('.WVD')):
                 from formats.audio.audio_viewer import AudioView
                 source = node.source.path if isinstance(node, Asset) and node.source else node.path if isinstance(node, DiscEntry) else ''
-                self.tabs.addTab(AudioView(self.current_data, self.project, source), 'Music' if self.current_data.startswith(b'pQES') else 'Sounds')
+                self.tabs.addTab(AudioView(self.current_data, self.project, source,
+                                           self.labels, self.persist_labels),
+                                 'Music' if self.current_data.startswith(b'pQES') else 'Sounds')
             if "meshes" in result:
                 meshes = result['meshes']
                 keys = [labels.content_key(self.current_data[m.offset:

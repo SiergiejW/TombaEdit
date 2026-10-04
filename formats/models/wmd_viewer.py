@@ -3,7 +3,7 @@ import math
 import numpy as np
 from PIL import Image
 from PyQt6.QtCore import Qt, QPoint, pyqtSignal
-from PyQt6.QtGui import QImage, QPixmap, QFontDatabase, QSurfaceFormat, QMatrix4x4, QAction
+from PyQt6.QtGui import QImage, QPixmap, QFontDatabase, QSurfaceFormat, QMatrix4x4, QAction, QShortcut, QKeySequence
 from PyQt6.QtWidgets import (QWidget, QVBoxLayout, QHBoxLayout, QLabel, QComboBox,
     QCheckBox, QPushButton, QSpinBox, QSplitter, QListWidget, QPlainTextEdit,
     QGraphicsView, QGraphicsScene, QFileDialog, QMessageBox, QTableWidget,
@@ -44,7 +44,13 @@ class MeshCanvas(CameraEventMixin, QOpenGLWidget):
         self.camera_controls = CameraControls(self)
         self.setFocusPolicy(Qt.FocusPolicy.StrongFocus)
         self.selected = None
+        self.selected_model = None
         self.pan = [0., 0.]
+        self.stats_label = QLabel(self)
+        self.stats_label.setObjectName('viewerOverlay')
+        self.controls_label = QLabel(CONTROLS_HINT, self)
+        self.controls_label.setObjectName('viewerOverlay')
+        self.stats_label.raise_(); self.controls_label.raise_()
         self.fit()
         self.setMinimumSize(200, 200)
 
@@ -79,9 +85,10 @@ class MeshCanvas(CameraEventMixin, QOpenGLWidget):
     def offset_for(self, index):
         return self.spread_offsets.get(index, np.zeros(3)) if self.spread else np.zeros(3)
 
-    def fit(self):
+    def fit(self, indices=None, animate=True):
         arrays = [batch[0] + self.offset_for(i)
                   for i, mesh in enumerate(self.meshes) if i in self.visible
+                  and (indices is None or i in indices)
                   for batch in mesh.batches.values() if len(batch[0])]
         if arrays:
             lo = np.min([a.min(axis=0) for a in arrays], axis=0)
@@ -90,8 +97,27 @@ class MeshCanvas(CameraEventMixin, QOpenGLWidget):
             self.radius = max(1., float(np.linalg.norm(hi - lo)) / 2)
         else:
             self.center, self.radius = np.zeros(3), 1.
-        self.camera_controls.frame(self.center, self.radius, heading=LEVEL_HEADING, pitch=LEVEL_PITCH)
+        camera = self.camera_controls
+        if animate:
+            camera.glide_frame(self.center, self.radius, heading=LEVEL_HEADING, pitch=LEVEL_PITCH)
+        else:
+            camera.frame(self.center, self.radius, heading=LEVEL_HEADING, pitch=LEVEL_PITCH)
         self.update()
+
+    def resizeEvent(self, event):
+        super().resizeEvent(event)
+        self.stats_label.adjustSize()
+        self.stats_label.move(6, self.height() - self.stats_label.height() - 6)
+        self.controls_label.adjustSize()
+        self.controls_label.move(self.width() - self.controls_label.width() - 6,
+                                 self.height() - self.controls_label.height() - 6)
+
+    def keyPressEvent(self, event):
+        if event.key() == Qt.Key.Key_F:
+            self.fit({self.selected_model} if self.selected_model is not None else None)
+            event.accept()
+            return
+        super().keyPressEvent(event)
 
     def initializeGL(self):
         from OpenGL import GL as gl
@@ -163,6 +189,8 @@ class MeshCanvas(CameraEventMixin, QOpenGLWidget):
                 draw_colors = colors if self.colored else np.ones_like(colors)
                 if use_texture:
                     draw_colors = np.ascontiguousarray(draw_colors * 0.5)
+                if self.selected_model is not None and i != self.selected_model:
+                    draw_colors = np.ascontiguousarray(draw_colors * 0.24)
                 gl.glColorPointer(3, gl.GL_FLOAT, 0, draw_colors)
                 gl.glVertexPointer(3, gl.GL_FLOAT, 0, vertices)
                 gl.glDrawArrays(gl.GL_TRIANGLES, 0, len(vertices))
@@ -235,6 +263,10 @@ class ModelView(QWidget):
         self.toolbar.setToolButtonStyle(Qt.ToolButtonStyle.ToolButtonTextUnderIcon)
         self.toolbar.setMovable(False)
         self.canvas = MeshCanvas([], np.zeros((512, 1024), np.uint16))
+        shortcut = QShortcut(QKeySequence('F'), self)
+        shortcut.setContext(Qt.ShortcutContext.WidgetWithChildrenShortcut)
+        shortcut.activated.connect(lambda: self.canvas.fit(
+            {self.canvas.selected_model} if self.canvas.selected_model is not None else None))
         def add_action(icon_kind, title, callback, checked=None):
             action = QAction(self.style().standardIcon(icon_kind), title, self)
             if checked is not None:
@@ -298,12 +330,6 @@ class ModelView(QWidget):
         split.addWidget(side)
         split.setSizes([280, 680, 300])
         layout.addWidget(split, 1)
-        self.stats = QLabel()
-        self.stats.setTextInteractionFlags(Qt.TextInteractionFlag.TextSelectableByMouse)
-        layout.addWidget(self.stats)
-        hint = QLabel(CONTROLS_HINT)
-        hint.setWordWrap(True)
-        layout.addWidget(hint)
         self.canvas.picked.connect(self.show_polygon)
         if meshes is not None:
             self.set_data(meshes, vram, code)
@@ -328,14 +354,18 @@ class ModelView(QWidget):
                     item.setCheckState(Qt.CheckState.Checked)
                 self.objects.setItem(i, column, item)
         self.canvas.visible = set(range(len(meshes)))
+        self.canvas.selected_model = None
         self.spread_action.setChecked(code not in (0x5080, 0x50FF))
         self.canvas.spread = self.spread_action.isChecked()
         if meshes:
             self.objects.setCurrentCell(0, 0)
         self.objects.blockSignals(False)
-        self.canvas.fit()
+        self.canvas.fit(animate=False)
         triangles = sum(len(a[0]) // 3 for m in meshes for a in m.batches.values())
-        self.stats.setText(f'{triangles:,} triangles | {sum(len(m.polygons) for m in meshes):,} original polygons')
+        self.canvas.stats_label.setText(f'{triangles:,} triangles | {sum(len(m.polygons) for m in meshes):,} polygons\n'
+                                        f'{len(meshes):,} models | F: frame selected | Show all: reset')
+        self.canvas.stats_label.adjustSize()
+        self.canvas.stats_label.move(6, self.canvas.height() - self.canvas.stats_label.height() - 6)
         self.show_polygon(None)
 
     def rename_model(self):
@@ -351,6 +381,7 @@ class ModelView(QWidget):
 
     def model_selected(self, row, column, old_row, old_column):
         self.canvas.selected = None
+        self.canvas.selected_model = row if row >= 0 else None
         self.show_polygon(None)
         self.canvas.update()
 
@@ -368,6 +399,7 @@ class ModelView(QWidget):
             self.objects.item(row, 0).setCheckState(Qt.CheckState.Checked)
         self.objects.blockSignals(False)
         self.canvas.visible = set(range(self.objects.rowCount()))
+        self.canvas.selected_model = None
         self.canvas.fit()
 
     def isolate(self):

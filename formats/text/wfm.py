@@ -44,9 +44,13 @@ class Dialogue:
         parts = []
         for word, args in self.tokens:
             if word >= 0xFF00:
+                if word == 0xFFF6 and args == (0, 0):
+                    continue
                 name = CONTROLS.get(word, (f"UNKNOWN_{word:04X}", 0))[0]
                 parts.append(f"\n<{name}{''.join(f' {a:04X}' for a in args)}>")
             else:
+                if word & 0x4000:
+                    continue
                 gid = word & 0xFFF
                 char = self.characters[gid] if gid < len(self.characters) else None
                 parts.append(char if char is not None else f'[g{gid:03X}]')

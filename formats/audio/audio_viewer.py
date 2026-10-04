@@ -4,15 +4,17 @@ import struct
 import wave
 from pathlib import Path
 from PyQt6.QtCore import (Qt, QObject, QRunnable, QThreadPool, pyqtSignal,
-                         QByteArray, QBuffer, QIODevice, QUrl)
+                         QByteArray, QBuffer, QIODevice, QUrl, QSize)
 from PyQt6.QtMultimedia import QMediaPlayer, QAudioOutput
 from PyQt6.QtWidgets import (QWidget, QVBoxLayout, QHBoxLayout, QPushButton,
     QComboBox, QLabel, QSpinBox, QFileDialog, QMessageBox, QSplitter,
-    QTableWidget, QTableWidgetItem, QAbstractItemView, QHeaderView, QSlider)
+    QTableWidget, QTableWidgetItem, QAbstractItemView, QHeaderView, QSlider, QInputDialog)
 from formats.audio import seq, sfx, wvd
 from gui.widgets.image_view import text_view
 from gui.widgets.transport_icons import set_glyph
 from gui.widgets.wave_preview import WavePreview
+from gui.widgets.mini_audio import waveform_icon, notes_icon
+from game.labels import content_key
 
 
 def wav_bytes(samples, rate, channels=1):
@@ -45,9 +47,10 @@ class RenderJob(QRunnable):
 
 
 class AudioView(QWidget):
-    def __init__(self, data, project, source=''):
+    def __init__(self, data, project, source='', label_set=None, save_labels=None):
         super().__init__()
         self.data, self.project = data, project
+        self.label_set, self.save_labels = label_set, save_labels
         self.is_seq = data.startswith(b'pQES')
         self.bank_data = [] if self.is_seq else wvd.banks(data)
         self.generation = 0
@@ -58,6 +61,23 @@ class AudioView(QWidget):
         split = QSplitter()
         left = QWidget()
         left_layout = QVBoxLayout(left)
+        if self.is_seq:
+            left_layout.addWidget(QLabel('Sequence'))
+            self.sequence_list = QTableWidget(1, 2)
+            self.sequence_list.setHorizontalHeaderLabels(['Name', 'Preview'])
+            self.sequence_list.verticalHeader().hide()
+            self.sequence_list.setIconSize(QSize(112, 24))
+            self.sequence_list.setFixedHeight(74)
+            self.sequence_list.horizontalHeader().setSectionResizeMode(0, QHeaderView.ResizeMode.Stretch)
+            self.sequence_list.setColumnWidth(1, 125)
+            key = content_key(data)
+            self.sequence_list.setItem(0, 0, QTableWidgetItem(
+                label_set.label_for(key) if label_set and label_set.label_for(key) else Path(source).stem or 'Sequence'))
+            preview = QTableWidgetItem()
+            preview.setIcon(notes_icon(seq.events(data, 0)))
+            self.sequence_list.setItem(0, 1, preview)
+            self.sequence_list.setRowHeight(0, 30)
+            left_layout.addWidget(self.sequence_list)
         left_layout.addWidget(QLabel('Sound banks'))
         self.bank_list = QTableWidget(0, 2)
         self.bank_list.setHorizontalHeaderLabels(['Sound bank', 'Samples'])
@@ -68,17 +88,22 @@ class AudioView(QWidget):
         self.bank_list.currentCellChanged.connect(lambda row, col, previous_row, previous_col: self.bank.setCurrentIndex(row))
         left_layout.addWidget(self.bank_list, 1)
         left_layout.addWidget(QLabel('Samples'))
-        self.sample_list = QTableWidget(0, 4)
-        self.sample_list.setHorizontalHeaderLabels(['Sample', 'Bytes', 'Offset', 'Loop'])
+        self.sample_list = QTableWidget(0, 5)
+        self.sample_list.setHorizontalHeaderLabels(['Sample', 'Preview', 'Bytes', 'Offset', 'Loop'])
+        self.sample_list.setIconSize(QSize(112, 24))
         self.sample_list.verticalHeader().hide()
         self.sample_list.setSelectionBehavior(QAbstractItemView.SelectionBehavior.SelectRows)
         self.sample_list.setEditTriggers(QAbstractItemView.EditTrigger.NoEditTriggers)
         self.sample_list.horizontalHeader().setSectionResizeMode(0, QHeaderView.ResizeMode.Stretch)
-        self.sample_list.setColumnWidth(1, 62)
-        self.sample_list.setColumnWidth(2, 86)
-        self.sample_list.setColumnWidth(3, 52)
+        self.sample_list.setColumnWidth(1, 125)
+        self.sample_list.setColumnWidth(2, 62)
+        self.sample_list.setColumnWidth(3, 86)
+        self.sample_list.setColumnWidth(4, 52)
         self.sample_list.currentCellChanged.connect(self.choose_sample)
         left_layout.addWidget(self.sample_list, 2)
+        name_button = QPushButton('Name selection...')
+        name_button.clicked.connect(self.rename_selection)
+        left_layout.addWidget(name_button)
         split.addWidget(left)
         right = QWidget()
         right_layout = QVBoxLayout(right)
@@ -190,15 +215,47 @@ class AudioView(QWidget):
             for _,number,offset,size in samples:
                 self.sample.addItem(f'Sample {number:03d} | {size:,} bytes', (offset,size))
             for row, (_, number, offset, size) in enumerate(samples):
-                values = [f'Sample {number:03d}', f'{size:,}', f'0x{offset:06X}',
+                raw = bank[offset:offset + size]
+                key = content_key(raw)
+                title = self.label_set.label_for(key) if self.label_set else None
+                values = [title or f'Sample {number:03d}', '', f'{size:,}', f'0x{offset:06X}',
                           'loop' if sfx.loops(bank, offset, size) else '']
                 for col, value in enumerate(values):
                     self.sample_list.setItem(row, col, QTableWidgetItem(value))
+                self.sample_list.item(row, 1).setIcon(waveform_icon(sfx.decode(bank, offset, size)))
+                self.sample_list.setRowHeight(row, 30)
             self.details.setPlainText('Select a sample to play it. Use the waveform or timeline to seek.')
             self.status.setText('Sample pitch depends on the note used by the game. Choose a preview sample rate.')
         if self.sample_list.rowCount():
             self.sample_list.setCurrentCell(0, 0)
         self.sample_list.blockSignals(False)
+
+    def rename_selection(self):
+        if self.label_set is None or self.save_labels is None:
+            return
+        if self.is_seq:
+            key = content_key(self.data)
+            old = self.label_set.label_for(key) or ''
+            kind = 'SEQ'
+            row = 0
+        else:
+            row = self.sample_list.currentRow()
+            if row < 0 or self.bank.currentIndex() < 0:
+                return
+            bank = self.bank_data[self.bank.currentIndex()]
+            offset, size = self.sample.itemData(row)
+            key = content_key(bank[offset:offset + size])
+            old = self.label_set.label_for(key) or ''
+            kind = 'SFX'
+        name, accepted = QInputDialog.getText(self, 'Name audio entry',
+            'Label (empty restores the original name):', text=old)
+        if accepted:
+            self.label_set.rename(key, name.strip(), kind=kind)
+            self.save_labels()
+            if self.is_seq:
+                self.sequence_list.item(0, 0).setText(name.strip() or 'Sequence')
+            else:
+                self.sample_list.item(row, 0).setText(name.strip() or f'Sample {row + 1:03d}')
 
     def choose_sample(self, row, column, old_row, old_column):
         if row < 0 or row >= self.sample.count():
