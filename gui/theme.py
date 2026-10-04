@@ -1,6 +1,6 @@
 """Classic themes ported from Tomba2Edit. Native dark, explicit bright."""
 from PyQt6.QtGui import QColor, QPalette
-from PyQt6.QtWidgets import QApplication
+from PyQt6.QtWidgets import QApplication, QPushButton
 _native_palette = None
 _current_theme = "dark"
 _BASE_QSS = """
@@ -80,7 +80,10 @@ def apply_theme(dark=True):
     _current_theme = "dark" if dark else "bright"
     app.setPalette(_native_palette if dark else _bright_palette())
     app.setStyleSheet(_BASE_QSS if dark else _BRIGHT_MENU_QSS)
+    from gui.widgets.transport_icons import refresh, GLYPH_PROPERTY
     for widget in app.allWidgets():
+        if isinstance(widget, QPushButton) and widget.property(GLYPH_PROPERTY):
+            refresh(widget)
         widget.update()
 
 def view_background(dark=(0.1, 0.1, 0.1)):

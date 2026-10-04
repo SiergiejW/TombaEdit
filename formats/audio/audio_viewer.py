@@ -12,6 +12,7 @@ from PyQt6.QtWidgets import (QWidget, QVBoxLayout, QHBoxLayout, QPushButton,
 from formats.audio import seq, sfx, wvd
 from gui.widgets.image_view import text_view
 from gui.widgets.transport_icons import set_glyph
+from gui.widgets.wave_preview import WavePreview
 
 
 def wav_bytes(samples, rate, channels=1):
@@ -73,6 +74,9 @@ class AudioView(QWidget):
         self.sample_list.setSelectionBehavior(QAbstractItemView.SelectionBehavior.SelectRows)
         self.sample_list.setEditTriggers(QAbstractItemView.EditTrigger.NoEditTriggers)
         self.sample_list.horizontalHeader().setSectionResizeMode(0, QHeaderView.ResizeMode.Stretch)
+        self.sample_list.setColumnWidth(1, 62)
+        self.sample_list.setColumnWidth(2, 86)
+        self.sample_list.setColumnWidth(3, 52)
         self.sample_list.currentCellChanged.connect(self.choose_sample)
         left_layout.addWidget(self.sample_list, 2)
         split.addWidget(left)
@@ -123,6 +127,9 @@ class AudioView(QWidget):
         self.volume.setMaximumWidth(110)
         controls.addWidget(QLabel('Volume')); controls.addWidget(self.volume)
         right_layout.addWidget(QLabel('Playback'))
+        self.wave = WavePreview()
+        self.wave.scrubbed.connect(lambda fraction: self.player.setPosition(round(self.player.duration()*fraction)))
+        right_layout.addWidget(self.wave)
         self.timeline = QSlider(Qt.Orientation.Horizontal)
         self.timeline.setRange(0, 0)
         self.timeline.sliderMoved.connect(self.player_seek)
@@ -137,10 +144,10 @@ class AudioView(QWidget):
         self.status = QLabel(); self.status.setWordWrap(True); right_layout.addWidget(self.status)
         self.details = text_view(''); right_layout.addWidget(self.details)
         split.addWidget(right)
-        split.setSizes([300, 850])
+        split.setSizes([390, 760])
         layout.addWidget(split)
         self.player = QMediaPlayer(self)
-        self.output = QAudioOutput(self); self.output.setVolume(.5)
+        self.output = QAudioOutput(self); self.output.setVolume(.75)
         self.player.setAudioOutput(self.output)
         self.volume.valueChanged.connect(lambda value: self.output.setVolume(value / 100))
         self.player.positionChanged.connect(self.position_changed)
@@ -187,7 +194,7 @@ class AudioView(QWidget):
                           'loop' if sfx.loops(bank, offset, size) else '']
                 for col, value in enumerate(values):
                     self.sample_list.setItem(row, col, QTableWidgetItem(value))
-            self.details.setPlainText('\n'.join(f'Sample {n:03d} | offset {o:06X} | {s:,} bytes | loop {sfx.loops(bank,o,s)}' for _,n,o,s in samples))
+            self.details.setPlainText('Select a sample to play it. Use the waveform or timeline to seek.')
             self.status.setText('Sample pitch depends on the note used by the game. Choose a preview sample rate.')
         if self.sample_list.rowCount():
             self.sample_list.setCurrentCell(0, 0)
@@ -197,6 +204,10 @@ class AudioView(QWidget):
         if row < 0 or row >= self.sample.count():
             return
         self.sample.setCurrentIndex(row)
+        if not self.is_seq:
+            bank = self.bank_data[self.bank.currentIndex()]
+            offset, size = self.sample.currentData()
+            self.details.setPlainText(f'{self.sample.itemText(row)}\nOffset: 0x{offset:06X}\nLoop: {sfx.loops(bank, offset, size)}')
         if self.ready:
             self.render('play')
 
@@ -225,6 +236,7 @@ class AudioView(QWidget):
         if not self.timeline.isSliderDown():
             self.timeline.setValue(value)
         self.clock.setText(f'{self.clock_text(value)} / {self.clock_text(self.player.duration())}')
+        self.wave.set_position(value / max(1, self.player.duration()))
 
     def duration_changed(self, value):
         self.timeline.setRange(0, value)
@@ -279,6 +291,7 @@ class AudioView(QWidget):
         self.buffer = QBuffer(self); self.buffer.setData(QByteArray(data))
         self.buffer.open(QIODevice.OpenModeFlag.ReadOnly)
         self.player.setSourceDevice(self.buffer, QUrl('preview.wav'))
+        self.wave.set_wav(data)
         self.player.play(); self.status.setText('Playing')
 
     def export_midi(self):

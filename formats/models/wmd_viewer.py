@@ -3,11 +3,11 @@ import math
 import numpy as np
 from PIL import Image
 from PyQt6.QtCore import Qt, QPoint, pyqtSignal
-from PyQt6.QtGui import QImage, QPixmap, QFontDatabase, QSurfaceFormat, QMatrix4x4
+from PyQt6.QtGui import QImage, QPixmap, QFontDatabase, QSurfaceFormat, QMatrix4x4, QAction
 from PyQt6.QtWidgets import (QWidget, QVBoxLayout, QHBoxLayout, QLabel, QComboBox,
     QCheckBox, QPushButton, QSpinBox, QSplitter, QListWidget, QPlainTextEdit,
     QGraphicsView, QGraphicsScene, QFileDialog, QMessageBox, QTableWidget,
-    QTableWidgetItem, QAbstractItemView, QHeaderView)
+    QTableWidgetItem, QAbstractItemView, QHeaderView, QToolBar, QStyle)
 from PyQt6.QtOpenGLWidgets import QOpenGLWidget
 from psx.graphics import texture_page, render_sprite
 
@@ -36,6 +36,8 @@ class MeshCanvas(CameraEventMixin, QOpenGLWidget):
         self.wireframe = False
         self.backface_culling = False
         self.show_origin = False
+        self.spread = True
+        self.spread_offsets = {}
         self.visible = set()
         self.textures = {}
         self.last = QPoint()
@@ -49,8 +51,38 @@ class MeshCanvas(CameraEventMixin, QOpenGLWidget):
     def active(self):
         return [mesh for i, mesh in enumerate(self.meshes) if i in self.visible]
 
+    def compute_spread_offsets(self):
+        if not self.meshes:
+            self.spread_offsets = {}
+            return
+        bounds = []
+        spans = []
+        for mesh in self.meshes:
+            arrays = [batch[0] for batch in mesh.batches.values() if len(batch[0])]
+            if arrays:
+                lo = np.min([array.min(axis=0) for array in arrays], axis=0)
+                hi = np.max([array.max(axis=0) for array in arrays], axis=0)
+                center = (lo + hi) / 2
+                spans.append(float(np.max(hi-lo)))
+            else:
+                center = np.zeros(3)
+            bounds.append(center)
+        step = max(1., float(np.percentile(spans, 90)) * 1.35) if spans else 1.
+        columns = max(1, math.ceil(math.sqrt(len(self.meshes))))
+        rows = math.ceil(len(self.meshes) / columns)
+        self.spread_offsets = {
+            i: np.array(((i % columns - (columns-1)/2) * step,
+                         ((rows-1)/2 - i//columns) * step, 0.)) - center
+            for i, center in enumerate(bounds)
+        }
+
+    def offset_for(self, index):
+        return self.spread_offsets.get(index, np.zeros(3)) if self.spread else np.zeros(3)
+
     def fit(self):
-        arrays = [a[0] for m in self.active() for a in m.batches.values() if len(a[0])]
+        arrays = [batch[0] + self.offset_for(i)
+                  for i, mesh in enumerate(self.meshes) if i in self.visible
+                  for batch in mesh.batches.values() if len(batch[0])]
         if arrays:
             lo = np.min([a.min(axis=0) for a in arrays], axis=0)
             hi = np.max([a.max(axis=0) for a in arrays], axis=0)
@@ -98,7 +130,11 @@ class MeshCanvas(CameraEventMixin, QOpenGLWidget):
         gl.glPolygonMode(gl.GL_FRONT_AND_BACK, gl.GL_LINE if self.wireframe else gl.GL_FILL)
         gl.glEnableClientState(gl.GL_VERTEX_ARRAY)
         gl.glEnableClientState(gl.GL_COLOR_ARRAY)
-        for mesh in self.active():
+        for i, mesh in enumerate(self.meshes):
+            if i not in self.visible:
+                continue
+            gl.glPushMatrix()
+            gl.glTranslatef(*self.offset_for(i))
             for (page, clut, semi), (vertices, uv, colors) in mesh.batches.items():
                 use_texture = self.textured and page >= 0
                 if use_texture:
@@ -130,6 +166,7 @@ class MeshCanvas(CameraEventMixin, QOpenGLWidget):
                 gl.glColorPointer(3, gl.GL_FLOAT, 0, draw_colors)
                 gl.glVertexPointer(3, gl.GL_FLOAT, 0, vertices)
                 gl.glDrawArrays(gl.GL_TRIANGLES, 0, len(vertices))
+            gl.glPopMatrix()
         gl.glDisableClientState(gl.GL_VERTEX_ARRAY)
         gl.glDisableClientState(gl.GL_COLOR_ARRAY)
         gl.glDisableClientState(gl.GL_TEXTURE_COORD_ARRAY)
@@ -148,14 +185,14 @@ class MeshCanvas(CameraEventMixin, QOpenGLWidget):
             gl.glEnd()
             gl.glEnable(gl.GL_DEPTH_TEST)
         if self.selected is not None:
-            p = self.selected[1]
+            model_index, p = self.selected
             order = [0, 1, 3, 2] if len(p['vertices']) == 4 else [0, 1, 2]
             gl.glDisable(gl.GL_DEPTH_TEST)
             gl.glColor3f(1, 1, 0)
             gl.glLineWidth(2)
             gl.glBegin(gl.GL_LINE_LOOP)
             for i in order:
-                gl.glVertex3f(*p['vertices'][i])
+                gl.glVertex3f(*(np.asarray(p['vertices'][i]) + self.offset_for(model_index)))
             gl.glEnd()
             gl.glEnable(gl.GL_DEPTH_TEST)
 
@@ -176,9 +213,9 @@ class MeshCanvas(CameraEventMixin, QOpenGLWidget):
             return
         polygons = [(i, p) for i, mesh in enumerate(self.meshes) if i in self.visible for p in mesh.polygons]
         vertices, faces, lookup = [], [], []
-        for pi, (_, p) in enumerate(polygons):
+        for pi, (model_index, p) in enumerate(polygons):
             base = len(vertices)
-            vertices.extend(p['vertices'])
+            vertices.extend(np.asarray(p['vertices']) + self.offset_for(model_index))
             faces.append((base, base + 1, base + 2)); lookup.append(pi)
             if len(p['vertices']) == 4:
                 faces.append((base + 3, base + 2, base + 1)); lookup.append(pi)
@@ -192,22 +229,36 @@ class ModelView(QWidget):
     def __init__(self, meshes=None, vram=None, code=0):
         super().__init__()
         layout = QVBoxLayout(self)
-        bar = QHBoxLayout()
+        layout.setContentsMargins(0, 0, 0, 0)
+        self.toolbar = QToolBar(self)
+        self.toolbar.setObjectName('viewerToolbar')
+        self.toolbar.setToolButtonStyle(Qt.ToolButtonStyle.ToolButtonTextUnderIcon)
+        self.toolbar.setMovable(False)
         self.canvas = MeshCanvas([], np.zeros((512, 1024), np.uint16))
-        for text, attr, state in [('Textures', 'textured', True), ('Vertex colours', 'colored', True),
-                                  ('Wireframe', 'wireframe', False), ('Backface culling', 'backface_culling', False),
-                                  ('Origin', 'show_origin', False)]:
-            box = QCheckBox(text)
-            box.setChecked(state)
-            box.toggled.connect(lambda value, name=attr: self.toggle(name, value))
-            bar.addWidget(box)
-        fit = QPushButton('Frame model')
-        fit.clicked.connect(self.canvas.fit)
-        bar.addWidget(fit)
-        export = QPushButton('Export GLB...')
-        export.clicked.connect(self.export)
-        bar.addWidget(export)
-        layout.addLayout(bar)
+        def add_action(icon_kind, title, callback, checked=None):
+            action = QAction(self.style().standardIcon(icon_kind), title, self)
+            if checked is not None:
+                action.setCheckable(True)
+                action.setChecked(checked)
+                action.toggled.connect(callback)
+            else:
+                action.triggered.connect(callback)
+            self.toolbar.addAction(action)
+            return action
+        self.texture_action = add_action(QStyle.StandardPixmap.SP_DialogYesButton,
+            'Texture Mode', lambda value: self.toggle('textured', value), True)
+        self.culling_action = add_action(QStyle.StandardPixmap.SP_BrowserReload,
+            'Backface Culling', lambda value: self.toggle('backface_culling', value), False)
+        self.spread_action = add_action(QStyle.StandardPixmap.SP_FileDialogDetailedView,
+            'Spread Parts', self.toggle_spread, True)
+        self.spread_action.setToolTip('Lay every model on a numbered grid, as in the Tomba2Edit SMST viewer.')
+        add_action(QStyle.StandardPixmap.SP_FileDialogContentsView,
+            'Frame Model', self.canvas.fit)
+        self.origin_action = add_action(QStyle.StandardPixmap.SP_ArrowUp,
+            'Origin', lambda value: self.toggle('show_origin', value), False)
+        add_action(QStyle.StandardPixmap.SP_DialogOpenButton,
+            'Export glTF', self.export)
+        layout.addWidget(self.toolbar)
         split = QSplitter()
         left = QWidget()
         ll = QVBoxLayout(left)
@@ -257,6 +308,7 @@ class ModelView(QWidget):
     def set_data(self, meshes, vram, code=0):
         self.canvas.cleanup()
         self.canvas.meshes, self.canvas.vram = meshes, vram
+        self.canvas.compute_spread_offsets()
         self.canvas.selected = None
         self.objects.blockSignals(True)
         self.objects.setRowCount(len(meshes))
@@ -314,6 +366,12 @@ class ModelView(QWidget):
     def toggle(self, name, value):
         setattr(self.canvas, name, value)
         self.canvas.update()
+
+    def toggle_spread(self, value):
+        self.canvas.spread = value
+        self.canvas.selected = None
+        self.show_polygon(None)
+        self.canvas.fit()
 
     def show_polygon(self, selected):
         if selected is None:

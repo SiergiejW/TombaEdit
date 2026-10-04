@@ -18,11 +18,17 @@ def tick():
   s=state['step']
   if s==0:
    w.grab().save('work/gui-smoke/01-disc.png');print('loaded',w.count_label.text(),flush=True)
+   w.jump_file('AREA00')
+   assert w.tabs.tabText(0)=='Contents'
+   assert not w.tabs.widget(0).alternatingRowColors()
+   w.grab().save('work/gui-smoke/01-folder.png')
+   w.jump_file('AREA00/A006.GAM')
+   assert w.file_items['AREA00/A006.GAM'].childCount()>0
+   assert w.file_items['AREA00/A006.GAM'].isExpanded()
    a=next(a for a in w.project.ldars['SYS/LDAR00.BIN'][1].assets if a.kind=='WMD')
    w.jump_asset(a);state['step']=1
   elif s==1:
-   if w.tabs.tabText(0)=='Loading':return
-   assert w.tabs.tabText(0)=='Geometry'
+   if w.tabs.tabText(0)!='Geometry':return
    print('model tabs',[w.tabs.tabText(i) for i in range(w.tabs.count())],flush=True)
    widget=w.tabs.widget(0)
    if hasattr(widget,'canvas'):
@@ -32,16 +38,14 @@ def tick():
    a=next(a for a in w.project.ldars['SYS/LDAR00.BIN'][1].assets if a.kind=='WFM')
    w.jump_asset(a);state['step']=2
   elif s==2:
-   if w.tabs.tabText(0)=='Loading':return
-   assert w.tabs.tabText(0)=='Dialogue'
+   if w.tabs.tabText(0)!='Dialogue':return
    assert w.tabs.widget(0).wfm.dialogues
    print('text tabs',[w.tabs.tabText(i) for i in range(w.tabs.count())],flush=True)
    w.grab().save('work/gui-smoke/03-dialogue.png')
    a=next(a for a in w.project.ldars['SYS/LDAR00.BIN'][0].assets if a.code==0x32ff)
    w.jump_asset(a);state['step']=3
   elif s==3:
-   if w.tabs.tabText(0)=='Loading':return
-   assert w.tabs.tabText(0)=='Sprites'
+   if w.tabs.tabText(0)!='Sprites':return
    assert w.tabs.widget(0).image.image.getbbox() is not None
    print('sprite tabs',[w.tabs.tabText(i) for i in range(w.tabs.count())],flush=True)
    w.grab().save('work/gui-smoke/04-sprite.png');w.set_theme('bright');state['step']=4
