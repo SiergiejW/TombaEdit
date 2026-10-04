@@ -3,7 +3,7 @@ import json
 import math
 from pathlib import Path
 from PIL import Image
-from PyQt6.QtCore import Qt, pyqtSignal
+from PyQt6.QtCore import Qt, pyqtSignal, QItemSelectionModel
 from PyQt6.QtWidgets import (QWidget, QVBoxLayout, QHBoxLayout, QLabel, QSpinBox,
     QPushButton, QSplitter, QTableWidget, QTableWidgetItem, QAbstractItemView,
     QHeaderView, QFileDialog, QMessageBox, QCheckBox)
@@ -43,14 +43,17 @@ class SpriteView(QWidget):
         bar.addWidget(QLabel('Texture page offset:'))
         bar.addWidget(self.page_base)
         bar.addStretch()
+        layout.addLayout(bar)
+        export_bar = QHBoxLayout()
         for label, callback in [('Save sprite...', self.save_current),
                                 ('Save whole bank...', self.save_bank),
                                 ('Save selected PNGs...', self.save_selected),
                                 ('Save all PNGs...', self.save_all)]:
             button = QPushButton(label)
             button.clicked.connect(callback)
-            bar.addWidget(button)
-        layout.addLayout(bar)
+            export_bar.addWidget(button)
+        export_bar.addStretch()
+        layout.addLayout(export_bar)
         splitter = QSplitter()
         left = QWidget()
         ll = QVBoxLayout(left)
@@ -141,7 +144,10 @@ class SpriteView(QWidget):
         self.refresh()
 
     def selected(self):
-        self.selection_changed.emit(self.selected_indices())
+        indices = self.selected_indices()
+        self.selection_changed.emit(indices)
+        if not self.whole.isChecked():
+            self.refresh()
 
     def restore_state(self, indices):
         if not indices:
@@ -149,7 +155,9 @@ class SpriteView(QWidget):
         self.bank.blockSignals(True)
         for index in indices:
             if 0 <= index < self.bank.rowCount():
-                self.bank.selectRow(index)
+                model_index = self.bank.model().index(index, 0)
+                self.bank.selectionModel().select(model_index,
+                    QItemSelectionModel.SelectionFlag.Select | QItemSelectionModel.SelectionFlag.Rows)
         self.bank.blockSignals(False)
         self.selected()
 
@@ -176,6 +184,11 @@ class SpriteView(QWidget):
             image, _ = self.sheet(list(range(len(self.frames))))
             self.parts.setRowCount(0)
             self.info.setText(f'Whole bank | {len(self.frames)} sprites')
+        elif len(self.selected_indices()) > 1:
+            indices = self.selected_indices()
+            image, _ = self.sheet(indices)
+            self.parts.setRowCount(0)
+            self.info.setText(f'{len(indices)} selected sprites | {image.width} x {image.height}')
         else:
             index = min(self.frame_index, len(self.frames)-1)
             image = self.frame_image(index, self.origin.isChecked())

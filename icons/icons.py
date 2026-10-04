@@ -9,7 +9,7 @@ FILES = {
     "WFM": "graphics/quill.png", "SPR": "graphics/fruit.png",
     "WPP": "tomba/tomba1.png", "WMD": "graphics/block.png",
     "GRPX": "tomba/123.png", "WHM": "graphics/molecule.png",
-    "CLM": "graphics/molecule.png", "APD": "graphics/map.png",
+    "CLM": "graphics/molecule.png", "CLUT": "tomba/44.png", "APD": "graphics/map.png",
     "SEQ": "graphics/cassette.png", "WVD": "graphics/cassette.png",
     "STR": "graphics/clapperboard.png", "INS": "graphics/report.png",
     "GAM": "graphics/book-brown.png", "LDAR": "graphics/map.png",

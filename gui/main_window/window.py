@@ -36,10 +36,14 @@ class Job(QRunnable):
 
     def run(self):
         try:
-            result = self.callback()
-            self.signals.result.emit(self.generation, result, "")
+            result, error = self.callback(), ''
         except Exception as exc:
-            self.signals.result.emit(self.generation, None, f"{type(exc).__name__}: {exc}")
+            result, error = None, f"{type(exc).__name__}: {exc}"
+        try:
+            self.signals.result.emit(self.generation, result, error)
+        except RuntimeError:
+            # The window may have closed while the worker was finishing.
+            pass
 
 
 def hex_dump(data, total=None):
@@ -176,10 +180,6 @@ class MainWindow(QMainWindow):
         self.export_action.setIcon(self.style().standardIcon(QStyle.StandardPixmap.SP_DialogSaveButton))
         toolbar.addSeparator()
         toolbar.addAction(self.export_action)
-        movie_action = QAction('Movies', self)
-        movie_action.setIcon(icon('STR'))
-        movie_action.triggered.connect(self.show_movies)
-        toolbar.addAction(movie_action)
         self.addToolBar(toolbar)
         self.split = QSplitter()
         left = QWidget()
@@ -229,7 +229,7 @@ class MainWindow(QMainWindow):
         tree.setHeaderLabels(["Name / resource", "Bytes"])
         tree.setColumnWidth(0, 370)
         tree.setUniformRowHeights(True)
-        tree.setAlternatingRowColors(True)
+        tree.setAlternatingRowColors(False)
         tree.setStyleSheet("QTreeWidget::item:selected {background-color: #555555; color: white;} QTreeWidget::item:selected:!active {background-color: #494949; color: white;}")
         tree.setSelectionMode(QAbstractItemView.SelectionMode.SingleSelection)
         tree.currentItemChanged.connect(lambda item, old: self.select_item(item))
@@ -272,15 +272,6 @@ class MainWindow(QMainWindow):
                                               "Disc images (*.cue *.bin *.iso);;All files (*)")
         if path:
             self.open_path(path)
-
-    def show_movies(self):
-        if not self.project:
-            return
-        from formats.movie.movie_panel import MoviePanel
-        selected = self.current_node.path if isinstance(self.current_node, DiscEntry) and self.current_node.path.upper().endswith('.STR') else None
-        self.clear_tabs()
-        self.tabs.addTab(MoviePanel(self.project, selected), 'Movies')
-        self.statusBar().showMessage('Movie browser')
 
     def submit(self, callback, receiver):
         self.generation += 1
@@ -371,6 +362,8 @@ class MainWindow(QMainWindow):
             item.setIcon(0, self.tree_icons[standard])
         else:
             kind = node.kind if isinstance(node, Asset) else Path(node.path).suffix[1:].upper()
+            if isinstance(node, DiscEntry) and Path(node.path).name.upper().startswith('CLUT'):
+                kind = 'CLUT'
             if isinstance(node, DiscEntry) and Path(node.path).name.startswith('LDAR'):
                 kind = 'LDAR'
             item.setIcon(0, icon(kind))

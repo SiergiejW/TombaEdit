@@ -1,9 +1,11 @@
 """Visible, real-OpenGL integration smoke test; writes screenshots under work/."""
 import sys,time,traceback
 from pathlib import Path
+sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 from PyQt6.QtWidgets import QApplication
-from PyQt6.QtCore import QTimer
+from PyQt6.QtCore import QTimer, Qt
 from tombaedit.window import MainWindow
+QApplication.setAttribute(Qt.ApplicationAttribute.AA_ShareOpenGLContexts)
 app=QApplication([])
 app.setOrganizationName('TombaEditTests');app.setApplicationName('Smoke')
 output=Path('work/gui-smoke');output.mkdir(parents=True, exist_ok=True)

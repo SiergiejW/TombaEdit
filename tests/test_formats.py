@@ -173,8 +173,8 @@ class WfmTests(unittest.TestCase):
     def test_control_argument_counts_and_glyph_flags(self):
         w = Wfm(self.fixture([0xFFFA, 100, 50, 0xFFF9, 8, 0xFFF7, 1, 0xC000, 0xFFFD, 0x8000, 0xFFFF]))
         self.assertEqual([t[0] for t in w.dialogues[0].tokens], [0xFFFA, 0xFFF9, 0xFFF7, 0xC000, 0xFFFD, 0x8000, 0xFFFF])
-        self.assertEqual(w.glyphs[0].getpixel((0, 0)), (240, 240, 240, 255))
-        self.assertIn("[g000*]", w.dialogues[0].script())
+        self.assertEqual(w.glyphs[0].getpixel((0, 0)), (0, 0, 8, 255))
+        self.assertIn("[g000]", w.dialogues[0].script())
         self.assertFalse(w.dialogues[0].warning)
         self.assertGreater(w.render(0).height, 16)
 

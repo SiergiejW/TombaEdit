@@ -23,9 +23,13 @@ class Job(QRunnable):
 
     def run(self):
         try:
-            self.signals.ready.emit(self.generation, self.callback(), '')
+            result, error = self.callback(), ''
         except Exception as exc:
-            self.signals.ready.emit(self.generation, None, str(exc))
+            result, error = None, str(exc)
+        try:
+            self.signals.ready.emit(self.generation, result, error)
+        except RuntimeError:
+            pass
 
 
 class MoviePanel(QWidget):
