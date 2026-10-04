@@ -1,0 +1,756 @@
+"""Disc folders and LDAR area/section browser."""
+from pathlib import Path
+import struct
+import traceback
+from PyQt6.QtCore import Qt, QSize, QSettings, QObject, QRunnable, QThreadPool, pyqtSignal
+from PyQt6.QtGui import QAction, QActionGroup, QKeySequence
+from PyQt6.QtWidgets import (QMainWindow, QWidget, QVBoxLayout, QHBoxLayout, QLabel,
+    QLineEdit, QSplitter, QTreeWidget, QTreeWidgetItem, QTabWidget, QFileDialog,
+    QMessageBox, QToolBar, QTableWidget, QTableWidgetItem, QAbstractItemView,
+    QHeaderView, QMenu, QApplication, QStyle, QComboBox, QInputDialog)
+from disc.reader import DiscEntry, FormatError
+from formats.archive.ldar import Project, Asset
+from game.areas import AREAS, section_name
+from gui.theme import apply_theme
+from gui.viewers import text_view, ImageView, DialogueView, SpriteView, ModelView, VramView
+from formats.text.wfm import Wfm
+from formats.models.wmd import parse_wmd
+from psx.graphics import sprite_frames
+from icons.icons import icon
+from game import labels
+import hashlib
+
+ROLE = Qt.ItemDataRole.UserRole
+
+
+class Signals(QObject):
+    result = pyqtSignal(int, object, str)
+
+
+class Job(QRunnable):
+    def __init__(self, generation, callback, receiver):
+        super().__init__()
+        self.generation, self.callback = generation, callback
+        self.signals = Signals()
+        self.signals.result.connect(receiver)
+
+    def run(self):
+        try:
+            result, error = self.callback(), ''
+        except Exception as exc:
+            result, error = None, f"{type(exc).__name__}: {exc}"
+        try:
+            self.signals.result.emit(self.generation, result, error)
+        except RuntimeError:
+            # The window may have closed while the worker was finishing.
+            pass
+
+
+def hex_dump(data, total=None):
+    rows = []
+    for offset in range(0, min(len(data), 65536), 16):
+        row = data[offset:offset + 16]
+        ascii_text = "".join(chr(c) if 32 <= c < 127 else "." for c in row)
+        rows.append(f"{offset:08X}  {row.hex(' ').upper():47s}  {ascii_text}")
+    total = total if total is not None else len(data)
+    if total > 65536:
+        rows.append(f"\nShowing first 65,536 of {total:,} bytes. Export for the complete file.")
+    return "\n".join(rows)
+
+
+def prepare_preview(project, node, context=None):
+    result = {"node": node, "notes": [], "data": None}
+    if isinstance(node, tuple):
+        _, path, index = node
+        result["group"] = project.ldars[path][index]
+        result["vram"] = project.vram(path, index)
+        return result
+    if isinstance(node, Asset):
+        data = project.asset_data(node)
+        result["data"] = data
+        result["size"] = len(data)
+        if node.kind in ("SPR", "WMD", "GRPX"):
+            context = node.group if context is None else context
+            result["vram"] = project.vram(node.ldar, context)
+            groups = project.ldars[node.ldar]
+            shard = next((a for a in groups[context].assets if a.rect), None)
+            result["page_base"] = ((shard.rect[0] // 64) + (shard.rect[1] // 256) * 16) if shard else 0
+        if node.kind == "SPR":
+            result["sprites"] = sprite_frames(data)
+        if node.kind == "WMD":
+            result["meshes"] = parse_wmd(data)
+    else:
+        if node.directory:
+            result["folder"] = node
+            return result
+        result["raw"] = project.disc.read(node, 65536)
+        result["size"] = node.size
+        if node.path.upper().endswith('.STR'):
+            result['movie'] = node.path
+            return result
+        if node.size > 64 * 1024 * 1024:
+            result["notes"].append("Large file: preview limited to the first 64 KiB.")
+            return result
+        data = project.payload(node)
+        result["data"] = data
+        result["size"] = len(data)
+    # WFM can also be embedded in instruction binaries and standalone GAMs.
+    wfms = []
+    start = 0
+    while len(wfms) < 16:
+        start = data.find(b"WFM3", start)
+        if start < 0:
+            break
+        try:
+            wfms.append((start, Wfm(data[start:])))
+        except FormatError as exc:
+            result["notes"].append(f"WFM3 candidate at {start:X}: {exc}")
+        start += 4
+    result["wfms"] = wfms
+    return result
+
+
+class MainWindow(QMainWindow):
+    def __init__(self):
+        super().__init__()
+        self.settings = QSettings()
+        self.project = None
+        self.current_node = None
+        self.current_data = None
+        self.generation = 0
+        self.pool = QThreadPool(self)
+        self.pool.setMaxThreadCount(1)
+        self.asset_items = {}
+        self.file_items = {}
+        self.tree_icons = {}
+        self.labels = labels.LabelSet()
+        self.label_hashes = {}
+        self.persistent = set()
+        self.sprite_states = {}
+        self.setWindowTitle("TombaEdit")
+        self.setWindowIcon(icon("app"))
+        self.resize(1380, 880)
+        self.setAcceptDrops(True)
+        self.build_ui()
+        self.set_theme(self.settings.value("theme", "dark"))
+        geometry = self.settings.value("geometry")
+        if geometry:
+            self.restoreGeometry(geometry)
+        self.welcome()
+
+    def action(self, menu, label, callback, shortcut=None):
+        action = QAction(label, self)
+        action.triggered.connect(callback)
+        if shortcut:
+            action.setShortcut(shortcut)
+        menu.addAction(action)
+        return action
+
+    def build_ui(self):
+        file_menu = self.menuBar().addMenu("&File")
+        open_action = self.action(file_menu, "&Open BIN / CUE / ISO...", self.open_dialog, QKeySequence.StandardKey.Open)
+        open_action.setIcon(self.style().standardIcon(QStyle.StandardPixmap.SP_DriveDVDIcon))
+        self.export_action = self.action(file_menu, "Export decoded &file (binary)...", self.export_payload, "Ctrl+E")
+        self.raw_action = self.action(file_menu, "Export original disc &file...", self.export_raw)
+        file_menu.addSeparator()
+        self.action(file_menu, "E&xit", self.close, "Alt+F4")
+        view = self.menuBar().addMenu("&View")
+        self.action(view, "Collapse tree", lambda: self.current_tree().collapseAll())
+        self.action(view, "Expand tree", lambda: self.current_tree().expandAll())
+        themes = self.menuBar().addMenu("&Settings").addMenu("Theme")
+        group = QActionGroup(self)
+        self.theme_actions = {}
+        for key, label in [("dark", "Classic Dark (default)"), ("bright", "Classic Bright")]:
+            a = QAction(label, self, checkable=True)
+            a.triggered.connect(lambda checked, theme=key: self.set_theme(theme))
+            group.addAction(a)
+            themes.addAction(a)
+            self.theme_actions[key] = a
+        label_menu = self.menuBar().addMenu('&Labels')
+        self.action(label_menu, 'Rename selected...', self.rename_selected, 'F2')
+        self.action(label_menu, 'Import labels...', self.import_labels)
+        self.action(label_menu, 'Export labels...', self.export_labels)
+        help_menu = self.menuBar().addMenu("&Help")
+        self.action(help_menu, "About / supported formats", self.about)
+        toolbar = QToolBar("File", self)
+        toolbar.setMovable(False)
+        toolbar.setIconSize(QSize(32, 32))
+        toolbar.setToolButtonStyle(Qt.ToolButtonStyle.ToolButtonTextUnderIcon)
+        toolbar.addAction(open_action)
+        self.export_action.setIcon(self.style().standardIcon(QStyle.StandardPixmap.SP_DialogSaveButton))
+        toolbar.addSeparator()
+        toolbar.addAction(self.export_action)
+        self.addToolBar(toolbar)
+        self.split = QSplitter()
+        left = QWidget()
+        layout = QVBoxLayout(left)
+        layout.setContentsMargins(4, 4, 4, 4)
+        self.search = QLineEdit()
+        self.search.setPlaceholderText("Filter files, areas, types or offsets...")
+        self.search.setClearButtonEnabled(True)
+        self.search.textChanged.connect(self.filter_tree)
+        layout.addWidget(self.search)
+        self.disc_tree = self.make_tree()
+        self.area_tree = self.disc_tree
+        self.navigation = self.disc_tree
+        layout.addWidget(self.disc_tree)
+        self.count_label = QLabel("No disc open")
+        layout.addWidget(self.count_label)
+        self.split.addWidget(left)
+        right = QWidget()
+        rl = QVBoxLayout(right)
+        rl.setContentsMargins(4, 4, 4, 4)
+        self.path_label = QLabel("TombaEdit")
+        self.path_label.setTextFormat(Qt.TextFormat.PlainText)
+        self.path_label.setTextInteractionFlags(Qt.TextInteractionFlag.TextSelectableByMouse)
+        self.path_label.setWordWrap(True)
+        rl.addWidget(self.path_label)
+        self.context = QComboBox()
+        self.context.setToolTip("Choose the section whose texture and CLUT uploads should be applied to this resource")
+        self.context.currentIndexChanged.connect(self.context_changed)
+        self.context.hide()
+        rl.addWidget(self.context)
+        self.tabs = QTabWidget()
+        rl.addWidget(self.tabs)
+        # A stable GL child exists before the top-level window is shown.
+        self.model_view = ModelView()
+        self.tabs.addTab(self.model_view, 'Geometry')
+        self.persistent.add(self.model_view)
+        self.split.addWidget(right)
+        self.split.setSizes([440, 940])
+        self.split.setStretchFactor(1, 1)
+        self.setCentralWidget(self.split)
+        self.export_action.setEnabled(False)
+        self.raw_action.setEnabled(False)
+        self.statusBar().showMessage("Open a Tomba! data-track BIN, CUE or ISO.")
+
+    def make_tree(self):
+        tree = QTreeWidget()
+        tree.setHeaderLabels(["Name / resource", "Bytes"])
+        tree.setColumnWidth(0, 370)
+        tree.setUniformRowHeights(True)
+        tree.setAlternatingRowColors(False)
+        tree.setStyleSheet("QTreeWidget::item:selected {background-color: #555555; color: white;} QTreeWidget::item:selected:!active {background-color: #494949; color: white;}")
+        tree.setSelectionMode(QAbstractItemView.SelectionMode.SingleSelection)
+        tree.currentItemChanged.connect(lambda item, old: self.select_item(item))
+        tree.setContextMenuPolicy(Qt.ContextMenuPolicy.CustomContextMenu)
+        tree.customContextMenuRequested.connect(lambda point: self.context_menu(tree, point))
+        return tree
+
+    def set_theme(self, theme):
+        theme = theme if theme in self.theme_actions else "dark"
+        apply_theme(theme == "dark")
+        self.theme_actions[theme].setChecked(True)
+        self.settings.setValue("theme", theme)
+
+    def current_tree(self):
+        return self.disc_tree
+
+    def clear_tabs(self):
+        while self.tabs.count():
+            widget = self.tabs.widget(0)
+            self.tabs.removeTab(0)
+            widget.hide()
+            if widget not in self.persistent:
+                widget.deleteLater()
+
+    def welcome(self):
+        self.clear_tabs()
+        self.tabs.addTab(text_view(
+            "TombaEdit 0.1\n\nOpen a BIN / CUE / ISO from File > Open or drop it here.\n\n"
+            "Disc folders\n  The original ISO9660 directory and files. Expand a file to inspect its LDAR resources.\n\n"
+            "Areas / sections\n  Base resources and section-specific load groups, named from the area reference.\n"
+            "  Select a group to inspect its load records and reconstructed VRAM.\n\n"
+            "Viewers\n  GAM decompression and resource ranges\n  WFM3 dialogue glyphs, control words and font atlas\n"
+            "  SPR frames with section VRAM and CLUTs\n  WMD geometry with textures and vertex colours\n"
+            "  VRAM pages, file metadata and hex\n\n"
+            "This first version browses and exports assets. Disc editing/repacking is not implemented."
+        ), "Welcome")
+
+    def open_dialog(self):
+        path, _ = QFileDialog.getOpenFileName(self, "Open Tomba! disc", self.settings.value("last_dir", str(Path.cwd() / "rom")),
+                                              "Disc images (*.cue *.bin *.iso);;All files (*)")
+        if path:
+            self.open_path(path)
+
+    def submit(self, callback, receiver):
+        self.generation += 1
+        self.pool.clear()
+        self.pool.start(Job(self.generation, callback, receiver))
+
+    def open_path(self, path):
+        self.statusBar().showMessage("Reading disc folders and resolving LDAR file links...")
+        self.disc_tree.setEnabled(False)
+        self.export_action.setEnabled(False)
+        self.raw_action.setEnabled(False)
+        self.submit(lambda: Project(path), self.opened)
+
+    def opened(self, generation, project, error):
+        if generation != self.generation:
+            return
+        self.disc_tree.setEnabled(True)
+        if error:
+            self.statusBar().showMessage("Could not open disc")
+            QMessageBox.warning(self, "Cannot open disc", error)
+            return
+        self.project = project
+        self.label_hashes.clear()
+        serial = Path(project.catalog.executable).name if project.catalog else project.disc.volume
+        self.labels = labels.LabelSet(name=project.disc.source.stem, build=serial, serial=serial)
+        saved = self.settings.value('labels/' + serial, '')
+        if saved:
+            try:
+                import json
+                # Load through the same validated parser as an imported file.
+                from game.label_store import from_json
+                self.labels = from_json(saved)
+            except (ValueError, TypeError):
+                pass
+        self.context.hide()
+        self.current_node = None
+        self.current_data = None
+        self.asset_items.clear()
+        self.file_items.clear()
+        self.search.clear()
+        self.disc_tree.blockSignals(True)
+        self.disc_tree.setUpdatesEnabled(False)
+        self.disc_tree.clear()
+        self.populate_disc(project.disc.root, self.disc_tree.invisibleRootItem())
+        for path, groups in project.ldars.items():
+            stem = Path(path).stem
+            area = int(stem[4:]) if stem.startswith("LDAR") else -1
+            directory = f'AREA{area:02d}' if area >= 0 else 'SYS'
+            parent = self.file_items.get(directory, self.disc_tree.invisibleRootItem())
+            root = self.item(parent, 'Sections and resources', ('sections', path, 0))
+            root.setToolTip(0, path)
+            for g in groups:
+                label = "Base - Shared area resources" if g.index == 0 else f"Section {g.index - 1:02d} - {section_name(area, g.index - 1)}"
+                group_item = self.item(root, label, ("group", path, g.index))
+                group_item.setToolTip(0, f"{path} | Load group {g.index} | LDAR offset 0x{g.offset:X}")
+                for asset in g.assets:
+                    item = self.item(group_item, asset.label, asset, asset.size)
+                    self.asset_items[(path, asset.record_offset)] = item
+        self.disc_tree.blockSignals(False)
+        self.disc_tree.setUpdatesEnabled(True)
+        self.setWindowTitle(f"TombaEdit - {project.disc.source.name}")
+        self.settings.setValue("last_dir", str(project.disc.source.parent))
+        assets = sum(len(g.assets) for gs in project.ldars.values() for g in gs)
+        self.count_label.setText(f"{len(project.disc.files):,} files | {len(project.ldars)} LDARs | {assets:,} resources")
+        self.clear_tabs()
+        self.path_label.setText(str(project.disc.source))
+        catalog = project.catalog
+        summary = f"Disc: {project.disc.source}\nData track: {project.disc.path}\nSector size: {project.disc.stride}\nVolume: {project.disc.volume or '(unnamed)'}\n\n{self.count_label.text()}\n"
+        if catalog:
+            summary += f"\nFile-link table: {catalog.executable} +0x{catalog.offset:X}\n{catalog.matched:,} links matched to disc files.\n"
+        if project.warnings:
+            summary += "\nDiagnostics\n" + "\n".join(project.warnings)
+        summary += "\nSelect a file or expand an area/section to open its resources."
+        self.tabs.addTab(text_view(summary), "Disc overview")
+        self.refresh_labels()
+        if self.labels.entries:
+            self.index_labels()
+        self.statusBar().showMessage("Disc ready" + (f" | {len(project.warnings)} diagnostic(s); see overview" if project.warnings else ""))
+
+    def item(self, parent, label, node, size=None):
+        item = QTreeWidgetItem(parent, [label, f"{size:,}" if size is not None else ""])
+        item.setData(0, ROLE, node)
+        folder = isinstance(node, tuple) or isinstance(node, DiscEntry) and node.directory
+        standard = QStyle.StandardPixmap.SP_DirIcon
+        if folder:
+            if standard not in self.tree_icons:
+                self.tree_icons[standard] = self.style().standardIcon(standard)
+            item.setIcon(0, self.tree_icons[standard])
+        else:
+            kind = node.kind if isinstance(node, Asset) else Path(node.path).suffix[1:].upper()
+            if isinstance(node, DiscEntry) and Path(node.path).name.upper().startswith('CLUT'):
+                kind = 'CLUT'
+            if isinstance(node, DiscEntry) and Path(node.path).name.startswith('LDAR'):
+                kind = 'LDAR'
+            item.setIcon(0, icon(kind))
+        item.setData(0, ROLE + 1, label)
+        return item
+
+    def populate_disc(self, folder, parent):
+        for e in sorted(folder.children, key=lambda e: (not e.directory, e.path)):
+            label = e.path.split("/")[-1]
+            if e.directory and label.startswith("AREA") and label[4:].isdigit():
+                label += f" - {AREAS.get(int(label[4:]), 'Unknown area')}"
+            item = self.item(parent, label, e, None if e.directory else e.size)
+            item.setToolTip(0, f"{e.path}\nLBA {e.lba} | {e.size:,} bytes")
+            self.file_items[e.path] = item
+            if e.directory:
+                self.populate_disc(e, item)
+            else:
+                seen = set()
+                for asset in self.project.by_source.get(e.path, []):
+                    key = (asset.code, asset.offset, asset.size, asset.ldar, asset.group)
+                    if key not in seen:
+                        context = "base" if asset.group == 0 else f"section {asset.group - 1:02d}"
+                        self.item(item, f"{asset.label} ({context})", asset, asset.size)
+                        seen.add(key)
+
+    def select_item(self, item):
+        if not item or not self.project:
+            return
+        node = item.data(0, ROLE)
+        self.current_node = node
+        self.context.blockSignals(True)
+        self.context.clear()
+        has_context = isinstance(node, Asset) and node.kind in ("SPR", "WMD", "GRPX")
+        self.context.setVisible(has_context)
+        if has_context:
+            stem = Path(node.ldar).stem
+            area = int(stem[4:]) if stem.startswith("LDAR") else -1
+            for g in self.project.ldars[node.ldar]:
+                name = "Base only" if not g.index else f"Base + section {g.index - 1:02d} - {section_name(area, g.index - 1)}"
+                self.context.addItem("VRAM: " + name)
+            default = node.group
+            if default == 0 and node.kind in ("SPR", "WMD") and self.context.count() > 1:
+                default = 1
+            self.context.setCurrentIndex(default)
+        self.context.blockSignals(False)
+        self.load_selection(item.text(0))
+
+    def context_changed(self):
+        if self.current_node is not None:
+            self.load_selection(self.path_label.text())
+
+    def load_selection(self, title):
+        node = self.current_node
+        self.current_data = None
+        self.export_action.setEnabled(False)
+        self.raw_action.setEnabled(False)
+        self.path_label.setText(title)
+        self.clear_tabs()
+        self.tabs.addTab(text_view("Loading selection..."), "Loading")
+        self.statusBar().showMessage("Decoding selection...")
+        project = self.project
+        context = self.context.currentIndex() if self.context.isVisible() else None
+        self.submit(lambda: prepare_preview(project, node, context), self.preview_ready)
+
+    def preview_ready(self, generation, result, error):
+        if generation != self.generation:
+            return
+        self.clear_tabs()
+        if error:
+            self.tabs.addTab(text_view(error + "\n\nThis resource could not be decoded. Its original disc file can still be exported."), "Diagnostic")
+            self.raw_action.setEnabled(self.source_entry() is not None)
+            self.statusBar().showMessage("Preview unavailable")
+            return
+        node = result["node"]
+        self.current_data = result.get("data")
+        if self.current_data is not None:
+            self.label_hashes[self.node_key(node)] = labels.content_key(self.current_data)
+            self.refresh_labels()
+        self.export_action.setEnabled(self.current_data is not None)
+        self.raw_action.setEnabled(self.source_entry() is not None)
+        try:
+            if "folder" in result:
+                folder = result["folder"]
+                if folder.path.upper() == 'MOVIE':
+                    from formats.movie.movie_panel import MoviePanel
+                    self.tabs.addTab(MoviePanel(self.project), 'Movies')
+                self.add_table([(e.path.split("/")[-1], "Folder" if e.directory else Path(e.path).suffix,
+                                 str(e.size), str(e.lba)) for e in folder.children],
+                               ["Name", "Type", "Bytes", "LBA"], "Contents",
+                               lambda row: self.jump_file(folder.children[row].path))
+            if "group" in result:
+                group = result["group"]
+                self.asset_table(group.assets)
+            if 'movie' in result:
+                from formats.movie.movie_panel import MoviePanel
+                self.tabs.addTab(MoviePanel(self.project, result['movie']), 'Movies')
+            if self.current_data is not None and (self.current_data.startswith(b'pQES') or isinstance(node, DiscEntry) and node.path.upper().endswith('.WVD')):
+                from formats.audio.audio_viewer import AudioView
+                source = node.source.path if isinstance(node, Asset) and node.source else node.path if isinstance(node, DiscEntry) else ''
+                self.tabs.addTab(AudioView(self.current_data, self.project, source), 'Music' if self.current_data.startswith(b'pQES') else 'Sounds')
+            if "meshes" in result:
+                self.model_view.set_data(result["meshes"], result["vram"], node.code)
+                self.tabs.addTab(self.model_view, "Geometry")
+            if "sprites" in result:
+                view = SpriteView(result['sprites'], result['vram'], result['page_base'])
+                key = self.node_key(node)
+                view.restore_state(self.sprite_states.get(key, []))
+                view.selection_changed.connect(lambda state, k=key: self.sprite_states.__setitem__(k, state))
+                self.tabs.addTab(view, 'Sprites')
+            if (self.current_data is not None and isinstance(node, DiscEntry)
+                    and Path(node.path).name.upper().startswith('CLUT')):
+                from formats.images.clut_viewer import ClutView
+                self.tabs.addTab(ClutView(self.current_data), 'CLUT colours')
+            for offset, wfm in result.get("wfms", []):
+                suffix = f" @{offset:X}" if offset else ""
+                self.tabs.addTab(DialogueView(wfm), "Dialogue" + suffix)
+                self.tabs.addTab(ImageView(wfm.atlas()), "Glyphs" + suffix)
+            if "vram" in result:
+                self.tabs.addTab(VramView(result["vram"]), "VRAM")
+            if isinstance(node, DiscEntry) and not node.directory:
+                assets = self.project.by_source.get(node.path, [])
+                if assets:
+                    self.asset_table(assets)
+            self.tabs.addTab(text_view(self.metadata(node, result)), "Information")
+            if self.current_data is not None:
+                self.tabs.addTab(text_view(hex_dump(self.current_data)), "Decoded file hex")
+            if "raw" in result:
+                self.tabs.addTab(text_view(hex_dump(result["raw"], node.size)), "Disc hex")
+            for label in self.tabs.findChildren(QLabel):
+                label.setTextInteractionFlags(Qt.TextInteractionFlag.TextSelectableByMouse)
+            self.statusBar().showMessage("Ready | " + self.path_label.text())
+        except Exception as exc:
+            self.tabs.addTab(text_view(f"Viewer error: {exc}\n\n{traceback.format_exc()}"), "Diagnostic")
+            self.statusBar().showMessage("Viewer error; raw data remains available")
+
+    def metadata(self, node, result):
+        if isinstance(node, Asset):
+            text = f"Type: {node.kind} (0x{node.code:04X})\nSource: {node.source.path if node.source else 'Unresolved'}\nFile ID: 0x{node.file_id:04X}\nLDAR: {node.ldar}\nLoad group: {node.group} (0 = base)\nLDAR record: 0x{node.record_offset:X}\nPayload offset: 0x{node.offset:X}\nPayload length: {node.size:,}\nRAM address: 0x{node.ram:08X}\nContinuation: {node.continuation}\n"
+            if node.rect:
+                text += f"VRAM rectangle (word units): {node.rect}\n"
+            if node.kind in ("WPP", "WHM", "APD", "CLM", "FOUR", "INS", "SEQ"):
+                text += "\nThis type is indexed and exportable; a specialized viewer is not implemented.\n"
+        elif isinstance(node, DiscEntry):
+            text = f"Path: {node.path}\nLBA: {node.lba}\nDisc bytes: {node.size:,}\n"
+            if result.get("data") is not None:
+                text += f"Decoded bytes: {len(result['data']):,}\n"
+            if result.get("raw", b"").startswith(b"GAM\0"):
+                text += "Compression: GAM LZ\nExpand this file or use Resources to select LDAR-defined ranges.\n"
+        else:
+            text = f"LDAR: {node[1]}\nGroup: {node[2]}\nBase VRAM is loaded first, then this group's uploads overwrite it.\n"
+        if result["notes"]:
+            text += "\nDiagnostics\n" + "\n".join(result["notes"])
+        return text
+
+    def add_table(self, rows, headers, title, callback=None):
+        table = QTableWidget(len(rows), len(headers))
+        table.setHorizontalHeaderLabels(headers)
+        table.setEditTriggers(QAbstractItemView.EditTrigger.NoEditTriggers)
+        table.setSelectionBehavior(QAbstractItemView.SelectionBehavior.SelectRows)
+        table.setAlternatingRowColors(True)
+        table.verticalHeader().hide()
+        for i, row in enumerate(rows):
+            for j, value in enumerate(row):
+                table.setItem(i, j, QTableWidgetItem(value))
+        table.resizeColumnsToContents()
+        table.horizontalHeader().setSectionResizeMode(0, QHeaderView.ResizeMode.Stretch)
+        if callback:
+            table.cellDoubleClicked.connect(lambda row, col: callback(row))
+        self.tabs.addTab(table, title)
+
+    def asset_table(self, assets):
+        self.add_table([(a.source.path if a.source else "Unresolved", f"{a.kind} {a.code:04X}",
+                         f"{a.offset:06X}", f"{a.size:,}", "base" if not a.group else f"{a.group - 1:02d}",
+                         str(a.rect) if a.rect else f"{a.ram:08X}") for a in assets],
+                       ["Source file (double-click to open)", "Type", "Offset", "Bytes", "Section", "VRAM / RAM"],
+                       "Resources", lambda row: self.jump_asset(assets[row]))
+
+    def jump_file(self, path):
+        self.search.clear()
+        item = self.file_items[path]
+        self.disc_tree.setCurrentItem(item)
+        self.disc_tree.scrollToItem(item)
+
+    def jump_asset(self, asset):
+        self.search.clear()
+        item = self.asset_items[(asset.ldar, asset.record_offset)]
+        self.area_tree.setCurrentItem(item)
+        self.area_tree.scrollToItem(item)
+
+    def filter_tree(self, text):
+        needle = text.casefold().strip()
+        def visit(item, parent_match=False):
+            own = parent_match or not needle or needle in (item.text(0) + " " + item.toolTip(0)).casefold()
+            child_match = False
+            for i in range(item.childCount()):
+                child_match = visit(item.child(i), own) or child_match
+            item.setHidden(not (own or child_match))
+            if needle and child_match:
+                item.setExpanded(True)
+            return own or child_match
+        for i in range(self.disc_tree.topLevelItemCount()):
+            visit(self.disc_tree.topLevelItem(i))
+
+    def source_entry(self):
+        node = self.current_node
+        if isinstance(node, Asset):
+            return self.project.disc.entries.get(node.source.path) if node.source else None
+        if isinstance(node, DiscEntry) and not node.directory:
+            return node
+        return None
+
+    def destination(self, name):
+        path, _ = QFileDialog.getSaveFileName(self, "Export", name, "All files (*)")
+        if path and Path(path).resolve() in (self.project.disc.source.resolve(), self.project.disc.path.resolve()):
+            QMessageBox.warning(self, "Choose another destination", "Export cannot overwrite the open disc or CUE.")
+            return None
+        return path
+
+    def export_payload(self):
+        if self.current_data is None:
+            return
+        node = self.current_node
+        name = f"{Path(node.source.path).name}.{node.offset:06X}.{node.code:04X}.{node.kind}" if isinstance(node, Asset) else Path(node.path).name + ".decoded"
+        path = self.destination(name)
+        if path:
+            try:
+                Path(path).write_bytes(self.current_data)
+                self.statusBar().showMessage(f"Exported {path}")
+            except OSError as exc:
+                QMessageBox.warning(self, "Export failed", str(exc))
+
+    def export_raw(self):
+        entry = self.source_entry()
+        if entry is None:
+            return
+        path = self.destination(Path(entry.path).name)
+        if path:
+            try:
+                with open(path, "wb") as output:
+                    for offset in range(0, entry.size, 1024 * 1024):
+                        output.write(self.project.disc.read(entry, 1024 * 1024, offset))
+                self.statusBar().showMessage(f"Exported {path}")
+            except (OSError, ValueError) as exc:
+                QMessageBox.warning(self, "Export failed", str(exc))
+
+    def context_menu(self, tree, point):
+        item = tree.itemAt(point)
+        if not item:
+            return
+        tree.setCurrentItem(item)
+        menu = QMenu(self)
+        menu.addAction(self.export_action)
+        menu.addAction(self.raw_action)
+        rename = menu.addAction('Rename...')
+        rename.triggered.connect(self.rename_selected)
+        copy = menu.addAction("Copy name")
+        copy.triggered.connect(lambda: QApplication.clipboard().setText(item.text(0)))
+        menu.exec(tree.viewport().mapToGlobal(point))
+
+    def node_key(self, node):
+        if isinstance(node, Asset):
+            return ('asset', node.ldar, node.record_offset)
+        if isinstance(node, DiscEntry):
+            return ('file', node.path)
+        return node
+
+    def persist_labels(self):
+        import json
+        from game.label_store import document
+        serial = Path(self.project.catalog.executable).name if self.project.catalog else self.project.disc.volume
+        self.settings.setValue('labels/' + serial, json.dumps(document(self.labels)))
+
+    def rename_selected(self):
+        node = self.current_node
+        if node is None or self.project is None:
+            return
+        key = self.node_key(node)
+        content = self.label_hashes.get(key)
+        if isinstance(node, (tuple, DiscEntry)) and (isinstance(node, tuple) or node.directory):
+            identity = repr(key).upper()
+            old = self.labels.bins.get(identity, '')
+        elif self.current_data is not None:
+            content = labels.content_key(self.current_data)
+            self.label_hashes[key] = content
+            old = self.labels.label_for(content)
+        else:
+            self.statusBar().showMessage('Wait for the file to finish loading before naming it.')
+            return
+        name, ok = QInputDialog.getText(self, 'Name selection', 'Label (empty restores the original name):', text=old)
+        if not ok:
+            return
+        if content:
+            self.labels.rename(content, name.strip(), kind=node.kind if isinstance(node, Asset) else Path(node.path).suffix[1:],
+                               start=node.offset if isinstance(node, Asset) else 0,
+                               end=max(0, len(self.current_data) - 1))
+        else:
+            self.labels.bins[identity] = name.strip()
+        self.persist_labels()
+        self.refresh_labels()
+
+    def refresh_labels(self):
+        def visit(item):
+            node = item.data(0, ROLE)
+            original = item.data(0, ROLE + 1)
+            if original:
+                key = self.node_key(node)
+                name = self.labels.label_for(self.label_hashes.get(key, ''))
+                if not name:
+                    name = self.labels.bins.get(repr(key).upper(), '')
+                item.setText(0, f'{name} | {original}' if name else original)
+            for i in range(item.childCount()):
+                visit(item.child(i))
+        for i in range(self.disc_tree.topLevelItemCount()):
+            visit(self.disc_tree.topLevelItem(i))
+
+    def import_labels(self):
+        if self.project is None:
+            return
+        path, _ = QFileDialog.getOpenFileName(self, 'Import labels', '', 'Labels (*.json)')
+        if not path:
+            return
+        try:
+            incoming = labels.load(path)
+            self.labels.entries.update(incoming.entries)
+            # Named folders/sections are positional and restricted to their build.
+            if incoming.serial == self.labels.serial:
+                self.labels.bins.update(incoming.bins)
+                self.labels.areas.update(incoming.areas)
+            self.persist_labels()
+            self.index_labels()
+        except (OSError, ValueError) as exc:
+            QMessageBox.warning(self, 'Cannot import labels', str(exc))
+
+    def index_labels(self):
+        # Hash all small logical files/resources off the UI thread. Exact content
+        # matches can safely carry names between regional releases.
+        project = self.project
+        def collect():
+            out = {}
+            for groups in project.ldars.values():
+                for group in groups:
+                    for asset in group.assets:
+                        try:
+                            out[self.node_key(asset)] = labels.content_key(project.asset_data(asset))
+                        except ValueError:
+                            continue
+            for entry in project.disc.files:
+                if entry.size <= 4 * 1024 * 1024:
+                    try:
+                        out[self.node_key(entry)] = labels.content_key(project.payload(entry))
+                    except ValueError:
+                        continue
+            return out
+        def ready(generation, result, error):
+            if generation == self.generation and result is not None:
+                self.label_hashes.update(result)
+                self.refresh_labels()
+                matched = len(set(result.values()) & set(self.labels.entries))
+                self.statusBar().showMessage(f'{matched} labels matched by file contents.')
+        self.submit(collect, ready)
+
+    def export_labels(self):
+        if self.project is None:
+            return
+        path, _ = QFileDialog.getSaveFileName(self, 'Export labels', (self.labels.serial or 'tomba') + '.labels.json', 'Labels (*.json)')
+        if path:
+            try:
+                labels.save(self.labels, path, keep_existing=False)
+            except OSError as exc:
+                QMessageBox.warning(self, 'Cannot export labels', str(exc))
+
+    def about(self):
+        QMessageBox.about(self, "TombaEdit 0.1", "Tomba! disc and asset browser\n\nBIN/CUE/ISO | LDAR | GAM | WFM3 | SPR | WMD | VRAM\n\nClassic Dark / Classic Bright\n\nDirect WMD preview includes textures and vertex colours.\nAPD placement, animation, exact PSX blending and disc repacking are future work.\n\nFormat research: vervalkon, zerovii, hansbonini/psx_tomba.\nSee README.md and docs/formats.md for validation and limitations.")
+
+    def dragEnterEvent(self, event):
+        if event.mimeData().hasUrls() and any(u.isLocalFile() and Path(u.toLocalFile()).suffix.lower() in (".bin", ".cue", ".iso") for u in event.mimeData().urls()):
+            event.acceptProposedAction()
+
+    def dropEvent(self, event):
+        for url in event.mimeData().urls():
+            if url.isLocalFile() and Path(url.toLocalFile()).suffix.lower() in (".bin", ".cue", ".iso"):
+                self.open_path(url.toLocalFile())
+                break
+
+    def closeEvent(self, event):
+        self.generation += 1
+        self.pool.clear()
+        self.settings.setValue("geometry", self.saveGeometry())
+        self.clear_tabs()
+        super().closeEvent(event)
