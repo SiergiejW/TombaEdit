@@ -40,7 +40,10 @@ class SpriteView(QWidget):
         self.page_base.setRange(0, 31)
         self.page_base.setValue(page_base)
         self.page_base.valueChanged.connect(self.rebuild)
-        bar.addWidget(QLabel('Texture page offset:'))
+        self.page_label = QLabel('Texture page offset:')
+        self.page_label.setVisible(shard is None)
+        self.page_base.setVisible(shard is None)
+        bar.addWidget(self.page_label)
         bar.addWidget(self.page_base)
         bar.addStretch()
         layout.addLayout(bar)
@@ -56,10 +59,11 @@ class SpriteView(QWidget):
         layout.addLayout(export_bar)
         splitter = QSplitter()
         left = QWidget()
+        left.setMinimumWidth(410)
         ll = QVBoxLayout(left)
         ll.addWidget(QLabel('Sprites'))
-        self.bank = QTableWidget(len(frames), 7)
-        self.bank.setHorizontalHeaderLabels(['Name', '#', 'Pieces', 'W', 'H', 'Pages', 'At'])
+        self.bank = QTableWidget(len(frames), 6)
+        self.bank.setHorizontalHeaderLabels(['Sprite', '#', 'Parts', 'W', 'H', 'Pages'])
         self.bank.verticalHeader().hide()
         self.bank.setSelectionBehavior(QAbstractItemView.SelectionBehavior.SelectRows)
         self.bank.setSelectionMode(QAbstractItemView.SelectionMode.ExtendedSelection)
@@ -67,7 +71,11 @@ class SpriteView(QWidget):
         self.bank.setDragDropMode(QAbstractItemView.DragDropMode.NoDragDrop)
         self.bank.setDragEnabled(False)
         self.bank.horizontalHeader().setSectionResizeMode(0, QHeaderView.ResizeMode.Stretch)
+        for column, width in enumerate((0, 36, 48, 36, 36, 86)):
+            if column:
+                self.bank.setColumnWidth(column, width)
         self.bank.currentCellChanged.connect(self.row_changed)
+        self.bank.cellDoubleClicked.connect(self.frame_sprite)
         self.bank.itemSelectionChanged.connect(self.selected)
         ll.addWidget(self.bank)
         splitter.addWidget(left)
@@ -88,7 +96,7 @@ class SpriteView(QWidget):
         right.addWidget(pieces)
         right.setSizes([650, 200])
         splitter.addWidget(right)
-        splitter.setSizes([340, 850])
+        splitter.setSizes([410, 780])
         layout.addWidget(splitter, 1)
         self.info = QLabel()
         self.info.setTextInteractionFlags(Qt.TextInteractionFlag.TextSelectableByMouse)
@@ -130,7 +138,7 @@ class SpriteView(QWidget):
                 width = height = 0
                 pages = ''
             values = [f'Sprite {i:03d}', str(i), str(len(frame)), str(width),
-                      str(height), pages, '']
+                      str(height), pages]
             for col, value in enumerate(values):
                 self.bank.setItem(i, col, QTableWidgetItem(value))
         self.bank.blockSignals(False)
@@ -141,6 +149,14 @@ class SpriteView(QWidget):
             return
         self.frame_index = row
         self.whole.setChecked(False)
+        self.refresh()
+
+    def frame_sprite(self, row, column):
+        if row < 0:
+            return
+        self.frame_index = row
+        self.whole.setChecked(False)
+        self.image.zoom.setCurrentIndex(0)
         self.refresh()
 
     def selected(self):

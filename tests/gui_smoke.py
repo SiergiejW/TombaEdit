@@ -33,10 +33,11 @@ def tick():
    widget=w.tabs.widget(0)
    if hasattr(widget,'canvas'):
     assert widget.canvas.isValid()
-    assert widget.spread_action.isChecked()
+    assert widget.spread_action.isChecked() == (w.current_node.code not in (0x5080, 0x50FF))
     assert len(widget.canvas.spread_offsets)==len(widget.canvas.meshes)
     if len(widget.canvas.meshes)>1:
-     assert tuple(widget.canvas.offset_for(0)) != tuple(widget.canvas.offset_for(1))
+     if widget.spread_action.isChecked():
+      assert tuple(widget.canvas.offset_for(0)) != tuple(widget.canvas.offset_for(1))
     image=widget.canvas.grabFramebuffer();print('GL',widget.canvas.isValid(),image.size(),flush=True);image.save('work/gui-smoke/02-geometry.png')
    w.grab().save('work/gui-smoke/02-window.png')
    a=next(a for a in w.project.ldars['SYS/LDAR00.BIN'][1].assets if a.kind=='WFM')

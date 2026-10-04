@@ -84,6 +84,27 @@ def prepare_preview(project, node, context=None):
                     result['sprite_shard'] = (texture.rect[2], texture.rect[3], project.asset_data(texture))
         if node.kind == "SPR":
             result["sprites"] = sprite_frames(data)
+        if node.kind == 'WPP':
+            from formats.archive.data_viewer import offset_entries
+            count = len(offset_entries(data))
+            for candidate in project.ldars[node.ldar][node.group].assets:
+                if candidate.kind != 'SPR':
+                    continue
+                try:
+                    frames = sprite_frames(project.asset_data(candidate))
+                except FormatError:
+                    continue
+                if count and len(frames) == count:
+                    context = node.group or (1 if len(project.ldars[node.ldar]) > 1 else 0)
+                    result['paired_sprites'] = frames
+                    result['vram'] = project.vram(node.ldar, context)
+                    texture = next((a for a in project.ldars[node.ldar][context].assets
+                                    if a.kind == 'GRPX' and a.rect and a.rect[2] >= 64
+                                    and a.rect[3] >= 256), None)
+                    if texture:
+                        result['sprite_shard'] = (texture.rect[2], texture.rect[3],
+                                                  project.asset_data(texture))
+                    break
         if node.kind == "WMD":
             result["meshes"] = parse_wmd(data)
     else:
@@ -506,6 +527,26 @@ class MainWindow(QMainWindow):
                 view.restore_state(self.sprite_states.get(key, []))
                 view.selection_changed.connect(lambda state, k=key: self.sprite_states.__setitem__(k, state))
                 self.tabs.addTab(view, 'Sprites')
+            if isinstance(node, Asset) and node.kind in ('APD', 'WHM'):
+                from formats.collision.structured_viewer import StructuredView
+                self.tabs.addTab(StructuredView(self.current_data, node.kind),
+                                 'Placements' if node.kind == 'APD' else 'Collision data')
+            if isinstance(node, Asset) and node.kind == 'CLM':
+                from formats.archive.data_viewer import CollisionMapView
+                self.tabs.addTab(CollisionMapView(self.current_data, node.code), 'Collision map')
+            if isinstance(node, Asset) and node.kind in ('WPP', 'FOUR', 'INS', 'SPC', 'SAP', 'Unknown'):
+                from formats.archive.data_viewer import DataView
+                data_view = DataView(self.current_data, node.kind, node.code, node.ram)
+                self.tabs.addTab(data_view, f'{node.kind} records')
+                if 'paired_sprites' in result:
+                    view = SpriteView(result['paired_sprites'], result['vram'],
+                                      shard=result.get('sprite_shard'))
+                    if hasattr(data_view, 'entry_table'):
+                        data_view.entry_table.currentCellChanged.connect(
+                            lambda row, col, old_row, old_col, sprite=view:
+                                (sprite.whole.setChecked(False), sprite.bank.setCurrentCell(row, 0))
+                                if 0 <= row < sprite.bank.rowCount() else None)
+                    self.tabs.addTab(view, 'Related sprites')
             if (self.current_data is not None and isinstance(node, DiscEntry)
                     and Path(node.path).name.upper().startswith('CLUT')):
                 from formats.images.clut_viewer import ClutView
@@ -537,8 +578,6 @@ class MainWindow(QMainWindow):
             text = f"Type: {node.kind} (0x{node.code:04X})\nSource: {node.source.path if node.source else 'Unresolved'}\nFile ID: 0x{node.file_id:04X}\nLDAR: {node.ldar}\nLoad group: {node.group} (0 = base)\nLDAR record: 0x{node.record_offset:X}\nPayload offset: 0x{node.offset:X}\nPayload length: {node.size:,}\nRAM address: 0x{node.ram:08X}\nContinuation: {node.continuation}\n"
             if node.rect:
                 text += f"VRAM rectangle (word units): {node.rect}\n"
-            if node.kind in ("WPP", "WHM", "APD", "CLM", "FOUR", "INS", "SEQ"):
-                text += "\nThis type is indexed and exportable; a specialized viewer is not implemented.\n"
         elif isinstance(node, DiscEntry):
             text = f"Path: {node.path}\nLBA: {node.lba}\nDisc bytes: {node.size:,}\n"
             if result.get("data") is not None:

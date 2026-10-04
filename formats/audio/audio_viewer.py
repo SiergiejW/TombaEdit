@@ -77,6 +77,7 @@ class AudioView(QWidget):
             preview.setIcon(notes_icon(seq.events(data, 0)))
             self.sequence_list.setItem(0, 1, preview)
             self.sequence_list.setRowHeight(0, 30)
+            self.sequence_list.cellDoubleClicked.connect(lambda row, col: self.render('play'))
             left_layout.addWidget(self.sequence_list)
         left_layout.addWidget(QLabel('Sound banks'))
         self.bank_list = QTableWidget(0, 2)
@@ -100,6 +101,7 @@ class AudioView(QWidget):
         self.sample_list.setColumnWidth(3, 86)
         self.sample_list.setColumnWidth(4, 52)
         self.sample_list.currentCellChanged.connect(self.choose_sample)
+        self.sample_list.cellDoubleClicked.connect(self.play_entry)
         left_layout.addWidget(self.sample_list, 2)
         name_button = QPushButton('Name selection...')
         name_button.clicked.connect(self.rename_selection)
@@ -266,6 +268,11 @@ class AudioView(QWidget):
             offset, size = self.sample.currentData()
             self.details.setPlainText(f'{self.sample.itemText(row)}\nOffset: 0x{offset:06X}\nLoop: {sfx.loops(bank, offset, size)}')
         if self.ready:
+            self.render('play')
+
+    def play_entry(self, row, column):
+        if row >= 0:
+            self.sample.setCurrentIndex(row)
             self.render('play')
 
     def step(self, amount):

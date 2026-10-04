@@ -48,8 +48,10 @@ class MeshCanvas(CameraEventMixin, QOpenGLWidget):
         self.pan = [0., 0.]
         self.stats_label = QLabel(self)
         self.stats_label.setObjectName('viewerOverlay')
-        self.controls_label = QLabel(CONTROLS_HINT, self)
+        self.stats_label.setTextInteractionFlags(Qt.TextInteractionFlag.TextSelectableByMouse)
+        self.controls_label = QLabel(CONTROLS_HINT + '\nF: frame selected | Double-click model: frame it', self)
         self.controls_label.setObjectName('viewerOverlay')
+        self.controls_label.setTextInteractionFlags(Qt.TextInteractionFlag.TextSelectableByMouse)
         self.stats_label.raise_(); self.controls_label.raise_()
         self.fit()
         self.setMinimumSize(200, 200)
@@ -107,7 +109,7 @@ class MeshCanvas(CameraEventMixin, QOpenGLWidget):
     def resizeEvent(self, event):
         super().resizeEvent(event)
         self.stats_label.adjustSize()
-        self.stats_label.move(6, self.height() - self.stats_label.height() - 6)
+        self.stats_label.move(6, 6)
         self.controls_label.adjustSize()
         self.controls_label.move(self.width() - self.controls_label.width() - 6,
                                  self.height() - self.controls_label.height() - 6)
@@ -294,6 +296,7 @@ class ModelView(QWidget):
         layout.addWidget(self.toolbar)
         split = QSplitter()
         left = QWidget()
+        left.setMinimumWidth(320)
         ll = QVBoxLayout(left)
         ll.addWidget(QLabel('Models'))
         self.objects = QTableWidget(0, 5)
@@ -302,13 +305,14 @@ class ModelView(QWidget):
         self.objects.setEditTriggers(QAbstractItemView.EditTrigger.NoEditTriggers)
         self.objects.setSelectionBehavior(QAbstractItemView.SelectionBehavior.SelectRows)
         self.objects.setSelectionMode(QAbstractItemView.SelectionMode.SingleSelection)
-        self.objects.setColumnWidth(0, 48)
-        self.objects.setColumnWidth(2, 52)
-        self.objects.setColumnWidth(3, 52)
-        self.objects.setColumnWidth(4, 90)
+        self.objects.setColumnWidth(0, 40)
+        self.objects.setColumnWidth(2, 43)
+        self.objects.setColumnWidth(3, 49)
+        self.objects.setColumnWidth(4, 78)
         self.objects.horizontalHeader().setSectionResizeMode(1, QHeaderView.ResizeMode.Stretch)
         self.objects.itemChanged.connect(self.visibility_changed)
         self.objects.currentCellChanged.connect(self.model_selected)
+        self.objects.cellDoubleClicked.connect(self.frame_selected)
         ll.addWidget(self.objects)
         row = QHBoxLayout()
         show_all = QPushButton('Show all')
@@ -322,6 +326,7 @@ class ModelView(QWidget):
         split.addWidget(left)
         split.addWidget(self.canvas)
         side = QWidget()
+        side.setMinimumWidth(210)
         sl = QVBoxLayout(side)
         self.details = text_view('Click a triangle or quad to inspect its original WMD record and UVs.')
         sl.addWidget(self.details)
@@ -337,6 +342,7 @@ class ModelView(QWidget):
     def set_data(self, meshes, vram, code=0, names=None, rename_callback=None):
         self.rename_callback = rename_callback
         self.model_names = names or {}
+        had_meshes = bool(self.canvas.meshes)
         self.canvas.cleanup()
         self.canvas.meshes, self.canvas.vram = meshes, vram
         self.canvas.compute_spread_offsets()
@@ -355,17 +361,19 @@ class ModelView(QWidget):
                 self.objects.setItem(i, column, item)
         self.canvas.visible = set(range(len(meshes)))
         self.canvas.selected_model = None
+        self.spread_action.blockSignals(True)
         self.spread_action.setChecked(code not in (0x5080, 0x50FF))
+        self.spread_action.blockSignals(False)
         self.canvas.spread = self.spread_action.isChecked()
         if meshes:
             self.objects.setCurrentCell(0, 0)
         self.objects.blockSignals(False)
-        self.canvas.fit(animate=False)
+        self.canvas.fit(animate=had_meshes)
         triangles = sum(len(a[0]) // 3 for m in meshes for a in m.batches.values())
-        self.canvas.stats_label.setText(f'{triangles:,} triangles | {sum(len(m.polygons) for m in meshes):,} polygons\n'
-                                        f'{len(meshes):,} models | F: frame selected | Show all: reset')
+        self.canvas.stats_label.setText(f'{triangles:,} triangles | {len(meshes):,} models\n'
+                                        'F: frame selected')
         self.canvas.stats_label.adjustSize()
-        self.canvas.stats_label.move(6, self.canvas.height() - self.canvas.stats_label.height() - 6)
+        self.canvas.stats_label.move(6, 6)
         self.show_polygon(None)
 
     def rename_model(self):
@@ -384,6 +392,12 @@ class ModelView(QWidget):
         self.canvas.selected_model = row if row >= 0 else None
         self.show_polygon(None)
         self.canvas.update()
+
+    def frame_selected(self, row, column):
+        if row < 0:
+            return
+        self.canvas.selected_model = row
+        self.canvas.fit({row})
 
     def visibility_changed(self, item):
         if item.column() != 0:
