@@ -7,12 +7,12 @@ import numpy as np
 from psx.graphics import texture_page
 
 
-def export_glb(path, meshes, vram):
+def export_glb(path, meshes, vram, unlit=True):
     doc = dict(asset=dict(version="2.0", generator="TombaEdit"), scene=0,
                scenes=[dict(nodes=[])], nodes=[], meshes=[], materials=[],
                buffers=[], bufferViews=[], accessors=[], images=[], textures=[],
                samplers=[dict(magFilter=9728, minFilter=9728, wrapS=10497, wrapT=10497)],
-               extensionsUsed=["KHR_materials_unlit"])
+               extensionsUsed=["KHR_materials_unlit"] if unlit else [])
     binary = bytearray()
     def view(data):
         binary.extend(b'\0' * (-len(binary) % 4))
@@ -38,8 +38,9 @@ def export_glb(path, meshes, vram):
             if key not in materials:
                 material = dict(name=f'Page {page:04X} CLUT {clut:04X}', doubleSided=True,
                                 alphaMode='BLEND' if semi else 'MASK',
-                                pbrMetallicRoughness=dict(metallicFactor=0, roughnessFactor=1),
-                                extensions={'KHR_materials_unlit': {}})
+                                pbrMetallicRoughness=dict(metallicFactor=0, roughnessFactor=1))
+                if unlit:
+                    material['extensions'] = {'KHR_materials_unlit': {}}
                 if page >= 0:
                     stream = io.BytesIO()
                     texture_page(vram, page, clut).save(stream, format='PNG')

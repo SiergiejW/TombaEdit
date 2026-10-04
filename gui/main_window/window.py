@@ -81,6 +81,9 @@ def prepare_preview(project, node, context=None):
             return result
         result["raw"] = project.disc.read(node, 65536)
         result["size"] = node.size
+        if node.path.upper().endswith('.STR'):
+            result['movie'] = node.path
+            return result
         if node.size > 64 * 1024 * 1024:
             result["notes"].append("Large file: preview limited to the first 64 KiB.")
             return result
@@ -173,6 +176,10 @@ class MainWindow(QMainWindow):
         self.export_action.setIcon(self.style().standardIcon(QStyle.StandardPixmap.SP_DialogSaveButton))
         toolbar.addSeparator()
         toolbar.addAction(self.export_action)
+        movie_action = QAction('Movies', self)
+        movie_action.setIcon(icon('STR'))
+        movie_action.triggered.connect(self.show_movies)
+        toolbar.addAction(movie_action)
         self.addToolBar(toolbar)
         self.split = QSplitter()
         left = QWidget()
@@ -265,6 +272,15 @@ class MainWindow(QMainWindow):
                                               "Disc images (*.cue *.bin *.iso);;All files (*)")
         if path:
             self.open_path(path)
+
+    def show_movies(self):
+        if not self.project:
+            return
+        from formats.movie.movie_panel import MoviePanel
+        selected = self.current_node.path if isinstance(self.current_node, DiscEntry) and self.current_node.path.upper().endswith('.STR') else None
+        self.clear_tabs()
+        self.tabs.addTab(MoviePanel(self.project, selected), 'Movies')
+        self.statusBar().showMessage('Movie browser')
 
     def submit(self, callback, receiver):
         self.generation += 1
@@ -438,6 +454,9 @@ class MainWindow(QMainWindow):
         try:
             if "folder" in result:
                 folder = result["folder"]
+                if folder.path.upper() == 'MOVIE':
+                    from formats.movie.movie_panel import MoviePanel
+                    self.tabs.addTab(MoviePanel(self.project), 'Movies')
                 self.add_table([(e.path.split("/")[-1], "Folder" if e.directory else Path(e.path).suffix,
                                  str(e.size), str(e.lba)) for e in folder.children],
                                ["Name", "Type", "Bytes", "LBA"], "Contents",
@@ -445,6 +464,9 @@ class MainWindow(QMainWindow):
             if "group" in result:
                 group = result["group"]
                 self.asset_table(group.assets)
+            if 'movie' in result:
+                from formats.movie.movie_panel import MoviePanel
+                self.tabs.addTab(MoviePanel(self.project, result['movie']), 'Movies')
             if self.current_data is not None and (self.current_data.startswith(b'pQES') or isinstance(node, DiscEntry) and node.path.upper().endswith('.WVD')):
                 from formats.audio.audio_viewer import AudioView
                 source = node.source.path if isinstance(node, Asset) and node.source else node.path if isinstance(node, DiscEntry) else ''
