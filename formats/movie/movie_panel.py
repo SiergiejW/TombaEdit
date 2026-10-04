@@ -3,12 +3,12 @@ from pathlib import Path
 from PyQt6.QtCore import (Qt, QTimer, QThreadPool, QRunnable, QObject,
                          pyqtSignal, QBuffer, QByteArray, QIODevice, QUrl)
 from PyQt6.QtMultimedia import QAudioOutput, QMediaPlayer
-from PyQt6.QtWidgets import (QWidget, QVBoxLayout, QHBoxLayout, QSplitter,
-    QTableWidget, QTableWidgetItem, QAbstractItemView, QHeaderView,
-    QPushButton, QLabel, QSlider, QFileDialog, QMessageBox)
+from PyQt6.QtWidgets import (QWidget, QVBoxLayout, QHBoxLayout,
+    QPushButton, QLabel, QSlider, QFileDialog)
 from formats.movie.psxstr import Movie
 from formats.movie.movie_screen import MovieScreen, clock
 from formats.movie import movie_export
+from gui.widgets.transport_icons import set_glyph
 
 
 class Signals(QObject):
@@ -41,51 +41,57 @@ class MoviePanel(QWidget):
         self.last_frame = -1; self.frames = {}
         self.pool = QThreadPool.globalInstance()
         layout = QVBoxLayout(self)
-        split = QSplitter()
-        self.list = QTableWidget(len(self.entries), 3)
-        self.list.setHorizontalHeaderLabels(['Movie', 'Disc bytes', 'LBA'])
-        self.list.verticalHeader().hide()
-        self.list.setSelectionBehavior(QAbstractItemView.SelectionBehavior.SelectRows)
-        self.list.setEditTriggers(QAbstractItemView.EditTrigger.NoEditTriggers)
-        self.list.horizontalHeader().setSectionResizeMode(0, QHeaderView.ResizeMode.Stretch)
-        for i,e in enumerate(self.entries):
-            for col,value in enumerate((Path(e.path).name, f'{e.size:,}', str(e.lba))):
-                self.list.setItem(i,col,QTableWidgetItem(value))
-        self.list.currentCellChanged.connect(self.choose)
-        split.addWidget(self.list)
-        right = QWidget(); right_layout = QVBoxLayout(right)
-        self.screen = MovieScreen(); right_layout.addWidget(self.screen,1)
+        self.title = QLabel('Movie')
+        layout.addWidget(self.title)
+        self.screen = MovieScreen()
+        self.screen.double_clicked.connect(self.toggle)
+        layout.addWidget(self.screen, 1)
         self.timeline = QSlider(Qt.Orientation.Horizontal)
-        self.timeline.valueChanged.connect(self.show_frame); right_layout.addWidget(self.timeline)
+        self.timeline.valueChanged.connect(self.show_frame)
+        layout.addWidget(self.timeline)
         transport = QHBoxLayout()
-        for title,callback in [('First',lambda:self.show_frame(0)),('Previous',lambda:self.step(-1)),
-                               ('Play / Pause',self.toggle),('Stop',self.stop),
-                               ('Next',lambda:self.step(1)),('Last',self.last)]:
-            button = QPushButton(title); button.clicked.connect(callback); transport.addWidget(button)
+        for name, callback in [('first', lambda: self.show_frame(0)),
+                               ('step_back', lambda: self.step(-1)),
+                               ('play', self.toggle), ('stop', self.stop),
+                               ('step_forward', lambda: self.step(1)), ('last', self.last)]:
+            button = QPushButton()
+            set_glyph(button, name)
+            button.clicked.connect(callback)
+            transport.addWidget(button)
+            if name == 'play':
+                self.play_button = button
         self.clock = QLabel('0:00.0 / 0:00.0'); transport.addWidget(self.clock)
-        right_layout.addLayout(transport)
+        transport.addStretch()
+        self.volume = QSlider(Qt.Orientation.Horizontal)
+        self.volume.setRange(0, 100)
+        self.volume.setValue(75)
+        self.volume.setMaximumWidth(110)
+        transport.addWidget(QLabel('Volume'))
+        transport.addWidget(self.volume)
+        layout.addLayout(transport)
         exports = QHBoxLayout()
         for title,callback in [('Save frame...',self.save_frame),('Save all frames...',self.save_frames),
                                ('Save video...',self.save_video),('Save sound...',self.save_audio),
                                ('Save .STR...',self.save_str)]:
             button=QPushButton(title);button.clicked.connect(callback);exports.addWidget(button)
-        right_layout.addLayout(exports)
+        layout.addLayout(exports)
         self.status = QLabel('Select a movie.');self.status.setWordWrap(True)
-        right_layout.addWidget(self.status)
-        split.addWidget(right);split.setSizes([320,900]);layout.addWidget(split)
+        layout.addWidget(self.status)
         self.player=QMediaPlayer(self);self.output=QAudioOutput(self);self.output.setVolume(.75)
         self.player.setAudioOutput(self.output)
+        self.volume.valueChanged.connect(lambda value: self.output.setVolume(value/100))
         self.buffer=None
         self.timer=QTimer(self);self.timer.setInterval(15);self.timer.timeout.connect(self.tick)
         if self.entries:
             row=next((i for i,e in enumerate(self.entries) if e.path==selected),0)
-            self.list.setCurrentCell(row,0)
+            self.choose(row)
 
-    def choose(self,row,_col,*unused):
+    def choose(self,row):
         if row<0 or row>=len(self.entries):return
         self.stop();self.generation+=1;self.movie=None;self.frames.clear();self.last_frame=-1
         self.screen.show_message('Indexing movie...');self.status.setText('Reading MDEC frame and XA sound sector indexes...')
         e=self.entries[row];disc=self.project.disc
+        self.title.setText(e.path)
         callback=lambda:Movie(Path(e.path).name,disc.path,disc.start+e.lba,
                               e.size//2048,disc.stride,disc.payload_offset)
         self.pool.start(Job(self.generation,callback,self.indexed))
@@ -128,13 +134,15 @@ class MoviePanel(QWidget):
         if self.movie:self.show_frame(len(self.movie.frames)-1)
 
     def toggle(self):
-        if self.timer.isActive():self.timer.stop();self.player.pause();return
+        if self.timer.isActive():
+            self.timer.stop();self.player.pause();set_glyph(self.play_button,'play');return
         if not self.movie:return
         if self.movie.has_audio and self.buffer is None:
             self.status.setText('Decoding XA soundtrack...')
             self.pool.start(Job(self.generation,self.movie.wav,self.audio_ready))
             return
         self.player.play() if self.movie.has_audio else None
+        set_glyph(self.play_button,'pause')
         self.timer.start()
 
     def audio_ready(self,generation,data,error):
@@ -145,6 +153,7 @@ class MoviePanel(QWidget):
         self.player.setSourceDevice(self.buffer,QUrl('movie.wav'))
         self.player.setPosition(round(self.timeline.value()/self.movie.fps*1000))
         self.player.play();self.timer.start()
+        set_glyph(self.play_button,'pause')
         self.status.setText('Playing with XA sound')
 
     def tick(self):
@@ -159,6 +168,7 @@ class MoviePanel(QWidget):
 
     def stop(self):
         self.timer.stop();self.player.stop()
+        set_glyph(self.play_button,'play')
         if self.buffer:
             self.player.setSource(QUrl());self.buffer.close();self.buffer.deleteLater();self.buffer=None
 
