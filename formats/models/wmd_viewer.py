@@ -247,6 +247,7 @@ class ModelView(QWidget):
             return action
         self.texture_action = add_action(QStyle.StandardPixmap.SP_DialogYesButton,
             'Texture Mode', lambda value: self.toggle('textured', value), True)
+        self.texture_action.setToolTip('Show CLUT textures. Turn off to inspect WMD vertex colours.')
         self.culling_action = add_action(QStyle.StandardPixmap.SP_BrowserReload,
             'Backface Culling', lambda value: self.toggle('backface_culling', value), False)
         self.spread_action = add_action(QStyle.StandardPixmap.SP_FileDialogDetailedView,

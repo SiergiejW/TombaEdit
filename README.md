@@ -36,11 +36,11 @@ Supported previews:
 | GAM | Bounded LZ decoding, LDAR asset ranges, embedded WFM detection, hex |
 | WFM3 / D0FF / D1FF | Dialogue list, font-local glyph decoding, rendered text and font atlas |
 | SPR | Whole-bank sheet, non-draggable sprite table, piece records, individual and batch PNG export |
-| WMD | Multi-model 3D view, model visibility list, polygon and UV inspection, lit or unlit GLB export |
+| WMD | SMST-style toolbar and spread grid, model visibility list, polygon and UV inspection, lit or unlit GLB export |
 | GRPX | Labeled VRAM upload; all 4-bit pages first, plus 4/8/16-bit page views |
 | CLUT GAM | Clickable PlayStation colour cells and PSX/RGB values |
-| WVD / SEQ | Sound-bank and sample lists, playback, WAV and MIDI export |
-| STR | Movie browser with MDEC frames, XA audio, playback, PNG/WAV/raw STR export and video export when ffmpeg is installed |
+| WVD / SEQ | Clickable sound-bank and sample lists, waveform, playback, WAV and MIDI export |
+| STR | One selected movie at a time, MDEC frames, XA audio, Tomba2Edit-style transport, PNG/WAV/raw STR export and video export when ffmpeg is installed |
 | WPP, WHM, APD, CLM, FOUR, INS, unknown | Typed resources, source ranges, metadata, hex and binary export |
 
 Geometry controls follow Tomba2Edit: middle drag orbits, Shift plus middle
