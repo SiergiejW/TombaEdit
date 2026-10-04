@@ -393,6 +393,8 @@ class MainWindow(QMainWindow):
         if not item or not self.project:
             return
         node = item.data(0, ROLE)
+        if isinstance(node, DiscEntry) and not node.directory and item.childCount():
+            item.setExpanded(True)
         self.current_node = node
         self.context.blockSignals(True)
         self.context.clear()
@@ -422,7 +424,21 @@ class MainWindow(QMainWindow):
         self.raw_action.setEnabled(False)
         self.path_label.setText(title)
         self.clear_tabs()
-        self.tabs.addTab(text_view("Loading selection..."), "Loading")
+        if isinstance(node, DiscEntry) and node.directory:
+            self.generation += 1
+            self.pool.clear()
+            self.preview_ready(self.generation, prepare_preview(self.project, node), '')
+            return
+        if isinstance(node, DiscEntry):
+            assets = self.project.by_source.get(node.path, [])
+            if assets:
+                self.asset_table(assets)
+            else:
+                self.tabs.addTab(text_view(f'{node.path}\n{node.size:,} bytes'), 'Information')
+        elif isinstance(node, Asset):
+            self.tabs.addTab(text_view(self.metadata(node, {'notes': []})), 'Information')
+        elif isinstance(node, tuple):
+            self.asset_table(self.project.ldars[node[1]][node[2]].assets)
         self.statusBar().showMessage("Decoding selection...")
         project = self.project
         context = self.context.currentIndex() if self.context.isVisible() else None
@@ -447,9 +463,6 @@ class MainWindow(QMainWindow):
         try:
             if "folder" in result:
                 folder = result["folder"]
-                if folder.path.upper() == 'MOVIE':
-                    from formats.movie.movie_panel import MoviePanel
-                    self.tabs.addTab(MoviePanel(self.project), 'Movies')
                 self.add_table([(e.path.split("/")[-1], "Folder" if e.directory else Path(e.path).suffix,
                                  str(e.size), str(e.lba)) for e in folder.children],
                                ["Name", "Type", "Bytes", "LBA"], "Contents",
@@ -459,7 +472,7 @@ class MainWindow(QMainWindow):
                 self.asset_table(group.assets)
             if 'movie' in result:
                 from formats.movie.movie_panel import MoviePanel
-                self.tabs.addTab(MoviePanel(self.project, result['movie']), 'Movies')
+                self.tabs.addTab(MoviePanel(self.project, result['movie']), 'Movie')
             if self.current_data is not None and (self.current_data.startswith(b'pQES') or isinstance(node, DiscEntry) and node.path.upper().endswith('.WVD')):
                 from formats.audio.audio_viewer import AudioView
                 source = node.source.path if isinstance(node, Asset) and node.source else node.path if isinstance(node, DiscEntry) else ''
@@ -523,7 +536,8 @@ class MainWindow(QMainWindow):
         table.setHorizontalHeaderLabels(headers)
         table.setEditTriggers(QAbstractItemView.EditTrigger.NoEditTriggers)
         table.setSelectionBehavior(QAbstractItemView.SelectionBehavior.SelectRows)
-        table.setAlternatingRowColors(True)
+        table.setAlternatingRowColors(False)
+        table.setStyleSheet("QTableWidget::item:selected {background-color: #555555; color: white;} QTableWidget::item:selected:!active {background-color: #494949; color: white;}")
         table.verticalHeader().hide()
         for i, row in enumerate(rows):
             for j, value in enumerate(row):
