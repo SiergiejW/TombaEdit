@@ -47,7 +47,26 @@ def sprite_frames(data):
     return frames
 
 
-def render_sprite(parts, vram, page_base=0):
+def sprite_texture_page(shard, page, vram, clut):
+    """Decode a SPR virtual 4-bit page from the LDAR texture upload."""
+    if shard is None:
+        return texture_page(vram, page, clut)
+    width, height, data = shard
+    pages = width // 64
+    index = page & 31
+    if not pages or index >= pages or height < 256:
+        return Image.new('RGBA', (256, 256))
+    rows = np.frombuffer(data, dtype=np.uint8).reshape(height, width * 2)
+    packed = rows[:256, index * 128:(index + 1) * 128]
+    indices = np.empty((256, 256), dtype=np.uint8)
+    indices[:, 0::2] = packed & 15
+    indices[:, 1::2] = packed >> 4
+    cx, cy = (clut & 63) * 16, (clut >> 6) & 511
+    palette = vram.reshape(-1)[(cy * 1024 + cx + np.arange(16)) % vram.size]
+    return Image.fromarray(rgba(palette[indices]))
+
+
+def render_sprite(parts, vram, page_base=0, shard=None):
     if not parts:
         return Image.new("RGBA", (1, 1))
     left = min(p[13] for p in parts)
@@ -58,11 +77,9 @@ def render_sprite(parts, vram, page_base=0):
     pages = {}
     for p in reversed(parts):
         sx, sy, clut, _, _, page, _, _, _, w, h, _, _, x, y = p
-        # SPR pages are relative to the section's first texture shard.
-        page = (page & ~31) | (((page & 31) + page_base) & 31)
         key = (page, clut)
         if key not in pages:
-            pages[key] = texture_page(vram, page, clut)
+            pages[key] = sprite_texture_page(shard, page, vram, clut) if shard else texture_page(vram, (page & ~31) | (((page & 31) + page_base) & 31), clut)
         tile = pages[key].crop((sx, sy, sx + w, sy + h))
         image.alpha_composite(tile, (x - left, y - top))
     return image

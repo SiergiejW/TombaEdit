@@ -7,7 +7,7 @@ from PyQt6.QtGui import QImage, QPixmap, QFontDatabase, QSurfaceFormat, QMatrix4
 from PyQt6.QtWidgets import (QWidget, QVBoxLayout, QHBoxLayout, QLabel, QComboBox,
     QCheckBox, QPushButton, QSpinBox, QSplitter, QListWidget, QPlainTextEdit,
     QGraphicsView, QGraphicsScene, QFileDialog, QMessageBox, QTableWidget,
-    QTableWidgetItem, QAbstractItemView, QHeaderView, QToolBar, QStyle)
+    QTableWidgetItem, QAbstractItemView, QHeaderView, QToolBar, QStyle, QInputDialog)
 from PyQt6.QtOpenGLWidgets import QOpenGLWidget
 from psx.graphics import texture_page, render_sprite
 
@@ -283,7 +283,9 @@ class ModelView(QWidget):
         show_all.clicked.connect(self.show_all)
         isolate = QPushButton('Isolate selected')
         isolate.clicked.connect(self.isolate)
-        row.addWidget(show_all); row.addWidget(isolate)
+        rename = QPushButton('Name model...')
+        rename.clicked.connect(self.rename_model)
+        row.addWidget(show_all); row.addWidget(isolate); row.addWidget(rename)
         ll.addLayout(row)
         split.addWidget(left)
         split.addWidget(self.canvas)
@@ -306,7 +308,9 @@ class ModelView(QWidget):
         if meshes is not None:
             self.set_data(meshes, vram, code)
 
-    def set_data(self, meshes, vram, code=0):
+    def set_data(self, meshes, vram, code=0, names=None, rename_callback=None):
+        self.rename_callback = rename_callback
+        self.model_names = names or {}
         self.canvas.cleanup()
         self.canvas.meshes, self.canvas.vram = meshes, vram
         self.canvas.compute_spread_offsets()
@@ -316,7 +320,7 @@ class ModelView(QWidget):
         for i, mesh in enumerate(meshes):
             triangles = sum(1 for p in mesh.polygons if len(p['vertices']) == 3)
             quads = sum(1 for p in mesh.polygons if len(p['vertices']) == 4)
-            entries = ['', f'Model {i:03d}', str(triangles), str(quads), f'0x{mesh.offset:06X}']
+            entries = ['', self.model_names.get(i) or f'Model {i:03d}', str(triangles), str(quads), f'0x{mesh.offset:06X}']
             for column, value in enumerate(entries):
                 item = QTableWidgetItem(value)
                 if column == 0:
@@ -324,6 +328,8 @@ class ModelView(QWidget):
                     item.setCheckState(Qt.CheckState.Checked)
                 self.objects.setItem(i, column, item)
         self.canvas.visible = set(range(len(meshes)))
+        self.spread_action.setChecked(code not in (0x5080, 0x50FF))
+        self.canvas.spread = self.spread_action.isChecked()
         if meshes:
             self.objects.setCurrentCell(0, 0)
         self.objects.blockSignals(False)
@@ -331,6 +337,17 @@ class ModelView(QWidget):
         triangles = sum(len(a[0]) // 3 for m in meshes for a in m.batches.values())
         self.stats.setText(f'{triangles:,} triangles | {sum(len(m.polygons) for m in meshes):,} original polygons')
         self.show_polygon(None)
+
+    def rename_model(self):
+        row = self.objects.currentRow()
+        if row < 0 or self.rename_callback is None:
+            return
+        name, accepted = QInputDialog.getText(self, 'Name model',
+            'Label (empty restores the original name):', text=self.model_names.get(row, ''))
+        if accepted:
+            self.rename_callback(row, name.strip())
+            self.model_names[row] = name.strip()
+            self.objects.item(row, 1).setText(name.strip() or f'Model {row:03d}')
 
     def model_selected(self, row, column, old_row, old_column):
         self.canvas.selected = None

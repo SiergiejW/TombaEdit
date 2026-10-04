@@ -71,10 +71,17 @@ def prepare_preview(project, node, context=None):
         result["size"] = len(data)
         if node.kind in ("SPR", "WMD", "GRPX"):
             context = node.group if context is None else context
+            if node.kind == 'SPR' and context == 0 and len(project.ldars[node.ldar]) > 1:
+                context = 1
             result["vram"] = project.vram(node.ldar, context)
             groups = project.ldars[node.ldar]
             shard = next((a for a in groups[context].assets if a.rect), None)
             result["page_base"] = ((shard.rect[0] // 64) + (shard.rect[1] // 256) * 16) if shard else 0
+            if node.kind == 'SPR':
+                texture = next((a for a in groups[context].assets if a.kind == 'GRPX' and a.rect
+                                and a.rect[2] >= 64 and a.rect[3] >= 256), None)
+                if texture:
+                    result['sprite_shard'] = (texture.rect[2], texture.rect[3], project.asset_data(texture))
         if node.kind == "SPR":
             result["sprites"] = sprite_frames(data)
         if node.kind == "WMD":
@@ -321,8 +328,10 @@ class MainWindow(QMainWindow):
             area = int(stem[4:]) if stem.startswith("LDAR") else -1
             directory = f'AREA{area:02d}' if area >= 0 else 'SYS'
             parent = self.file_items.get(directory, self.disc_tree.invisibleRootItem())
-            root = self.item(parent, 'Sections and resources', ('sections', path, 0))
-            root.setToolTip(0, path)
+            root = self.item(parent, 'Sections', ('sections', path, 0))
+            parent.takeChild(parent.indexOfChild(root))
+            parent.insertChild(0, root)
+            root.setToolTip(0, f'{path}: base load group followed by sections in LDAR order')
             for g in groups:
                 label = "Base - Shared area resources" if g.index == 0 else f"Section {g.index - 1:02d} - {section_name(area, g.index - 1)}"
                 group_item = self.item(root, label, ("group", path, g.index))
@@ -478,10 +487,19 @@ class MainWindow(QMainWindow):
                 source = node.source.path if isinstance(node, Asset) and node.source else node.path if isinstance(node, DiscEntry) else ''
                 self.tabs.addTab(AudioView(self.current_data, self.project, source), 'Music' if self.current_data.startswith(b'pQES') else 'Sounds')
             if "meshes" in result:
-                self.model_view.set_data(result["meshes"], result["vram"], node.code)
+                meshes = result['meshes']
+                keys = [labels.content_key(self.current_data[m.offset:
+                    meshes[i + 1].offset if i + 1 < len(meshes) else len(self.current_data)])
+                    for i, m in enumerate(meshes)]
+                names = {i: self.labels.label_for(key) for i, key in enumerate(keys)}
+                def rename_model(index, name):
+                    self.labels.rename(keys[index], name, kind='WMD model')
+                    self.persist_labels()
+                self.model_view.set_data(meshes, result['vram'], node.code, names, rename_model)
                 self.tabs.addTab(self.model_view, "Geometry")
             if "sprites" in result:
-                view = SpriteView(result['sprites'], result['vram'], result['page_base'])
+                view = SpriteView(result['sprites'], result['vram'], result['page_base'],
+                                  shard=result.get('sprite_shard'))
                 key = self.node_key(node)
                 view.restore_state(self.sprite_states.get(key, []))
                 view.selection_changed.connect(lambda state, k=key: self.sprite_states.__setitem__(k, state))

@@ -14,9 +14,9 @@ from psx.graphics import render_sprite
 class SpriteView(QWidget):
     selection_changed = pyqtSignal(list)
 
-    def __init__(self, frames, vram, page_base=0, renderer=None):
+    def __init__(self, frames, vram, page_base=0, renderer=None, shard=None):
         super().__init__()
-        self.frames, self.vram, self.renderer = frames, vram, renderer
+        self.frames, self.vram, self.renderer, self.shard = frames, vram, renderer, shard
         self.cache = {}
         self.frame_index = 0
         layout = QVBoxLayout(self)
@@ -102,7 +102,7 @@ class SpriteView(QWidget):
     def frame_image(self, index, origin=False):
         if index not in self.cache:
             self.cache[index] = self.renderer(index) if self.renderer else render_sprite(
-                self.frames[index], self.vram, self.page_base.value())
+                self.frames[index], self.vram, self.page_base.value(), self.shard)
         image = self.cache[index]
         if not origin or not self.frames[index]:
             return image
