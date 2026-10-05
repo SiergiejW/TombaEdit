@@ -282,6 +282,7 @@ class MainWindow(QMainWindow):
         from formats.models.four_viewer import FourView
         self.level_view = LevelView()
         self.level_view.open_resource.connect(self.jump_asset)
+        self.level_view.open_location.connect(self.jump_group)
         self.four_view = FourView()
         for viewer, title in ((self.level_view, 'Level editor'), (self.four_view, 'Deformation')):
             self.tabs.addTab(viewer, title)
@@ -732,6 +733,22 @@ class MainWindow(QMainWindow):
         item = self.file_items[path]
         self.disc_tree.setCurrentItem(item)
         self.disc_tree.scrollToItem(item)
+
+    def jump_group(self, path, index):
+        from PyQt6.QtWidgets import QTreeWidgetItemIterator
+        self.search.clear()
+        iterator = QTreeWidgetItemIterator(self.area_tree)
+        while iterator.value():
+            item = iterator.value()
+            if item.data(0, ROLE) == ('group', path, index):
+                parent = item.parent()
+                while parent is not None:
+                    parent.setExpanded(True)
+                    parent = parent.parent()
+                self.area_tree.setCurrentItem(item)
+                self.area_tree.scrollToItem(item)
+                return
+            iterator += 1
 
     def jump_asset(self, asset):
         self.search.clear()

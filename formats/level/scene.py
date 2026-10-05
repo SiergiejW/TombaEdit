@@ -60,6 +60,8 @@ class LevelScene:
     sky: tuple = None
     collision_records: list = field(default_factory=list)
     collision_context: str = ''
+    locations: list = field(default_factory=list)
+    location_index: int = 0
 
 
 def area_of(path):
@@ -312,7 +314,7 @@ def build_scene(project, path, index):
                     if image is not None:
                         frames_first = frames_first or (parts, image)
                         frames.append((sprite_mesh(image, parts, where, flip, placement.offset), ticks))
-                if frames:
+                if frames and any(mesh.image.getbbox() for mesh, _ in frames):
                     mesh = frames[0][0]
                     category = 'Sprites'
                     note = (f'SPR bank {bank}, frame {visual["frames"][0][0]}, texture page base '
@@ -321,6 +323,12 @@ def build_scene(project, path, index):
                                if len(frames) > 1 else 'Single-frame pose.'))
                     if len(frames) < 2:
                         frames = []
+                    if visual.get('condition'):
+                        category = 'Event previews'
+                        note += ' ' + visual['condition']
+                elif frames:
+                    frames = []
+                    note = 'Sprite link is known, but its pixels or palette are not loaded in this section.'
             if frames_first is not None and placement.layer == 7 and 'screen' in visual:
                 parts, image = frames_first
                 extra = visual.get('overlay', 0)
@@ -420,8 +428,11 @@ def build_scene(project, path, index):
                'First entrance orientation; changing entrance can change the active bank.')
     if not resolver.available:
         context = 'World collision origins are not verified for this executable. Open a WHM asset for its local X/Y boundaries.'
+    from game.areas import section_name
+    locations = [(section_name(area, g.index - 1), path, g.index)
+                 for g in project.ldars[path][1:] if g.assets]
     return LevelScene(entries, list(resources.values()), vram, notes, collision, backdrops, sky,
-                      collision_records, context)
+                      collision_records, context, locations, index)
 
 
 def sprite_pages(project, path, index):

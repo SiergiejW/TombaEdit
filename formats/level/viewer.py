@@ -11,26 +11,34 @@ TICK_MS = 33
 
 class LevelView(ModelView):
     open_resource = pyqtSignal(object)
+    open_location = pyqtSignal(str, int)
 
     def __init__(self):
         super().__init__()
         self.scene = None
         self.animated = []      # [entry index, step, ticks left]
         self.filter = QComboBox()
-        self.filter.addItems(['Whole level', 'Geometry', 'Models', 'Sprites', 'Backgrounds', 'Unresolved'])
+        self.filter.addItems(['Whole level', 'Geometry', 'Models', 'Sprites', 'Backgrounds', 'Event previews', 'Unresolved'])
         self.scope = QComboBox()
         self.scope.addItems(['This section', 'All loaded APD banks'])
         self.assets = QComboBox()
+        self.locations = QComboBox()
+        self.locations.setToolTip('Open a town interior or another section with its own textures and placements.')
+        self.locations.activated.connect(self.choose_location)
+        locations_row = QHBoxLayout()
+        locations_row.addWidget(QLabel('Rooms / sections:'))
+        locations_row.addWidget(self.locations, 1)
+        self.layout().insertLayout(0, locations_row)
         open_button = QPushButton('Open asset')
         open_button.clicked.connect(self.open_asset)
         row = QHBoxLayout()
         for w in (QLabel('Show:'), self.filter, self.scope, QLabel('Loaded assets:'), self.assets, open_button):
             row.addWidget(w)
-        self.layout().insertLayout(0, row)
+        self.layout().insertLayout(1, row)
         self.notice = QLabel('Select a section to load its level.')
         self.notice.setWordWrap(True)
         self.notice.setTextInteractionFlags(Qt.TextInteractionFlag.TextSelectableByMouse)
-        self.layout().insertWidget(1, self.notice)
+        self.layout().insertWidget(2, self.notice)
         self.filter.currentIndexChanged.connect(self.apply_filter)
         self.scope.currentIndexChanged.connect(self.apply_filter)
         self.objects.horizontalHeaderItem(1).setText('Scene object')
@@ -76,6 +84,9 @@ class LevelView(ModelView):
         self.animate_action = self.toggle_action(
             QStyle.StandardPixmap.SP_MediaPlay, 'Animate', self.toggle_animation, True,
             'Play the animation scripts of placed sprites.')
+        self.events_action = self.toggle_action(
+            QStyle.StandardPixmap.SP_FileDialogInfoView, 'Event previews', self.apply_filter, False,
+            'Show decoded poses of effects whose event conditions are not active in the initial state.')
         self.timer = QTimer(self)
         self.timer.setInterval(TICK_MS)
         self.timer.timeout.connect(self.advance)
@@ -92,10 +103,22 @@ class LevelView(ModelView):
     def set_scene(self, scene):
         self.timer.stop()
         self.scene = scene
+        self.locations.blockSignals(True)
+        self.locations.clear()
+        for name, path, index in scene.locations:
+            self.locations.addItem(f'{index - 1:02d} - {name}', (path, index))
+            if index == scene.location_index:
+                self.locations.setCurrentIndex(self.locations.count() - 1)
+        self.locations.blockSignals(False)
+        flat = not any(e.active and e.category in ('Geometry', 'Models') and e.mesh.image is None
+                       for e in scene.entries)
         self.set_data([entry.mesh for entry in scene.entries], scene.vram, 0x5080,
-                      {i: e.name for i, e in enumerate(scene.entries)})
-        if any(e.alternative is not None for e in scene.entries):
+                      {i: e.name for i, e in enumerate(scene.entries)}, level=not flat)
+        if flat or any(e.alternative is not None for e in scene.entries):
             self.canvas.view_angles = (0.0, 0.0)    # a town picture is viewed square on
+            self.filter.blockSignals(True)
+            self.filter.setCurrentIndex(0)
+            self.filter.blockSignals(False)
         self.canvas.lines = scene.collision
         self.canvas.backdrop = scene.backdrop
         self.canvas.backdrop_turned = scene.collision_context.startswith('Path: Z')
@@ -120,6 +143,11 @@ class LevelView(ModelView):
                                         'F: frame selected | Double-click a row: frame it')
         self.canvas.stats_label.adjustSize()
         self.toggle_animation(self.animate_action.isChecked())
+
+    def choose_location(self, row):
+        location = self.locations.itemData(row)
+        if location:
+            self.open_location.emit(*location)
 
     def toggle_collision(self, value):
         self.canvas.show_lines = value
@@ -261,6 +289,8 @@ class LevelView(ModelView):
         visible = set()
         for i, e in enumerate(self.scene.entries):
             show = (self.scope.currentIndex() == 1 or e.active) and (category == 'Whole level' or e.category == category)
+            if category == 'Whole level' and e.category == 'Event previews' and not self.events_action.isChecked():
+                show = False
             self.objects.setRowHidden(i, not show)
             self.objects.item(i, 0).setCheckState(Qt.CheckState.Checked if show else Qt.CheckState.Unchecked)
             if show:

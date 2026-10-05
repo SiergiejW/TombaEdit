@@ -58,7 +58,7 @@ class AudioView(QWidget):
         self.pending = None
         self.ready = False
         layout = QVBoxLayout(self)
-        split = QSplitter()
+        split = QSplitter(Qt.Orientation.Horizontal)
         left = QWidget()
         left_layout = QVBoxLayout(left)
         if self.is_seq:
@@ -111,20 +111,35 @@ class AudioView(QWidget):
         right_layout = QVBoxLayout(right)
         bar = QHBoxLayout()
         self.bank = QComboBox()
+        self.sequence_banks = []
         if self.is_seq:
+            notes, _ = seq.perform(data, 0)
+            best, score = 0, (-1, -1)
             for entry in project.disc.files:
                 if entry.path.upper().endswith('.WVD'):
-                    self.bank.addItem(entry.path, entry.path)
-            match = self.bank.findText(str(Path(source).with_suffix('.WVD')).replace('\\', '/'))
-            if match >= 0:
-                self.bank.setCurrentIndex(match)
+                    try:
+                        banks = wvd.banks(project.payload(entry))
+                    except (ValueError, KeyError):
+                        continue
+                    for i, bank in enumerate(banks):
+                        programs = seq.instruments(bank, 0)
+                        coverage = sum(any(t.low <= key <= t.high for t in
+                            programs.get(state['program'], (0, 0, ()))[2])
+                            for _, _, key, _, state in notes)
+                        area = Path(source).parent.name.removeprefix('AREA')
+                        priority = int(area.isdigit() and Path(entry.path).stem.startswith(f'SND{int(area):03d}'))
+                        self.sequence_banks.append(bank)
+                        self.bank.addItem(f'{entry.path} | Bank {i}', len(self.sequence_banks) - 1)
+                        if (coverage, priority) > score:
+                            score, best = (coverage, priority), self.bank.count() - 1
+            self.bank.setCurrentIndex(best)
         else:
             for i, bank in enumerate(self.bank_data):
                 self.bank.addItem(f'Bank {i} | {len(sfx.samples(bank))} samples', i)
         self.bank_list.setRowCount(self.bank.count())
         for i in range(self.bank.count()):
             name = self.bank.itemText(i)
-            count = '' if self.is_seq else str(len(sfx.samples(self.bank_data[i])))
+            count = str(len(sfx.samples(self.sequence_banks[i] if self.is_seq else self.bank_data[i])))
             self.bank_list.setItem(i, 0, QTableWidgetItem(name))
             self.bank_list.setItem(i, 1, QTableWidgetItem(count))
         self.bank.currentIndexChanged.connect(self.selection_changed)
@@ -163,7 +178,6 @@ class AudioView(QWidget):
         right_layout.addWidget(self.timeline)
         if self.is_seq:
             midi = QPushButton('Export MIDI...'); midi.clicked.connect(self.export_midi)
-        right_layout.addLayout(controls)
         exports = QHBoxLayout(); exports.addWidget(export)
         if self.is_seq:
             exports.addWidget(midi)
@@ -172,7 +186,8 @@ class AudioView(QWidget):
         self.details = text_view(''); right_layout.addWidget(self.details)
         split.addWidget(right)
         split.setSizes([390, 760])
-        layout.addWidget(split)
+        layout.addWidget(split, 1)
+        layout.addLayout(controls)
         self.player = QMediaPlayer(self)
         self.output = QAudioOutput(self); self.output.setVolume(.75)
         self.player.setAudioOutput(self.output)
@@ -193,23 +208,29 @@ class AudioView(QWidget):
         self.sample_list.blockSignals(True)
         self.sample_list.setRowCount(0)
         if self.is_seq:
-            # A WVD may carry several VABs; expose them independently.
-            try:
-                self.bank_data = wvd.banks(self.project.payload(self.project.disc.entries[self.bank.currentData()]))
-                for i,b in enumerate(self.bank_data):
-                    self.sample.addItem(f'Instrument bank {i}', i)
-            except (KeyError, ValueError) as exc:
-                self.status.setText(str(exc)); self.sample_list.blockSignals(False); return
-            self.sample_list.setRowCount(len(self.bank_data))
-            for i in range(len(self.bank_data)):
-                self.sample_list.setItem(i, 0, QTableWidgetItem(f'Instrument bank {i}'))
+            self.bank_data = [self.sequence_banks[self.bank.currentIndex()]] if self.bank.currentIndex() >= 0 else []
+            if not self.bank_data:
+                self.status.setText('No instrument bank was found on this disc. Export MIDI is still available.')
+                self.sample_list.blockSignals(False)
+                return
+            self.sample.addItem('Selected instrument bank', 0)
+            programs = seq.instruments(self.bank_data[0], 0)
+            self.sample_list.setHorizontalHeaderLabels(['Program', 'Tones', 'Samples', 'Keys', ''])
+            self.sample_list.setRowCount(len(programs))
+            for row, (program, (_, _, tones)) in enumerate(programs.items()):
+                values = [f'Program {program:03d}', str(len(tones)),
+                          ', '.join(str(t.vag) for t in tones),
+                          ', '.join(f'{t.low}..{t.high}' for t in tones), '']
+                for column, value in enumerate(values):
+                    self.sample_list.setItem(row, column, QTableWidgetItem(value))
             resolution, tempo = seq.header(self.data,0)
             events = seq.events(self.data,0)
             rows = [f'Ticks/quarter: {resolution} | Tempo: {60000000/tempo:.2f} BPM',
                     f'{len(events)} MIDI events', 'Delta | Status | Data 1 | Data 2']
             rows += [f'{d:6d} | {s:02X} | {a:6d} | {b:6d}' for d,s,a,b in events]
             self.details.setPlainText('\n'.join(rows))
-            self.status.setText('Select the matching instrument bank. Playback uses SPU samples and ADSR; reverb and exact console mixing are not emulated.')
+            self.status.setText('Instrument bank suggested from program and note ranges. '
+                                'Select a bank to change the sound. Play or double-click the sequence to listen.')
         elif self.bank_data:
             bank = self.bank_data[self.bank.currentIndex()]
             samples = sfx.samples(bank)
@@ -260,6 +281,8 @@ class AudioView(QWidget):
                 self.sample_list.item(row, 0).setText(name.strip() or f'Sample {row + 1:03d}')
 
     def choose_sample(self, row, column, old_row, old_column):
+        if self.is_seq:
+            return
         if row < 0 or row >= self.sample.count():
             return
         self.sample.setCurrentIndex(row)
@@ -272,7 +295,8 @@ class AudioView(QWidget):
 
     def play_entry(self, row, column):
         if row >= 0:
-            self.sample.setCurrentIndex(row)
+            if not self.is_seq:
+                self.sample.setCurrentIndex(row)
             self.render('play')
 
     def step(self, amount):
@@ -316,6 +340,7 @@ class AudioView(QWidget):
 
     def render(self, purpose):
         if self.sample.currentIndex() < 0:
+            self.status.setText('Select a sound bank and an entry to play.')
             return
         self.stop()
         destination = None
@@ -327,7 +352,12 @@ class AudioView(QWidget):
         data = self.data
         if self.is_seq:
             bank = self.bank_data[self.sample.currentIndex()]
-            callback = lambda: wav_bytes(seq.pcm(seq.render(data,0,bank,0)[0]),seq.RATE,2)
+            def callback():
+                import numpy as np
+                audio, used = seq.render(data, 0, bank, 0)
+                if not len(audio) or not np.any(audio):
+                    raise ValueError('This instrument bank cannot sound the sequence. Select another sound bank.')
+                return wav_bytes(seq.pcm(audio), seq.RATE, 2)
         else:
             bank = self.bank_data[self.bank.currentIndex()]
             offset,size = self.sample.currentData(); rate = self.rate.value()
@@ -354,7 +384,7 @@ class AudioView(QWidget):
             self.buffer.close(); self.buffer.deleteLater()
         self.buffer = QBuffer(self); self.buffer.setData(QByteArray(data))
         self.buffer.open(QIODevice.OpenModeFlag.ReadOnly)
-        self.player.setSourceDevice(self.buffer, QUrl('preview.wav'))
+        self.player.setSourceDevice(self.buffer)
         self.wave.set_wav(data)
         self.player.play(); self.status.setText('Playing')
 

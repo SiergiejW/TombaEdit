@@ -13,7 +13,7 @@ from formats.archive.ldar import Project
 from formats.collision.whm import parse_whm
 from formats.level.runtime import US_SHA1
 from formats.level.scene import loaded_resources, area_of
-from formats.level.runtime import InitialPoseResolver
+from formats.level.runtime import InitialPoseResolver, runtime_area
 
 
 class Oracle:
@@ -114,7 +114,7 @@ def main(path):
             if not resolver.available:
                 continue
             x0, z0, turned, only = resolver.collision_frame(area, group.index - 1)
-            oracle.write(0x8009BCC8, struct.pack('<HH', area, group.index - 1))
+            oracle.write(0x8009BCC8, struct.pack('<HH', runtime_area(area, group.index - 1), group.index - 1))
             oracle.write(0x1F8001C8, struct.pack('<H', int(turned)))
             for slot in (0, 1):
                 oracle.word(0x1F800308 + slot * 4, 0)
