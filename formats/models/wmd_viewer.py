@@ -15,9 +15,13 @@ from psx.graphics import texture_page, render_sprite
 
 from gui.widgets.image_view import ImageView, text_view, qimage
 
-from gui.widgets.camera_controls import CameraControls, CameraEventMixin, CONTROLS_HINT, LEVEL_HEADING, LEVEL_PITCH
+from gui.widgets.camera_controls import (CameraControls, CameraEventMixin, CONTROLS_HINT,
+    MODEL_HEADING, MODEL_PITCH, FIELD_OF_VIEW)
 from gui.widgets.polygon_pick import ray_through, nearest_polygon
 from gui.theme import view_background
+
+# Downward tilt a level opens with, close to the game's own camera.
+LEVEL_TILT = 10.0
 from PIL import ImageDraw
 
 class MeshCanvas(CameraEventMixin, QOpenGLWidget):
@@ -46,10 +50,19 @@ class MeshCanvas(CameraEventMixin, QOpenGLWidget):
         self.selected = None
         self.selected_model = None
         self.pan = [0., 0.]
+        # Opening pose. The game looks along +Z with Y down, which after the
+        # (x, -y, -z) conversion is the camera's own forward direction.
+        self.view_angles = (MODEL_HEADING, MODEL_PITCH)
+        self.view_margin = 1.25
+        self.orbit_selection = True
+        self.camera_controls.orbit_target = self.orbit_target
+        # Optional GL_LINES overlay: (vertices, colours).
+        self.lines = None
+        self.show_lines = False
         self.stats_label = QLabel(self)
         self.stats_label.setObjectName('viewerOverlay')
         self.stats_label.setTextInteractionFlags(Qt.TextInteractionFlag.TextSelectableByMouse)
-        self.controls_label = QLabel(CONTROLS_HINT + '\nF: frame selected | Double-click model: frame it', self)
+        self.controls_label = QLabel(CONTROLS_HINT + '\nF: frame selected | Double-click a row: frame it', self)
         self.controls_label.setObjectName('viewerOverlay')
         self.controls_label.setTextInteractionFlags(Qt.TextInteractionFlag.TextSelectableByMouse)
         self.stats_label.raise_(); self.controls_label.raise_()
@@ -87,32 +100,82 @@ class MeshCanvas(CameraEventMixin, QOpenGLWidget):
     def offset_for(self, index):
         return self.spread_offsets.get(index, np.zeros(3)) if self.spread else np.zeros(3)
 
-    def fit(self, indices=None, animate=True):
+    def box(self, indices=None):
+        """(low, high) corners of the visible meshes, or of `indices` among them."""
         arrays = [batch[0] + self.offset_for(i)
                   for i, mesh in enumerate(self.meshes) if i in self.visible
                   and (indices is None or i in indices)
                   for batch in mesh.batches.values() if len(batch[0])]
-        if arrays:
-            lo = np.min([a.min(axis=0) for a in arrays], axis=0)
-            hi = np.max([a.max(axis=0) for a in arrays], axis=0)
-            self.center = (lo + hi) / 2
-            self.radius = max(1., float(np.linalg.norm(hi - lo)) / 2)
-        else:
-            self.center, self.radius = np.zeros(3), 1.
+        if not arrays:
+            return None
+        return (np.min([a.min(axis=0) for a in arrays], axis=0),
+                np.max([a.max(axis=0) for a in arrays], axis=0))
+
+    def bounds(self, indices=None):
+        """(centre, radius) of the same."""
+        found = self.box(indices)
+        if found is None:
+            return None
+        lo, hi = found
+        return (lo + hi) / 2, max(1., float(np.linalg.norm(hi - lo)) / 2)
+
+    def fit(self, indices=None, animate=True):
+        # Qt hands a button's "checked" flag to whatever slot it is wired to.
+        if not isinstance(indices, (set, frozenset, list, tuple)):
+            indices = None
+        self.center, self.radius = self.bounds(indices) or (np.zeros(3), 1.)
         camera = self.camera_controls
-        if animate:
-            camera.glide_frame(self.center, self.radius, heading=LEVEL_HEADING, pitch=LEVEL_PITCH)
-        else:
-            camera.frame(self.center, self.radius, heading=LEVEL_HEADING, pitch=LEVEL_PITCH)
+        heading, pitch = self.view_angles
+        margin = self.view_margin
+        found = self.box(indices)
+        if found is not None:
+            # The opening pose looks along Z, so X and Y are what has to fit
+            # the viewport; a wide level in a narrow pane needs more distance
+            # than its radius suggests, and a flat one less.
+            width, height, depth = (float(v) for v in found[1] - found[0])
+            half = math.tan(math.radians(FIELD_OF_VIEW) / 2)
+            aspect = self.width() / max(1, self.height())
+            distance = max(height / 2 / half, width / 2 / (half * aspect)) * 1.08 + depth / 2
+            margin = max(distance, self.radius * 0.2) / (self.radius * 1.2)
+        frame = camera.glide_frame if animate else camera.frame
+        frame(self.center, self.radius, heading=heading, pitch=pitch, margin=margin)
+        # Until the camera is moved by hand, a resize keeps everything framed.
+        self.auto_fit = indices is None
+        if indices is not None:
+            # Framing one object must not pull the clip planes in around it.
+            whole = self.bounds()
+            if whole:
+                self.radius = max(self.radius, whole[1])
         self.update()
+
+    def orbit_target(self):
+        """Centre of the selected model while Orbit selection is on."""
+        if not self.orbit_selection or self.selected_model is None:
+            return None
+        found = self.bounds({self.selected_model})
+        return tuple(float(v) for v in found[0]) if found else None
+
+    def set_mesh(self, index, mesh):
+        """Swap one mesh in place, as an animation step does."""
+        if 0 <= index < len(self.meshes) and self.meshes[index] is not mesh:
+            self.meshes[index] = mesh
+            if self.selected is not None and self.selected[0] == index:
+                self.selected = None
+            self.update()
 
     def resizeEvent(self, event):
         super().resizeEvent(event)
+        if getattr(self, 'auto_fit', False):
+            self.fit(animate=False)
         self.stats_label.adjustSize()
         self.stats_label.move(6, 6)
         self.controls_label.adjustSize()
         self.controls_label.move(self.width() - self.controls_label.width() - 6,
                                  self.height() - self.controls_label.height() - 6)
+
+    def wheelEvent(self, event):
+        self.auto_fit = False
+        super().wheelEvent(event)
 
     def keyPressEvent(self, event):
         if event.key() == Qt.Key.Key_F:
@@ -202,6 +265,18 @@ class MeshCanvas(CameraEventMixin, QOpenGLWidget):
         gl.glDisableClientState(gl.GL_TEXTURE_COORD_ARRAY)
         gl.glDisable(gl.GL_TEXTURE_2D)
         gl.glPolygonMode(gl.GL_FRONT_AND_BACK, gl.GL_FILL)
+        if self.show_lines and self.lines is not None:
+            vertices, colors = self.lines
+            gl.glDisable(gl.GL_DEPTH_TEST)
+            gl.glLineWidth(1.5)
+            gl.glEnableClientState(gl.GL_VERTEX_ARRAY)
+            gl.glEnableClientState(gl.GL_COLOR_ARRAY)
+            gl.glVertexPointer(3, gl.GL_FLOAT, 0, vertices)
+            gl.glColorPointer(3, gl.GL_FLOAT, 0, colors)
+            gl.glDrawArrays(gl.GL_LINES, 0, len(vertices))
+            gl.glDisableClientState(gl.GL_VERTEX_ARRAY)
+            gl.glDisableClientState(gl.GL_COLOR_ARRAY)
+            gl.glEnable(gl.GL_DEPTH_TEST)
         if self.show_origin:
             gl.glDisable(gl.GL_DEPTH_TEST)
             gl.glLineWidth(2)
@@ -237,6 +312,7 @@ class MeshCanvas(CameraEventMixin, QOpenGLWidget):
 
     def mousePressEvent(self, event):
         if event.button() != Qt.MouseButton.LeftButton:
+            self.auto_fit = False
             return super().mousePressEvent(event)
         ray = ray_through(self._model_view_projection(), event.position().x(), event.position().y(), self.width(), self.height())
         if ray is None:
@@ -282,13 +358,17 @@ class ModelView(QWidget):
         self.texture_action = add_action(QStyle.StandardPixmap.SP_DialogYesButton,
             'Texture Mode', lambda value: self.toggle('textured', value), True)
         self.texture_action.setToolTip('Show CLUT textures. Turn off to inspect WMD vertex colours.')
-        self.culling_action = add_action(QStyle.StandardPixmap.SP_BrowserReload,
+        self.culling_action = add_action(QStyle.StandardPixmap.SP_DialogNoButton,
             'Backface Culling', lambda value: self.toggle('backface_culling', value), False)
         self.spread_action = add_action(QStyle.StandardPixmap.SP_FileDialogDetailedView,
             'Spread Parts', self.toggle_spread, True)
         self.spread_action.setToolTip('Lay every model on a numbered grid, as in the Tomba2Edit SMST viewer.')
         add_action(QStyle.StandardPixmap.SP_FileDialogContentsView,
-            'Frame Model', self.canvas.fit)
+            'Frame Model', lambda: self.canvas.fit())
+        self.orbit_action = add_action(QStyle.StandardPixmap.SP_BrowserReload,
+            'Orbit Selection', lambda value: setattr(self.canvas, 'orbit_selection', value), True)
+        self.orbit_action.setToolTip('Middle-drag circles the selected model. Turn off to orbit '
+                                     'whatever is in the middle of the view.')
         self.origin_action = add_action(QStyle.StandardPixmap.SP_ArrowUp,
             'Origin', lambda value: self.toggle('show_origin', value), False)
         add_action(QStyle.StandardPixmap.SP_DialogOpenButton,
@@ -339,12 +419,17 @@ class ModelView(QWidget):
         if meshes is not None:
             self.set_data(meshes, vram, code)
 
-    def set_data(self, meshes, vram, code=0, names=None, rename_callback=None):
+    def set_data(self, meshes, vram, code=0, names=None, rename_callback=None, level=None):
         self.rename_callback = rename_callback
         self.model_names = names or {}
         had_meshes = bool(self.canvas.meshes)
         self.canvas.cleanup()
-        self.canvas.meshes, self.canvas.vram = meshes, vram
+        self.canvas.meshes, self.canvas.vram = list(meshes), vram
+        self.canvas.lines = None
+        # Level geometry opens from slightly above; single models square on.
+        level = code in (0x5080, 0x50FF) if level is None else level
+        self.canvas.view_angles = (MODEL_HEADING, LEVEL_TILT if level else MODEL_PITCH)
+        self.canvas.view_margin = 1.0 if level else 1.25
         self.canvas.compute_spread_offsets()
         self.canvas.selected = None
         self.objects.blockSignals(True)
@@ -368,7 +453,7 @@ class ModelView(QWidget):
         if meshes:
             self.objects.setCurrentCell(0, 0)
         self.objects.blockSignals(False)
-        self.canvas.fit(animate=had_meshes)
+        self.canvas.fit(animate=False)
         triangles = sum(len(a[0]) // 3 for m in meshes for a in m.batches.values())
         self.canvas.stats_label.setText(f'{triangles:,} triangles | {len(meshes):,} models\n'
                                         'F: frame selected')
@@ -392,6 +477,13 @@ class ModelView(QWidget):
         self.canvas.selected_model = row if row >= 0 else None
         self.show_polygon(None)
         self.canvas.update()
+        if 0 <= row < len(self.canvas.meshes) and self.objects.item(row, 4):
+            print('selected: ' + self.describe(row))
+
+    def describe(self, row):
+        return (f'{self.objects.item(row, 1).text()} | '
+                f'{self.objects.item(row, 2).text()} triangles, {self.objects.item(row, 3).text()} quads '
+                f'@ {self.objects.item(row, 4).text()}')
 
     def frame_selected(self, row, column):
         if row < 0:
@@ -413,8 +505,7 @@ class ModelView(QWidget):
             self.objects.item(row, 0).setCheckState(Qt.CheckState.Checked)
         self.objects.blockSignals(False)
         self.canvas.visible = set(range(self.objects.rowCount()))
-        self.canvas.selected_model = None
-        self.canvas.fit()
+        self.canvas.update()
 
     def isolate(self):
         selected = self.objects.currentRow()
@@ -444,6 +535,8 @@ class ModelView(QWidget):
             return
         index, p = selected
         texels = [(round(u * 256 - .5), round(v * 256 - .5)) for u, v in p['uv']]
+        print(f"selected: model {index:03d} {p['kind']} @ 0x{p['offset']:X} | page 0x{p['page'] & 0xFFFF:04X} "
+              f"CLUT 0x{p['clut']:04X} | UV {texels}")
         self.details.setPlainText(f"Object {index:03d} | {p['kind']}\nRecord @ 0x{p['offset']:X}\nPage: 0x{p['page']:04X}\nCLUT: 0x{p['clut']:04X}\nGPU command: 0x{p['command']:02X}\n\nUV: {texels}\n\nVertices: {p['vertices']}")
         image = texture_page(self.canvas.vram, p['page'], p['clut']).copy() if p['page'] >= 0 else Image.new('RGBA', (256, 256), (32, 32, 32, 255))
         order = [0, 1, 3, 2, 0] if len(texels) == 4 else [0, 1, 2, 0]

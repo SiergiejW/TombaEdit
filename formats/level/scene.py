@@ -11,6 +11,9 @@ from formats.collision.whm import parse_whm, PLANE_DEPTH
 from disc.reader import FormatError
 
 
+SURFACE, SPECIAL, SOLID = (.35, 1., .35), (1., .3, .9), (1., .6, .15)
+
+
 @dataclass
 class SceneEntry:
     name: str
@@ -74,20 +77,41 @@ def sprite_mesh(image, parts, position, flip, offset):
 
 def collision_lines(banks):
     """Collision spans as line segments. `banks` is [(Whm, x0, z0)]. A plane
-    is a 90 unit slice of depth and a column is 8 units of X; see whm.py."""
+    is a 90 unit slice of depth and a column is 8 units of X; see whm.py.
+    Surfaces are drawn as they slope; solid ranges only by their outline,
+    since every column of a hillside carries one."""
     vertices, colours = [], []
+
+    def line(a, b, colour):
+        vertices.extend((a, b))
+        colours.extend((colour, colour))
+
+    def covered(ranges, y):
+        return any(low <= y <= high for low, high in ranges)
+
     for whm, x0, z0 in banks:
         for plane in whm.planes:
             z = -(z0 + plane.index * PLANE_DEPTH + PLANE_DEPTH / 2)
-            for span in plane.spans:
-                x = x0 + span.column * 8
-                if span.wall:
-                    vertices += [(x + 4, -span.y0, z), (x + 4, -span.y1, z)]
-                    colour = (.85, .45, .15)
-                else:
-                    vertices += [(x, -span.y0, z), (x + 8, -(span.y0 + span.y1), z)]
-                    colour = (.35, 1., .35) if span.attribute == 1 else (1., .3, .9)
-                colours += [colour, colour]
+            previous = []
+            for column in plane.columns + [[]]:
+                x = x0 + (column[0].column if column else len(plane.columns)) * 8
+                solid = []
+                for span in column:
+                    if span.wall:
+                        solid.append(span.extent)
+                        line((x, -span.y0, z), (x + 8, -span.y0, z), SOLID)
+                        line((x, -span.y1, z), (x + 8, -span.y1, z), SOLID)
+                    else:
+                        line((x, -span.y0, z), (x + 8, -(span.y0 + span.y1), z),
+                             SURFACE if span.attribute == 1 else SPECIAL)
+                # A vertical edge wherever this column is solid and its
+                # neighbour is not, or the other way round.
+                edges = sorted({y for low, high in previous + solid for y in (low, high)})
+                for low, high in zip(edges, edges[1:]):
+                    middle = (low + high) / 2
+                    if covered(previous, middle) != covered(solid, middle):
+                        line((x, -low, z), (x, -high, z), SOLID)
+                previous = solid
     if not vertices:
         return None
     return np.asarray(vertices, np.float32), np.asarray(colours, np.float32)
@@ -119,8 +143,11 @@ def build_scene(project, path, index):
         key = (bank, frame, visual.get('tpage'), visual.get('clut'))
         if key not in images:
             try:
-                images[key] = render_sprite(sprites[bank][frame], vram, tpage=visual.get('tpage', 0),
-                                            clut=visual.get('clut'))
+                image = render_sprite(sprites[bank][frame], vram, tpage=visual.get('tpage', 0),
+                                      clut=visual.get('clut'))
+                # A blank result means the pixels are uploaded while the game
+                # runs; the placement keeps its marker instead.
+                images[key] = image if image.getbbox() else None
             except FormatError:
                 images[key] = None
         return images[key]
@@ -180,3 +207,29 @@ def build_scene(project, path, index):
         except FormatError as exc:
             notes.append(f'{asset.label}: {exc}')
     return LevelScene(entries, list(resources.values()), vram, notes, collision_lines(banks))
+
+
+def sprite_pages(project, path, index):
+    """Texture page bases by SPR slot and frame, {slot: {frame: base}}, taken
+    from every object the load group places. The SPR viewer uses them to draw
+    a bank the way the level does."""
+    cache = project.__dict__.setdefault('sprite_page_cache', {})
+    if (path, index) not in cache:
+        resources = loaded_resources(project, path, index)
+        area = int(path.split('LDAR')[-1].split('.')[0])
+        resolver = InitialPoseResolver(project, area, max(0, index - 1), resources)
+        pages = {}
+        for (kind, slot), asset in resources.items():
+            if kind != 'APD' or not resolver.available:
+                continue
+            try:
+                placements = parse_apd(project.asset_data(asset))
+            except FormatError:
+                continue
+            for placement in placements:
+                visual = resolver.resolve(placement)
+                if 'sprite' in visual:
+                    for frame, _ in visual['frames']:
+                        pages.setdefault(visual['sprite'], {}).setdefault(frame, visual['tpage'])
+        cache[path, index] = pages
+    return cache[path, index]

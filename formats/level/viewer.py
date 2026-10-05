@@ -1,7 +1,11 @@
 """Section scene inspection using the standard model viewer controls."""
-from PyQt6.QtCore import Qt, pyqtSignal
-from PyQt6.QtWidgets import QHBoxLayout, QLabel, QComboBox, QPushButton, QTableWidgetItem
+from PyQt6.QtCore import Qt, QTimer, pyqtSignal
+from PyQt6.QtGui import QAction
+from PyQt6.QtWidgets import QHBoxLayout, QLabel, QComboBox, QPushButton, QStyle
 from formats.models.wmd_viewer import ModelView
+
+# The game steps animation scripts once per frame at 30 frames a second.
+TICK_MS = 33
 
 
 class LevelView(ModelView):
@@ -10,6 +14,7 @@ class LevelView(ModelView):
     def __init__(self):
         super().__init__()
         self.scene = None
+        self.animated = []      # [entry index, step, ticks left]
         self.filter = QComboBox()
         self.filter.addItems(['Whole level', 'Geometry', 'Models', 'Sprites', 'Unresolved'])
         self.scope = QComboBox()
@@ -31,11 +36,35 @@ class LevelView(ModelView):
         self.objects.cellClicked.connect(self.show_entry)
         self.canvas.picked.connect(self.picked_entry)
         self.spread_action.setVisible(False)
+        self.collision_action = self.toggle_action(
+            QStyle.StandardPixmap.SP_FileDialogListView, 'Collision', self.toggle_collision, False,
+            'Draw the WHM collision spans over the level: green walkable surfaces, '
+            'magenta surfaces with special attributes and orange solid ranges.')
+        self.animate_action = self.toggle_action(
+            QStyle.StandardPixmap.SP_MediaPlay, 'Animate', self.toggle_animation, True,
+            'Play the animation scripts of placed sprites.')
+        self.timer = QTimer(self)
+        self.timer.setInterval(TICK_MS)
+        self.timer.timeout.connect(self.advance)
+
+    def toggle_action(self, icon, title, callback, checked, tip):
+        action = QAction(self.style().standardIcon(icon), title, self)
+        action.setCheckable(True)
+        action.setChecked(checked)
+        action.setToolTip(tip)
+        action.toggled.connect(callback)
+        self.toolbar.insertAction(self.origin_action, action)
+        return action
 
     def set_scene(self, scene):
+        self.timer.stop()
         self.scene = scene
         self.set_data([entry.mesh for entry in scene.entries], scene.vram, 0x5080,
                       {i: e.name for i, e in enumerate(scene.entries)})
+        self.canvas.lines = scene.collision
+        self.canvas.show_lines = self.collision_action.isChecked()
+        self.collision_action.setEnabled(scene.collision is not None)
+        self.animated = [[i, 0, e.frames[0][1]] for i, e in enumerate(scene.entries) if e.frames]
         self.assets.clear()
         for a in scene.resources:
             self.assets.addItem(a.label, a)
@@ -44,9 +73,40 @@ class LevelView(ModelView):
         self.canvas.fit(animate=False)
         resolved = sum(e.active and e.category in ('Models', 'Sprites') for e in scene.entries)
         total = sum(e.active and e.placement is not None for e in scene.entries)
-        self.canvas.stats_label.setText(f'{resolved}/{total} placed visuals resolved | F: frame selected\n'
-                                       'Double-click an object to frame it')
+        self.canvas.stats_label.setText(f'{resolved}/{total} placed visuals resolved | '
+                                        f'{len(self.animated)} animated\n'
+                                        'F: frame selected | Double-click a row: frame it')
         self.canvas.stats_label.adjustSize()
+        self.toggle_animation(self.animate_action.isChecked())
+
+    def toggle_collision(self, value):
+        self.canvas.show_lines = value
+        self.canvas.update()
+
+    def toggle_animation(self, value):
+        if value and self.animated and self.isVisible():
+            self.timer.start()
+        else:
+            self.timer.stop()
+
+    def advance(self):
+        for state in self.animated:
+            state[2] -= 1
+            if state[2] > 0:
+                continue
+            index, step, _ = state
+            frames = self.scene.entries[index].frames
+            step = (step + 1) % len(frames)
+            state[1], state[2] = step, frames[step][1]
+            self.canvas.set_mesh(index, frames[step][0])
+
+    def showEvent(self, event):
+        super().showEvent(event)
+        self.toggle_animation(self.animate_action.isChecked())
+
+    def hideEvent(self, event):
+        self.timer.stop()
+        super().hideEvent(event)
 
     def apply_filter(self):
         if self.scene is None:
@@ -69,7 +129,6 @@ class LevelView(ModelView):
     def show_all(self):
         self.filter.setCurrentIndex(0)
         self.apply_filter()
-        self.canvas.fit()
 
     def show_entry(self, row, column=0):
         if self.scene is None or not 0 <= row < len(self.scene.entries):
@@ -88,6 +147,15 @@ class LevelView(ModelView):
     def model_selected(self, row, column, old_row, old_column):
         super().model_selected(row, column, old_row, old_column)
         self.show_entry(row)
+
+    def describe(self, row):
+        if self.scene is None or not 0 <= row < len(self.scene.entries):
+            return super().describe(row)
+        e = self.scene.entries[row]
+        if not e.placement:
+            return f'{e.name} | {e.source.label}'
+        return (f'{e.name} | {e.category} | position {e.placement.position} | '
+                f'APD offset 0x{e.placement.offset:04X} | {e.note}')
 
     def picked_entry(self, selected):
         if selected is not None:

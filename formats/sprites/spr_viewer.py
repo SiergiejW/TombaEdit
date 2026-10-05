@@ -8,15 +8,23 @@ from PyQt6.QtWidgets import (QWidget, QVBoxLayout, QHBoxLayout, QLabel, QSpinBox
     QPushButton, QSplitter, QTableWidget, QTableWidgetItem, QAbstractItemView,
     QHeaderView, QFileDialog, QMessageBox, QCheckBox)
 from gui.widgets.image_view import ImageView
-from psx.graphics import render_sprite
+from disc.reader import FormatError
+from psx.graphics import render_sprite, part_page
 
 
 class SpriteView(QWidget):
     selection_changed = pyqtSignal(list)
 
-    def __init__(self, frames, vram, page_base=0, renderer=None, shard=None):
+    def __init__(self, frames, vram, pages=None, renderer=None, default=None):
+        """`pages` maps frame numbers to the texture page base of an object
+        that shows them; frames nobody places borrow the nearest known one,
+        or `default` when the bank is not placed at all. `renderer` draws
+        frames whose pixels are not in VRAM."""
         super().__init__()
-        self.frames, self.vram, self.renderer, self.shard = frames, vram, renderer, shard
+        self.frames, self.vram, self.renderer = frames, vram, renderer
+        self.pages = dict(pages or {})
+        self.known = sorted(self.pages)
+        self.guess = default
         self.cache = {}
         self.frame_index = 0
         layout = QVBoxLayout(self)
@@ -37,12 +45,15 @@ class SpriteView(QWidget):
         self.origin.toggled.connect(self.refresh)
         bar.addWidget(self.origin)
         self.page_base = QSpinBox()
-        self.page_base.setRange(0, 31)
-        self.page_base.setValue(page_base)
+        self.page_base.setRange(-1, 31)
+        self.page_base.setSpecialValueText('Auto')
+        self.page_base.setValue(-1)
+        self.page_base.setToolTip('Parts store a page relative to a base the drawing object supplies. '
+                                  'Auto uses the base of the placed object that shows the frame.')
         self.page_base.valueChanged.connect(self.rebuild)
-        self.page_label = QLabel('Texture page offset:')
-        self.page_label.setVisible(shard is None)
-        self.page_base.setVisible(shard is None)
+        self.page_label = QLabel('Texture page base:')
+        self.page_label.setVisible(renderer is None)
+        self.page_base.setVisible(renderer is None)
         bar.addWidget(self.page_label)
         bar.addWidget(self.page_base)
         bar.addStretch()
@@ -87,7 +98,7 @@ class SpriteView(QWidget):
         pl = QVBoxLayout(pieces)
         pl.addWidget(QLabel('Pieces'))
         self.parts = QTableWidget(0, 12)
-        self.parts.setHorizontalHeaderLabels(['#', 'U', 'V', 'W', 'H', 'Page', 'CLUT', 'Flip', 'X', 'Y', 'UV 2', 'UV 3'])
+        self.parts.setHorizontalHeaderLabels(['#', 'U', 'V', 'W', 'H', 'Page', 'CLUT', 'Drawn page', 'X', 'Y', 'UV 1', 'UV 2'])
         self.parts.verticalHeader().hide()
         self.parts.setEditTriggers(QAbstractItemView.EditTrigger.NoEditTriggers)
         self.parts.setSelectionBehavior(QAbstractItemView.SelectionBehavior.SelectRows)
@@ -107,10 +118,32 @@ class SpriteView(QWidget):
         self.image.zoom.setCurrentIndex(max(0, min(self.image.zoom.count()-1,
                                                    self.image.zoom.currentIndex()+step)))
 
+    def base_for(self, index):
+        """Texture page base a frame is drawn with."""
+        if self.page_base.value() >= 0:
+            return self.page_base.value()
+        if self.known:
+            return self.pages[min(self.known, key=lambda frame: abs(frame - index))]
+        if self.guess is None:
+            # Nothing places this bank: take the base under which the most
+            # pixels of a few frames come out opaque.
+            sample = [f for f in self.frames if f][:12]
+            def opaque(base):
+                try:
+                    return sum(sum(render_sprite(f, self.vram, tpage=base).getchannel('A').histogram()[1:])
+                               for f in sample)
+                except FormatError:
+                    return -1
+            self.guess = max(range(32), key=opaque) if sample else 0
+        return self.guess
+
     def frame_image(self, index, origin=False):
         if index not in self.cache:
-            self.cache[index] = self.renderer(index) if self.renderer else render_sprite(
-                self.frames[index], self.vram, self.page_base.value(), self.shard)
+            try:
+                self.cache[index] = self.renderer(index) if self.renderer else render_sprite(
+                    self.frames[index], self.vram, tpage=self.base_for(index))
+            except FormatError:
+                self.cache[index] = Image.new('RGBA', (1, 1))
         image = self.cache[index]
         if not origin or not self.frames[index]:
             return image
@@ -133,7 +166,8 @@ class SpriteView(QWidget):
                 y = min(p[14] for p in frame)
                 width = max(p[13]+p[9] for p in frame)-x
                 height = max(p[14]+p[10] for p in frame)-y
-                pages = ', '.join(f'{p[5]:02X}' for p in frame[:3])
+                pages = ('picture bank' if self.renderer else
+                         ', '.join(sorted({f'{part_page(p, self.base_for(i)) & 31:02X}' for p in frame})))
             else:
                 width = height = 0
                 pages = ''
@@ -150,6 +184,9 @@ class SpriteView(QWidget):
         self.frame_index = row
         self.whole.setChecked(False)
         self.refresh()
+        frame = self.frames[row]
+        print(f'selected: sprite {row:03d} | {len(frame)} pieces'
+              + ('' if self.renderer or not frame else f' | texture page base 0x{self.base_for(row):X}'))
 
     def frame_sprite(self, row, column):
         if row < 0:
@@ -212,7 +249,8 @@ class SpriteView(QWidget):
             self.parts.setRowCount(len(frame))
             for row, part in enumerate(frame):
                 values = [str(row), str(part[0]), str(part[1]), str(part[9]), str(part[10]),
-                          f'0x{part[5]:04X}', f'0x{part[2]:04X}', '', str(part[13]),
+                          f'0x{part[5] | part[6] << 8:04X}', f'0x{part[2]:04X}',
+                          '' if self.renderer else f'0x{part_page(part, self.base_for(index)):03X}', str(part[13]),
                           str(part[14]), str((part[3], part[4])), str((part[7], part[8]))]
                 for col, value in enumerate(values):
                     self.parts.setItem(row, col, QTableWidgetItem(value))

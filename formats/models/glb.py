@@ -35,7 +35,7 @@ def export_glb(path, meshes, vram, unlit=True):
             if not len(vertices):
                 continue
             page, clut, semi = key
-            key = ('image', id(mesh.image)) if mesh.image is not None else key
+            key = ('image', id(mesh.image)) if getattr(mesh, 'image', None) is not None else key
             if key not in materials:
                 material = dict(name=f'Page {page:04X} CLUT {clut:04X}', doubleSided=True,
                                 alphaMode='BLEND' if semi else 'MASK',

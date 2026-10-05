@@ -155,3 +155,24 @@ def frame_image(picture, parts, palette):
         u, v = p[0] - u0, p[1] - v0
         image.alpha_composite(source.crop((u, v, u + p[9], v + p[10])), (p[13] - left, p[14] - top))
     return image
+
+
+def renderer(frames, pictures, vram, tomba):
+    """Frame drawing callback for a SPR bank whose pixels live in `pictures`.
+    Tomba's own bank is shown in his first outfit; other banks use the
+    palette their parts name."""
+    outfits = tomba_palettes(vram)
+    flat = vram.reshape(-1)
+
+    def render(index):
+        parts = frames[index]
+        if not parts or index >= len(pictures):
+            return Image.new('RGBA', (1, 1))
+        if tomba and outfits:
+            palette = outfits[0]
+        else:
+            clut = parts[0][2]
+            start = ((clut >> 6) & 511) * 1024 + (clut & 63) * 16
+            palette = flat[(start + np.arange(16)) % flat.size]
+        return frame_image(pictures[index], parts, palette)
+    return render

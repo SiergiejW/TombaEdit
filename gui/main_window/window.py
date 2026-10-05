@@ -72,41 +72,47 @@ def prepare_preview(project, node, context=None):
         data = project.asset_data(node)
         result["data"] = data
         result["size"] = len(data)
-        if node.kind in ("SPR", "WMD", "GRPX"):
+        if node.kind in ("SPR", "WMD", "GRPX", "WPP"):
             context = node.group if context is None else context
-            if node.kind == 'SPR' and context == 0 and len(project.ldars[node.ldar]) > 1:
+            if node.kind in ('SPR', 'WPP') and context == 0 and len(project.ldars[node.ldar]) > 1:
                 context = 1
             result["vram"] = project.vram(node.ldar, context)
             groups = project.ldars[node.ldar]
-            shard = next((a for a in groups[context].assets if a.rect), None)
-            result["page_base"] = ((shard.rect[0] // 64) + (shard.rect[1] // 256) * 16) if shard else 0
-            if node.kind == 'SPR':
-                texture = next((a for a in groups[context].assets if a.kind == 'GRPX' and a.rect
-                                and a.rect[2] >= 64 and a.rect[3] >= 256), None)
-                if texture:
-                    result['sprite_shard'] = (texture.rect[2], texture.rect[3], project.asset_data(texture))
+            # Resources loaded next to this one: its own group, the base and
+            # the section chosen for VRAM.
+            loaded = [a for i in dict.fromkeys((node.group, 0, context)) for a in groups[i].assets]
         if node.kind == "SPR":
-            result["sprites"] = sprite_frames(data)
+            from formats.level.scene import sprite_pages
+            from formats.sprites.wpp import parse_wpp
+            frames = result["sprites"] = sprite_frames(data)
+            from formats.level.runtime import table_pages
+            slot = (node.code >> 8) & 15
+            result['sprite_pages'] = sprite_pages(project, node.ldar, context).get(slot, {})
+            result['sprite_default'] = table_pages(project).get(slot)
+            # Tomba's own banks have no pixels in VRAM; a picture bank with
+            # one entry per frame supplies them.
+            for candidate in loaded:
+                if candidate.kind == 'WPP':
+                    try:
+                        kind, pictures = parse_wpp(project.asset_data(candidate))
+                    except (FormatError, ValueError):
+                        continue
+                    if kind == 'frames' and len(pictures) == len(frames):
+                        result['pictures'] = pictures
+                        break
         if node.kind == 'WPP':
-            from formats.archive.data_viewer import offset_entries
-            count = len(offset_entries(data))
-            for candidate in project.ldars[node.ldar][node.group].assets:
-                if candidate.kind != 'SPR':
+            from formats.sprites.wpp import parse_wpp
+            result['wpp'] = kind, pictures = parse_wpp(data)
+            for candidate in loaded:
+                if candidate.kind != 'SPR' or kind != 'frames':
                     continue
                 try:
                     frames = sprite_frames(project.asset_data(candidate))
                 except FormatError:
                     continue
-                if count and len(frames) == count:
-                    context = node.group or (1 if len(project.ldars[node.ldar]) > 1 else 0)
+                if len(frames) == len(pictures):
                     result['paired_sprites'] = frames
-                    result['vram'] = project.vram(node.ldar, context)
-                    texture = next((a for a in project.ldars[node.ldar][context].assets
-                                    if a.kind == 'GRPX' and a.rect and a.rect[2] >= 64
-                                    and a.rect[3] >= 256), None)
-                    if texture:
-                        result['sprite_shard'] = (texture.rect[2], texture.rect[3],
-                                                  project.asset_data(texture))
+                    result['paired_tomba'] = (candidate.code >> 8) & 15 == 0
                     break
         if node.kind == "WMD":
             result["meshes"] = parse_wmd(data)
@@ -452,7 +458,7 @@ class MainWindow(QMainWindow):
         self.current_node = node
         self.context.blockSignals(True)
         self.context.clear()
-        has_context = isinstance(node, Asset) and node.kind in ("SPR", "WMD", "GRPX")
+        has_context = isinstance(node, Asset) and node.kind in ("SPR", "WMD", "GRPX", "WPP")
         self.context.setVisible(has_context)
         if has_context:
             stem = Path(node.ldar).stem
@@ -461,10 +467,17 @@ class MainWindow(QMainWindow):
                 name = "Base only" if not g.index else f"Base + section {g.index - 1:02d} - {section_name(area, g.index - 1)}"
                 self.context.addItem("VRAM: " + name)
             default = node.group
-            if default == 0 and node.kind in ("SPR", "WMD") and self.context.count() > 1:
+            if default == 0 and node.kind in ("SPR", "WMD", "WPP") and self.context.count() > 1:
                 default = 1
             self.context.setCurrentIndex(default)
         self.context.blockSignals(False)
+        if isinstance(node, Asset):
+            print(f'Selected Item: {item.text(0)} | type 0x{node.code:04X} | '
+                  f'offset 0x{node.offset:X}, {node.size:,} bytes | {node.ldar} group {node.group}')
+        elif isinstance(node, DiscEntry):
+            print(f'Selected Item: {node.path} | LBA {node.lba} | {node.size:,} bytes')
+        else:
+            print(f'Selected Item: {item.text(0)} | {node[1]} load group {node[2]}')
         self.load_selection(item.text(0))
 
     def context_changed(self):
@@ -552,8 +565,13 @@ class MainWindow(QMainWindow):
                 self.model_view.set_data(meshes, result['vram'], node.code, names, rename_model)
                 self.tabs.addTab(self.model_view, "Geometry")
             if "sprites" in result:
-                view = SpriteView(result['sprites'], result['vram'], result['page_base'],
-                                  shard=result.get('sprite_shard'))
+                renderer = None
+                if 'pictures' in result:
+                    from formats.sprites.wpp import renderer as picture_renderer
+                    renderer = picture_renderer(result['sprites'], result['pictures'], result['vram'],
+                                                (node.code >> 8) & 15 == 0)
+                view = SpriteView(result['sprites'], result['vram'], result.get('sprite_pages'), renderer,
+                                  result.get('sprite_default'))
                 key = self.node_key(node)
                 view.restore_state(self.sprite_states.get(key, []))
                 view.selection_changed.connect(lambda state, k=key: self.sprite_states.__setitem__(k, state))
@@ -569,19 +587,23 @@ class MainWindow(QMainWindow):
             if isinstance(node, Asset) and node.kind == 'CLM':
                 from formats.archive.data_viewer import CollisionMapView
                 self.tabs.addTab(CollisionMapView(self.current_data, node.code), 'Collision map')
+            if 'wpp' in result:
+                from formats.sprites.wpp_viewer import WppView
+                from formats.sprites.wpp import renderer as picture_renderer
+                kind, pictures = result['wpp']
+                pictures_view = WppView(kind, pictures, result['vram'])
+                self.tabs.addTab(pictures_view, 'Pictures')
+                if 'paired_sprites' in result:
+                    view = SpriteView(result['paired_sprites'], result['vram'], renderer=picture_renderer(
+                        result['paired_sprites'], pictures, result['vram'], result['paired_tomba']))
+                    pictures_view.table.currentCellChanged.connect(
+                        lambda row, col, old_row, old_col, sprite=view:
+                            sprite.bank.setCurrentCell(row, 0) if 0 <= row < sprite.bank.rowCount() else None)
+                    self.tabs.addTab(view, 'Assembled frames')
             if isinstance(node, Asset) and node.kind in ('WPP', 'FOUR', 'INS', 'SPC', 'SAP', 'Unknown'):
                 from formats.archive.data_viewer import DataView
                 data_view = DataView(self.current_data, node.kind, node.code, node.ram)
                 self.tabs.addTab(data_view, f'{node.kind} records')
-                if 'paired_sprites' in result:
-                    view = SpriteView(result['paired_sprites'], result['vram'],
-                                      shard=result.get('sprite_shard'))
-                    if hasattr(data_view, 'entry_table'):
-                        data_view.entry_table.currentCellChanged.connect(
-                            lambda row, col, old_row, old_col, sprite=view:
-                                (sprite.whole.setChecked(False), sprite.bank.setCurrentCell(row, 0))
-                                if 0 <= row < sprite.bank.rowCount() else None)
-                    self.tabs.addTab(view, 'Related sprites')
             if (self.current_data is not None and isinstance(node, DiscEntry)
                     and Path(node.path).name.upper().startswith('CLUT')):
                 from formats.images.clut_viewer import ClutView
@@ -591,7 +613,9 @@ class MainWindow(QMainWindow):
                 self.tabs.addTab(DialogueView(wfm), "Dialogue" + suffix)
                 self.tabs.addTab(ImageView(wfm.atlas()), "Glyphs" + suffix)
             if "vram" in result:
-                self.tabs.addTab(VramView(result["vram"]), "VRAM")
+                cluts = {p['clut'] for m in result.get('meshes', []) for p in m.polygons if p['page'] >= 0}
+                cluts |= {part[2] & 0x7FFF for frame in result.get('sprites', []) for part in frame}
+                self.tabs.addTab(VramView(result["vram"], cluts, self.path_label.text()), "VRAM")
             if isinstance(node, DiscEntry) and not node.directory:
                 assets = self.project.by_source.get(node.path, [])
                 if assets:

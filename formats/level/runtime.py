@@ -175,3 +175,24 @@ class InitialPoseResolver:
             result = {}
         self.cache[key] = result
         return result
+
+
+def table_pages(project):
+    """Texture page base per SPR slot from the US object table at 8007D6E4
+    (twelve-byte entries: page base, animation, slot, script pointer). Used
+    for banks that no placed object shows. Empty for other builds."""
+    entries = [e for e in project.disc.files if e.path == 'SCUS_942.36']
+    if not entries:
+        return {}
+    exe = project.disc.read(entries[0])
+    if hashlib.sha1(exe).hexdigest() != US_SHA1:
+        return {}
+    base, votes, at = struct.unpack_from('<I', exe, 0x18)[0], {}, 0x8007D6E4
+    while True:
+        page, _, slot, pointer = struct.unpack_from('<BBhI', exe, at - base + 0x800)
+        if not (0 <= slot < 16 and page < 32 and 0x80010000 <= pointer < 0x80200000):
+            break
+        votes.setdefault(slot, {}).setdefault(page, 0)
+        votes[slot][page] += 1
+        at += 12
+    return {slot: max(pages, key=pages.get) for slot, pages in votes.items()}

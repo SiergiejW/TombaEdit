@@ -10,6 +10,8 @@ class FourView(ModelView):
         super().__init__()
         self.morphs = []
         self.candidates = []
+        self.vram = None
+        self.preferred = None
         self.source = QComboBox()
         self.pose = QComboBox()
         self.weight = QSlider(Qt.Orientation.Horizontal)
@@ -44,7 +46,10 @@ class FourView(ModelView):
         for i, morph in enumerate(morphs):
             self.pose.addItem(f'{i:03d} | {sum(morph.counts)} polygons')
         self.pose.blockSignals(False)
+        # The source list still describes the previous bank until it is rebuilt.
+        self.weight.blockSignals(True)
         self.weight.setValue(0)
+        self.weight.blockSignals(False)
         self.populate_sources()
 
     def populate_sources(self):
@@ -66,17 +71,22 @@ class FourView(ModelView):
     def update_pose(self, value=None, reset=False):
         self.weight_label.setText(f'{self.weight.value() / 4096:.0%}')
         i = self.source.currentData()
-        enabled = i is not None
+        pose = self.pose.currentIndex()
+        enabled = (i is not None and 0 <= i < len(self.candidates) and 0 <= pose < len(self.morphs)
+                   and topology(self.candidates[i][1]) == self.morphs[pose].counts)
         self.weight.setEnabled(enabled)
         self.play.setEnabled(enabled)
         if not enabled:
-            self.set_data([], self.vram, 0x5080)
+            self.timer.stop()
+            self.play.setText('Play')
+            self.set_data([], self.vram, 0x5080, level=False)
             self.notice.setText('No WMD with matching polygon batches is loaded in this area and section.')
             return
         label, mesh, key = self.candidates[i]
-        changed = deform(mesh, self.morphs[self.pose.currentIndex()], self.weight.value())
+        changed = deform(mesh, self.morphs[pose], self.weight.value())
         if reset:
-            self.set_data([changed], self.vram, 0x5080, {0: label})
+            self.set_data([changed], self.vram, 0x5080, {0: label}, level=False)
+            print(f'selected: deformation {pose:03d} on {label}')
         else:
             self.canvas.meshes = [changed]
             self.canvas.selected = None
