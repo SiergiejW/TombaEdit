@@ -96,6 +96,7 @@ class InitialPoseResolver:
         self.baseline = self.read(0x80000000, 0x200000)
         self.scratch = self.read(0x1F800000, 0x1000)
         self.u.hook_add(UC_HOOK_CODE, self.hook)
+        self.cpu_context = self.u.context_save()
         self.available = True
         self.reason = f'Initial poses traced from the {build.name} executable and the area overlay.'
 
@@ -107,6 +108,17 @@ class InitialPoseResolver:
 
     def word(self, address, value):
         self.write(address, struct.pack('<I', value & 0xFFFFFFFF))
+
+    def run_handler(self, pc, obj, count):
+        # Stopping inside a MIPS delay slot can leave a pending branch in
+        # Unicorn. Each independent call starts with a clean CPU context;
+        # object and bank memory still carry the state of the current update.
+        self.u.context_restore(self.cpu_context)
+        r = self.reg
+        self.u.reg_write(r.UC_MIPS_REG_SP, 0x803F0000)
+        self.u.reg_write(r.UC_MIPS_REG_RA, 0x80001000)
+        self.u.reg_write(r.UC_MIPS_REG_A0, obj)
+        self.u.emu_start(pc, 0x80001000, count=count)
 
     def read_word(self, address):
         return struct.unpack('<I', self.read(address, 4))[0]
@@ -189,10 +201,7 @@ class InitialPoseResolver:
             runs = []
             try:
                 for _ in range(400):
-                    self.u.reg_write(r.UC_MIPS_REG_SP, 0x803F0000)
-                    self.u.reg_write(r.UC_MIPS_REG_RA, 0x80001000)
-                    self.u.reg_write(r.UC_MIPS_REG_A0, obj)
-                    self.u.emu_start(pc, 0x80001000, count=20000)
+                    self.run_handler(pc, obj, 20000)
                     now = self.read(address, size)
                     if runs and runs[-1][0] == now:
                         runs[-1][1] += 1
@@ -227,10 +236,7 @@ class InitialPoseResolver:
             self.write(CAMERA_X, struct.pack('<h', camera_x))
             self.write(CAMERA_Y, struct.pack('<h', camera_y))
             try:
-                self.u.reg_write(r.UC_MIPS_REG_SP, 0x803F0000)
-                self.u.reg_write(r.UC_MIPS_REG_RA, 0x80001000)
-                self.u.reg_write(r.UC_MIPS_REG_A0, obj)
-                self.u.emu_start(pc, 0x80001000, count=4000)
+                self.run_handler(pc, obj, 4000)
             except Exception:
                 pass
             moved = self.read(obj, 0x20)
@@ -455,10 +461,7 @@ class InitialPoseResolver:
         try:
             for _ in range(4):
                 self.completed = False
-                self.u.reg_write(r.UC_MIPS_REG_SP, 0x803F0000)
-                self.u.reg_write(r.UC_MIPS_REG_RA, 0x80001000)
-                self.u.reg_write(r.UC_MIPS_REG_A0, obj)
-                self.u.emu_start(pc, 0x80001000, count=4000)
+                self.run_handler(pc, obj, 4000)
                 sprite = self.read_word(obj + 0x3C)
                 anim = self.read_word(obj + 0x24)
                 model = self.read_word(obj + 0xA0)

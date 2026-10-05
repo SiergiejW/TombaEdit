@@ -1,10 +1,13 @@
-"""WPP picture banks: the pixels behind Tomba's own sprite frames.
+"""WPP picture banks: packed pixels for Tomba and some enemy sprites.
 
 Tomba has far more frames than fit in VRAM, so only the frame on screen is
 kept there. US routine 8003A614 unpacks one bank entry into a scratch buffer
 and 8003B0D4 uploads it to a fixed slot of a texture page every time the
 animation moves on. The matching SPR bank has one frame per entry, and its
 part UVs address that slot.
+
+SPR supplies the assembly of parts; WPP supplies their packed pictures.
+Sprites without a matching WPP bank use the section's resident VRAM pixels.
 
 Bank layout: a 32-bit entry count, count + 1 absolute offsets (the last one
 is the end of the bank), then the entries. An entry is a byte-oriented RLE

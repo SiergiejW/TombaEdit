@@ -179,6 +179,13 @@ slot reserved for Tomba whenever his frame number changes. The SPR bank in
 slot 0 has one frame per picture of the bank in WPP slot 0, and SPR slot 5
 pairs with WPP slot 2.
 
+WPP is not the only sprite pixel source. Kokka uses the packed pictures in
+slot 2; many other sprites use pixels already resident in section VRAM.
+Both the Pictures and Assembled frames tabs keep VRAM visible. A CLUT chosen
+in Pictures applies to the whole bank, including all assembled parts;
+Assembled frames also offers individual sprite and selected-part overrides.
+These are preview and export choices, without modifying disc data.
+
 WPP slot 3 holds GAM-compressed TIM images behind a bare offset table. In
 the 1997 builds a bank can also be one TIM on its own, neither packed nor
 indexed.
@@ -265,6 +272,28 @@ executable, the area overlay and the loaded banks, then reads the model
 pointer, sprite bank, animation script and drawing words back out of the
 object.
 
+Object memory starts with the spawn routine's model pointer and a scale of
+4096 on each axis. Initializers can replace scale and rotation; the editor
+applies both before translating the model. The Ol' Pond AP box uses a scale
+of 3072 and Y rotation 3072 (one turn is 4096). Its six relative placements
+then form a closed 36-unit cube. Several panels include a second inward
+face. Closed-shell winding checks count each coincident panel once, and
+OpenGL uses the resulting outward orientation for culling. Lit GLB export
+converts clockwise faces to glTF counterclockwise faces, preserving UV and
+colour corner order and supplying normals.
+
+Every independent emulated handler call restores a clean CPU context.
+Stopping in a MIPS delay slot otherwise leaves a pending branch that can
+redirect the next object's initializer. Object and bank memory still retain
+the state needed for consecutive animation updates.
+
+The Ol' Pond layer 5/type 04/variant 03 object is a conditional collectible
+with banana artwork. Its initializer tests the byte at `8009C114` in US
+retail. The editor resolves its pose with that byte set to FF and lists it
+under Event previews, hidden by default, rather than claiming it is present
+in the initial state. The corresponding relative address is also verified
+in the US demo and February preview.
+
 ## Backdrops
 
 APD layer 7 holds the scenery behind a level. Its objects live in their own
@@ -281,6 +310,15 @@ A backdrop's animation step can name a second frame in the word after the
 first; the mansion's strips pair a water frame with a strip of trees and sky,
 drawn at the same anchor. The mansion handler wraps its screen X in 512
 pixels, which is what makes eight 64-pixel strips an endless loop.
+
+Editor free-look stitches adjacent strips before repeating each parallax
+layer horizontally. Finite scenery also repeats for a complete turn. The
+vertical band is anchored at the horizon, independent of world camera
+height or forward distance; pitch shifts it in the same direction as the
+3D scene and stops at 60 degrees in either direction. This is an editor
+panorama policy: the game itself uses a fixed path camera. Selected strips
+receive an outline in screen space; selected world objects receive a bound
+in the 3D viewport.
 
 Queued backdrop objects are drawn by routine 8004DE40 according to their
 byte `+0A`, APD byte 12. Mode 1 draws the object's sprite. Mode 2 (routine
