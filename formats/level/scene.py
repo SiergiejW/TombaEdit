@@ -84,26 +84,29 @@ def sprite_mesh(image, parts, position, flip, offset):
 
 
 def collision_lines(banks):
-    """Collision spans as line segments. `banks` is [(Whm, x0, z0, step)].
-    Plane n lies at depth z0 + n * step, which is where the objects that
-    walk on it are placed, and a column is 8 units of X; see whm.py.
+    """Collision spans as line segments. `banks` is [(Whm, along0, depth0,
+    turned)]. A column is 8 units along the path and plane n lies 90 n units
+    into the depth, which is where the objects that walk on it are placed.
+    The path runs along world X with depth along Z, or, when `turned`, along
+    world Z with planes counted down X; see runtime.collision_frame.
     Surfaces are drawn as they slope; solid ranges only by their outline,
     since every column of a hillside carries one."""
     vertices, colours = [], []
 
     def line(a, b, colour):
-        vertices.extend((a, b))
+        # (along, height, depth) to the viewer's (x, y, z); z is negated there.
+        vertices.extend((p[2], p[1], -p[0]) if turned else (p[0], p[1], -p[2]) for p in (a, b))
         colours.extend((colour, colour))
 
     def covered(ranges, y):
         return any(low <= y <= high for low, high in ranges)
 
-    for whm, x0, z0, step in banks:
+    for whm, x0, z0, turned in banks:
         for plane in whm.planes:
-            z = -(z0 + plane.index * step)
+            z = z0 - plane.index * PLANE_DEPTH if turned else z0 + plane.index * PLANE_DEPTH
             previous = []
-            for column in plane.columns + [[]]:
-                x = x0 + (column[0].column if column else len(plane.columns)) * 8
+            for number, column in enumerate(plane.columns + [[]]):
+                x = x0 + number * 8
                 solid = []
                 for span in column:
                     if span.wall:
@@ -284,15 +287,15 @@ def build_scene(project, path, index):
             entries.append(SceneEntry(f'{name} | {asset.code:04X} #{i:03d}', category, mesh,
                                       asset, placement, active, note, frames))
     banks = []
-    x0, z0, step = resolver.collision_frame(area, index - 1)
+    x0, z0, turned, only = resolver.collision_frame(area, index - 1)
     for (kind, slot), asset in resources.items():
-        if kind != 'WHM':
+        if kind != 'WHM' or only not in (None, slot):
             continue
         try:
             # Area 0 keeps the near planes in slot 1 and continues 270 units
             # deeper in slot 0 (US routine 80042654); elsewhere slot 0 is used.
-            deeper = 3 * step if area == 0 and slot == 0 and ('WHM', 1) in resources else 0
-            banks.append((parse_whm(project.asset_data(asset)), x0, z0 + deeper, step))
+            deeper = 3 * PLANE_DEPTH if area == 0 and slot == 0 and ('WHM', 1) in resources else 0
+            banks.append((parse_whm(project.asset_data(asset)), x0, z0 + deeper, turned))
         except FormatError as exc:
             notes.append(f'{asset.label}: {exc}')
     town = town_picture(project, resources, notes)

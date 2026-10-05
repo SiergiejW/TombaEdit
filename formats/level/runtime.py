@@ -102,26 +102,44 @@ class InitialPoseResolver:
         return self.base <= address and address + size <= self.base + len(self.exe) - 0x800
 
     def collision_frame(self, area, section):
-        """Where a section's collision sits: (x0, z0, step).
+        """Where a section's collision sits: (along0, depth0, turned, slot).
 
-        Column 0 starts at x0 and plane 0 at z0 (table at 8007E9F8). Planes
-        follow every `step` units of Z: 90, or -90 when the section's first
-        entrance (table at 8007BF78, read by routine 800243E8) sets the flag
-        that makes routine 80042654 count planes towards the camera."""
-        x0 = z0 = 0
-        step = 90
+        Collision is indexed by a coordinate along the path, 8 units a
+        column, and by depth, 90 units a plane (routine 80042654). Objects
+        reach the two through pointers at +40 and +44, which the allocators
+        aim at their X and Z. When the entrance flag at 1F8001C8 is set the
+        pointers are swapped: the path runs along world Z, and planes are
+        counted down world X from depth0. The flag comes from the section's
+        first entrance record (table at 8007BF78, routine 800243E8) and the
+        origins from the table at 8007E9F8.
+
+        The mansion's four outer walls are one area seen from four sides.
+        There the origin comes from the table at 8007E9E8 and the flag also
+        picks which WHM slot is used, returned as `slot`."""
+        along0 = depth0 = 0
+        turned, slot = False, None
+        entrance = None
         if not self.available or not 0 <= area < 20 or not 0 <= section < 32:
-            return x0, z0, step
-        table = self.exe_word(0x8007E9F8 + area * 4)
-        if section < 8 and self.in_exe(table + section * 4, 4):
-            x0, z0 = struct.unpack_from('<hh', self.exe, table + section * 4 - self.base + 0x800)
+            return along0, depth0, turned, slot
         sections = self.exe_word(0x8007BF78 + area * 4)
         if self.in_exe(sections + section * 4, 4):
             entrances = self.exe_word(sections + section * 4)
             if self.in_exe(entrances, 8):
-                if struct.unpack_from('<H', self.exe, entrances + 6 - self.base + 0x800)[0] & 1:
-                    step = -90
-        return x0, z0, step
+                entrance = struct.unpack_from('<3hH', self.exe, entrances - self.base + 0x800)
+                turned = bool(entrance[3] & 1)
+        table = self.exe_word(0x8007E9F8 + area * 4)
+        if area in (4, 12) and section < 4:
+            table, slot = 0x8007E9E8, int(turned)
+        if section < 8 and self.in_exe(table + section * 4, 4):
+            along0, depth0 = struct.unpack_from('<hh', self.exe, table + section * 4 - self.base + 0x800)
+        # Sections limited to one plane (byte table at 8007EAF4) clamp every
+        # depth to it, so their depth origin is not meaningful; the plane is
+        # where Tomba enters.
+        limits = self.exe_word(0x8007EAF4 + area * 4)
+        single = self.in_exe(limits + section, 1) and self.exe[limits + section - self.base + 0x800] == 0
+        if turned and single and entrance is not None and slot is None:
+            depth0 = entrance[0]
+        return along0, depth0, turned, slot
 
     def hook(self, uc, address, size, user):
         r = self.reg

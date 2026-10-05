@@ -149,10 +149,26 @@ words, parameter.
 An object's plane is its Z, less the section's origin from the table at
 8007E9F8, divided by 90. Its column is its X less the origin's X, divided by
 8. Objects stand at whole multiples of 90, so plane n is drawn at the origin
-plus 90 n. Each entrance of a section has an eight-byte record in the table
-at 8007BF78: Tomba's position and a flag word. Bit 0 of the flag makes the
-lookup subtract instead, so that the planes run the other way from the
-origin; routine 800243E8 copies it to `1F8001C8` on entry. With bit 4 of the
+plus 90 n.
+
+Objects do not hand their X and Z to the lookup directly. Each has two
+pointers, at `+40` for the coordinate along the path and at `+44` for depth,
+which the allocators (routine 80018594 and its siblings) aim at the object's
+X and Z. Each entrance of a section has an eight-byte record in the table at
+8007BF78: Tomba's position and a flag word, whose bit 0 routine 800243E8
+copies to `1F8001C8`. With that bit set the allocators swap the pointers:
+the path runs along world Z, columns are counted along Z, and planes are
+counted down world X from the origin. The entrance positions bear this out:
+in a turned section every entrance shares one X, a multiple of 90 below the
+origin, and Z varies.
+
+A byte per section in the table at 8007EAF4 caps the plane number. Where it
+is zero there is a single plane and the depth origin is not used.
+
+The mansion's outer walls are four sections around one building. Their
+origins come from a separate table at 8007E9E8, and the flag also selects
+the WHM slot: slot 0 for the two walls seen along Z, slot 1 for the two
+turned ones. With bit 4 of the
 attribute set a span is a solid range between the two Y values. Otherwise it
 is a surface whose first word is the Y at the column's left edge and whose
 second is the rise across the column. Area 0 keeps its three nearest planes

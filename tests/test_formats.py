@@ -240,7 +240,11 @@ class WhmTests(unittest.TestCase):
         self.assertFalse(surface.wall)
         # A surface stores its rise across the column, not a second height.
         self.assertEqual(surface.extent, (-29, -26))
-        lines = collision_lines([(parse_whm(data), 100, 180, -90)])
+        lines = collision_lines([(parse_whm(data), 100, 180, False)])
+        # A turned section runs its path along Z and counts planes down X.
+        turned = collision_lines([(parse_whm(data), 100, 180, True)])
+        self.assertIn([180.0, 29.0, -100.0], turned[0].tolist())
+        self.assertIn([180.0, 26.0, -108.0], turned[0].tolist())
         self.assertIn([100.0, 29.0, -180.0], lines[0].tolist())
         self.assertIn([108.0, 26.0, -180.0], lines[0].tolist())
 

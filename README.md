@@ -104,8 +104,9 @@ markers.
 - **Collision** overlays the section's WHM data: green walkable surfaces,
   magenta surfaces with special attributes, and orange outlines around solid
   ranges. Each plane is drawn at the depth where the objects that use it
-  stand, taken from the section's origin and entrance tables in the
-  executable.
+  stand. Sections whose path runs into the screen, such as two of the
+  mansion's four walls, have their collision turned a quarter to match. Origin
+  and orientation come from the section's tables in the executable.
 - **Town Map** applies to towns such as Dwarf Village, which are a single
   pre-rendered picture rather than geometry. The picture is the backdrop of
   the scene and placements are positions on it. The toggle tints it by the
