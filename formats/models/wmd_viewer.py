@@ -59,8 +59,12 @@ class MeshCanvas(CameraEventMixin, QOpenGLWidget):
         # Optional GL_LINES overlay: (vertices, colours).
         self.lines = None
         self.show_lines = False
-        # Dim everything but the selected model.
+        # Dim everything but the selected model. The level editor turns this
+        # off: a scene is read as a whole.
         self.highlight = True
+        # Screen-space sprites behind the scene: [(index, Backdrop)].
+        self.backdrop = []
+        self.show_backdrop = True
         self.stats_label = QLabel(self)
         self.stats_label.setObjectName('viewerOverlay')
         self.stats_label.setTextInteractionFlags(Qt.TextInteractionFlag.TextSelectableByMouse)
@@ -223,6 +227,8 @@ class MeshCanvas(CameraEventMixin, QOpenGLWidget):
         gl.glRotatef(c.camera_angle_v, 1, 0, 0)
         gl.glRotatef(c.camera_angle_h, 0, 1, 0)
         gl.glTranslatef(c.camera_x, c.camera_y, c.camera_z)
+        if self.backdrop and self.show_backdrop:
+            self.paint_backdrop(gl)
         gl.glPolygonMode(gl.GL_FRONT_AND_BACK, gl.GL_LINE if self.wireframe else gl.GL_FILL)
         gl.glEnableClientState(gl.GL_VERTEX_ARRAY)
         gl.glEnableClientState(gl.GL_COLOR_ARRAY)
@@ -306,6 +312,69 @@ class MeshCanvas(CameraEventMixin, QOpenGLWidget):
             gl.glEnd()
             gl.glEnable(gl.GL_DEPTH_TEST)
 
+    def image_texture(self, gl, image):
+        key = ('image', id(image))
+        if key not in self.textures:
+            texture = int(gl.glGenTextures(1))
+            self.textures[key] = texture
+            gl.glBindTexture(gl.GL_TEXTURE_2D, texture)
+            gl.glTexParameteri(gl.GL_TEXTURE_2D, gl.GL_TEXTURE_MIN_FILTER, gl.GL_NEAREST)
+            gl.glTexParameteri(gl.GL_TEXTURE_2D, gl.GL_TEXTURE_MAG_FILTER, gl.GL_NEAREST)
+            gl.glTexImage2D(gl.GL_TEXTURE_2D, 0, gl.GL_RGBA, image.width, image.height, 0,
+                            gl.GL_RGBA, gl.GL_UNSIGNED_BYTE, image.tobytes())
+        return self.textures[key]
+
+    def paint_backdrop(self, gl):
+        """Layer 7 sprites on a 320 x 240 screen that fills the view's height.
+
+        The game places each from the camera position scaled by the sprite's
+        own factor, so distant scenery drifts slowly. Moving this camera
+        sideways scrolls the backdrop the same way. Its height is not used:
+        seen from as far back as a whole level needs, it would push the
+        scenery off the screen, so the backdrop keeps the height it has with
+        the game's camera at the origin."""
+        aspect = self.width() / max(1, self.height())
+        width = 240 * aspect
+        c = self.camera_controls
+        camera = (-c.camera_x - 160, 0)     # screen corner in game units
+        gl.glMatrixMode(gl.GL_PROJECTION)
+        gl.glPushMatrix()
+        gl.glLoadIdentity()
+        gl.glOrtho((320 - width) / 2, (320 + width) / 2, 240, 0, -1, 1)
+        gl.glMatrixMode(gl.GL_MODELVIEW)
+        gl.glPushMatrix()
+        gl.glLoadIdentity()
+        gl.glDisable(gl.GL_DEPTH_TEST)
+        gl.glEnable(gl.GL_TEXTURE_2D)
+        gl.glTexEnvi(gl.GL_TEXTURE_ENV, gl.GL_TEXTURE_ENV_MODE, gl.GL_REPLACE)
+        for index, sprite in self.backdrop:
+            if index not in self.visible:
+                continue
+            x = sprite.screen[0] - camera[0] * sprite.follow[0] + sprite.left
+            y = sprite.screen[1] - camera[1] * sprite.follow[1] + sprite.top
+            gl.glBindTexture(gl.GL_TEXTURE_2D, self.image_texture(gl, sprite.image))
+            gl.glColor3f(1, 1, 1)
+            low = (320 - width) / 2
+            if sprite.period:
+                # Looping scenery: every copy that reaches into the view.
+                first = x - math.ceil((x + sprite.image.width - low) / sprite.period) * sprite.period + sprite.period
+                copies = [first + n * sprite.period for n in range(int(width // sprite.period) + 2)]
+            else:
+                copies = [x]
+            gl.glBegin(gl.GL_QUADS)
+            for at in copies:
+                for u, v in ((0, 0), (1, 0), (1, 1), (0, 1)):
+                    gl.glTexCoord2f(u, v)
+                    gl.glVertex2f(at + u * sprite.image.width, y + v * sprite.image.height)
+            gl.glEnd()
+        gl.glTexEnvi(gl.GL_TEXTURE_ENV, gl.GL_TEXTURE_ENV_MODE, gl.GL_MODULATE)
+        gl.glDisable(gl.GL_TEXTURE_2D)
+        gl.glEnable(gl.GL_DEPTH_TEST)
+        gl.glPopMatrix()
+        gl.glMatrixMode(gl.GL_PROJECTION)
+        gl.glPopMatrix()
+        gl.glMatrixMode(gl.GL_MODELVIEW)
+
     def _model_view_projection(self):
         m = QMatrix4x4()
         m.perspective(45, self.width() / max(1, self.height()), max(.01, self.radius / 1000), self.radius * 200)
@@ -373,10 +442,6 @@ class ModelView(QWidget):
             'Frame Model', lambda: self.canvas.fit())
         self.orbit_action = add_action(QStyle.StandardPixmap.SP_BrowserReload,
             'Orbit Selection', lambda value: setattr(self.canvas, 'orbit_selection', value), True)
-        self.highlight_action = add_action(QStyle.StandardPixmap.SP_DialogApplyButton,
-            'Highlighting', lambda value: self.toggle('highlight', value), True)
-        self.highlight_action.setToolTip('Dim everything except the selected model. Turn off to keep '
-                                         'the whole scene at full brightness while selecting.')
         self.orbit_action.setToolTip('Middle-drag circles the selected model. Turn off to orbit '
                                      'whatever is in the middle of the view.')
         self.origin_action = add_action(QStyle.StandardPixmap.SP_ArrowUp,
@@ -436,6 +501,7 @@ class ModelView(QWidget):
         self.canvas.cleanup()
         self.canvas.meshes, self.canvas.vram = list(meshes), vram
         self.canvas.lines = None
+        self.canvas.backdrop = []
         # Level geometry opens from slightly above; single models square on.
         level = code in (0x5080, 0x50FF) if level is None else level
         self.canvas.view_angles = (MODEL_HEADING, LEVEL_TILT if level else MODEL_PITCH)
@@ -515,6 +581,13 @@ class ModelView(QWidget):
             self.objects.item(row, 0).setCheckState(Qt.CheckState.Checked)
         self.objects.blockSignals(False)
         self.canvas.visible = set(range(self.objects.rowCount()))
+        # Nothing stays dimmed: showing everything also lets go of the selection.
+        self.objects.blockSignals(True)
+        self.objects.clearSelection()
+        self.objects.setCurrentCell(-1, -1)
+        self.objects.blockSignals(False)
+        self.canvas.selected = self.canvas.selected_model = None
+        self.show_polygon(None)
         self.canvas.update()
 
     def isolate(self):
@@ -553,6 +626,9 @@ class ModelView(QWidget):
         order = [0, 1, 3, 2, 0] if len(texels) == 4 else [0, 1, 2, 0]
         ImageDraw.Draw(image).line([texels[i] for i in order], fill='yellow', width=1)
         self.uv.set_image(image)
+        # Bring the outlined texels into view.
+        xs, ys = [t[0] for t in texels], [t[1] for t in texels]
+        self.uv.show_area(min(xs), min(ys), max(xs), max(ys))
 
     def export(self):
         from gui.widgets.image_view import file_stem

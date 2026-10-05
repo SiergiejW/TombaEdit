@@ -9,7 +9,17 @@ import hashlib
 import struct
 
 US_SHA1 = '81cbc79f0230aeb4252e058039f47ac95a777f5a'
-TABLES = {2: 0x800772BC, 3: 0x8007C6B0, 4: 0x8007D30C, 5: 0x8007E8A8}
+# Handler tables by APD layer. Layers 2 to 5 share one object pool (routine
+# 8001DFE4); layer 7, the backdrop sprites, has its own pool and table
+# (routine 8003438C).
+# Layer 8 objects are models with a handler of their own, in a pool of 45
+# run through this table (routine 8002DB4C).
+MODEL_TABLE = 0x8007C68C
+# Routines that append an object to one of the per-frame draw lists.
+DRAW_QUEUES = (0x80018BC8, 0x80018C04, 0x80018C40, 0x80018C8C, 0x80018CC8, 0x80018D04, 0x80018D40)
+# Camera step used to measure how far a backdrop sprite follows the camera.
+NUDGE = 64
+TABLES = {2: 0x800772BC, 3: 0x8007C6B0, 4: 0x8007D30C, 5: 0x8007E8A8, 7: 0x8007D57C}
 
 
 class InitialPoseResolver:
@@ -42,6 +52,7 @@ class InitialPoseResolver:
         self.write(0x800E7388, project.asset_data(overlay))
         self.write(0x8009BCC8, struct.pack('<HH', area, max(0, section)))
         self.model_pointers = {}
+        self.model_spans = {}      # (slot, index) -> (address, size)
         for (family, slot), asset in resources.items():
             if family not in ('SPR', 'WMD'):
                 continue
@@ -54,8 +65,10 @@ class InitialPoseResolver:
             if family == 'WMD':
                 count = struct.unpack_from('<I', data)[0]
                 if count <= 4096 and 4 + 4 * count <= len(data):
-                    for i, off in enumerate(struct.unpack_from(f'<{count}I', data, 4)):
+                    offsets = struct.unpack_from(f'<{count}I', data, 4) + (len(data),)
+                    for i, off in enumerate(offsets[:-1]):
                         self.model_pointers[address + off] = (slot, i)
+                        self.model_spans[slot, i] = (address + off, offsets[i + 1] - off)
         self.baseline = self.read(0x80000000, 0x200000)
         self.scratch = self.read(0x1F800000, 0x1000)
         self.u.hook_add(UC_HOOK_CODE, self.hook)
@@ -83,6 +96,140 @@ class InitialPoseResolver:
         return tuple((self.exe_word(table + i * 4) - 0x1F800358) // 4
                      for i in (section & 7, common))
 
+    def picture_parts(self, placement):
+        """Rectangles a layer 7 object in draw mode 2 is made of.
+
+        The backdrop draw list (routine 8004DE40) picks a routine by the
+        object's byte +0A, which is APD byte 12. Mode 2 (routine 8004E244)
+        draws a fixed picture: the table at 8007EBEC, indexed by the variant,
+        points at 18-byte records ending in 7FFF. A record is a texture page
+        word, an X and Y offset from the object, U, V, width, height, the
+        palette's VRAM position and a blend flag. Returns
+        [(tpage, x, y, u, v, width, height, clut)]."""
+        if not self.available or placement.layer != 7 or placement.raw[12] != 2:
+            return []
+        try:
+            at = self.read_word(0x8007EBEC + placement.variant * 4)
+            parts = []
+            while len(parts) < 64 and 0x80010000 <= at < 0x80140000:
+                tpage, x, y, u, v, width, height, clut_x, clut_y, _ = struct.unpack('<hhhBBHHhhh', self.read(at, 18))
+                if tpage == 0x7FFF:
+                    return parts
+                if not (0 < width <= 256 and 0 < height <= 256):
+                    break
+                parts.append((tpage & 0x1FF, x, y, u, v, width, height, (clut_y & 511) << 6 | (clut_x >> 4) & 63))
+                at += 18
+        except Exception:
+            pass
+        return []
+
+    def model_animation(self, placement):
+        """Versions of a layer 8 object's model as its handler rewrites it.
+
+        Some scenery is animated by code that edits the model in place, for
+        instance stepping the texture coordinates of a water surface between
+        two pictures. The handler is run for a few hundred updates with the
+        model in memory; every time the model's bytes change the new version
+        is kept. Returns [(model bytes, ticks)] for one cycle, or [] when
+        nothing changes. Handlers only work while their object is in view,
+        so a few camera positions are tried."""
+        if not self.available or placement.layer != 8 or placement.model not in self.model_spans:
+            return []
+        if placement.raw in self.cache:
+            return self.cache[placement.raw]
+        r, raw, obj = self.reg, placement.raw, 0x80300000
+        address, size = self.model_spans[placement.model]
+        original = self.read(address, size)
+        pc = self.read_word(MODEL_TABLE + placement.kind * 4)
+        x, y = placement.position[:2]
+        found = []
+        for camera in ((x - 160, y - 120), (0, 0), (x + 200, y - 120), (x - 500, y - 120)):
+            self.write(0x80000000, self.baseline)
+            self.write(0x1F800000, self.scratch)
+            self.write(address, original)
+            self.write(0x1F800176, struct.pack('<h', max(-32768, min(32767, camera[0]))))
+            self.write(0x1F800186, struct.pack('<h', max(-32768, min(32767, camera[1]))))
+            self.write(obj, bytes(0x200))
+            self.word(obj + 0x40, obj + 0x10)
+            self.word(obj + 0x44, obj + 0x18)
+            self.write(obj, bytes((1, 0, raw[2], raw[4])))
+            for offset, value in ((0xC, raw[3]), (0xA, raw[12]), (0xF, raw[13]), (0x1C, raw[1]), (0x1D, raw[0])):
+                self.write(obj + offset, bytes((value,)))
+            self.write(obj + 0x2E, bytes((raw[5], 0)))
+            for j, value in enumerate(placement.position):
+                self.word(obj + 0x10 + j * 4, value << 16)
+            self.word(obj + 0xA0, address)
+            self.write(obj + 0xA4, b'\x01')
+            runs = []
+            try:
+                for _ in range(400):
+                    self.u.reg_write(r.UC_MIPS_REG_SP, 0x803F0000)
+                    self.u.reg_write(r.UC_MIPS_REG_RA, 0x80001000)
+                    self.u.reg_write(r.UC_MIPS_REG_A0, obj)
+                    self.u.emu_start(pc, 0x80001000, count=20000)
+                    now = self.read(address, size)
+                    if runs and runs[-1][0] == now:
+                        runs[-1][1] += 1
+                    elif len(runs) > 2 and now == runs[1][0]:
+                        break                       # back at the start of the cycle
+                    else:
+                        runs.append([now, 1])
+            except Exception:
+                runs = []
+            if len(runs) > 2:
+                # The first run is the untouched model before the cycle starts.
+                found = [(data, ticks) for data, ticks in runs[1:]]
+                break
+        self.write(address, original)
+        self.cache[placement.raw] = found
+        return found
+
+    def backdrop_motion(self, obj, pc, placement):
+        """How a layer 7 object reaches the screen.
+
+        On each update it turns its placement into a position on the
+        320 x 240 screen from the camera words at 1F800176 (X) and 1F800186
+        (Y). Running that update with the camera at the origin and nudged on
+        each axis gives the screen position and the fraction of camera
+        movement the sprite follows. Objects that stay at their placement are
+        ordinary world sprites and return nothing."""
+        r, ready, scratch = self.reg, self.read(obj, 0x200), self.read(0x1F800000, 0x1000)
+
+        def update(camera_x, camera_y):
+            self.write(obj, ready)
+            self.write(0x1F800000, scratch)
+            self.write(0x1F800176, struct.pack('<h', camera_x))
+            self.write(0x1F800186, struct.pack('<h', camera_y))
+            try:
+                self.u.reg_write(r.UC_MIPS_REG_SP, 0x803F0000)
+                self.u.reg_write(r.UC_MIPS_REG_RA, 0x80001000)
+                self.u.reg_write(r.UC_MIPS_REG_A0, obj)
+                self.u.emu_start(pc, 0x80001000, count=4000)
+            except Exception:
+                pass
+            moved = self.read(obj, 0x20)
+            return struct.unpack_from('<h', moved, 0x12)[0], struct.unpack_from('<h', moved, 0x16)[0]
+
+        anchor = tuple(placement.position[:2])
+        base = follow = None
+        # A sprite that is off the screen is left where it was, so look from
+        # a few camera positions until it shows.
+        for start in (0, 512, 1024, 1536):
+            seen, across, down = update(start, 0), update(start + NUDGE, 0), update(start, NUDGE)
+            if seen != anchor and across != anchor and down != anchor:
+                follow = ((seen[0] - across[0]) / NUDGE, (seen[1] - down[1]) / NUDGE)
+                base = (round(seen[0] + start * follow[0]), seen[1])
+                break
+        if base is None or (start == 0 and follow == (0, 0) and base == anchor):
+            return {}
+        # Looping scenery comes back to the same place after the camera has
+        # travelled one period; the strips of a loop are placed a period apart.
+        period = 0
+        if follow[0]:
+            travel = next((c for c in (256, 512, 1024, 2048, 4096, 8192) if update(start + c, 0) == seen), 0)
+            period = round(travel * follow[0])
+        return dict(screen=base, follow=follow, period=period)
+
     def animation(self, address):
         """Follow an animation script: eight-byte steps of frame, two unused
         words here, and a duration whose top bits end the step list. 0000
@@ -100,6 +247,18 @@ class InitialPoseResolver:
 
     def in_exe(self, address, size):
         return self.base <= address and address + size <= self.base + len(self.exe) - 0x800
+
+    def entrance(self, area, section):
+        """Tomba's position at the section's first entrance, or None."""
+        if not self.available or not 0 <= area < 20 or not 0 <= section < 32:
+            return None
+        sections = self.exe_word(0x8007BF78 + area * 4)
+        if not self.in_exe(sections + section * 4, 4):
+            return None
+        record = self.exe_word(sections + section * 4)
+        if not self.in_exe(record, 8):
+            return None
+        return struct.unpack_from('<3h', self.exe, record - self.base + 0x800)
 
     def collision_frame(self, area, section):
         """Where a section's collision sits: (along0, depth0, turned, slot).
@@ -153,6 +312,9 @@ class InitialPoseResolver:
             # GetClut(x, y): objects that pick their palette this way keep it.
             x, y = uc.reg_read(r.UC_MIPS_REG_A0), uc.reg_read(r.UC_MIPS_REG_A1)
             uc.reg_write(r.UC_MIPS_REG_V0, (y & 511) << 6 | (x >> 4) & 63)
+            uc.reg_write(r.UC_MIPS_REG_PC, uc.reg_read(r.UC_MIPS_REG_RA))
+        elif address in DRAW_QUEUES:
+            # Handing an object to a draw list needs lists nobody set up here.
             uc.reg_write(r.UC_MIPS_REG_PC, uc.reg_read(r.UC_MIPS_REG_RA))
         elif address in (0x8001FFE8, 0x80023608, 0x800236F4):
             uc.reg_write(r.UC_MIPS_REG_V0, 0)
@@ -209,6 +371,11 @@ class InitialPoseResolver:
                                       tpage=struct.unpack_from('<H', state, 0x1E)[0],
                                       clut=struct.unpack_from('<H', state, 8)[0] if state[0xD] & 1 else None,
                                       blend=bool(state[0xD] & 0x80))
+                        if placement.layer == 7:
+                            # Backdrop strips name a second frame in the word
+                            # after the first; both are drawn at the anchor.
+                            result['overlay'] = struct.unpack('<H', self.read(anim + 2, 2))[0]
+                            result.update(self.backdrop_motion(obj, pc, placement))
                         break
         except UcError:
             result = {}

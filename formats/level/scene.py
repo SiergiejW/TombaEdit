@@ -1,12 +1,12 @@
 """Build a read-only level scene from an area's actual LDAR load context."""
 from dataclasses import dataclass, field
 import numpy as np
-from PIL import ImageOps
+from PIL import Image, ImageOps
 from formats.level.apd import parse_apd
 from formats.level.runtime import InitialPoseResolver
 from formats.models.wmd import parse_wmd
 from formats.models.four import rebuild_mesh
-from psx.graphics import sprite_frames, render_sprite
+from psx.graphics import sprite_frames, render_sprite, texture_page
 from formats.collision.whm import parse_whm, PLANE_DEPTH
 from disc.reader import FormatError
 
@@ -30,6 +30,20 @@ class SceneEntry:
 
 
 @dataclass
+class Backdrop:
+    """A layer 7 sprite. `anchor` is its placement and `screen` where that
+    lands on the 320 x 240 screen with the camera at the origin; `follow` is
+    the fraction of camera movement it scrolls by on each axis."""
+    image: object
+    left: int
+    top: int
+    anchor: tuple
+    screen: tuple
+    follow: tuple
+    period: int = 0     # screen pixels after which it repeats sideways; 0 for never
+
+
+@dataclass
 class LevelScene:
     entries: list
     resources: list
@@ -37,6 +51,9 @@ class LevelScene:
     notes: list = field(default_factory=list)
     # Collision overlay as GL line arrays: (vertices, colours), both N x 3.
     collision: tuple = None
+    # Backdrop sprites, drawn behind everything in screen space: one
+    # (entry index, Backdrop) per layer 7 placement that resolved.
+    backdrop: list = field(default_factory=list)
 
 
 def area_of(path):
@@ -81,6 +98,22 @@ def sprite_mesh(image, parts, position, flip, offset):
     x, y, z = np.asarray(position) * (1, -1, -1)
     return quad([(x+left,y-top,z),(x+left+image.width,y-top,z),
                  (x+left,y-top-image.height,z),(x+left+image.width,y-top-image.height,z)], image, offset=offset)
+
+
+def fixed_picture(pieces, vram):
+    """Assemble the rectangles of a mode 2 backdrop: (image, left, top), or
+    None when the pages they name hold nothing."""
+    left, top = min(p[1] for p in pieces), min(p[2] for p in pieces)
+    image = Image.new('RGBA', (max(p[1] + p[5] for p in pieces) - left, max(p[2] + p[6] for p in pieces) - top))
+    pages = {}
+    for tpage, x, y, u, v, width, height, clut in pieces:
+        try:
+            if (tpage, clut) not in pages:
+                pages[tpage, clut] = texture_page(vram, tpage, clut)
+        except FormatError:
+            continue
+        image.alpha_composite(pages[tpage, clut].crop((u, v, u + width, v + height)), (x - left, y - top))
+    return (image, left, top) if image.getbbox() else None
 
 
 def collision_lines(banks):
@@ -213,6 +246,7 @@ def build_scene(project, path, index):
     resources = loaded_resources(project, path, index)
     vram = project.vram(path, index)
     entries, notes, models, sprites = [], [], {}, {}
+    backdrops = []
     area = area_of(path)
     resolver = InitialPoseResolver(project, area, max(0, index-1), resources)
     slots = resolver.placement_slots(area, index-1) if resolver.available and index else None
@@ -256,6 +290,7 @@ def build_scene(project, path, index):
             active = slots is None or slot == slots[0] or (slot == slots[1] and
                          placement.section in (index-1, ~(index-1)))
             name = f'Object {placement.layer}:{placement.kind:02X} / {placement.variant:02X}'
+            model_frames = []
             mesh, category, note = None, 'Unresolved', 'Visual link is unresolved; position comes from APD.'
             visual = resolver.resolve(placement) if active else {}
             model_ref = visual.get('model', placement.model)
@@ -264,13 +299,30 @@ def build_scene(project, path, index):
                 if bank in models and model < len(models[bank]):
                     mesh = translated(models[bank][model], placement.position)
                     category, note = 'Models', f'WMD bank {bank}, model {model}. Translation from APD; dynamic rotation is not simulated.'
-            frames = []
+                    versions = resolver.model_animation(placement) if active else []
+                    if versions:
+                        # The handler rewrites the model as it runs; each
+                        # version is decoded in place of the stored one.
+                        source = project.asset_data(resources['WMD', bank])
+                        start = models[bank][model].offset
+                        for data, ticks in versions[:32]:
+                            try:
+                                edited = parse_wmd(source[:start] + data + source[start + len(data):])[model]
+                            except FormatError:
+                                model_frames = []
+                                break
+                            model_frames.append((translated(edited, placement.position), ticks))
+                        if len(model_frames) > 1:
+                            note = (f'WMD bank {bank}, model {model}, rewritten by its handler: '
+                                    f'{len(model_frames)} versions, {sum(t for _, t in model_frames)} ticks per cycle.')
+            frames, frames_first = [], None
             if mesh is None and 'sprite' in visual and visual['sprite'] in sprites:
                 bank, flip = visual['sprite'], visual.get('flip', False)
                 for frame, ticks in visual['frames']:
                     parts = sprites[bank][frame] if frame < len(sprites[bank]) else None
                     image = sprite_image(bank, frame, visual) if parts else None
                     if image is not None:
+                        frames_first = frames_first or (parts, image)
                         frames.append((sprite_mesh(image, parts, placement.position, flip,
                                                    placement.offset), ticks))
                 if frames:
@@ -282,6 +334,54 @@ def build_scene(project, path, index):
                                if len(frames) > 1 else 'Single-frame pose.'))
                     if len(frames) < 2:
                         frames = []
+            if frames_first is not None and placement.layer == 7 and 'screen' in visual:
+                parts, image = frames_first
+                extra = visual.get('overlay', 0)
+                bank = sprites[visual['sprite']]
+                if 0 < extra < len(bank) and bank[extra]:
+                    over = sprite_image(visual['sprite'], extra, visual)
+                    if over is not None:
+                        # Both frames hang from the same anchor.
+                        both = parts + bank[extra]
+                        left, top = min(p[13] for p in both), min(p[14] for p in both)
+                        joined = Image.new('RGBA', (max(p[13] + p[9] for p in both) - left,
+                                                    max(p[14] + p[10] for p in both) - top))
+                        for layer_parts, layer in ((parts, image), (bank[extra], over)):
+                            joined.alpha_composite(layer, (min(p[13] for p in layer_parts) - left,
+                                                           min(p[14] for p in layer_parts) - top))
+                        parts, image = both, joined
+                ax, ay = placement.position[:2]
+                sx, sy = visual['screen']
+                follow = visual['follow']
+                if visual.get('flip'):
+                    image = ImageOps.mirror(image)
+                left = min(p[13] for p in parts)
+                left = -left - image.width if visual.get('flip') else left
+                backdrops.append((len(entries), Backdrop(image, left, min(p[14] for p in parts),
+                                                         (ax, ay), (sx, sy), follow,
+                                                         visual.get('period', 0))))
+                mesh, frames, category = rebuild_mesh([], placement.offset, image), [], 'Backgrounds'
+                note = (f'Backdrop sprite: SPR bank {visual["sprite"]}, frame {visual["frames"][0][0]}. Drawn behind '
+                        f'the level, following {follow[0]:.3g} of camera movement across and {follow[1]:.3g} down.')
+            if len(model_frames) > 1:
+                frames = model_frames
+            pieces = resolver.picture_parts(placement) if mesh is None and active else []
+            if pieces:
+                picture = fixed_picture(pieces, vram)
+                if picture is not None:
+                    image, left, top = picture
+                    x, y, z = placement.position
+                    # The camera word these objects subtract is the world Y of
+                    # the bottom of the 240-line screen, while their own Y
+                    # counts from its top, so the picture sits a screen higher
+                    # than its placement reads.
+                    y -= 240
+                    # Anchored to the level and drawn behind what stands in it.
+                    corners = [(x + left, -(y + top), -z - 2), (x + left + image.width, -(y + top), -z - 2),
+                               (x + left, -(y + top) - image.height, -z - 2),
+                               (x + left + image.width, -(y + top) - image.height, -z - 2)]
+                    mesh, category = quad(corners, image, offset=placement.offset), 'Backgrounds'
+                    note = f'Fixed picture of {len(pieces)} rectangles, {image.width} x {image.height}, drawn behind the section.'
             if mesh is None:
                 mesh = marker(placement.position, placement.offset)
             entries.append(SceneEntry(f'{name} | {asset.code:04X} #{i:03d}', category, mesh,
@@ -301,10 +401,11 @@ def build_scene(project, path, index):
     town = town_picture(project, resources, notes)
     if town:
         entries.insert(0, town)
+        backdrops = [(index + 1, backdrop) for index, backdrop in backdrops]
     collision = collision_lines(banks)
     if collision is None and town is not None and getattr(town, 'cells', None) is not None:
         collision = town_lines(town.cells)
-    return LevelScene(entries, list(resources.values()), vram, notes, collision)
+    return LevelScene(entries, list(resources.values()), vram, notes, collision, backdrops)
 
 
 def sprite_pages(project, path, index):

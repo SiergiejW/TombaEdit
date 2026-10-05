@@ -75,11 +75,12 @@ tilted slightly downwards.
 | Right drag | Look around; `WASD` moves, `Q`/`E` go down and up, Shift is faster |
 | Wheel | Zoom, or change the fly speed while looking around |
 | `F`, or double-click a row | Frame the selected model |
-| Left click | Select a polygon and show its record, page, CLUT and UVs |
+| Left click | Select a polygon; its texture page opens with the UVs outlined and in view |
 
 With **Orbit Selection** on, a middle drag circles the selected model rather
-than the middle of the view. **Highlighting** dims everything except the
-selection and can be switched off. **Texture Mode** switches between textures and
+than the middle of the view. In the model viewer the selection is
+highlighted by dimming the other models; **Show all** clears it. The level
+editor does not dim. **Texture Mode** switches between textures and
 bare vertex colours, **Spread Parts** lays a bank of models out on a grid,
 and the model list hides or isolates individual models without moving the
 camera. glTF export writes the visible models with their textures, either
@@ -100,7 +101,17 @@ the US release; other releases show geometry, directly linked models and
 markers.
 
 - **Animate** plays the animation scripts of placed sprites at the game's
-  30 steps a second.
+  30 steps a second. Models that the game animates by rewriting
+  their texture coordinates, such as water surfaces, play the same way.
+  **Save GIF** writes one cycle of the selected object: a sprite's frames, or
+  for such a model its texture, either cropped to the moving UVs or as the
+  whole page with them outlined.
+- **Background** draws the section's backdrop sprites, the sky, clouds and
+  distant scenery, behind the level. The game positions them on the screen
+  from the camera, each following a fraction of its movement, so they drift
+  as the view is moved sideways, and looping scenery repeats. Interiors and
+  other sections with a fixed picture behind them show it in place, with
+  their foreground pieces over it.
 - **Collision** overlays the section's WHM data: green walkable surfaces,
   magenta surfaces with special attributes, and orange outlines around solid
   ranges. Each plane is drawn at the depth where the objects that use it

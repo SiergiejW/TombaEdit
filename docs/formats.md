@@ -196,6 +196,45 @@ executable, the area overlay and the loaded banks, then reads the model
 pointer, sprite bank, animation script and drawing words back out of the
 object.
 
+## Backdrops
+
+APD layer 7 holds the scenery behind a level. Its objects live in their own
+pool of 6C-byte records and are run through the handler table at 8007D57C
+(routine 8003438C). A handler sets up a sprite like any other object, then on
+every update turns the placement into a position on the 320 x 240 screen
+using the camera words at `1F800176` and `1F800186`. Each type scales the
+camera by its own factor: the village's cloud bank follows an eighth of the
+camera's sideways movement and none of its height, the mansion's backdrop a
+quarter of both. The level editor measures the factor by running the update
+with the camera moved a known amount.
+
+A backdrop's animation step can name a second frame in the word after the
+first; the mansion's strips pair a water frame with a strip of trees and sky,
+drawn at the same anchor. The mansion handler wraps its screen X in 512
+pixels, which is what makes eight 64-pixel strips an endless loop.
+
+Queued backdrop objects are drawn by routine 8004DE40 according to their
+byte `+0A`, APD byte 12. Mode 1 draws the object's sprite. Mode 2 (routine
+8004E244) draws a fixed picture from the table at 8007EBEC, indexed by the
+variant: 18-byte records of texture page, X and Y offset, U, V, width,
+height, palette position and blend flag, ended by 7FFF. Such an object stays
+with the level: its screen position is its placement less the camera words.
+The Y camera word is the world Y of the bottom of the screen, so the picture
+stands 240 units above where its placement reads.
+
+## Models animated in place
+
+APD layer 8 objects are models from WMD slot 2, in a pool of 45 run through
+the handler table at 8007C68C (routine 8002DB4C). Several handlers animate by
+editing the model itself: the mansion's water steps the V coordinates of its
+polygons by 60 hex every ten frames. The level editor runs the handler with
+the model in memory and decodes each version the model goes through.
+
+Handler tables hold addresses inside the area overlays for types that only
+one area uses. The overlays share their first 2DE6C bytes; code after that is
+specific to the area, so such an entry is only meaningful with that area's
+overlay loaded.
+
 ## Sources
 
 - vervalkon's research and tools: `TOMBAdoc.md`, `wfm3spec.txt`, `WFM3tool.py`,

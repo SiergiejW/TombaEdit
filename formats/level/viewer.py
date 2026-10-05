@@ -16,7 +16,7 @@ class LevelView(ModelView):
         self.scene = None
         self.animated = []      # [entry index, step, ticks left]
         self.filter = QComboBox()
-        self.filter.addItems(['Whole level', 'Geometry', 'Models', 'Sprites', 'Unresolved'])
+        self.filter.addItems(['Whole level', 'Geometry', 'Models', 'Sprites', 'Backgrounds', 'Unresolved'])
         self.scope = QComboBox()
         self.scope.addItems(['This section', 'All loaded APD banks'])
         self.assets = QComboBox()
@@ -36,11 +36,20 @@ class LevelView(ModelView):
         self.objects.cellClicked.connect(self.show_entry)
         self.canvas.picked.connect(self.picked_entry)
         self.spread_action.setVisible(False)
+        self.canvas.highlight = False
+        gif = QAction(self.style().standardIcon(QStyle.StandardPixmap.SP_DialogSaveButton), 'Save GIF', self)
+        gif.setToolTip('Save one pass of the selected sprite\'s animation as a GIF.')
+        gif.triggered.connect(self.save_gif)
+        self.toolbar.addAction(gif)
         self.collision_action = self.toggle_action(
             QStyle.StandardPixmap.SP_FileDialogListView, 'Collision', self.toggle_collision, False,
             'Draw the WHM collision spans over the level: green walkable surfaces, '
             'magenta surfaces with special attributes and orange solid ranges.\n'
             'In a town, outline the walkable cells of its map instead.')
+        self.backdrop_action = self.toggle_action(
+            QStyle.StandardPixmap.SP_DesktopIcon, 'Background', self.toggle_backdrop, True,
+            'Draw the section\'s backdrop sprites behind the level. They scroll with the '
+            'camera at their own fraction of its movement, as in the game.')
         self.town_action = self.toggle_action(
             QStyle.StandardPixmap.SP_FileDialogInfoView, 'Town Map', self.toggle_town, False,
             'Tint a town picture by its cell map: where characters can walk, and the '
@@ -69,6 +78,8 @@ class LevelView(ModelView):
         if any(e.alternative is not None for e in scene.entries):
             self.canvas.view_angles = (0.0, 0.0)    # a town picture is viewed square on
         self.canvas.lines = scene.collision
+        self.canvas.backdrop = scene.backdrop
+        self.backdrop_action.setEnabled(bool(scene.backdrop))
         self.canvas.show_lines = self.collision_action.isChecked()
         self.collision_action.setEnabled(scene.collision is not None)
         self.town_action.setEnabled(any(e.alternative is not None for e in scene.entries))
@@ -90,6 +101,94 @@ class LevelView(ModelView):
 
     def toggle_collision(self, value):
         self.canvas.show_lines = value
+        self.canvas.update()
+
+    def save_gif(self):
+        """One cycle of the selected object's animation as a GIF: a sprite's
+        frames, or the texture of a model whose texture coordinates move."""
+        from PyQt6.QtWidgets import QFileDialog, QMessageBox
+        from gui.widgets.image_view import file_stem
+        row = self.objects.currentRow()
+        entry = self.scene.entries[row] if self.scene and 0 <= row < len(self.scene.entries) else None
+        if entry is None or not entry.frames:
+            QMessageBox.information(self, 'Save GIF', 'Select an animated sprite or model in the scene list first. '
+                                    'The stats line shows how many the section has.')
+            return
+        name = file_stem(f'{self.export_name} - {entry.name}', 'animation')
+        textured = entry.frames[0][0].image is None
+        kinds = ('GIF, cropped to the UVs (*.gif);;GIF, whole texture page (*.gif)' if textured else 'GIF (*.gif)')
+        path, kind = QFileDialog.getSaveFileName(self, 'Save GIF', name + '.gif', kinds)
+        if not path:
+            return
+        images = self.texture_steps(row, entry, 'whole' in kind) if textured else self.sprite_steps(entry)
+        if not images:
+            QMessageBox.information(self, 'Save GIF', 'The texture coordinates of this model do not change.')
+            return
+        images[0].save(path, save_all=True, append_images=images[1:], loop=0, disposal=2,
+                       duration=[ticks * TICK_MS for _, ticks in entry.frames[:len(images)]])
+        print(f'wrote {path}: {len(images)} steps')
+
+    @staticmethod
+    def sprite_steps(entry):
+        """Every step on one canvas, so the sprite keeps its place."""
+        from PIL import Image
+        boxes = []
+        for mesh, ticks in entry.frames:
+            corners = mesh.polygons[0]['vertices']
+            boxes.append((min(c[0] for c in corners), max(c[1] for c in corners), mesh.image))
+        left, top = min(b[0] for b in boxes), max(b[1] for b in boxes)
+        width = int(max(b[0] + b[2].width for b in boxes) - left)
+        height = int(top - min(b[1] - b[2].height for b in boxes))
+        images = []
+        for x, y, image in boxes:
+            canvas = Image.new('RGBA', (width, height))
+            canvas.alpha_composite(image, (int(x - left), int(top - y)))
+            images.append(canvas)
+        return images
+
+    def texture_steps(self, row, entry, whole):
+        """The texture a model shows at each step. A model animated this way
+        keeps its polygons and moves their UVs across the page, so each step
+        is the page seen through that step's UVs: cropped to them, or the
+        whole page with them outlined."""
+        from PIL import ImageDraw
+        from psx.graphics import texture_page
+        first = entry.frames[0][0].polygons
+        moving = [n for n, polygon in enumerate(first) if polygon['page'] >= 0 and any(
+            mesh.polygons[n]['uv'] != polygon['uv'] for mesh, _ in entry.frames[1:] if n < len(mesh.polygons))]
+        if not moving:
+            return []
+        # The polygon picked in the view if it is one of them, else the first.
+        picked = self.canvas.selected
+        chosen = moving[0]
+        if picked is not None and picked[0] == row:
+            current = self.canvas.meshes[row].polygons
+            at = next((n for n, polygon in enumerate(current) if polygon is picked[1]), None)
+            chosen = at if at in moving else chosen
+        texel = lambda uv: (round(uv[0] * 256 - .5), round(uv[1] * 256 - .5))
+        boxes = []
+        for mesh, _ in entry.frames:
+            points = [texel(uv) for uv in mesh.polygons[chosen]['uv']]
+            boxes.append((min(p[0] for p in points), min(p[1] for p in points),
+                          max(p[0] for p in points) + 1, max(p[1] for p in points) + 1))
+        width, height = max(b[2] - b[0] for b in boxes), max(b[3] - b[1] for b in boxes)
+        images = []
+        for (mesh, _), box in zip(entry.frames, boxes):
+            polygon = mesh.polygons[chosen]
+            page = texture_page(self.canvas.vram, polygon['page'], polygon['clut']).copy()
+            if whole:
+                draw = ImageDraw.Draw(page)
+                for n in moving:
+                    points = [texel(uv) for uv in mesh.polygons[n]['uv']]
+                    order = [0, 1, 3, 2, 0] if len(points) == 4 else [0, 1, 2, 0]
+                    draw.line([points[i] for i in order], fill='yellow')
+                images.append(page)
+            else:
+                images.append(page.crop((box[0], box[1], box[0] + width, box[1] + height)))
+        return images
+
+    def toggle_backdrop(self, value):
+        self.canvas.show_backdrop = value
         self.canvas.update()
 
     def toggle_town(self, value):
