@@ -152,6 +152,7 @@ class SpriteView(QWidget):
         self.vram_view = VramView(vram, {p[2] & 0x7FFF for frame in frames for p in frame}, 'VRAM', embedded=True)
         self.palette_scope = QComboBox()
         self.palette_scope.addItems(['Selected pieces', 'Whole sprite', 'Whole bank'])
+        self.palette_scope.setCurrentIndex(2)
         self.palette_scope.setToolTip('What is redrawn through the palette the crosshair is put on. With no '
                                       'piece selected, the whole sprite is.')
         reset_palettes = QPushButton('Reset CLUTs')

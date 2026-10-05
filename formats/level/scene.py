@@ -88,6 +88,17 @@ def translated(mesh, position):
                          for p in mesh.polygons], mesh.offset, mesh.image)
 
 
+def placed_model(mesh, position, visual):
+    """Apply the object's initial PSX scale and rotation before placement."""
+    from formats.level.presentation import model_vertices
+    placed = rebuild_mesh([dict(p, vertices=model_vertices(p['vertices'], position,
+                        visual.get('scale', (4096, 4096, 4096)),
+                        visual.get('rotation', (0, 0, 0))))
+                         for p in mesh.polygons], mesh.offset, mesh.image)
+    placed.front_clockwise = getattr(mesh, 'front_clockwise', True)
+    return placed
+
+
 def quad(vertices, image=None, color=(1, 1, 1), offset=0):
     polygon = dict(offset=offset, vertices=vertices, uv=[(0, 0), (1, 0), (0, 1), (1, 1)],
                    colors=[color] * 4, page=-2 if image is not None else -1,
@@ -147,6 +158,29 @@ def collision_lines(banks):
     from formats.collision.geometry import records, lines
     return lines([row for whm, x0, z0, turned in banks
                   for row in records(whm, x0, z0, turned)])
+
+
+def orient_assemblies(entries):
+    # Relative APD records can assemble one closed object from open panels.
+    # The AP box's panels have the opposite winding from most WMD models.
+    from formats.models.winding import closed_winding
+    assembled = []
+    for entry in entries:
+        if entry.placement is None:
+            continue
+        mode = entry.placement.raw[15] & 3
+        if mode == 1:
+            assembled = []
+        if entry.category == 'Models':
+            assembled.append(entry.mesh)
+        else:
+            assembled = []
+        if mode == 3 and assembled:
+            winding = closed_winding(assembled)
+            if winding is not None:
+                for mesh in assembled:
+                    mesh.front_clockwise = winding
+            assembled = []
 
 
 def cell_colours():
@@ -251,13 +285,40 @@ def build_scene(project, path, index):
         except FormatError as exc:
             notes.append(f'{asset.label}: {exc}')
     images = {}
+    from formats.sprites.wpp import parse_wpp, frame_image, bank_palettes
+    pictures = {}
+    for (family, slot), asset in resources.items():
+        if family != 'WPP':
+            continue
+        try:
+            kind, bank = parse_wpp(project.asset_data(asset))
+        except FormatError:
+            continue
+        if kind == 'frames':
+            for sprite_slot, frames in sprites.items():
+                if len(frames) == len(bank):
+                    pictures[sprite_slot] = bank
 
     def sprite_image(bank, frame, visual):
         key = (bank, frame, visual.get('tpage'), visual.get('clut'))
         if key not in images:
             try:
-                image = render_sprite(sprites[bank][frame], vram, tpage=visual.get('tpage', 0),
-                                      clut=visual.get('clut'))
+                parts = sprites[bank][frame]
+                if bank in pictures:
+                    palettes = bank_palettes(vram, sprites[bank], bank == 0)
+                    fallback = palettes[0][1] if palettes else None
+                    rows = {}
+                    for n, part in enumerate(parts):
+                        clut = visual.get('clut')
+                        clut = part[2] if clut is None else clut
+                        x, y = (clut & 63) * 16, (clut >> 6) & 511
+                        palette = vram[y, x:x + 16]
+                        if palette.any():
+                            rows[n] = palette
+                    image = frame_image(pictures[bank][frame], parts, fallback, rows)
+                else:
+                    image = render_sprite(parts, vram, tpage=visual.get('tpage', 0),
+                                          clut=visual.get('clut'))
                 # Blank frames are timed steps too, for instance a blink.
                 images[key] = image
             except FormatError:
@@ -283,8 +344,10 @@ def build_scene(project, path, index):
             if model_ref:
                 bank, model = model_ref
                 if bank in models and model < len(models[bank]):
-                    mesh = translated(models[bank][model], placement.position)
-                    category, note = 'Models', f'WMD bank {bank}, model {model}. Translation from APD; dynamic rotation is not simulated.'
+                    mesh = placed_model(models[bank][model], placement.position, visual)
+                    category, note = 'Models', (f'WMD bank {bank}, model {model}. '
+                        f'Initial scale {visual.get("scale", (4096, 4096, 4096))}, '
+                        f'rotation {visual.get("rotation", (0, 0, 0))} (4096 units per turn).')
                     versions = resolver.model_animation(placement) if active else []
                     if versions:
                         # The handler rewrites the model as it runs; each
@@ -297,7 +360,7 @@ def build_scene(project, path, index):
                             except FormatError:
                                 model_frames = []
                                 break
-                            model_frames.append((translated(edited, placement.position), ticks))
+                            model_frames.append((placed_model(edited, placement.position, visual), ticks))
                         if len(model_frames) > 1:
                             note = (f'WMD bank {bank}, model {model}, rewritten by its handler: '
                                     f'{len(model_frames)} versions, {sum(t for _, t in model_frames)} ticks per cycle.')
@@ -324,6 +387,8 @@ def build_scene(project, path, index):
                             f'0x{visual.get("tpage", 0):X}. '
                             + (f'{len(frames)} animation steps, {sum(t for _, t in frames)} ticks per pass.'
                                if len(frames) > 1 else 'Single-frame pose.'))
+                    if bank in pictures:
+                        note += ' Pixels decoded from the matching WPP animation bank.'
                     if len(frames) < 2:
                         frames = []
                     if visual.get('condition'):
@@ -384,6 +449,7 @@ def build_scene(project, path, index):
             entry.handler = resolver.handler_address(placement)
             entry.animation_address = visual.get('animation_address')
             entries.append(entry)
+    orient_assemblies(entries)
     from formats.collision.geometry import records, lines
     collision_records = []
     x0, z0, turned, only = resolver.collision_frame(area, index - 1)

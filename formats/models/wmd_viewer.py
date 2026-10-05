@@ -64,6 +64,9 @@ class MeshCanvas(CameraEventMixin, QOpenGLWidget):
         # Dim everything but the selected model. The level editor turns this
         # off: a scene is read as a whole.
         self.highlight = True
+        self.selection_box = False
+        self.panorama_cache = None
+        self.backdrop_rects = {}
         # Screen-space sprites behind the scene: [(index, Backdrop)].
         self.backdrop = []
         self.sky = None
@@ -230,6 +233,9 @@ class MeshCanvas(CameraEventMixin, QOpenGLWidget):
             gl.glEnable(gl.GL_CULL_FACE)
         else:
             gl.glDisable(gl.GL_CULL_FACE)
+        # Stored PSX faces use clockwise winding. OpenGL's default is CCW.
+        gl.glFrontFace(gl.GL_CW)
+        gl.glCullFace(gl.GL_BACK)
         gl.glMatrixMode(gl.GL_PROJECTION)
         gl.glLoadIdentity()
         gluPerspective(45, self.width() / max(1, self.height()), max(0.01, self.radius / 1000), self.radius * 200)
@@ -249,6 +255,7 @@ class MeshCanvas(CameraEventMixin, QOpenGLWidget):
                 continue
             gl.glPushMatrix()
             gl.glTranslatef(*self.offset_for(i))
+            gl.glFrontFace(gl.GL_CW if getattr(mesh, 'front_clockwise', True) else gl.GL_CCW)
             billboard = getattr(mesh, 'billboard_anchor', None) is not None
             if billboard:
                 gl.glDisable(gl.GL_CULL_FACE)
@@ -294,6 +301,8 @@ class MeshCanvas(CameraEventMixin, QOpenGLWidget):
         gl.glDisableClientState(gl.GL_TEXTURE_COORD_ARRAY)
         gl.glDisable(gl.GL_TEXTURE_2D)
         gl.glPolygonMode(gl.GL_FRONT_AND_BACK, gl.GL_FILL)
+        if self.selection_box:
+            self.paint_selection(gl)
         if self.show_lines and self.lines is not None:
             vertices, colors = self.lines
             gl.glDisable(gl.GL_DEPTH_TEST)
@@ -368,8 +377,12 @@ class MeshCanvas(CameraEventMixin, QOpenGLWidget):
         aspect = self.width() / max(1, self.height())
         width = 240 * aspect
         c = self.camera_controls
-        from formats.level.presentation import backdrop_position
+        from formats.level.presentation import panorama_layers, panorama_position
         camera = (-c.camera_x, -c.camera_y, -c.camera_z)
+        key = (id(self.backdrop), frozenset(self.visible))
+        if self.panorama_cache is None or self.panorama_cache[0] != key:
+            self.panorama_cache = (key, panorama_layers(self.backdrop, self.visible))
+        self.backdrop_rects = {}
         gl.glMatrixMode(gl.GL_PROJECTION)
         gl.glPushMatrix()
         gl.glLoadIdentity()
@@ -378,25 +391,23 @@ class MeshCanvas(CameraEventMixin, QOpenGLWidget):
         gl.glPushMatrix()
         gl.glLoadIdentity()
         gl.glDisable(gl.GL_DEPTH_TEST)
+        gl.glDisable(gl.GL_CULL_FACE)
         gl.glEnable(gl.GL_TEXTURE_2D)
         gl.glTexEnvi(gl.GL_TEXTURE_ENV, gl.GL_TEXTURE_ENV_MODE, gl.GL_REPLACE)
-        for index, sprite in self.backdrop:
-            if index not in self.visible:
-                continue
+        for sprite in self.panorama_cache[1]:
             # Whole pixels, so neighbouring strips meet without seams.
-            x, y = backdrop_position(sprite, camera, c.camera_angle_h,
+            x, y = panorama_position(sprite, camera, c.camera_angle_h,
                                      c.camera_angle_v, self.backdrop_turned)
             gl.glBindTexture(gl.GL_TEXTURE_2D, self.image_texture(gl, sprite.image))
             gl.glColor3f(1, 1, 1)
             low = (320 - width) / 2
-            if sprite.period:
-                # Looping scenery: every copy that reaches into the view.
-                first = x - math.ceil((x + sprite.image.width - low) / sprite.period) * sprite.period + sprite.period
-                copies = [first + n * sprite.period for n in range(int(width // sprite.period) + 2)]
-            else:
-                copies = [x]
+            period = sprite.image.width
+            first = x - math.ceil((x + period - low) / period) * period + period
+            copies = [first + n * period for n in range(int(width // period) + 2)]
             gl.glBegin(gl.GL_QUADS)
             for at in copies:
+                for index, px, py, pw, ph in sprite.parts:
+                    self.backdrop_rects.setdefault(index, []).append((at + px, y + py, pw, ph))
                 for u, v in ((0, 0), (1, 0), (1, 1), (0, 1)):
                     gl.glTexCoord2f(u, v)
                     gl.glVertex2f(at + u * sprite.image.width, y + v * sprite.image.height)
@@ -404,10 +415,50 @@ class MeshCanvas(CameraEventMixin, QOpenGLWidget):
         gl.glTexEnvi(gl.GL_TEXTURE_ENV, gl.GL_TEXTURE_ENV_MODE, gl.GL_MODULATE)
         gl.glDisable(gl.GL_TEXTURE_2D)
         gl.glEnable(gl.GL_DEPTH_TEST)
+        if self.backface_culling:
+            gl.glEnable(gl.GL_CULL_FACE)
         gl.glPopMatrix()
         gl.glMatrixMode(gl.GL_PROJECTION)
         gl.glPopMatrix()
         gl.glMatrixMode(gl.GL_MODELVIEW)
+
+    def paint_selection(self, gl):
+        index = self.selected_model
+        if index is None or index not in self.visible:
+            return
+        gl.glDisable(gl.GL_DEPTH_TEST)
+        gl.glDisable(gl.GL_CULL_FACE)
+        gl.glColor3f(1., 1., .1)
+        gl.glLineWidth(2.)
+        if index in self.backdrop_rects and self.show_backdrop:
+            width = 240 * self.width() / max(1, self.height())
+            gl.glMatrixMode(gl.GL_PROJECTION); gl.glPushMatrix(); gl.glLoadIdentity()
+            gl.glOrtho((320-width)/2, (320+width)/2, 240, 0, -1, 1)
+            gl.glMatrixMode(gl.GL_MODELVIEW); gl.glPushMatrix(); gl.glLoadIdentity()
+            for x, y, w, h in self.backdrop_rects[index]:
+                gl.glBegin(gl.GL_LINE_LOOP)
+                for point in ((x,y), (x+w,y), (x+w,y+h), (x,y+h)):
+                    gl.glVertex2f(*point)
+                gl.glEnd()
+            gl.glPopMatrix(); gl.glMatrixMode(gl.GL_PROJECTION); gl.glPopMatrix()
+            gl.glMatrixMode(gl.GL_MODELVIEW)
+        elif 0 <= index < len(self.meshes):
+            mesh = self.meshes[index]
+            arrays = [self.displayed_vertices(mesh, b[0]) + self.offset_for(index)
+                      for b in mesh.batches.values() if len(b[0])]
+            if arrays:
+                points = np.concatenate(arrays)
+                low, high = points.min(0), points.max(0)
+                corners = [np.where([(n >> bit) & 1 for bit in range(3)], high, low) for n in range(8)]
+                gl.glBegin(gl.GL_LINES)
+                for n in range(8):
+                    for bit in (1, 2, 4):
+                        if not n & bit:
+                            gl.glVertex3f(*corners[n]); gl.glVertex3f(*corners[n | bit])
+                gl.glEnd()
+        gl.glEnable(gl.GL_DEPTH_TEST)
+        if self.backface_culling:
+            gl.glEnable(gl.GL_CULL_FACE)
 
     def _model_view_projection(self):
         m = QMatrix4x4()

@@ -761,7 +761,7 @@ class MainWindow(QMainWindow):
                 from formats.sprites.wpp import bank_palettes
                 pictures_view = WppView(kind, pictures, bank_palettes(
                     result['vram'], result.get('paired_sprites'), result.get('paired_tomba', True))
-                    if kind == 'frames' else ())
+                    if kind == 'frames' else (), result['vram'])
                 self.tabs.addTab(pictures_view, 'Pictures')
                 if 'paired_sprites' in result:
                     view = SpriteView(result['paired_sprites'], result['vram'], renderer=picture_renderer(
@@ -770,6 +770,10 @@ class MainWindow(QMainWindow):
                         lambda row, col, old_row, old_col, sprite=view:
                             sprite.bank.setCurrentCell(row, 0) if 0 <= row < sprite.bank.rowCount() else None)
                     self.tabs.addTab(view, 'Assembled frames')
+                    pictures_view.clut_selected.connect(view.override_palette)
+                    view.vram_view.clut_picked.connect(
+                        lambda word, pictures=pictures_view, sprite=view:
+                            pictures.override_palette(word) if sprite.palette_scope.currentIndex() == 2 else None)
             from gui.widgets.hex_view import HexView
             code = isinstance(node, Asset) and node.kind == 'INS' or (
                 isinstance(node, DiscEntry) and bool(result.get('regions')))

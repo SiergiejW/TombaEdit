@@ -36,6 +36,11 @@ def export_glb(path, meshes, vram, unlit=True, names=None):
         for key, (vertices, uv, colors) in mesh.batches.items():
             if not len(vertices):
                 continue
+            # glTF front faces are CCW. PSX models commonly store CW faces;
+            # swap matching corners of position, UV and colour together.
+            if getattr(mesh, 'front_clockwise', True):
+                order = np.arange(len(vertices)).reshape(-1, 3)[:, (0, 2, 1)].reshape(-1)
+                vertices, uv, colors = vertices[order], uv[order], colors[order]
             page, clut, semi = key
             key = ('image', id(image)) if image is not None else key
             if key not in materials:
@@ -55,6 +60,12 @@ def export_glb(path, meshes, vram, unlit=True, names=None):
                 doc['materials'].append(material)
             attrs = dict(POSITION=accessor(vertices, 'VEC3', True),
                          COLOR_0=accessor(np.clip(colors, 0, 1), 'VEC3'))
+            if not unlit:
+                triangles = vertices.reshape(-1, 3, 3)
+                normals = np.cross(triangles[:, 1] - triangles[:, 0], triangles[:, 2] - triangles[:, 0])
+                lengths = np.linalg.norm(normals, axis=1, keepdims=True)
+                normals = np.divide(normals, lengths, out=np.zeros_like(normals), where=lengths > 0)
+                attrs['NORMAL'] = accessor(np.repeat(normals, 3, axis=0), 'VEC3')
             if page >= 0 or image is not None:
                 attrs['TEXCOORD_0'] = accessor(uv, 'VEC2')
             primitives.append(dict(attributes=attrs, material=materials[key], mode=4))

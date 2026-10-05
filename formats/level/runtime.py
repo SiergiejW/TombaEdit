@@ -392,6 +392,22 @@ class InitialPoseResolver:
             # the game that are not here; for those, stopping where the
             # animation is set is enough to learn what the object shows.
             self.cache[key] = self.attempt(placement, False) or self.attempt(placement, True)
+            if (not self.cache[key] and not self.build.early and placement.layer == 5
+                    and placement.kind == 4 and placement.variant == 3 and placement.raw[3] == 1):
+                # The collectible's initializer removes it unless the event
+                # byte at C114 is FF (US 80041284). Decode its conditional
+                # pose with that byte set, without changing the initial scene.
+                baseline = self.baseline
+                changed = bytearray(baseline)
+                changed[(self.build.area + 0x44C) & 0x1FFFFF] = 0xFF
+                self.baseline = bytes(changed)
+                try:
+                    result = self.attempt(placement, False) or self.attempt(placement, True)
+                finally:
+                    self.baseline = baseline
+                if result:
+                    result['condition'] = 'Conditional collectible: the game shows it when its event flag is FF. Enable Event previews to inspect it.'
+                    self.cache[key] = result
             event = self.build.event
             if not self.cache[key] and event and self.area == 0 and placement.layer == 5 and placement.kind == 0x12:
                 # X00's initializer 80122F64 only draws this effect while
@@ -429,6 +445,9 @@ class InitialPoseResolver:
                               (0x1C, raw[1]), (0x1D, raw[0])):
             self.write(obj + offset, bytes((value,)))
         self.write(obj + 0x2E, bytes((raw[5], 0)))
+        self.write(obj + 0x74, struct.pack('<3h', 4096, 4096, 4096))
+        if placement.model in self.model_spans:
+            self.word(obj + 0xA0, self.model_spans[placement.model][0])
         for j, value in enumerate(placement.position):
             self.word(obj + 0x10 + j * 4, value << 16)
         pc = self.read_word(self.build.tables[placement.layer] + placement.kind * 4)
@@ -445,6 +464,8 @@ class InitialPoseResolver:
                 model = self.read_word(obj + 0xA0)
                 if model in self.model_pointers:
                     result['model'] = self.model_pointers[model]
+                    result['scale'] = struct.unpack('<3h', self.read(obj + 0x74, 6))
+                    result['rotation'] = struct.unpack('<3i', self.read(obj + 0x84, 12))
                     break
                 if SPR_MEMORY <= sprite < WMD_MEMORY and (sprite - SPR_MEMORY) % BANK_SPACING == 0:
                     if self.base <= anim < self.limit:

@@ -115,6 +115,10 @@ def parse_wmd(data, layout=None):
             raise FormatError(f"Unparsed WMD object bytes at {pos:X}..{end:X}")
         meshes.append(Mesh(start, {key: tuple(np.asarray(a, dtype=np.float32) for a in arrays)
                                    for key, arrays in batches.items()}, polygons))
+    from formats.models.winding import closed_winding
+    for mesh in meshes:
+        winding = closed_winding([mesh])
+        mesh.front_clockwise = True if winding is None else winding
     return meshes
 
 

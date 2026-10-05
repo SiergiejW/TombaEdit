@@ -70,6 +70,7 @@ class LevelView(ModelView):
         self.canvas.picked.connect(self.picked_entry)
         self.spread_action.setVisible(False)
         self.canvas.highlight = False
+        self.canvas.selection_box = True
         gif = QAction(self.style().standardIcon(QStyle.StandardPixmap.SP_DialogSaveButton), 'Save GIF', self)
         gif.setToolTip('Save one pass of the selected sprite\'s animation as a GIF.')
         gif.triggered.connect(self.save_gif)
@@ -81,8 +82,8 @@ class LevelView(ModelView):
             'In a town, outline the walkable cells of its map instead.')
         self.backdrop_action = self.toggle_action(
             QStyle.StandardPixmap.SP_DesktopIcon, 'Background', self.toggle_backdrop, True,
-            'Draw the section\'s backdrop sprites behind the level. They scroll with the '
-            'camera at their own fraction of its movement, as in the game.')
+            'Draw the section\'s backdrop at the horizon. Look sideways to pan a repeating '
+            'strip; looking up/down stops at 60 degrees. Camera height does not displace it.')
         self.town_action = self.toggle_action(
             QStyle.StandardPixmap.SP_FileDialogInfoView, 'Town Map', self.toggle_town, False,
             'Tint a town picture by its cell map: where characters can walk, and the '
@@ -138,6 +139,7 @@ class LevelView(ModelView):
             self.filter.blockSignals(False)
         self.canvas.lines = scene.collision
         self.canvas.backdrop = scene.backdrop
+        self.canvas.panorama_cache = None
         self.canvas.backdrop_turned = scene.collision_context.startswith('Path: Z')
         self.canvas.sky = scene.sky
         self.backdrop_action.setEnabled(bool(scene.backdrop) or scene.sky is not None)
@@ -152,6 +154,7 @@ class LevelView(ModelView):
         self.notice.setText(' | '.join(scene.notes))
         self.collision_inspector.set_scene(scene)
         self.apply_filter()
+        self.canvas.camera_controls.stop_glide()
         self.canvas.fit(animate=False)
         resolved = sum(e.active and e.category in ('Models', 'Sprites') for e in scene.entries)
         total = sum(e.active and e.placement is not None for e in scene.entries)
