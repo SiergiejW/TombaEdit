@@ -7,13 +7,16 @@ from PyQt6.QtCore import Qt, pyqtSignal, QItemSelectionModel
 from PyQt6.QtWidgets import (QWidget, QVBoxLayout, QHBoxLayout, QLabel, QSpinBox,
     QPushButton, QSplitter, QTableWidget, QTableWidgetItem, QAbstractItemView,
     QHeaderView, QFileDialog, QMessageBox, QCheckBox)
-from gui.widgets.image_view import ImageView
+from gui.widgets.image_view import ImageView, file_stem
 from disc.reader import FormatError
-from psx.graphics import render_sprite, part_page
+from psx.graphics import render_sprite, part_page, guess_page, palette_missing
 
 
 PART_COLOURS = ((255, 80, 80, 255), (80, 220, 255, 255), (255, 220, 60, 255), (120, 255, 120, 255),
                 (255, 120, 255, 255), (255, 160, 60, 255))
+
+
+FRAME_COLOUR = (255, 255, 255, 255)
 
 
 class SpriteView(QWidget):
@@ -29,6 +32,7 @@ class SpriteView(QWidget):
         self.pages = dict(pages or {})
         self.known = sorted(self.pages)
         self.guess = default
+        self.export_name = 'sprites'    # prefix of default file names, set by the window
         self.cache = {}
         self.frame_index = 0
         layout = QVBoxLayout(self)
@@ -48,11 +52,23 @@ class SpriteView(QWidget):
         self.origin.setChecked(True)
         self.origin.toggled.connect(self.refresh)
         bar.addWidget(self.origin)
-        self.bounds = QCheckBox('Boundaries')
-        self.bounds.setToolTip('Outline every part of a frame, and each frame on a sheet. '
+        self.frame_bounds = QCheckBox('Sprite bounds')
+        self.frame_bounds.setToolTip('Draw a box around every sprite, on its own and on a sheet. '
+                                     'Saved pictures include the boxes while this is ticked.')
+        self.frame_bounds.toggled.connect(self.refresh)
+        bar.addWidget(self.frame_bounds)
+        self.bounds = QCheckBox('Part bounds')
+        self.bounds.setToolTip('Outline every part a sprite is assembled from, one colour per part. '
                                'Saved pictures include the outlines while this is ticked.')
         self.bounds.toggled.connect(self.refresh)
         bar.addWidget(self.bounds)
+        self.grey = QCheckBox('Grey without palette')
+        self.grey.setChecked(True)
+        self.grey.setToolTip('Draw parts whose palette row is empty in this VRAM in shades of grey, '
+                             'so art the game colours while it runs can still be seen.')
+        self.grey.toggled.connect(self.rebuild)
+        self.grey.setVisible(renderer is None)
+        bar.addWidget(self.grey)
         self.page_base = QSpinBox()
         self.page_base.setRange(-1, 31)
         self.page_base.setSpecialValueText('Auto')
@@ -134,28 +150,23 @@ class SpriteView(QWidget):
         if self.known:
             return self.pages[min(self.known, key=lambda frame: abs(frame - index))]
         if self.guess is None:
-            # Nothing places this bank: take the base under which the most
-            # pixels of a few frames come out opaque.
-            sample = [f for f in self.frames if f][:12]
-            def opaque(base):
-                try:
-                    return sum(sum(render_sprite(f, self.vram, tpage=base).getchannel('A').histogram()[1:])
-                               for f in sample)
-                except FormatError:
-                    return -1
-            self.guess = max(range(32), key=opaque) if sample else 0
+            self.guess = guess_page(self.frames, self.vram)
         return self.guess
 
     def frame_image(self, index, origin=False):
         if index not in self.cache:
             try:
                 self.cache[index] = self.renderer(index) if self.renderer else render_sprite(
-                    self.frames[index], self.vram, tpage=self.base_for(index))
+                    self.frames[index], self.vram, tpage=self.base_for(index),
+                    grey_missing=self.grey.isChecked())
             except FormatError:
                 self.cache[index] = Image.new('RGBA', (1, 1))
         image = self.cache[index]
         if self.bounds.isChecked() and self.frames[index]:
             image = self.outlined(image, self.frames[index])
+        if self.frame_bounds.isChecked() and self.frames[index]:
+            image = image.copy()
+            ImageDraw.Draw(image).rectangle((0, 0, image.width - 1, image.height - 1), outline=FRAME_COLOUR)
         if not origin or not self.frames[index]:
             return image
         bounds = [part for frame in self.frames for part in frame]
@@ -207,6 +218,9 @@ class SpriteView(QWidget):
         self.whole.setChecked(False)
         self.refresh()
         frame = self.frames[row]
+        if frame and not self.renderer and any(palette_missing(self.vram, part[2]) for part in frame):
+            self.info.setText(self.info.text() + ' | palette row empty in this VRAM'
+                              + (', shown in grey' if self.grey.isChecked() else ''))
         print(f'selected: sprite {row:03d} | {len(frame)} pieces'
               + ('' if self.renderer or not frame else f' | texture page base 0x{self.base_for(row):X}'))
 
@@ -249,8 +263,7 @@ class SpriteView(QWidget):
         for n, (index, image) in enumerate(zip(indices, images)):
             x, y = n%cols*width, n//cols*height
             out.alpha_composite(image, (x, y))
-            if self.bounds.isChecked():
-                draw.rectangle((x, y, x + width - 1, y + height - 1), outline=(255, 255, 255, 90))
+
             records.append(dict(sprite=index, x=x, y=y, width=image.width, height=image.height))
         return out, records
 
@@ -263,8 +276,8 @@ class SpriteView(QWidget):
             self.parts.setRowCount(0)
             self.info.setText(f'Whole bank | {len(self.frames)} sprites')
             if image.getbbox() is None and any(self.frames):
-                self.info.setText(self.info.text() + ' | Nothing to draw: the texture page or palette rows '
-                                  'these parts name are empty in this VRAM. The game fills them while it runs.')
+                self.info.setText(self.info.text() + ' | Nothing to draw: the texture page these parts '
+                                  'name is empty in this VRAM. Try another texture page base or section.')
         elif len(self.selected_indices()) > 1:
             indices = self.selected_indices()
             image, _ = self.sheet(indices)
@@ -291,14 +304,14 @@ class SpriteView(QWidget):
     def save_current(self):
         if not self.frames:
             return
-        path, _ = QFileDialog.getSaveFileName(self, 'Save sprite', f'sprite_{self.frame_index:04d}.png', 'PNG (*.png)')
+        path, _ = QFileDialog.getSaveFileName(self, 'Save sprite', f'{file_stem(self.export_name)} sprite {self.frame_index:04d}.png', 'PNG (*.png)')
         if path:
             self.frame_image(self.frame_index, self.origin.isChecked()).save(path)
 
     def save_bank(self):
         if not self.frames:
             return
-        path, _ = QFileDialog.getSaveFileName(self, 'Save whole bank', 'sprites.png', 'PNG (*.png)')
+        path, _ = QFileDialog.getSaveFileName(self, 'Save whole bank', file_stem(self.export_name) + '.png', 'PNG (*.png)')
         if path:
             image, records = self.sheet(list(range(len(self.frames))))
             image.save(path)
@@ -318,4 +331,4 @@ class SpriteView(QWidget):
         folder = QFileDialog.getExistingDirectory(self, 'Save PNG sprites')
         if folder:
             for index in indices:
-                self.frame_image(index, self.origin.isChecked()).save(Path(folder)/f'sprite_{index:04d}.png')
+                self.frame_image(index, self.origin.isChecked()).save(Path(folder)/f'{file_stem(self.export_name)} sprite {index:04d}.png')

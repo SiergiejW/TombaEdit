@@ -157,22 +157,33 @@ def frame_image(picture, parts, palette):
     return image
 
 
+def bank_palettes(vram, frames=None, tomba=True):
+    """Palettes to offer for a picture bank, best first: [(name, words)].
+
+    The palettes the matching SPR bank names come first when VRAM holds
+    them, as it does for the phoenix bank. Tomba's parts name a row the game
+    fills while running, so his bank gets the outfit rows of the section's
+    palette block instead."""
+    found = []
+    for clut in sorted({part[2] & 0x7FFF for frame in frames or [] for part in frame}):
+        x, y = (clut & 63) * 16, (clut >> 6) & 511
+        row = vram[y, x:x + 16]
+        if len(row) == 16 and row.any():
+            found.append((f'CLUT 0x{clut:04X}', row))
+    if tomba or not found:
+        found += [(f'Tomba palette {i}', row) for i, row in enumerate(tomba_palettes(vram))]
+    return found
+
+
 def renderer(frames, pictures, vram, tomba):
-    """Frame drawing callback for a SPR bank whose pixels live in `pictures`.
-    Tomba's own bank is shown in his first outfit; other banks use the
-    palette their parts name."""
-    outfits = tomba_palettes(vram)
-    flat = vram.reshape(-1)
+    """Frame drawing callback for a SPR bank whose pixels live in `pictures`,
+    using the first palette bank_palettes() offers."""
+    palettes = bank_palettes(vram, frames, tomba)
+    palette = palettes[0][1] if palettes else None
 
     def render(index):
         parts = frames[index]
         if not parts or index >= len(pictures):
             return Image.new('RGBA', (1, 1))
-        if tomba and outfits:
-            palette = outfits[0]
-        else:
-            clut = parts[0][2]
-            start = ((clut >> 6) & 511) * 1024 + (clut & 63) * 16
-            palette = flat[(start + np.arange(16)) % flat.size]
         return frame_image(pictures[index], parts, palette)
     return render

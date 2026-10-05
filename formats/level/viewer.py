@@ -39,7 +39,8 @@ class LevelView(ModelView):
         self.collision_action = self.toggle_action(
             QStyle.StandardPixmap.SP_FileDialogListView, 'Collision', self.toggle_collision, False,
             'Draw the WHM collision spans over the level: green walkable surfaces, '
-            'magenta surfaces with special attributes and orange solid ranges.')
+            'magenta surfaces with special attributes and orange solid ranges.\n'
+            'In a town, outline the walkable cells of its map instead.')
         self.town_action = self.toggle_action(
             QStyle.StandardPixmap.SP_FileDialogInfoView, 'Town Map', self.toggle_town, False,
             'Tint a town picture by its cell map: where characters can walk, and the '

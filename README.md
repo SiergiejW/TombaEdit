@@ -78,11 +78,15 @@ tilted slightly downwards.
 | Left click | Select a polygon and show its record, page, CLUT and UVs |
 
 With **Orbit Selection** on, a middle drag circles the selected model rather
-than the middle of the view. **Texture Mode** switches between textures and
+than the middle of the view. **Highlighting** dims everything except the
+selection and can be switched off. **Texture Mode** switches between textures and
 bare vertex colours, **Spread Parts** lays a bank of models out on a grid,
 and the model list hides or isolates individual models without moving the
 camera. glTF export writes the visible models with their textures, either
-unlit with the game's colours or lit for use elsewhere.
+unlit with the game's colours or lit for use elsewhere. Exported files are
+offered under the area, section and resource that is open, with the model's
+name added when one is exported alone, and the models keep their names inside
+the file. Sprite and picture exports are named the same way.
 
 ### Level editor
 
@@ -106,7 +110,10 @@ markers.
   pre-rendered picture rather than geometry. The picture is the backdrop of
   the scene and placements are positions on it. The toggle tints it by the
   town's map of 8 × 8 pixel cells, one colour per cell value, with the values
-  that have bit 7 set in blue.
+  that have bit 7 set in blue. **Collision** outlines the same map: green
+  around the walkable ground, magenta between cells of different values.
+  Town characters are created by the town's own code rather than by placement
+  records, so only the few placed objects appear.
 - *Show* limits the scene to geometry, models, sprites or unresolved objects,
   and *Open asset* jumps to any resource the group loads.
 
@@ -123,19 +130,34 @@ a placed object that shows the frame, the game's object table for banks that
 no object in the section uses, and otherwise the base that leaves the fewest
 empty pixels. The value can be set by hand.
 
-**Boundaries** outlines every part of a frame, and every frame on a sheet.
-Saved pictures include the outlines while it is ticked. The viewer opens on a
+**Sprite bounds** draws a box around every sprite and **Part bounds**
+outlines the parts it is assembled from, one colour per part. Both apply to
+single sprites and to sheets, and saved pictures include them while ticked.
+
+Some palettes are only written while the game runs. Parts that name an empty
+palette row are drawn in grey so the art can still be seen; **Grey without
+palette** turns that off. A bank whose texture page is empty as well has
+nothing to show in that section.
+
+A bank can hold several characters whose art sits on different pages, as the
+town banks do. Auto then has one base for the whole bank unless placed
+objects say otherwise, and the frames of the other characters need the base
+set by hand. The viewer opens on a
 sheet of the whole bank; selecting a row shows that frame and its parts.
 
 Tomba's own frames are not in VRAM. The game keeps them packed in a WPP bank
-and uploads one picture at a time. Opening a WPP bank lists its pictures;
-*Assembled frames* draws them through the matching SPR bank, and the sprite
-viewer does the same for Tomba's SPR bank. The palette list holds the outfit
-palettes of the selected section.
+and uploads one picture at a time; the phoenix is stored the same way.
+Opening a WPP bank lists its pictures, with the same saving choices as a
+sprite bank: one picture, a sheet with its layout, the selected rows or all
+of them. *Assembled frames* draws the pictures through the matching SPR bank,
+and the sprite viewer does the same for those SPR banks. The palette list
+offers the palettes the matching SPR bank names where VRAM holds them, and
+for Tomba the outfit rows of the selected section's palette block.
 
 ### VRAM
 
-The VRAM tab shows the 1024 × 512 words a section has loaded, read as 4-bit
+The VRAM tab shows the 1024 × 512 words a section has loaded, on top of
+the item and effect graphics the game loads once at boot, read as 4-bit
 indices in grey or false colour, through a 16 or 256 colour palette, or as
 15-bit pixels. The starting palette is one the open resource draws with, or
 the first usable row of the section's palette block.

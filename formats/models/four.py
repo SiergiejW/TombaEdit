@@ -3,7 +3,9 @@
 The eight batches correspond to WMD primitive types. Each record starts
 with one signed SVECTOR delta per corner, followed by reserved words.
 The game subtracts (delta * weight) >> 12 from the source WMD vertex.
-FOUR is the tool's name for LDAR family 4, not a file magic.
+The banks carry no name of their own. Load records identify them only by
+type codes 40FF to 45FF, and FOUR is the label those codes have in the
+community's type list.
 """
 from dataclasses import dataclass
 import struct

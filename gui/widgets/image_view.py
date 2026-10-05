@@ -19,6 +19,12 @@ def text_view(text):
     view.setPlainText(text)
     return view
 
+def file_stem(text, fallback='export'):
+    """`text` made safe to offer as a file name."""
+    cleaned = ''.join(c if c.isalnum() or c in ' -_.()' else ' ' for c in text or '')
+    return ' '.join(cleaned.split())[:120] or fallback
+
+
 def qimage(image):
     image = image.convert("RGBA")
     return QImage(image.tobytes(), image.width, image.height, image.width * 4,
@@ -51,6 +57,7 @@ class ImageView(QWidget):
         self.view.setAlignment(Qt.AlignmentFlag.AlignCenter)
         layout.addWidget(self.view)
         self.image = None
+        self.export_name = ''       # default file name, without extension
         if image is not None:
             self.set_image(image)
 
@@ -74,7 +81,8 @@ class ImageView(QWidget):
     def save(self):
         if self.image is None:
             return
-        path, _ = QFileDialog.getSaveFileName(self, "Export image", "preview.png", "PNG (*.png)")
+        path, _ = QFileDialog.getSaveFileName(self, "Export image", file_stem(self.export_name, 'preview') + '.png',
+                                              "PNG (*.png)")
         if path:
             try:
                 self.image.save(path)

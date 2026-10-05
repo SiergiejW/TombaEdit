@@ -40,6 +40,11 @@ the old exporter's bitwise OR operation. WMD texture-page and CLUT fields select
 PSX pages/palettes. PSX colour zero is transparent, while `0x8000` remains
 visible black. STP blending itself is not reproduced yet.
 
+The first load group of `SYS/LDSYS.BIN` is loaded at boot. Its uploads to
+the lower half of VRAM stay for the whole game: texture pages 20 and 21 with
+the item and effect sprites that SPR slot 4 draws, and their palette rows.
+Section VRAM is built on top of them.
+
 Every section uploads a 256 × 32 block of palettes at (128, 480). Its first
 column holds Tomba's outfits, one row each.
 

@@ -7,7 +7,8 @@ import numpy as np
 from psx.graphics import texture_page
 
 
-def export_glb(path, meshes, vram, unlit=True):
+def export_glb(path, meshes, vram, unlit=True, names=None):
+    """`names` gives each mesh the name it has in the viewer."""
     doc = dict(asset=dict(version="2.0", generator="TombaEdit"), scene=0,
                scenes=[dict(nodes=[])], nodes=[], meshes=[], materials=[],
                buffers=[], bufferViews=[], accessors=[], images=[], textures=[],
@@ -59,9 +60,10 @@ def export_glb(path, meshes, vram, unlit=True):
             primitives.append(dict(attributes=attrs, material=materials[key], mode=4))
         if primitives:
             index = len(doc['meshes'])
-            doc['meshes'].append(dict(name=f'Object {mi:03d}', primitives=primitives))
+            name = names[mi] if names and mi < len(names) and names[mi] else f'Object {mi:03d}'
+            doc['meshes'].append(dict(name=name, primitives=primitives))
             doc['scenes'][0]['nodes'].append(len(doc['nodes']))
-            doc['nodes'].append(dict(mesh=index, name=f'Object {mi:03d} @ {mesh.offset:06X}'))
+            doc['nodes'].append(dict(mesh=index, name=name if names else f'{name} @ {mesh.offset:06X}'))
     doc['buffers'] = [dict(byteLength=len(binary))]
     blob = json.dumps(doc, separators=(',', ':')).encode('utf-8')
     blob += b' ' * (-len(blob) % 4)

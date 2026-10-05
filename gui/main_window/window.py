@@ -88,7 +88,14 @@ def prepare_preview(project, node, context=None):
             from formats.level.runtime import table_pages
             slot = (node.code >> 8) & 15
             result['sprite_pages'] = sprite_pages(project, node.ldar, context).get(slot, {})
-            result['sprite_default'] = table_pages(project).get(slot)
+            from psx.graphics import guess_page
+            # Pages where this bank's own group, then the section, start a
+            # texture upload.
+            starts = [a.rect[0] // 64 + a.rect[1] // 256 * 16
+                      for i in dict.fromkeys((node.group, context)) for a in groups[i].assets
+                      if a.rect and a.rect[3] >= 128]
+            default = table_pages(project).get(slot)
+            result['sprite_default'] = guess_page(frames, result['vram'], starts) if default is None else default
             # Tomba's own banks have no pixels in VRAM; a picture bank with
             # one entry per frame supplies them.
             for candidate in loaded:
@@ -594,7 +601,10 @@ class MainWindow(QMainWindow):
                 from formats.sprites.wpp_viewer import WppView
                 from formats.sprites.wpp import renderer as picture_renderer
                 kind, pictures = result['wpp']
-                pictures_view = WppView(kind, pictures, result['vram'])
+                from formats.sprites.wpp import bank_palettes
+                pictures_view = WppView(kind, pictures, bank_palettes(
+                    result['vram'], result.get('paired_sprites'), result.get('paired_tomba', True))
+                    if kind == 'frames' else ())
                 self.tabs.addTab(pictures_view, 'Pictures')
                 if 'paired_sprites' in result:
                     view = SpriteView(result['paired_sprites'], result['vram'], renderer=picture_renderer(
@@ -638,6 +648,13 @@ class MainWindow(QMainWindow):
                 shown = len(result["raw"])
                 self.tabs.addTab(HexView(result["raw"], note='' if shown >= node.size else
                                          f'first {shown:,} of {node.size:,} bytes on disc'), "Disc hex")
+            # Exports are offered under the name of what is open.
+            stem = self.export_stem(node)
+            for i in range(self.tabs.count()):
+                widget = self.tabs.widget(i)
+                for viewer in [widget] + widget.findChildren(ImageView):
+                    if hasattr(viewer, 'export_name'):
+                        viewer.export_name = stem
             for label in self.tabs.findChildren(QLabel):
                 if not label.testAttribute(Qt.WidgetAttribute.WA_TransparentForMouseEvents):
                     label.setTextInteractionFlags(Qt.TextInteractionFlag.TextSelectableByMouse)
@@ -649,6 +666,20 @@ class MainWindow(QMainWindow):
         except Exception as exc:
             self.tabs.addTab(text_view(f"Viewer error: {exc}\n\n{traceback.format_exc()}"), "Diagnostic")
             self.statusBar().showMessage("Viewer error; raw data remains available")
+
+    def export_stem(self, node):
+        """Area, section and resource of a node, as the start of a file name."""
+        if isinstance(node, DiscEntry):
+            return Path(node.path).stem
+        path, index = (node.ldar, node.group) if isinstance(node, Asset) else node[1:]
+        stem = Path(path).stem
+        area = int(stem[4:]) if stem.startswith('LDAR') and stem[4:].isdigit() else -1
+        place = f'AREA{area:02d}' if area >= 0 else 'SYSTEM'
+        place += ' base' if not index else f' section {index - 1:02d} {section_name(area, index - 1)}'
+        if isinstance(node, Asset):
+            name = self.labels.label_for(self.label_hashes.get(self.node_key(node), ''))
+            place += f' - {name or f"{node.kind} {node.code:04X}"}'
+        return place
 
     def metadata(self, node, result):
         if isinstance(node, Asset):

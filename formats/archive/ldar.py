@@ -7,6 +7,9 @@ from disc.reader import FormatError
 from formats.archive.gam import decompress
 
 
+SYSTEM_LDAR = 'SYS/LDSYS.BIN'
+
+
 def type_name(code):
     if code == 3: return "SPC"
     if code == 8: return "SAP"
@@ -150,9 +153,16 @@ class Project:
     def vram(self, path, group_index):
         vram = np.zeros((512, 1024), dtype=np.uint16)
         groups = self.ldars[path]
-        for group in ([groups[0]] if group_index == 0 else [groups[0], groups[group_index]]):
+        wanted = [(groups[0], 0)] if group_index == 0 else [(groups[0], 0), (groups[group_index], 0)]
+        # The first group of the system table is loaded at boot and its
+        # lower half of VRAM is never replaced: item and effect sprites on
+        # pages 20 and 21, with their palettes.
+        system = self.ldars.get(SYSTEM_LDAR)
+        if system and path != SYSTEM_LDAR:
+            wanted.insert(0, (system[0], 256))
+        for group, top in wanted:
             for asset in group.assets:
-                if not asset.rect:
+                if not asset.rect or asset.rect[1] < top:
                     continue
                 x, y, w, h = asset.rect
                 if x + w > 1024 or y + h > 512 or not w or not h:

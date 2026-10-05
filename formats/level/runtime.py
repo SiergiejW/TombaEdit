@@ -131,7 +131,12 @@ class InitialPoseResolver:
         elif address in (0x80022E44, 0x80022C08, 0x80022D3C, 0x80022F6C, 0x80023020, 0x800230BC):
             uc.reg_write(r.UC_MIPS_REG_V0, 1)
             uc.reg_write(r.UC_MIPS_REG_PC, uc.reg_read(r.UC_MIPS_REG_RA))
-        elif address in (0x8001FFE8, 0x8005DE78, 0x80023608, 0x800236F4):
+        elif address == 0x8005DE78:
+            # GetClut(x, y): objects that pick their palette this way keep it.
+            x, y = uc.reg_read(r.UC_MIPS_REG_A0), uc.reg_read(r.UC_MIPS_REG_A1)
+            uc.reg_write(r.UC_MIPS_REG_V0, (y & 511) << 6 | (x >> 4) & 63)
+            uc.reg_write(r.UC_MIPS_REG_PC, uc.reg_read(r.UC_MIPS_REG_RA))
+        elif address in (0x8001FFE8, 0x80023608, 0x800236F4):
             uc.reg_write(r.UC_MIPS_REG_V0, 0)
             uc.reg_write(r.UC_MIPS_REG_PC, uc.reg_read(r.UC_MIPS_REG_RA))
         elif not (0x80010000 <= address < 0x80097FA8 or 0x800E7388 <= address < 0x80140000):

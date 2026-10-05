@@ -59,6 +59,8 @@ class MeshCanvas(CameraEventMixin, QOpenGLWidget):
         # Optional GL_LINES overlay: (vertices, colours).
         self.lines = None
         self.show_lines = False
+        # Dim everything but the selected model.
+        self.highlight = True
         self.stats_label = QLabel(self)
         self.stats_label.setObjectName('viewerOverlay')
         self.stats_label.setTextInteractionFlags(Qt.TextInteractionFlag.TextSelectableByMouse)
@@ -158,9 +160,12 @@ class MeshCanvas(CameraEventMixin, QOpenGLWidget):
     def set_mesh(self, index, mesh):
         """Swap one mesh in place, as an animation step does."""
         if 0 <= index < len(self.meshes) and self.meshes[index] is not mesh:
-            self.meshes[index] = mesh
             if self.selected is not None and self.selected[0] == index:
-                self.selected = None
+                # Carry the selection over to the same polygon of the new mesh.
+                old = self.meshes[index].polygons
+                at = next((n for n, polygon in enumerate(old) if polygon is self.selected[1]), 0)
+                self.selected = (index, mesh.polygons[min(at, len(mesh.polygons) - 1)]) if mesh.polygons else None
+            self.meshes[index] = mesh
             self.update()
 
     def resizeEvent(self, event):
@@ -254,7 +259,7 @@ class MeshCanvas(CameraEventMixin, QOpenGLWidget):
                 draw_colors = colors if self.colored else np.ones_like(colors)
                 if use_texture:
                     draw_colors = np.ascontiguousarray(draw_colors * 0.5)
-                if self.selected_model is not None and i != self.selected_model:
+                if self.highlight and self.selected_model is not None and i != self.selected_model:
                     draw_colors = np.ascontiguousarray(draw_colors * 0.24)
                 gl.glColorPointer(3, gl.GL_FLOAT, 0, draw_colors)
                 gl.glVertexPointer(3, gl.GL_FLOAT, 0, vertices)
@@ -334,6 +339,7 @@ class MeshCanvas(CameraEventMixin, QOpenGLWidget):
 class ModelView(QWidget):
     def __init__(self, meshes=None, vram=None, code=0):
         super().__init__()
+        self.export_name = ''       # default file name for exports, set by the window
         layout = QVBoxLayout(self)
         layout.setContentsMargins(0, 0, 0, 0)
         self.toolbar = QToolBar(self)
@@ -367,6 +373,10 @@ class ModelView(QWidget):
             'Frame Model', lambda: self.canvas.fit())
         self.orbit_action = add_action(QStyle.StandardPixmap.SP_BrowserReload,
             'Orbit Selection', lambda value: setattr(self.canvas, 'orbit_selection', value), True)
+        self.highlight_action = add_action(QStyle.StandardPixmap.SP_DialogApplyButton,
+            'Highlighting', lambda value: self.toggle('highlight', value), True)
+        self.highlight_action.setToolTip('Dim everything except the selected model. Turn off to keep '
+                                         'the whole scene at full brightness while selecting.')
         self.orbit_action.setToolTip('Middle-drag circles the selected model. Turn off to orbit '
                                      'whatever is in the middle of the view.')
         self.origin_action = add_action(QStyle.StandardPixmap.SP_ArrowUp,
@@ -545,11 +555,17 @@ class ModelView(QWidget):
         self.uv.set_image(image)
 
     def export(self):
-        path, mode = QFileDialog.getSaveFileName(self, 'Export geometry', 'model.glb',
+        from gui.widgets.image_view import file_stem
+        shown = sorted(self.canvas.visible)
+        names = [self.objects.item(row, 1).text() for row in shown if self.objects.item(row, 1)]
+        # Named after the open resource, and after the model when one is exported alone.
+        stem = self.export_name + (f' - {names[0]}' if len(names) == 1 and self.objects.rowCount() > 1 else '')
+        path, mode = QFileDialog.getSaveFileName(self, 'Export geometry', file_stem(stem, 'model') + '.glb',
             'GLB (unlit, game colours) (*.glb);;GLB (lit, external lighting) (*.glb)')
         if path:
             try:
                 from formats.models.glb import export_glb
-                export_glb(path, self.canvas.active(), self.canvas.vram, unlit='unlit' in mode)
+                export_glb(path, self.canvas.active(), self.canvas.vram, unlit='unlit' in mode, names=names)
+                print(f'wrote {path}: {len(names)} models')
             except Exception as exc:
                 QMessageBox.warning(self, 'Export failed', str(exc))

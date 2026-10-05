@@ -174,7 +174,36 @@ def town_picture(project, resources, notes):
                        note=f'{image.width} x {image.height} pre-rendered picture. '
                             'Town map shows it tinted by the 8 x 8 cell map.')
     entry.alternative = quad(corners, tinted)
+    entry.cells = grid if cells is not None and tinted is not image else None
     return entry
+
+
+def town_lines(grid):
+    """Outline of a town's cell map: green where walkable ground meets
+    blocked cells, magenta between cells of different non-zero values."""
+    vertices, colours = [], []
+    height, width = grid.shape
+    padded = np.zeros((height + 1, width + 1), np.uint8)
+    padded[:height, :width] = grid
+    for y in range(height):
+        for x in range(width):
+            here = int(grid[y, x])
+            for other, a, b in ((int(padded[y, x + 1]), (x + 1, y), (x + 1, y + 1)),
+                                (int(padded[y + 1, x]), (x, y + 1), (x + 1, y + 1))):
+                if here != other:
+                    colour = SURFACE if not here or not other else SPECIAL
+                    vertices += [(a[0] * 8, -a[1] * 8, 0), (b[0] * 8, -b[1] * 8, 0)]
+                    colours += [colour, colour]
+            # The map's own top and left edges.
+            if here and x == 0:
+                vertices += [(0, -y * 8, 0), (0, -(y + 1) * 8, 0)]
+                colours += [SURFACE, SURFACE]
+            if here and y == 0:
+                vertices += [(x * 8, 0, 0), ((x + 1) * 8, 0, 0)]
+                colours += [SURFACE, SURFACE]
+    if not vertices:
+        return None
+    return np.asarray(vertices, np.float32), np.asarray(colours, np.float32)
 
 
 def build_scene(project, path, index):
@@ -269,7 +298,10 @@ def build_scene(project, path, index):
     town = town_picture(project, resources, notes)
     if town:
         entries.insert(0, town)
-    return LevelScene(entries, list(resources.values()), vram, notes, collision_lines(banks))
+    collision = collision_lines(banks)
+    if collision is None and town is not None and getattr(town, 'cells', None) is not None:
+        collision = town_lines(town.cells)
+    return LevelScene(entries, list(resources.values()), vram, notes, collision)
 
 
 def sprite_pages(project, path, index):
