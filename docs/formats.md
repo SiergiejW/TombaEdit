@@ -310,6 +310,87 @@ one area uses. The overlays share their first 2DE6C bytes; code after that is
 specific to the area, so such an entry is only meaningful with that area's
 overlay loaded.
 
+## Stock formats
+
+These are Sony's own, used by most games on the console, and are opened
+wherever they are found.
+
+**TIM** is the word `0x10`, a flag word and one or two blocks. The low bits
+of the flags give the depth (0: 4 bits, 1: 8 bits, 2: 15-bit colour, 3:
+24-bit colour) and bit 3 says a palette block comes first. A block is its
+own length, a VRAM position, a size in VRAM words and the words. A palette
+block holds as many palettes as fit in it. Two headerless forms occur
+inside archives and are read as TIMs: a palette block followed by a
+position, a size and pixels, and a position and size followed by words.
+
+**TMD** is `0x41`, a flag word, an object count and a 28-byte record per
+object giving the start and count of its vertices, normals and primitives.
+A primitive is four bytes (packet length, own length in words, flags, mode)
+and a body of, in order: a word per corner with U, V and on the first two
+the CLUT and texture page; colour words; 16-bit vertex and normal indices.
+Mode bit 2 is textured, bit 3 a quad, bit 4 shaded per vertex. Flag bit 0
+means unlit, and then colours take the place of normals. The length of
+every file checked equals the end of its last list, to the byte.
+
+**VAB** is a header (`pBAV`, sixteen-byte program records, 512 bytes of tone
+records per program, a table of waveform sizes in units of eight bytes) and
+a body of SPU waveforms end to end. It ships as one file or as a header
+(`.VH`, also `.VA`) and a body (`.VB`). Each waveform opens with an empty
+block and ends with a flagged one, which is how a body is told from the
+padding that often separates it from its header.
+
+**SEQ** is `pQES`, a version, ticks per quarter note, a tempo, a time
+signature and one MIDI track with running status, tempo changes written
+without their length byte. Version 0 has a 32-bit length before the events.
+A standard MIDI file is played by merging its tracks into that form.
+
+**XA** audio is not file data: it occupies Form 2 sectors, 2324 bytes each
+where a file read returns 2048, and several channels are interleaved by
+sector. Each sector's subheader names its file and channel and carries a
+coding byte: stereo, half rate and 8-bit are each a two-bit field in which
+only the value 1 selects them; the values 2 and 3 are reserved, occur on
+real discs, and play as 0. A file is taken for a stream by sampling its
+sectors: sound sectors and no data sectors. Sectors with no sync pattern at
+all are CD audio.
+
+**STR** movies carry `0x80010160` at the start of each video sector. The
+frame header names the bitstream version. Versions 1 and 2 store each
+block's DC as ten bits; version 3 codes it as MPEG-1 does, a size from one
+of two tables and that many bits of difference from the previous block of
+the same component, in steps of four.
+
+## Archives
+
+`formats/archive/containers.py` reads six table layouts:
+
+| Layout | Table | Met in |
+| --- | --- | --- |
+| pairs | (offset, length); the first offset is the table's length | the sampler's `.LPK` and `.APK`, `ANGEL.BIN` |
+| offsets | ascending offsets; the first is the table's length | DSC `.PAK` |
+| counted | a count, the file's length, then (offset, length) | PUYO3 `.DAT` |
+| sectors | (sector, length), no count | MEL2 `.FAR` |
+| LVL | `Indx`, then 24-byte records: name, sector, sectors, length | Abe's Oddysee |
+| RAQ | 32-byte records: name, flags, sector, sectors, behind a copyright line | MEL2 `.RAQ` |
+
+The file is also searched once for TIM, VAB, SEQ and TMD headers. What the
+search finds inside a table entry takes the entry's name; an entry holding
+several is listed as each; anything outside every entry is listed by offset.
+A table that names nothing recognisable is taken to be a coincidence and the
+search stands alone.
+
+Two packings are undone. The sampler's `.LPK` entries are LZSS exactly as
+in Okumura's `lzss.c`: flag bytes read low bit first, a set bit for a
+literal, otherwise twelve bits of position in a 4096-byte ring written from
+`0xFEE` and four bits of length less three. MEL2's entries start `LZSD`,
+then a 32-bit count of the bytes from that count to the end, then blocks of
+Gage's byte pair encoding: a run-length coded table giving some byte values
+a pair to stand for, a 16-bit big-endian length, and data in which pairs
+expand recursively. The routine is at `800795F4` in `MEL2/PSX.EXE`.
+
+Memory card saves, found in the sampler's `TIM.LPK`, start `SC`, a frame
+count and a block count, then a 64-byte Shift-JIS title, a palette at
+`0x60` and 16 x 16 four-bit icon frames from `0x80`.
+
 ## Builds
 
 `game/builds.py` describes each executable the level editor can run objects
@@ -328,6 +409,10 @@ An entry holds the six tables of object routines (APD layers 2 to 5, 7 and
 visibility tests, `GetClut`, the seven draw-list appenders, the sound call
 and two flag tests), and the per-area tables for placement slots, entrances,
 collision origins, plane limits, fixed pictures and sprite pages.
+The sampler stores two of these differently: its fixed picture rectangles
+are sixteen bytes, without the blend flag, and its object records are
+twenty, with four size words ahead of the page, the animation, the SPR slot
+and the script pointer.
 
 The engine is the same in all five, which is how the addresses were found.
 The three object dispatchers (8001DFD4, 8003438C and 8002DB4C in retail)

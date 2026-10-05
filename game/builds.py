@@ -37,9 +37,14 @@ class Build:
     # per-area pointers to bytes; otherwise the entries are stored in place,
     # `stride` bytes an area and `width` bytes a section.
     plane_limits: tuple
-    pages: int | None       # twelve-byte object records naming a texture page per SPR slot
+    pages: int | None       # object records naming a texture page per SPR slot
     early: bool = False     # a 1997 build: no area variants
     picture_record: int = 18    # bytes a rectangle of a fixed picture takes
+    # Layout of a `pages` record, ending in the SPR slot and a pointer to
+    # the object's scripts, with the page base first of the named fields.
+    # Twelve bytes from the Japanese demo on; the sampler's are twenty,
+    # with four size words in front.
+    page_record: str = '<BBhI4x'
 
     @property
     def event(self):
@@ -104,7 +109,8 @@ BUILDS = {
         silent=(0x80021568, 0x80024418, 0x800244BC),
         slot_tables=0x80073F14, common=0x80071BCC, pictures=0x80073CC4, entrances=0x80072110,
         origins=0x80073994, wall_origins=0x80073984, alternate_origin=None,
-        plane_limits=(0x800739B4, 24, 2), pages=None, early=True, picture_record=16),
+        plane_limits=(0x800739B4, 24, 2), pages=0x80072F74, early=True, picture_record=16,
+        page_record='<8xHHiI'),
 }
 
 

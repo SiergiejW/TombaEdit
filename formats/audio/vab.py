@@ -37,10 +37,13 @@ def body_size(data, at=0):
 
 def is_body(data, sizes, at=0):
     """Whether waveforms of these sizes start at `at`. Every waveform opens
-    with an empty block, which padding between two files does not line up
-    with for long."""
+    with an empty block and closes, in its last block or the one before,
+    with the end flag; padding between two files has the first and never
+    the second."""
     for size in sizes[:6]:
-        if at + sfx.BLOCK > len(data) or any(data[at:at + sfx.BLOCK]):
+        if at + size > len(data) or any(data[at:at + sfx.BLOCK]):
+            return False
+        if size >= 2 * sfx.BLOCK and not (data[at + size - sfx.BLOCK + 1] | data[at + size - 2 * sfx.BLOCK + 1]) & sfx.END:
             return False
         at += size
     return bool(sizes)

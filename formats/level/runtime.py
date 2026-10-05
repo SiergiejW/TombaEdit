@@ -490,11 +490,13 @@ def table_pages(project):
     if found is None or not found.build.pages:
         return {}
     exe, base, votes, at = found.data, found.base, {}, found.build.pages
-    while found.holds(at, 12):
-        page, _, slot, pointer = struct.unpack_from('<BBhI', exe, at - base + 0x800)
+    layout = found.build.page_record
+    size = struct.calcsize(layout)
+    while found.holds(at, size):
+        page, _, slot, pointer = struct.unpack_from(layout, exe, at - base + 0x800)
         if not (0 <= slot < 16 and page < 32 and 0x80010000 <= pointer < 0x80200000):
             break
         votes.setdefault(slot, {}).setdefault(page, 0)
         votes[slot][page] += 1
-        at += 12
+        at += size
     return {slot: max(pages, key=pages.get) for slot, pages in votes.items()}

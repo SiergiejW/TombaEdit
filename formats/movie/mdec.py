@@ -18,15 +18,36 @@ PlayStation's own and catch people out:
   - each block opens with its DC as a plain signed 10-bit number rather
     than as a difference from the block before, the way MPEG-1 codes it.
     One quantisation scale, out of the frame header, covers the whole
-    frame. (That is version 2, which is what this disc uses; version 3
-    codes the DC as a difference and is not handled here.)
+    frame. That is version 2, and version 1 before it, which reads the
+    same. Version 3 does code the DC as MPEG-1 does: a size code from one
+    of two tables, for brightness and for colour, then that many bits of
+    difference from the last block of the same kind, in quarter steps.
 
 Decoding is checked against ffmpeg's own mdec decoder frame for frame -
 see the module test at the bottom of formats/movie/psxstr.py.
 """
 import numpy as np
 
-VERSIONS = (2,)
+VERSIONS = (1, 2, 3)
+
+# ISO 11172-2 tables B.12 and B.13: how many bits of DC difference follow,
+# for luminance and chrominance blocks. Used by version 3 frames.
+_DC_SIZE = (
+    {'100': 0, '00': 1, '01': 2, '101': 3, '110': 4, '1110': 5, '11110': 6, '111110': 7, '1111110': 8},
+    {'00': 0, '01': 1, '10': 2, '110': 3, '1110': 4, '11110': 5, '111110': 6, '1111110': 7, '11111110': 8},
+)
+
+
+def _dc_lookup(table):
+    out = [None] * 256
+    for bits, size in table.items():
+        base = int(bits, 2) << (8 - len(bits))
+        for i in range(1 << (8 - len(bits))):
+            out[base + i] = (size, len(bits))
+    return out
+
+
+_DC_LUMA, _DC_CHROMA = (_dc_lookup(table) for table in _DC_SIZE)
 
 # ISO 11172-2 table B.14 - the run/level codes. 111 of them, plus an
 # escape and an End Of Block, and together they use up the whole code
@@ -213,11 +234,11 @@ def decode(data, width, height):
                         f"{', '.join(str(v) for v in VERSIONS)})")
 
     mb_w, mb_h = (width + 15) // 16, (height + 15) // 16
-    blocks = _decode_blocks(_Bits(data[8:]), mb_w * mb_h * 6, quant)
+    blocks = _decode_blocks(_Bits(data[8:]), mb_w * mb_h * 6, quant, version == 3)
     return _to_rgb(blocks, mb_w, mb_h, width, height)
 
 
-def _decode_blocks(bits, count, qscale):
+def _decode_blocks(bits, count, qscale, differential=False):
     """Every block of a frame, as a (count, 64) array of dequantised
     coefficients in raster order.
 
@@ -228,11 +249,25 @@ def _decode_blocks(bits, count, qscale):
     zigzag = ZIGZAG
     quant = QUANT
     end = bits.end
+    previous = [0, 0, 0]        # last DC of the Cr, Cb and luma blocks
 
     for block in range(count):
         # The DC, doubled because the matrix quantises it by 2, plus the
         # 1024 that becomes the +128 every plane is centred on.
-        out[block, 0] = 2 * _sign10(bits.read(10)) + 1024
+        if differential:
+            kind = min(block % 6, 2)
+            entry = (_DC_CHROMA if kind < 2 else _DC_LUMA)[bits.peek16() >> 8]
+            if entry is None:
+                raise MdecError(f"unknown DC size code in block {block}")
+            size, used = entry
+            bits.pos += used
+            if size:
+                value = bits.read(size)
+                # A leading zero bit marks a negative difference.
+                previous[kind] += value if value >> (size - 1) else value - (1 << size) + 1
+            out[block, 0] = 2 * (previous[kind] * 4) + 1024
+        else:
+            out[block, 0] = 2 * _sign10(bits.read(10)) + 1024
         index = 0
         while True:
             if bits.pos >= end:

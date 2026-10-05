@@ -1,4 +1,11 @@
-"""Sprite bank browser using the bank-first table layout."""
+"""Sprite bank browser using the bank-first table layout.
+
+The section's VRAM runs along the bottom. Its crosshair is the palette
+control of the sprites above it: putting it on a palette row redraws the
+selected pieces, the sprite or the whole bank through that palette, and
+selecting a sprite or a piece moves it to the palette they use and outlines
+where in VRAM their pixels come from.
+"""
 import json
 import math
 from pathlib import Path
@@ -8,6 +15,7 @@ from PyQt6.QtWidgets import (QWidget, QVBoxLayout, QHBoxLayout, QLabel, QSpinBox
     QPushButton, QSplitter, QTableWidget, QTableWidgetItem, QAbstractItemView,
     QHeaderView, QFileDialog, QMessageBox, QCheckBox, QComboBox)
 from gui.widgets.image_view import ImageView, file_stem
+from formats.images.vram_viewer import VramView
 from disc.reader import FormatError
 from psx.graphics import render_sprite, part_page, guess_page, palette_missing
 
@@ -43,6 +51,7 @@ class SpriteView(QWidget):
         self.whole.setCheckable(True)
         self.whole.setChecked(True)
         self.whole.toggled.connect(self.refresh)
+        self.whole.toggled.connect(lambda on: self.show_in_vram())
         bar.addWidget(self.whole)
         for label, callback in [('Zoom Out', lambda: self.zoom_by(-1)),
                                 ('Zoom In', lambda: self.zoom_by(1)),
@@ -96,6 +105,7 @@ class SpriteView(QWidget):
         export_bar.addStretch()
         layout.addLayout(export_bar)
         splitter = QSplitter()
+        splitter.setChildrenCollapsible(False)
         left = QWidget()
         left.setMinimumWidth(410)
         ll = QVBoxLayout(left)
@@ -124,31 +134,6 @@ class SpriteView(QWidget):
         pieces = QWidget()
         pl = QVBoxLayout(pieces)
         pl.addWidget(QLabel('Pieces'))
-        palette_bar = QHBoxLayout()
-        self.palette_scope = QComboBox()
-        self.palette_scope.addItems(['Selected pieces', 'Whole sprite', 'Whole bank'])
-        self.palette_choice = QComboBox()
-        self.palette_choice.addItem('Original CLUTs', None)
-        import numpy as np
-        used = {p[2] & 0x7FFF for frame in frames for p in frame}
-        occupied = set(np.flatnonzero(vram.reshape(512, 64, 16).any(axis=2)).tolist())
-        for address in sorted(used | occupied):
-            x, y = (address & 63) * 16, address >> 6
-            self.palette_choice.addItem(f'0x{address:04X} | X {x}, Y {y}', address)
-        self.palette_address = QSpinBox()
-        self.palette_address.setRange(-1, 0x7FFF)
-        self.palette_address.setDisplayIntegerBase(16)
-        self.palette_address.setPrefix('0x')
-        self.palette_address.setSpecialValueText('Original')
-        self.palette_address.setValue(-1)
-        self.palette_choice.currentIndexChanged.connect(self.choose_palette)
-        self.palette_address.valueChanged.connect(self.override_palette)
-        reset_palettes = QPushButton('Reset CLUTs')
-        reset_palettes.clicked.connect(self.reset_palettes)
-        for widget in (QLabel('Preview CLUT:'), self.palette_scope, self.palette_choice,
-                       self.palette_address, reset_palettes):
-            palette_bar.addWidget(widget)
-        pl.addLayout(palette_bar)
         self.parts = QTableWidget(0, 12)
         self.parts.setHorizontalHeaderLabels(['#', 'U', 'V', 'W', 'H', 'Page', 'CLUT', 'Drawn page', 'X', 'Y', 'UV 1', 'UV 2'])
         self.parts.verticalHeader().hide()
@@ -156,13 +141,31 @@ class SpriteView(QWidget):
         self.parts.setSelectionBehavior(QAbstractItemView.SelectionBehavior.SelectRows)
         self.parts.setSelectionMode(QAbstractItemView.SelectionMode.ExtendedSelection)
         self.parts.setDragDropMode(QAbstractItemView.DragDropMode.NoDragDrop)
-        self.parts.itemSelectionChanged.connect(self.show_part_palette)
+        self.parts.itemSelectionChanged.connect(self.show_in_vram)
         pl.addWidget(self.parts)
         right.addWidget(pieces)
-        right.setSizes([650, 200])
+        pieces.setMinimumHeight(120)
+        right.setSizes([330, 150])
         splitter.addWidget(right)
         splitter.setSizes([410, 780])
-        layout.addWidget(splitter, 1)
+        # VRAM along the bottom; its crosshair is the sprites' palette control.
+        self.vram_view = VramView(vram, {p[2] & 0x7FFF for frame in frames for p in frame}, 'VRAM', embedded=True)
+        self.palette_scope = QComboBox()
+        self.palette_scope.addItems(['Selected pieces', 'Whole sprite', 'Whole bank'])
+        self.palette_scope.setToolTip('What is redrawn through the palette the crosshair is put on. With no '
+                                      'piece selected, the whole sprite is.')
+        reset_palettes = QPushButton('Reset CLUTs')
+        reset_palettes.setToolTip('Draw every piece through its own palette again.')
+        reset_palettes.clicked.connect(self.reset_palettes)
+        self.vram_view.add_controls(QLabel('Crosshair recolours:'), self.palette_scope, reset_palettes)
+        self.vram_view.clut_picked.connect(self.override_palette)
+        stack = QSplitter(Qt.Orientation.Vertical)
+        stack.setChildrenCollapsible(False)
+        stack.addWidget(splitter)
+        stack.addWidget(self.vram_view)
+        stack.setStretchFactor(0, 3); stack.setStretchFactor(1, 1)
+        stack.setSizes([500, 230])
+        layout.addWidget(stack, 1)
         self.info = QLabel()
         self.info.setTextInteractionFlags(Qt.TextInteractionFlag.TextSelectableByMouse)
         layout.addWidget(self.info)
@@ -254,6 +257,7 @@ class SpriteView(QWidget):
         if frame and not self.renderer and any(palette_missing(self.vram, part[2]) for part in frame):
             self.info.setText(self.info.text() + ' | palette row empty in this VRAM'
                               + (', shown in grey' if self.grey.isChecked() else ''))
+        self.show_in_vram()
         print(f'selected: sprite {row:03d} | {len(frame)} pieces'
               + ('' if self.renderer or not frame else f' | texture page base 0x{self.base_for(row):X}'))
 
@@ -266,37 +270,56 @@ class SpriteView(QWidget):
         self.refresh()
         self.image.scale_image()
 
-    def show_part_palette(self):
-        rows = sorted({item.row() for item in self.parts.selectedItems()})
-        if not rows:
-            return
-        value = self.clut_overrides.get((self.frame_index, rows[0]), -1)
-        self.palette_address.blockSignals(True)
-        self.palette_address.setValue(value)
-        self.palette_address.blockSignals(False)
+    def part_clut(self, sprite, part):
+        """The palette a piece is drawn through at the moment."""
+        return self.clut_overrides.get((sprite, part), self.cluts.get(sprite, self.frames[sprite][part][2])) & 0x7FFF
 
-    def choose_palette(self):
-        value = self.palette_choice.currentData()
-        # Selecting the same address should still apply it to a new part.
-        self.palette_address.blockSignals(True)
-        self.palette_address.setValue(-1 if value is None else value)
-        self.palette_address.blockSignals(False)
-        self.override_palette(self.palette_address.value())
+    def show_in_vram(self):
+        """Point the VRAM panel at the sprite on screen: the crosshair goes
+        to the palette of the first selected piece (the first piece if none
+        is), and every piece's source rectangle is outlined, the selected
+        ones brightly."""
+        if self.whole.isChecked() or not self.frames or len(self.selected_indices()) > 1:
+            self.vram_view.canvas.outlines = []
+            self.vram_view.canvas.update()
+            return
+        index = min(self.frame_index, len(self.frames) - 1)
+        frame = self.frames[index]
+        chosen = sorted({item.row() for item in self.parts.selectedItems() if item.row() < len(frame)})
+        outlines = []
+        for n, part in enumerate(frame):
+            if self.renderer:
+                break               # these pixels are in a picture bank, not in VRAM
+            page = part_page(part, self.base_for(index))
+            # A page is 64 words across. Eight-bit pages hold half as many
+            # texels to the word as four-bit ones.
+            wide = 2 if (page >> 7) & 3 == 1 else 4
+            colour = PART_COLOURS[n % len(PART_COLOURS)] if not chosen or n in chosen else (150, 150, 150, 160)
+            outlines.append(((page & 15) * 64 + part[0] / wide, (page >> 4 & 1) * 256 + part[1],
+                             part[9] / wide, part[10], colour))
+        self.vram_view.canvas.outlines = outlines
+        if frame:
+            self.vram_view.show_clut(self.part_clut(index, chosen[0] if chosen else 0), flash=False)
+            focus = [outlines[n] for n in (chosen or range(len(outlines))) if n < len(outlines)]
+            if focus:
+                left, top = min(o[0] for o in focus), min(o[1] for o in focus)
+                self.vram_view.canvas.show_words(left, top, max(o[0] + o[2] for o in focus) - left,
+                                                 max(o[1] + o[3] for o in focus) - top)
+        self.vram_view.canvas.update()
 
     def override_palette(self, value):
+        """Redraw through the palette the crosshair was put on."""
         scope = self.palette_scope.currentIndex()
         selected = {item.row() for item in self.parts.selectedItems()}
         if scope == 0 and not selected:
-            self.info.setText('Select one or more pieces first, or choose Whole sprite / Whole bank.')
+            scope = 1               # nothing picked out: the sprite as a whole
+        if scope < 2 and self.whole.isChecked():
+            self.info.setText('Select a sprite to recolour it, or set the crosshair to recolour the whole bank.')
             return
         sprites = range(len(self.frames)) if scope == 2 else [self.frame_index]
         for sprite in sprites:
             for part in range(len(self.frames[sprite])) if scope else selected:
-                key = sprite, part
-                if value < 0:
-                    self.clut_overrides.pop(key, None)
-                else:
-                    self.clut_overrides[key] = value
+                self.clut_overrides[sprite, part] = value
         self.cache.clear()
         self.refresh()
 
@@ -304,6 +327,7 @@ class SpriteView(QWidget):
         self.clut_overrides.clear()
         self.cache.clear()
         self.refresh()
+        self.show_in_vram()
 
     def selected(self):
         indices = self.selected_indices()
@@ -379,7 +403,7 @@ class SpriteView(QWidget):
             self.parts.blockSignals(False)
             self.info.setText(f'Sprite {index:03d} | {len(frame)} pieces | {image.width} x {image.height}')
         if self.clut_overrides:
-            self.info.setText(self.info.text() + ' | Preview CLUT overrides active; PNG exports include them')
+            self.info.setText(self.info.text() + ' | Recoloured from the crosshair; PNG exports include it')
         self.image.set_image(image, preserve_view=self.image.image is not None)
 
     def selected_indices(self):

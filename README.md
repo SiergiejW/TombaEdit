@@ -62,6 +62,21 @@ alongside a hex editor or a debugger.
 | CLUT files | | Palette cells with their PlayStation and RGB values |
 | INS, `X` files | F0 | Code overlays with functions, tables and animation scripts marked |
 
+Files in the console's stock formats open whatever game they belong to, and
+are recognised by their contents, not their names:
+
+| File | Viewer |
+| --- | --- |
+| TIM | Picture, at any depth, through any palette the file holds |
+| TMD | Model, textured from the TIM files in its folder |
+| VAB, or a `.VH`/`.VA` header with its `.VB` | Sample bank |
+| SEQ, MIDI | Music, played on any bank on the disc |
+| XA streams | Every channel, cut into clips |
+| CD audio stored as a file | The track |
+| STR movies under any name | Movie; MDEC bitstream versions 1 to 3 |
+| Archives | Contents: each entry in the viewer for its kind |
+| Text files | Text, as ASCII or Shift-JIS |
+
 ### 3D views
 
 Models, deformations and levels share one camera. A view opens looking along
@@ -211,6 +226,45 @@ counts. The entry table at the start, pointer tables, animation scripts
 reached through those tables, text and zero fill are named. Addresses are
 shown for the base that area overlays are linked at.
 
+### Sound
+
+Banks, sequences and streams share one layout. The middle pane lists what
+the selection holds: the waveforms of a bank with a thumbnail of each, the
+clips of an XA file, or the programs a sequence calls for. Where a file has
+several banks, or a sequence could be played on several, they are listed on
+the left. The right pane shows the properties of the selected row, and for a
+sequence its events.
+
+The player along the bottom shows what is loaded and its waveform; clicking
+the waveform seeks. A waveform has no pitch of its own, so banks have a
+preview rate. *Play on select* can be turned off to browse a bank silently.
+`Space` plays and pauses.
+
+A sequence is listed with every bank on the disc that has instruments for
+it, ranked by how many of its notes each can sound, then by sharing its
+folder. Selecting another bank and pressing play renders it again. MIDI
+files are played the same way. Sound exports as WAV, sequences also as MIDI.
+
+A file made of streaming sectors is read from the image directly: the
+sound in an XA sector lies in the part an ordinary file read leaves out, so
+this needs an image with whole 2352-byte sectors. Channels are cut into
+clips where they skip a turn or mark the end of a record.
+
+### Archives
+
+A file that packs other files gets a *Contents* tab: a list of its entries
+with their type, position and a line about each, beside the viewer for the
+selected one. The list can be narrowed to one type, and entries exported
+singly or all together as they would be on their own (a bank as a `.vab`,
+a packed picture unpacked).
+
+Six table layouts are read, and a file that follows none is searched for
+TIM, VAB, SEQ and TMD headers, which finds resources in archives with no
+index at all and inside executables. A bank stored as separate header and
+waveform entries is put back together. Entries packed with LZSS or with
+byte pairs are unpacked. Models are textured from the archive's own
+pictures.
+
 ### Collision
 
 A WHM bank is divided into depth planes 90 units apart and columns 8 units
@@ -255,9 +309,26 @@ groups are read out of the executable.
 
 The cutaway house interiors of the towns come from tables in the town
 overlays, which are found by their content. The sampler's Dwarf Village has
-no interiors in its bank, and Hidden Village's are not found in the preview.
-The sampler also lacks the table that gives sprite banks no placed object
-uses their texture page, so those banks open on page 0.
+no interiors in its bank, only the scenery drawn over the town picture, and
+the preview's load table for area 19 stops before Hidden Village.
+
+Placed objects that stay markers are the same ones on every build: object
+types with nothing to show in their first state, such as triggers and
+effects waiting on an event.
+
+### The Pure Pure 09 sampler
+
+The disc carries demos of seven other games beside Tomba!, and its own
+menu. Everything in a stock format opens: the menu's pictures and models
+(`TIM.LPK`, `LPK.LPK`, LZSS-packed), its music (`PURE1.SEQ` on
+`MUU_MUU.VH`), the memory card icons, every movie and XA stream, the
+Nagano models and MIDI file, and the pictures, banks and sequences inside
+the archives of Abe's Oddysee, Angel, DSC, MEL2 and PUYO3. MEL2's archives
+are packed with byte pair encoding, which is unpacked.
+
+What stays as bytes is each game's own: executables and code overlays,
+Abe's animations and backgrounds, Nagano's motion data, PUYO3's graphics,
+MEL2's scripts, and the tables at the head of DSC's archives.
 
 Dialogue is decoded with a glyph table for the US font; other releases show
 the glyph images and unmapped glyph numbers.

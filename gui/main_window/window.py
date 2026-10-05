@@ -292,9 +292,22 @@ def prepare_preview(project, node, context=None):
     return result
 
 
+def tolerant_console():
+    """Let selection lines carry any text. Names on a disc can be Japanese,
+    and a console in a Western code page refuses to print them."""
+    import sys
+    for stream in (sys.stdout, sys.stderr):
+        if stream is not None and hasattr(stream, 'reconfigure'):
+            try:
+                stream.reconfigure(errors='replace')
+            except (ValueError, OSError):
+                pass
+
+
 class MainWindow(QMainWindow):
     def __init__(self):
         super().__init__()
+        tolerant_console()
         self.settings = QSettings()
         self.project = None
         self.current_node = None
@@ -779,7 +792,8 @@ class MainWindow(QMainWindow):
                 suffix = f" @{offset:X}" if offset else ""
                 self.tabs.addTab(DialogueView(wfm), "Dialogue" + suffix)
                 self.tabs.addTab(ImageView(wfm.atlas()), "Glyphs" + suffix)
-            if "vram" in result:
+            if "vram" in result and 'sprites' not in result:
+                # Sprites carry the section's VRAM in their own tab.
                 cluts = {p['clut'] for m in result.get('meshes', []) for p in m.polygons if p['page'] >= 0}
                 cluts |= {part[2] & 0x7FFF for frame in result.get('sprites', []) for part in frame}
                 self.tabs.addTab(VramView(result["vram"], cluts, self.path_label.text()), "VRAM")
@@ -1084,7 +1098,7 @@ class MainWindow(QMainWindow):
                 QMessageBox.warning(self, 'Cannot export labels', str(exc))
 
     def about(self):
-        QMessageBox.about(self, "TombaEdit 0.1", "Tomba! disc and asset browser\n\nBIN/CUE/ISO | LDAR | GAM | WMD | FOUR | SPR | WPP | WHM | APD | WFM3 | SEQ | STR\n\nFormat research: vervalkon, zerovii, Woolmagician, hansbonini/psx_tomba.\nSee README.md and docs/formats.md for format details and known gaps.")
+        QMessageBox.about(self, "TombaEdit 0.1", "Tomba! disc and asset browser\n\nBIN/CUE/ISO/IMG | LDAR | GAM | WMD | FOUR | SPR | WPP | WHM | APD | WFM | SEQ | WVD | STR\nTIM | TMD | VAB | MIDI | XA | archives of other games\n\nFormat research: vervalkon, zerovii, Woolmagician, hansbonini/psx_tomba.\nSee README.md and docs/formats.md for format details and known gaps.")
 
     def dragEnterEvent(self, event):
         if event.mimeData().hasUrls() and any(u.isLocalFile() and Path(u.toLocalFile()).suffix.lower() in DISC_SUFFIXES for u in event.mimeData().urls()):
