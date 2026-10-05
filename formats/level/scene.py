@@ -56,6 +56,8 @@ class LevelScene:
     backdrop: list = field(default_factory=list)
     # Colour to clear the view with while the backdrop is shown, or None.
     sky: tuple = None
+    collision_records: list = field(default_factory=list)
+    collision_context: str = ''
 
 
 def area_of(path):
@@ -132,49 +134,10 @@ def fixed_picture(pieces, vram):
 
 
 def collision_lines(banks):
-    """Collision spans as line segments. `banks` is [(Whm, along0, depth0,
-    turned)]. A column is 8 units along the path and plane n lies 90 n units
-    into the depth, which is where the objects that walk on it are placed.
-    The path runs along world X with depth along Z, or, when `turned`, along
-    world Z with planes counted down X; see runtime.collision_frame.
-    Surfaces are drawn as they slope; solid ranges only by their outline,
-    since every column of a hillside carries one."""
-    vertices, colours = [], []
-
-    def line(a, b, colour):
-        # (along, height, depth) to the viewer's (x, y, z); z is negated there.
-        vertices.extend((p[2], p[1], -p[0]) if turned else (p[0], p[1], -p[2]) for p in (a, b))
-        colours.extend((colour, colour))
-
-    def covered(ranges, y):
-        return any(low <= y <= high for low, high in ranges)
-
-    for whm, x0, z0, turned in banks:
-        for plane in whm.planes:
-            z = z0 - plane.index * PLANE_DEPTH if turned else z0 + plane.index * PLANE_DEPTH
-            previous = []
-            for number, column in enumerate(plane.columns + [[]]):
-                x = x0 + number * 8
-                solid = []
-                for span in column:
-                    if span.wall:
-                        solid.append(span.extent)
-                        line((x, -span.y0, z), (x + 8, -span.y0, z), SOLID)
-                        line((x, -span.y1, z), (x + 8, -span.y1, z), SOLID)
-                    else:
-                        line((x, -span.y0, z), (x + 8, -(span.y0 + span.y1), z),
-                             SURFACE if span.attribute == 1 else SPECIAL)
-                # A vertical edge wherever this column is solid and its
-                # neighbour is not, or the other way round.
-                edges = sorted({y for low, high in previous + solid for y in (low, high)})
-                for low, high in zip(edges, edges[1:]):
-                    middle = (low + high) / 2
-                    if covered(previous, middle) != covered(solid, middle):
-                        line((x, -low, z), (x, -high, z), SOLID)
-                previous = solid
-    if not vertices:
-        return None
-    return np.asarray(vertices, np.float32), np.asarray(colours, np.float32)
+    """Compatibility wrapper for verified WHM boundary geometry."""
+    from formats.collision.geometry import records, lines
+    return lines([row for whm, x0, z0, turned in banks
+                  for row in records(whm, x0, z0, turned)])
 
 
 def cell_colours():
@@ -404,7 +367,8 @@ def build_scene(project, path, index):
                 mesh = marker(placement.position, placement.offset)
             entries.append(SceneEntry(f'{name} | {asset.code:04X} #{i:03d}', category, mesh,
                                       asset, placement, active, note, frames))
-    banks = []
+    from formats.collision.geometry import records, lines
+    collision_records = []
     x0, z0, turned, only = resolver.collision_frame(area, index - 1)
     for (kind, slot), asset in resources.items():
         if kind != 'WHM' or only not in (None, slot):
@@ -412,15 +376,16 @@ def build_scene(project, path, index):
         try:
             # Area 0 keeps the near planes in slot 1 and continues 270 units
             # deeper in slot 0 (US routine 80042654); elsewhere slot 0 is used.
-            deeper = 3 * PLANE_DEPTH if area == 0 and slot == 0 and ('WHM', 1) in resources else 0
-            banks.append((parse_whm(project.asset_data(asset)), x0, z0 + deeper, turned))
+            deeper = 3 * PLANE_DEPTH if area == 0 and index != 4 and slot == 0 and ('WHM', 1) in resources else 0
+            whm = parse_whm(project.asset_data(asset))
+            collision_records.extend(records(whm, x0, z0 + deeper, turned, asset))
         except FormatError as exc:
             notes.append(f'{asset.label}: {exc}')
     town = town_picture(project, resources, notes)
     if town:
         entries.insert(0, town)
         backdrops = [(index + 1, backdrop) for index, backdrop in backdrops]
-    collision = collision_lines(banks)
+    collision = lines(collision_records)
     if collision is None and town is not None and getattr(town, 'cells', None) is not None:
         collision = town_lines(town.cells)
     # The art stops where the game's clear colour takes over. That colour is
@@ -434,7 +399,11 @@ def build_scene(project, path, index):
         picture = next((e for e in entries if e.active and e.note.startswith('Fixed picture')), None)
         if picture is not None:
             sky = edge_colour(picture.mesh.image)
-    return LevelScene(entries, list(resources.values()), vram, notes, collision, backdrops, sky)
+    context = (f'Path: {"Z" if turned else "X"}, origin {x0}; depth: {"-X" if turned else "Z"}, origin {z0}. '
+               'Each WHM plane is a 2D X/Y test, selected by depth in 90-unit slices. '
+               'First entrance orientation; changing entrance can change the active bank.')
+    return LevelScene(entries, list(resources.values()), vram, notes, collision, backdrops, sky,
+                      collision_records, context)
 
 
 def sprite_pages(project, path, index):
