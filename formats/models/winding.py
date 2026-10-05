@@ -3,7 +3,23 @@ import numpy as np
 
 
 def closed_winding(meshes):
-    arrays = [b[0] for m in meshes for b in m.batches.values() if len(b[0])]
+    arrays, faces = [], set()
+    for mesh in meshes:
+        polygons = getattr(mesh, 'polygons', None)
+        if polygons is None:
+            arrays.extend(b[0] for b in mesh.batches.values() if len(b[0]))
+            continue
+        for polygon in polygons:
+            points = np.asarray(polygon['vertices'], np.float64)
+            face = tuple(sorted(map(tuple, np.round(points, 4))))
+            # Some panels include a second, inward-facing copy, with the
+            # opposite quad diagonal. Count the first surface once when
+            # checking whether the assembly encloses a volume.
+            if face in faces:
+                continue
+            faces.add(face)
+            order = [0, 1, 2] if len(points) == 3 else [0, 1, 2, 3, 2, 1]
+            arrays.append(points[order])
     if not arrays:
         return None
     triangles = np.concatenate(arrays).reshape(-1, 3, 3).astype(np.float64)

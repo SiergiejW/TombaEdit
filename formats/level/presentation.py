@@ -97,5 +97,6 @@ def panorama_position(layer, camera_position, heading, pitch, turned=False):
     x = 160 - width / 2 - (path * layer.follow[0] + look) % width
     # Pitch stops at +/- 60 degrees and shifts at most a quarter-screen.
     # No camera-Y term: framing a tall model cannot push the sky off-screen.
-    y = layer.top + max(-60., min(60., pitch))
+    # Rx(+pitch) moves distant scenery towards screen -Y in the 3D view.
+    y = layer.top - max(-60., min(60., pitch))
     return x, y

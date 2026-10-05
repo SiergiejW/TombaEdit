@@ -41,6 +41,7 @@ class PresentationTests(unittest.TestCase):
         original = panorama_position(layer, (30, -500, 900), 0, 0)
         self.assertEqual(original, panorama_position(layer, (30, 7000, -900), 360, 0))
         self.assertEqual(original[1], 0)
+        self.assertLess(panorama_position(layer, (0, 0, 0), 0, 30)[1], original[1])
         self.assertEqual(panorama_position(layer, (0, 0, 0), 0, 60),
                          panorama_position(layer, (0, 0, 0), 0, 90))
         self.assertEqual(panorama_position(layer, (0, 0, 0), 0, -60),
