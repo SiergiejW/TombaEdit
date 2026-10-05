@@ -163,6 +163,52 @@ spots such as doorways; values with bit 7 set appear around doorways and
 obstacles, and their exact meaning is not established. Placement positions in a town are pixel positions on the
 picture. In areas without a picture the same slots hold other data.
 
+Dwarf Village also has cutaway house interiors within section 00. These
+are SPR 3BFF frames 404, 405 and 406 in AREA02/D006.GAM, not the Elder's
+Hut or prison sections. Frame 404 is the hollow-tree room with the stone
+chimney and fireplace. Its 112 x 160 artwork uses texture page base 2 and
+the 256-colour CLUT at (128, 511), word 7FC8. Tomba and NPCs are separate
+sprites drawn over the artwork according to the current game event.
+
+The US INFO.BIN overlay defines three scenery styles at 800EDAB8 and their
+animation table at 800F0420. Its scenery scripts use base 2, with
+the style supplying CLUT 7FC8, 780A or 7F88. The NPC scripts at 800F00C0
+use base 16 from the table at 800EDB28, including frames 425 to 430.
+Reading the entire bank through
+one guessed page produces garbled scenery. The sprite viewer applies
+these per-frame settings, and the level viewer's Town view selector opens
+the three house artworks. This preview does not simulate the event's
+character positions. These overlay addresses are verified for US retail;
+the decoder checks the executable and overlay before using them.
+
+The same Dwarf house bank and INFO overlay are loaded in AREA19 section 00.
+That resource variant exposes the same three cutaways. AREA05 sections 00
+and 02 (normal and purified Baccus Village) use SPR 3DFF frames 9 and 11 in
+D005.GAM and D205.GAM: the bar room and the house with a stove. Frame 10 is
+the bar's separate covering artwork, not another room. Baccus's INFO2
+style table is at 800FDDC4, with animation pointers at 80102004. Initializer
+800EF658 reads variant +B4 and palette state +B6: room art uses base 2 and
+CLUT 7F48 at (128, 509), rather than the outside scenery's 7FC8. Using the
+outside palette on the interiors produces the scrambled colours.
+
+AREA19 section 02 (Hidden Village) uses SPR 3DFF frames 0, 1 and 2 in
+D208.GAM. These are three wooden cutaway houses. Its style table is at
+800FDE34 and its animation pointers at 80102930. The artwork uses base 2
+and CLUT 7FC8, the palette state produced by initializer 800F03E0 with +B6
+zero. These five town contexts expose thirteen room views, eight distinct
+artworks. The US retail scan finds seven town-picture load contexts in
+total. AREA08 sections 00 and 02 are the other two: Baccus Pier. Its SPR
+3DFF bank contains fences, not house interiors. Reusing Dwarf's NPC bank
+or INFO2 there is insufficient evidence for a room and does not create
+room entries. The Village of Civilization's available sections have no
+town-picture bank or matching cutaway sprite bank; their separate section
+interiors remain available through the Section selector.
+
+`python -m tests.validate_town` checks these pages, palettes, frames and
+bank pointers against bounded execution of the actual US initializers.
+The room selector and SPR viewer share the decoded settings. Character
+overlays and event-dependent room composition are not simulated.
+
 ## APD and object initialisation
 
 Placement records are sixteen bytes (routine 8005AA98): section, layer, type,

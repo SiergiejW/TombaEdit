@@ -23,11 +23,17 @@ class LevelView(ModelView):
         self.scope.addItems(['This section', 'All loaded APD banks'])
         self.assets = QComboBox()
         self.locations = QComboBox()
-        self.locations.setToolTip('Open a town interior or another section with its own textures and placements.')
+        self.locations.setToolTip('Open another LDAR section with its own textures and placements.')
         self.locations.activated.connect(self.choose_location)
         locations_row = QHBoxLayout()
-        locations_row.addWidget(QLabel('Rooms / sections:'))
+        locations_row.addWidget(QLabel('Section:'))
         locations_row.addWidget(self.locations, 1)
+        self.town_view_label = QLabel('Town view:')
+        self.town_views = QComboBox()
+        self.town_views.setToolTip('View cutaway house artwork stored in this town, without changing LDAR section.')
+        self.town_views.activated.connect(self.choose_town_view)
+        locations_row.addWidget(self.town_view_label)
+        locations_row.addWidget(self.town_views, 1)
         self.layout().insertLayout(0, locations_row)
         open_button = QPushButton('Open asset')
         open_button.clicked.connect(self.open_asset)
@@ -100,9 +106,20 @@ class LevelView(ModelView):
         self.toolbar.insertAction(self.origin_action, action)
         return action
 
-    def set_scene(self, scene):
+    def set_scene(self, scene, town_index=0):
         self.timer.stop()
+        if town_index == 0:
+            self.section_scene = scene
         self.scene = scene
+        self.town_views.blockSignals(True)
+        self.town_views.clear()
+        self.town_views.addItem('Town exterior')
+        for name, _ in self.section_scene.town_views:
+            self.town_views.addItem(name)
+        self.town_views.setCurrentIndex(town_index)
+        self.town_views.blockSignals(False)
+        self.town_views.setVisible(bool(self.section_scene.town_views))
+        self.town_view_label.setVisible(bool(self.section_scene.town_views))
         self.locations.blockSignals(True)
         self.locations.clear()
         for name, path, index in scene.locations:
@@ -138,8 +155,9 @@ class LevelView(ModelView):
         self.canvas.fit(animate=False)
         resolved = sum(e.active and e.category in ('Models', 'Sprites') for e in scene.entries)
         total = sum(e.active and e.placement is not None for e in scene.entries)
-        self.canvas.stats_label.setText(f'{resolved}/{total} placed visuals resolved | '
-                                        f'{len(self.animated)} animated\n'
+        summary = (f'{resolved}/{total} placed visuals resolved | {len(self.animated)} animated'
+                   if not town_index else scene.entries[0].name)
+        self.canvas.stats_label.setText(summary + '\n'
                                         'F: frame selected | Double-click a row: frame it')
         self.canvas.stats_label.adjustSize()
         self.toggle_animation(self.animate_action.isChecked())
@@ -148,6 +166,10 @@ class LevelView(ModelView):
         location = self.locations.itemData(row)
         if location:
             self.open_location.emit(*location)
+
+    def choose_town_view(self, row):
+        scene = self.section_scene if row == 0 else self.section_scene.town_views[row - 1][1]
+        self.set_scene(scene, row)
 
     def toggle_collision(self, value):
         self.canvas.show_lines = value

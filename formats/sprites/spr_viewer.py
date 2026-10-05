@@ -22,7 +22,7 @@ FRAME_COLOUR = (255, 255, 255, 255)
 class SpriteView(QWidget):
     selection_changed = pyqtSignal(list)
 
-    def __init__(self, frames, vram, pages=None, renderer=None, default=None):
+    def __init__(self, frames, vram, pages=None, renderer=None, default=None, cluts=None):
         """`pages` maps frame numbers to the texture page base of an object
         that shows them; frames nobody places borrow the nearest known one,
         or `default` when the bank is not placed at all. `renderer` draws
@@ -30,6 +30,7 @@ class SpriteView(QWidget):
         super().__init__()
         self.frames, self.vram, self.renderer = frames, vram, renderer
         self.pages = dict(pages or {})
+        self.cluts = dict(cluts or {})  # CLUTs supplied by a custom drawing object
         self.known = sorted(self.pages)
         self.guess = default
         self.export_name = 'sprites'    # prefix of default file names, set by the window
@@ -186,7 +187,7 @@ class SpriteView(QWidget):
             try:
                 overrides = {part: clut for (sprite, part), clut in self.clut_overrides.items() if sprite == index}
                 parts = [tuple(clut if col == 2 else value for col, value in enumerate(part))
-                         if (clut := overrides.get(n)) is not None else part
+                         if (clut := overrides.get(n, self.cluts.get(index))) is not None else part
                          for n, part in enumerate(self.frames[index])]
                 self.cache[index] = self.renderer(index, overrides) if self.renderer else render_sprite(
                     parts, self.vram, tpage=self.base_for(index),
@@ -364,7 +365,8 @@ class SpriteView(QWidget):
             self.parts.setRowCount(len(frame))
             for row, part in enumerate(frame):
                 values = [str(row), str(part[0]), str(part[1]), str(part[9]), str(part[10]),
-                          f'0x{part[5] | part[6] << 8:04X}', f'0x{self.clut_overrides.get((index, row), part[2]):04X}',
+                          f'0x{part[5] | part[6] << 8:04X}',
+                          f'0x{self.clut_overrides.get((index, row), self.cluts.get(index, part[2])):04X}',
                           '' if self.renderer else f'0x{part_page(part, self.base_for(index)):03X}', str(part[13]),
                           str(part[14]), str((part[3], part[4])), str((part[7], part[8]))]
                 for col, value in enumerate(values):

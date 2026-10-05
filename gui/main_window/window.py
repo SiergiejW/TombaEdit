@@ -96,6 +96,13 @@ def prepare_preview(project, node, context=None):
                       if a.rect and a.rect[3] >= 128]
             default = table_pages(project).get(slot)
             result['sprite_default'] = guess_page(frames, result['vram'], starts) if default is None else default
+            from formats.level.scene import area_of, loaded_resources
+            from formats.level.town import town_graphics
+            town = town_graphics(project, loaded_resources(project, node.ldar, context),
+                                  area_of(node.ldar), context - 1)
+            if town is not None and slot == town.bank:
+                result['sprite_pages'].update(town.pages)
+                result['sprite_cluts'] = town.cluts
             # Tomba's own banks have no pixels in VRAM; a picture bank with
             # one entry per frame supplies them.
             for candidate in loaded:
@@ -587,7 +594,7 @@ class MainWindow(QMainWindow):
                     renderer = picture_renderer(result['sprites'], result['pictures'], result['vram'],
                                                 (node.code >> 8) & 15 == 0)
                 view = SpriteView(result['sprites'], result['vram'], result.get('sprite_pages'), renderer,
-                                  result.get('sprite_default'))
+                                  result.get('sprite_default'), result.get('sprite_cluts'))
                 key = self.node_key(node)
                 view.restore_state(self.sprite_states.get(key, []))
                 view.selection_changed.connect(lambda state, k=key: self.sprite_states.__setitem__(k, state))

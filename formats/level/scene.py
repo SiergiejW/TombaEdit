@@ -62,6 +62,7 @@ class LevelScene:
     collision_context: str = ''
     locations: list = field(default_factory=list)
     location_index: int = 0
+    town_views: list = field(default_factory=list)
 
 
 def area_of(path):
@@ -431,8 +432,24 @@ def build_scene(project, path, index):
     from game.areas import section_name
     locations = [(section_name(area, g.index - 1), path, g.index)
                  for g in project.ldars[path][1:] if g.assets]
-    return LevelScene(entries, list(resources.values()), vram, notes, collision, backdrops, sky,
-                      collision_records, context, locations, index)
+    scene = LevelScene(entries, list(resources.values()), vram, notes, collision, backdrops, sky,
+                       collision_records, context, locations, index)
+    if town is not None:
+        from formats.level.town import town_graphics
+        profile = town_graphics(project, resources, area, index - 1)
+        if profile is not None:
+            asset = resources['SPR', profile.bank]
+            for name, frame in profile.houses:
+                parts = sprites[profile.bank][frame]
+                image = render_sprite(parts, vram, tpage=profile.pages[frame], clut=profile.cluts[frame])
+                mesh = sprite_mesh(image, parts, (0, 0, 0), False, frame)
+                entry = SceneEntry(name, 'Backgrounds', mesh, asset,
+                    note=f'SPR {asset.code:04X} frame {frame} in {asset.source.path}. '
+                         f'Texture page base {profile.pages[frame]}, CLUT 0x{profile.cluts[frame]:04X}. '
+                         f'Cutaway artwork used within {profile.name}; characters are separate runtime sprites.')
+                scene.town_views.append((name, LevelScene([entry], list(resources.values()), vram,
+                    [entry.note], sky=(0., 0., 0.), locations=locations, location_index=index)))
+    return scene
 
 
 def sprite_pages(project, path, index):
