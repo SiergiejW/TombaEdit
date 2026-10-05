@@ -108,8 +108,11 @@ markers.
   whole page with them outlined.
 - **Background** draws the section's backdrop sprites, the sky, clouds and
   distant scenery, behind the level. The game positions them on the screen
-  from the camera, each following a fraction of its movement, so they drift
-  as the view is moved sideways, and looping scenery repeats. Interiors and
+  from the camera, each following a fraction of its movement. Here they
+  behave as distant scenery: sliding the view sideways makes each drift by
+  its own fraction, turning the camera carries the backdrop across, looking
+  up or down shows more of it, and moving towards the level leaves it still.
+  Looping scenery repeats. Interiors and
   other sections with a fixed picture behind them show it in place, with
   their foreground pieces over it. Behind all of it the view is cleared to
   the colour at the top edge of the scenery, standing in for the game's own

@@ -329,15 +329,21 @@ class MeshCanvas(CameraEventMixin, QOpenGLWidget):
         """Layer 7 sprites on a 320 x 240 screen that fills the view's height.
 
         The game places each from the camera position scaled by the sprite's
-        own factor, so distant scenery drifts slowly. Moving this camera
-        sideways scrolls the backdrop the same way. Its height is not used:
-        seen from as far back as a whole level needs, it would push the
-        scenery off the screen, so the backdrop keeps the height it has with
-        the game's camera at the origin."""
+        own factor, so distant scenery drifts slowly. Here the backdrop is
+        treated as scenery a long way off: sliding the camera sideways
+        scrolls each sprite by its factor, turning the camera carries the
+        whole backdrop across the view, and looking up or down moves it down
+        or up, at the rate the view itself turns. Moving towards or away from
+        the level leaves it alone."""
         aspect = self.width() / max(1, self.height())
         width = 240 * aspect
         c = self.camera_controls
-        camera = (-c.camera_x - 160, 0)     # screen corner in game units
+        heading = math.radians(c.camera_angle_h)
+        # How far the camera stands along its own right-hand axis.
+        sideways = -c.camera_x * math.cos(heading) - c.camera_z * math.sin(heading)
+        per_degree = 240 / FIELD_OF_VIEW
+        turned = (c.camera_angle_h * per_degree, c.camera_angle_v * per_degree)
+        camera = (sideways - 160, 0)
         gl.glMatrixMode(gl.GL_PROJECTION)
         gl.glPushMatrix()
         gl.glLoadIdentity()
@@ -352,8 +358,8 @@ class MeshCanvas(CameraEventMixin, QOpenGLWidget):
             if index not in self.visible:
                 continue
             # Whole pixels, so neighbouring strips meet without seams.
-            x = math.floor(sprite.screen[0] - camera[0] * sprite.follow[0]) + sprite.left
-            y = math.floor(sprite.screen[1] - camera[1] * sprite.follow[1]) + sprite.top
+            x = math.floor(sprite.screen[0] - camera[0] * sprite.follow[0] - turned[0]) + sprite.left
+            y = math.floor(sprite.screen[1] - camera[1] * sprite.follow[1] - turned[1]) + sprite.top
             gl.glBindTexture(gl.GL_TEXTURE_2D, self.image_texture(gl, sprite.image))
             gl.glColor3f(1, 1, 1)
             low = (320 - width) / 2

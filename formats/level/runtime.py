@@ -28,6 +28,7 @@ class InitialPoseResolver:
         self.reason = 'Object initialization is currently decoded for US retail.'
         self.cache = {}
         self.queued = set()
+        self.stop_at_animation = False
         entries = [e for e in project.disc.files if e.path == 'SCUS_942.36']
         if not entries or area < 0:
             return
@@ -307,9 +308,11 @@ class InitialPoseResolver:
 
     def hook(self, uc, address, size, user):
         r = self.reg
-        if address == 0x800229FC:
+        if address == 0x800229FC and self.stop_at_animation:
             self.completed = True
             uc.emu_stop()
+        elif address == 0x800229FC:
+            pass                # the animation setter runs like any other code
         elif address in (0x80022E44, 0x80022C08, 0x80022D3C, 0x80022F6C, 0x80023020, 0x800230BC):
             uc.reg_write(r.UC_MIPS_REG_V0, 1)
             uc.reg_write(r.UC_MIPS_REG_PC, uc.reg_read(r.UC_MIPS_REG_RA))
@@ -333,9 +336,16 @@ class InitialPoseResolver:
         if not self.available or placement.layer not in TABLES:
             return {}
         key = placement.raw
-        if key in self.cache:
-            return self.cache[key]
+        if key not in self.cache:
+            # Most initialisers finish on their own. Some run into parts of
+            # the game that are not here; for those, stopping where the
+            # animation is set is enough to learn what the object shows.
+            self.cache[key] = self.attempt(placement, False) or self.attempt(placement, True)
+        return self.cache[key]
+
+    def attempt(self, placement, stop_at_animation):
         from unicorn import UcError
+        self.stop_at_animation = stop_at_animation
         r, raw, obj = self.reg, placement.raw, 0x80300000
         self.write(0x80000000, self.baseline)
         self.write(0x1F800000, self.scratch)
@@ -395,7 +405,6 @@ class InitialPoseResolver:
                         break
         except UcError:
             result = {}
-        self.cache[key] = result
         return result
 
 
