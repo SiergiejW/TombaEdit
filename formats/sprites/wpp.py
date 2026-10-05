@@ -137,7 +137,7 @@ def tomba_palettes(vram):
     return [row for row in rows if row.any()]
 
 
-def frame_image(picture, parts, palette):
+def frame_image(picture, parts, palette, part_palettes=None):
     """Assemble a SPR frame whose parts address one unpacked WPP picture.
 
     Part UVs keep the offsets they had on the source sheet; the game only
@@ -151,9 +151,11 @@ def frame_image(picture, parts, palette):
     right = max(p[13] + p[9] for p in parts)
     bottom = max(p[14] + p[10] for p in parts)
     image = Image.new('RGBA', (max(1, right - left), max(1, bottom - top)))
-    for p in reversed(parts):
+    for index in reversed(range(len(parts))):
+        p = parts[index]
+        part_source = picture.image(part_palettes[index]) if part_palettes and index in part_palettes else source
         u, v = p[0] - u0, p[1] - v0
-        image.alpha_composite(source.crop((u, v, u + p[9], v + p[10])), (p[13] - left, p[14] - top))
+        image.alpha_composite(part_source.crop((u, v, u + p[9], v + p[10])), (p[13] - left, p[14] - top))
     return image
 
 
@@ -181,9 +183,11 @@ def renderer(frames, pictures, vram, tomba):
     palettes = bank_palettes(vram, frames, tomba)
     palette = palettes[0][1] if palettes else None
 
-    def render(index):
+    def render(index, overrides=None):
         parts = frames[index]
         if not parts or index >= len(pictures):
             return Image.new('RGBA', (1, 1))
-        return frame_image(pictures[index], parts, palette)
+        rows = {part: vram[(clut >> 6) & 511, (clut & 63) * 16:(clut & 63) * 16 + 16]
+                for part, clut in (overrides or {}).items()}
+        return frame_image(pictures[index], parts, palette, rows)
     return render

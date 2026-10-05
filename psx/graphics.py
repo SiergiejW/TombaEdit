@@ -122,7 +122,7 @@ def render_sprite(parts, vram, page_base=0, shard=None, tpage=None, clut=None, g
     pages = {}
     for p in reversed(parts):
         sx, sy, part_clut, _, _, page, _, _, _, w, h, _, _, x, y = p
-        palette = clut or part_clut
+        palette = part_clut if clut is None else clut
         key = (page, p[6], palette)
         if key not in pages:
             if tpage is not None:

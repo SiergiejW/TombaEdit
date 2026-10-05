@@ -61,11 +61,17 @@ class ImageView(QWidget):
         if image is not None:
             self.set_image(image)
 
-    def set_image(self, image):
+    def set_image(self, image, preserve_view=False):
+        bars = (self.view.horizontalScrollBar(), self.view.verticalScrollBar())
+        scroll = [bar.value() for bar in bars]
         self.image = image
         self.canvas.set_image(qimage(image))
         self.dimensions.setText(f'{image.width} x {image.height}')
-        self.scale_image()
+        if not preserve_view:
+            self.scale_image()
+        else:
+            for bar, value in zip(bars, scroll):
+                bar.setValue(value)
 
     def scale_image(self):
         if self.image is None:

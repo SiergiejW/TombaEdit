@@ -6,7 +6,7 @@ from PIL import Image, ImageDraw
 from PyQt6.QtCore import Qt, pyqtSignal, QItemSelectionModel
 from PyQt6.QtWidgets import (QWidget, QVBoxLayout, QHBoxLayout, QLabel, QSpinBox,
     QPushButton, QSplitter, QTableWidget, QTableWidgetItem, QAbstractItemView,
-    QHeaderView, QFileDialog, QMessageBox, QCheckBox)
+    QHeaderView, QFileDialog, QMessageBox, QCheckBox, QComboBox)
 from gui.widgets.image_view import ImageView, file_stem
 from disc.reader import FormatError
 from psx.graphics import render_sprite, part_page, guess_page, palette_missing
@@ -34,6 +34,7 @@ class SpriteView(QWidget):
         self.guess = default
         self.export_name = 'sprites'    # prefix of default file names, set by the window
         self.cache = {}
+        self.clut_overrides = {}  # (sprite, part) -> palette address; preview only
         self.frame_index = 0
         layout = QVBoxLayout(self)
         bar = QHBoxLayout()
@@ -122,12 +123,39 @@ class SpriteView(QWidget):
         pieces = QWidget()
         pl = QVBoxLayout(pieces)
         pl.addWidget(QLabel('Pieces'))
+        palette_bar = QHBoxLayout()
+        self.palette_scope = QComboBox()
+        self.palette_scope.addItems(['Selected pieces', 'Whole sprite', 'Whole bank'])
+        self.palette_choice = QComboBox()
+        self.palette_choice.addItem('Original CLUTs', None)
+        import numpy as np
+        used = {p[2] & 0x7FFF for frame in frames for p in frame}
+        occupied = set(np.flatnonzero(vram.reshape(512, 64, 16).any(axis=2)).tolist())
+        for address in sorted(used | occupied):
+            x, y = (address & 63) * 16, address >> 6
+            self.palette_choice.addItem(f'0x{address:04X} | X {x}, Y {y}', address)
+        self.palette_address = QSpinBox()
+        self.palette_address.setRange(-1, 0x7FFF)
+        self.palette_address.setDisplayIntegerBase(16)
+        self.palette_address.setPrefix('0x')
+        self.palette_address.setSpecialValueText('Original')
+        self.palette_address.setValue(-1)
+        self.palette_choice.currentIndexChanged.connect(self.choose_palette)
+        self.palette_address.valueChanged.connect(self.override_palette)
+        reset_palettes = QPushButton('Reset CLUTs')
+        reset_palettes.clicked.connect(self.reset_palettes)
+        for widget in (QLabel('Preview CLUT:'), self.palette_scope, self.palette_choice,
+                       self.palette_address, reset_palettes):
+            palette_bar.addWidget(widget)
+        pl.addLayout(palette_bar)
         self.parts = QTableWidget(0, 12)
         self.parts.setHorizontalHeaderLabels(['#', 'U', 'V', 'W', 'H', 'Page', 'CLUT', 'Drawn page', 'X', 'Y', 'UV 1', 'UV 2'])
         self.parts.verticalHeader().hide()
         self.parts.setEditTriggers(QAbstractItemView.EditTrigger.NoEditTriggers)
         self.parts.setSelectionBehavior(QAbstractItemView.SelectionBehavior.SelectRows)
+        self.parts.setSelectionMode(QAbstractItemView.SelectionMode.ExtendedSelection)
         self.parts.setDragDropMode(QAbstractItemView.DragDropMode.NoDragDrop)
+        self.parts.itemSelectionChanged.connect(self.show_part_palette)
         pl.addWidget(self.parts)
         right.addWidget(pieces)
         right.setSizes([650, 200])
@@ -156,8 +184,12 @@ class SpriteView(QWidget):
     def frame_image(self, index, origin=False):
         if index not in self.cache:
             try:
-                self.cache[index] = self.renderer(index) if self.renderer else render_sprite(
-                    self.frames[index], self.vram, tpage=self.base_for(index),
+                overrides = {part: clut for (sprite, part), clut in self.clut_overrides.items() if sprite == index}
+                parts = [tuple(clut if col == 2 else value for col, value in enumerate(part))
+                         if (clut := overrides.get(n)) is not None else part
+                         for n, part in enumerate(self.frames[index])]
+                self.cache[index] = self.renderer(index, overrides) if self.renderer else render_sprite(
+                    parts, self.vram, tpage=self.base_for(index),
                     grey_missing=self.grey.isChecked())
             except FormatError:
                 self.cache[index] = Image.new('RGBA', (1, 1))
@@ -231,6 +263,46 @@ class SpriteView(QWidget):
         self.whole.setChecked(False)
         self.image.zoom.setCurrentIndex(0)
         self.refresh()
+        self.image.scale_image()
+
+    def show_part_palette(self):
+        rows = sorted({item.row() for item in self.parts.selectedItems()})
+        if not rows:
+            return
+        value = self.clut_overrides.get((self.frame_index, rows[0]), -1)
+        self.palette_address.blockSignals(True)
+        self.palette_address.setValue(value)
+        self.palette_address.blockSignals(False)
+
+    def choose_palette(self):
+        value = self.palette_choice.currentData()
+        # Selecting the same address should still apply it to a new part.
+        self.palette_address.blockSignals(True)
+        self.palette_address.setValue(-1 if value is None else value)
+        self.palette_address.blockSignals(False)
+        self.override_palette(self.palette_address.value())
+
+    def override_palette(self, value):
+        scope = self.palette_scope.currentIndex()
+        selected = {item.row() for item in self.parts.selectedItems()}
+        if scope == 0 and not selected:
+            self.info.setText('Select one or more pieces first, or choose Whole sprite / Whole bank.')
+            return
+        sprites = range(len(self.frames)) if scope == 2 else [self.frame_index]
+        for sprite in sprites:
+            for part in range(len(self.frames[sprite])) if scope else selected:
+                key = sprite, part
+                if value < 0:
+                    self.clut_overrides.pop(key, None)
+                else:
+                    self.clut_overrides[key] = value
+        self.cache.clear()
+        self.refresh()
+
+    def reset_palettes(self):
+        self.clut_overrides.clear()
+        self.cache.clear()
+        self.refresh()
 
     def selected(self):
         indices = self.selected_indices()
@@ -287,16 +359,26 @@ class SpriteView(QWidget):
             index = min(self.frame_index, len(self.frames)-1)
             image = self.frame_image(index, self.origin.isChecked())
             frame = self.frames[index]
+            selected_parts = {item.row() for item in self.parts.selectedItems()}
+            self.parts.blockSignals(True)
             self.parts.setRowCount(len(frame))
             for row, part in enumerate(frame):
                 values = [str(row), str(part[0]), str(part[1]), str(part[9]), str(part[10]),
-                          f'0x{part[5] | part[6] << 8:04X}', f'0x{part[2]:04X}',
+                          f'0x{part[5] | part[6] << 8:04X}', f'0x{self.clut_overrides.get((index, row), part[2]):04X}',
                           '' if self.renderer else f'0x{part_page(part, self.base_for(index)):03X}', str(part[13]),
                           str(part[14]), str((part[3], part[4])), str((part[7], part[8]))]
                 for col, value in enumerate(values):
                     self.parts.setItem(row, col, QTableWidgetItem(value))
+            self.parts.clearSelection()
+            for row in selected_parts:
+                if row < len(frame):
+                    self.parts.selectionModel().select(self.parts.model().index(row, 0),
+                        QItemSelectionModel.SelectionFlag.Select | QItemSelectionModel.SelectionFlag.Rows)
+            self.parts.blockSignals(False)
             self.info.setText(f'Sprite {index:03d} | {len(frame)} pieces | {image.width} x {image.height}')
-        self.image.set_image(image)
+        if self.clut_overrides:
+            self.info.setText(self.info.text() + ' | Preview CLUT overrides active; PNG exports include them')
+        self.image.set_image(image, preserve_view=self.image.image is not None)
 
     def selected_indices(self):
         return sorted({item.row() for item in self.bank.selectedItems()})
