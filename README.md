@@ -54,13 +54,13 @@ alongside a hex editor or a debugger.
 | WPP | 60–63 | Packed pictures for Tomba's own frames, and the frames assembled |
 | GRPX | 10, 11 | VRAM as the section sees it |
 | WHM | 70, 71 | Collision spans by depth plane |
-| CLM | 8E, 8F | Collision maps as indexed images |
+| CLM | 8E, 8F | Town pictures and their cell maps |
 | APD | 80–8B | Placement records |
 | WFM | D0, D1 | Dialogue rendered with the game font, and the glyph atlas |
 | SEQ, WVD | B0–B3 | Sequenced music and sample banks, with playback |
 | STR | | Movies, with frame, audio and video export |
 | CLUT files | | Palette cells with their PlayStation and RGB values |
-| INS and others | F0 | Records and hex |
+| INS, `X` files | F0 | Code overlays with functions, tables and animation scripts marked |
 
 ### 3D views
 
@@ -99,7 +99,14 @@ markers.
   30 steps a second.
 - **Collision** overlays the section's WHM data: green walkable surfaces,
   magenta surfaces with special attributes, and orange outlines around solid
-  ranges, each drawn at the depth of its collision plane.
+  ranges. Each plane is drawn at the depth where the objects that use it
+  stand, taken from the section's origin and entrance tables in the
+  executable.
+- **Town Map** applies to towns such as Dwarf Village, which are a single
+  pre-rendered picture rather than geometry. The picture is the backdrop of
+  the scene and placements are positions on it. The toggle tints it by the
+  town's map of 8 × 8 pixel cells, one colour per cell value, with the values
+  that have bit 7 set in blue.
 - *Show* limits the scene to geometry, models, sprites or unresolved objects,
   and *Open asset* jumps to any resource the group loads.
 
@@ -116,6 +123,10 @@ a placed object that shows the frame, the game's object table for banks that
 no object in the section uses, and otherwise the base that leaves the fewest
 empty pixels. The value can be set by hand.
 
+**Boundaries** outlines every part of a frame, and every frame on a sheet.
+Saved pictures include the outlines while it is ticked. The viewer opens on a
+sheet of the whole bank; selecting a row shows that frame and its parts.
+
 Tomba's own frames are not in VRAM. The game keeps them packed in a WPP bank
 and uploads one picture at a time. Opening a WPP bank lists its pictures;
 *Assembled frames* draws them through the matching SPR bank, and the sprite
@@ -129,13 +140,37 @@ indices in grey or false colour, through a 16 or 256 colour palette, or as
 15-bit pixels. The starting palette is one the open resource draws with, or
 the first usable row of the section's palette block.
 
-Right-click a palette row to read VRAM through it; dragging with the right
-button follows the pointer. The CLUT box takes a CLUT word and lists the
-palettes used by the open model or sprite bank. A red marker points at a
-newly chosen palette for a moment. With **Crosshair** ticked the palette row
-stays marked and the arrow keys move it by one palette or one row, or with
-Shift by a texture page or sixteen rows. **Page grid** outlines the texture
-pages. Wheel zooms, left or middle drag pans.
+| Input | Action |
+| --- | --- |
+| Ctrl + wheel | Zoom about the pointer |
+| Wheel, Shift + wheel | Scroll down or sideways |
+| Left or middle drag | Pan |
+| Right click or drag | Put the CLUT crosshair on a palette row and read VRAM through it |
+| Left drag on the crosshair | Move it |
+| Arrow keys | Next palette or row; with Shift a texture page or sixteen rows |
+
+The crosshair marks the palette in use and can be hidden with its checkbox.
+The CLUT box takes a CLUT word and lists the palettes used by the open model
+or sprite bank. A red marker points at a newly chosen palette for a moment.
+**Page grid** outlines the texture pages.
+
+### Hex view
+
+Every resource has a hex tab. *Bytes per row* re-flows the bytes; drag the
+number sideways with the left button held, or type a value. A sprite bank at
+16 bytes a row lines its parts up in columns, and a code overlay at 4 or 8
+shows its words.
+
+Where the layout of a resource is known, its byte ranges are coloured by what
+they hold: counts, offsets, positions, palettes, sizes and so on. Selecting a
+byte shows the field it belongs to with an explanation and its value as 16
+and 32-bit numbers, and the list on the right jumps to any range.
+
+Code overlays, the `X` files, are classified word by word. Functions are
+marked from their stack prologue to their return, with instruction and call
+counts. The entry table at the start, pointer tables, animation scripts
+reached through those tables, text and zero fill are named. Addresses are
+shown for the base that area overlays are linked at.
 
 ### Collision
 
@@ -163,8 +198,10 @@ the glyph images and unmapped glyph numbers.
   Tomba's frames. Objects that depend on them keep their markers.
 - Object rotation and scaling in the level view. Sprites are drawn one texel
   to one world unit.
-- The meaning of most collision attribute bits and of the two unused words in
-  an animation step.
+- The meaning of most collision attribute bits, of town cell values, and of
+  the two unused words in an animation step.
+- Event titles in the 24-pixel font are stored without spaces; no spacing is
+  added to them.
 - Movie video export needs `ffmpeg` on `PATH`; frames, audio and raw streams
   do not.
 

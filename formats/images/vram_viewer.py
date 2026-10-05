@@ -6,8 +6,9 @@ indices, the same texels through one palette, 8-bit texels through a 256
 colour palette, and every word as a 15-bit pixel.
 
 A palette can be typed as a CLUT word, chosen from the ones the open
-resource uses, or picked on the picture with the right mouse button. The
-crosshair marks the chosen palette row and the arrow keys walk it.
+resource uses, or picked on the picture: the right mouse button puts the
+crosshair on a palette row and drags it, the left button drags it when the
+press lands on it, and the arrow keys walk it.
 
 Zoom and pan draw a source rectangle of one unscaled pixmap, so the cost of
 a repaint does not grow with the zoom.
@@ -27,6 +28,12 @@ MODE_GREY, MODE_FALSE, MODE_CLUT, MODE_DIRECT = (
 MIN_ZOOM, MAX_ZOOM = 0.1, 32.0
 # How long the red marker stays after the palette changes.
 MARK_MS = 1500
+
+CONTROLS = ('Ctrl + wheel: zoom | Wheel: scroll, Shift + wheel: sideways\n'
+            'Left or middle drag: pan\n'
+            'Right click or drag: put the CLUT crosshair on a palette row\n'
+            'Left drag on the crosshair: move it\n'
+            'Arrows: next palette or row | Shift + arrows: page or 16 rows')
 
 
 def false_colours():
@@ -99,6 +106,10 @@ class VramCanvas(QWidget):
         self.mark = None                # palette flagged by the timed marker
         self.auto_fit = True            # until the view is zoomed or dragged
         self.drag_from = self.drag_origin = self.picking = None
+        self.help = QLabel(CONTROLS, self)
+        self.help.setObjectName('viewerOverlay')
+        self.help.setAttribute(Qt.WidgetAttribute.WA_TransparentForMouseEvents)
+        self.help.adjustSize()
         self.mark_timer = QTimer(self)
         self.mark_timer.setSingleShot(True)
         self.mark_timer.timeout.connect(self.clear_mark)
@@ -111,6 +122,7 @@ class VramCanvas(QWidget):
 
     def resizeEvent(self, event):
         super().resizeEvent(event)
+        self.help.move(self.width() - self.help.width() - 6, self.height() - self.help.height() - 6)
         if self.auto_fit and self.pixmap:
             self.fit()
 
@@ -179,9 +191,20 @@ class VramCanvas(QWidget):
 
     def wheelEvent(self, event):
         steps = event.angleDelta().y() / 120
-        if self.pixmap and steps:
+        if not self.pixmap or not steps:
+            return
+        if event.modifiers() & Qt.KeyboardModifier.ControlModifier:
             self.set_zoom(self.zoom * 1.25 ** steps, event.position())
-            event.accept()
+        else:
+            # A tenth of the view per notch, down the picture or along it.
+            sideways = bool(event.modifiers() & Qt.KeyboardModifier.ShiftModifier)
+            span = (self.width() if sideways else self.height()) / self.zoom
+            move = QPointF(-steps * span / 10, 0) if sideways else QPointF(0, -steps * span / 10)
+            self.origin += move
+            self.auto_fit = False
+            self.clamp()
+            self.update()
+        event.accept()
 
     def keyPressEvent(self, event):
         """Arrows step the crosshair one palette or one row; with Shift a
@@ -203,10 +226,13 @@ class VramCanvas(QWidget):
 
     def mousePressEvent(self, event):
         self.setFocus()
-        if event.button() == Qt.MouseButton.RightButton:
+        on_crosshair = (event.button() == Qt.MouseButton.LeftButton and self.crosshair is not None
+                        and self.row_rect(self.crosshair).adjusted(-4, -4, 4, 4).contains(event.position()))
+        if event.button() == Qt.MouseButton.RightButton or on_crosshair:
             self.picking = self.palette_at(event.position())
-            if self.picking is not None:
+            if self.picking is not None and not on_crosshair:
                 self.picked_clut.emit(self.picking)
+            self.setCursor(Qt.CursorShape.CrossCursor)
         elif event.button() in (Qt.MouseButton.LeftButton, Qt.MouseButton.MiddleButton):
             self.drag_from, self.drag_origin = event.position(), QPointF(self.origin)
             self.setCursor(Qt.CursorShape.ClosedHandCursor)
@@ -344,6 +370,8 @@ class VramView(QWidget):
         layout.addLayout(bottom)
         self.clut = find_palette(self.vram, 16, sorted(set(cluts)))
         self.clut_box.setEditText(f'0x{self.clut:04X}')
+        self.cross.setChecked(True)
+        self.canvas.crosshair = clut_xy(self.clut)
         self.mode.currentTextChanged.connect(self.render)
         self.depth.currentTextChanged.connect(self.depth_changed)
         self.cross.toggled.connect(self.toggle_crosshair)

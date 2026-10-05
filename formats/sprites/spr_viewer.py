@@ -2,7 +2,7 @@
 import json
 import math
 from pathlib import Path
-from PIL import Image
+from PIL import Image, ImageDraw
 from PyQt6.QtCore import Qt, pyqtSignal, QItemSelectionModel
 from PyQt6.QtWidgets import (QWidget, QVBoxLayout, QHBoxLayout, QLabel, QSpinBox,
     QPushButton, QSplitter, QTableWidget, QTableWidgetItem, QAbstractItemView,
@@ -10,6 +10,10 @@ from PyQt6.QtWidgets import (QWidget, QVBoxLayout, QHBoxLayout, QLabel, QSpinBox
 from gui.widgets.image_view import ImageView
 from disc.reader import FormatError
 from psx.graphics import render_sprite, part_page
+
+
+PART_COLOURS = ((255, 80, 80, 255), (80, 220, 255, 255), (255, 220, 60, 255), (120, 255, 120, 255),
+                (255, 120, 255, 255), (255, 160, 60, 255))
 
 
 class SpriteView(QWidget):
@@ -44,6 +48,11 @@ class SpriteView(QWidget):
         self.origin.setChecked(True)
         self.origin.toggled.connect(self.refresh)
         bar.addWidget(self.origin)
+        self.bounds = QCheckBox('Boundaries')
+        self.bounds.setToolTip('Outline every part of a frame, and each frame on a sheet. '
+                               'Saved pictures include the outlines while this is ticked.')
+        self.bounds.toggled.connect(self.refresh)
+        bar.addWidget(self.bounds)
         self.page_base = QSpinBox()
         self.page_base.setRange(-1, 31)
         self.page_base.setSpecialValueText('Auto')
@@ -145,6 +154,8 @@ class SpriteView(QWidget):
             except FormatError:
                 self.cache[index] = Image.new('RGBA', (1, 1))
         image = self.cache[index]
+        if self.bounds.isChecked() and self.frames[index]:
+            image = self.outlined(image, self.frames[index])
         if not origin or not self.frames[index]:
             return image
         bounds = [part for frame in self.frames for part in frame]
@@ -156,6 +167,17 @@ class SpriteView(QWidget):
         out.alpha_composite(image, (min(p[13] for p in self.frames[index])-left,
                                     min(p[14] for p in self.frames[index])-top))
         return out
+
+    @staticmethod
+    def outlined(image, frame):
+        """A copy with each part's rectangle drawn over it, one colour per part."""
+        image = image.copy()
+        draw = ImageDraw.Draw(image)
+        left, top = min(p[13] for p in frame), min(p[14] for p in frame)
+        for n, part in enumerate(frame):
+            x, y = part[13] - left, part[14] - top
+            draw.rectangle((x, y, x + part[9] - 1, y + part[10] - 1), outline=PART_COLOURS[n % len(PART_COLOURS)])
+        return image
 
     def rebuild(self):
         self.cache.clear()
@@ -223,9 +245,12 @@ class SpriteView(QWidget):
         cols = max(1, math.ceil(math.sqrt(len(indices))))
         out = Image.new('RGBA', (width*cols, height*math.ceil(len(indices)/cols)))
         records = []
+        draw = ImageDraw.Draw(out)
         for n, (index, image) in enumerate(zip(indices, images)):
             x, y = n%cols*width, n//cols*height
             out.alpha_composite(image, (x, y))
+            if self.bounds.isChecked():
+                draw.rectangle((x, y, x + width - 1, y + height - 1), outline=(255, 255, 255, 90))
             records.append(dict(sprite=index, x=x, y=y, width=image.width, height=image.height))
         return out, records
 

@@ -40,6 +40,10 @@ class LevelView(ModelView):
             QStyle.StandardPixmap.SP_FileDialogListView, 'Collision', self.toggle_collision, False,
             'Draw the WHM collision spans over the level: green walkable surfaces, '
             'magenta surfaces with special attributes and orange solid ranges.')
+        self.town_action = self.toggle_action(
+            QStyle.StandardPixmap.SP_FileDialogInfoView, 'Town Map', self.toggle_town, False,
+            'Tint a town picture by its cell map: where characters can walk, and the '
+            'cells with bit 7 set, shown in blue.')
         self.animate_action = self.toggle_action(
             QStyle.StandardPixmap.SP_MediaPlay, 'Animate', self.toggle_animation, True,
             'Play the animation scripts of placed sprites.')
@@ -61,9 +65,13 @@ class LevelView(ModelView):
         self.scene = scene
         self.set_data([entry.mesh for entry in scene.entries], scene.vram, 0x5080,
                       {i: e.name for i, e in enumerate(scene.entries)})
+        if any(e.alternative is not None for e in scene.entries):
+            self.canvas.view_angles = (0.0, 0.0)    # a town picture is viewed square on
         self.canvas.lines = scene.collision
         self.canvas.show_lines = self.collision_action.isChecked()
         self.collision_action.setEnabled(scene.collision is not None)
+        self.town_action.setEnabled(any(e.alternative is not None for e in scene.entries))
+        self.toggle_town(self.town_action.isChecked())
         self.animated = [[i, 0, e.frames[0][1]] for i, e in enumerate(scene.entries) if e.frames]
         self.assets.clear()
         for a in scene.resources:
@@ -82,6 +90,13 @@ class LevelView(ModelView):
     def toggle_collision(self, value):
         self.canvas.show_lines = value
         self.canvas.update()
+
+    def toggle_town(self, value):
+        if self.scene is None:
+            return
+        for index, entry in enumerate(self.scene.entries):
+            if entry.alternative is not None:
+                self.canvas.set_mesh(index, entry.alternative if value else entry.mesh)
 
     def toggle_animation(self, value):
         if value and self.animated and self.isVisible():

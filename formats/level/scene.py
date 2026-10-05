@@ -25,6 +25,8 @@ class SceneEntry:
     note: str = ''
     # Animated sprites: [(mesh, ticks)] for one pass of the object's script.
     frames: list = field(default_factory=list)
+    # A second mesh the viewer can swap in, such as a town's tinted picture.
+    alternative: object = None
 
 
 @dataclass
@@ -82,8 +84,9 @@ def sprite_mesh(image, parts, position, flip, offset):
 
 
 def collision_lines(banks):
-    """Collision spans as line segments. `banks` is [(Whm, x0, z0)]. A plane
-    is a 90 unit slice of depth and a column is 8 units of X; see whm.py.
+    """Collision spans as line segments. `banks` is [(Whm, x0, z0, step)].
+    Plane n lies at depth z0 + n * step, which is where the objects that
+    walk on it are placed, and a column is 8 units of X; see whm.py.
     Surfaces are drawn as they slope; solid ranges only by their outline,
     since every column of a hillside carries one."""
     vertices, colours = [], []
@@ -95,9 +98,9 @@ def collision_lines(banks):
     def covered(ranges, y):
         return any(low <= y <= high for low, high in ranges)
 
-    for whm, x0, z0 in banks:
+    for whm, x0, z0, step in banks:
         for plane in whm.planes:
-            z = -(z0 + plane.index * PLANE_DEPTH + PLANE_DEPTH / 2)
+            z = -(z0 + plane.index * step)
             previous = []
             for column in plane.columns + [[]]:
                 x = x0 + (column[0].column if column else len(plane.columns)) * 8
@@ -121,6 +124,57 @@ def collision_lines(banks):
     if not vertices:
         return None
     return np.asarray(vertices, np.float32), np.asarray(colours, np.float32)
+
+
+def cell_colours():
+    """One translucent colour per cell value; 0 stays clear. Values with bit
+    7 set share a blue cast so they read as one group."""
+    import colorsys
+    table = np.zeros((256, 4), np.uint8)
+    for value in range(1, 256):
+        hue = (.62 + (value & 127) * .02) % 1 if value & 0x80 else (value * .13) % .5
+        r, g, b = colorsys.hsv_to_rgb(hue, .85, 1.)
+        table[value] = (int(r * 255), int(g * 255), int(b * 255), 110)
+    return table
+
+
+def town_picture(project, resources, notes):
+    """Town sections are a pre-rendered picture (CLM slot 15) with a map of
+    8 x 8 pixel cells over it (CLM slot 14). Returns a scene entry holding
+    the picture, with the picture tinted by the cell map as its alternative
+    frame, or None for ordinary sections."""
+    from formats.sprites.wpp import parse_tim
+    picture, cells = resources.get(('CLM', 15)), resources.get(('CLM', 14))
+    if picture is None:
+        return None
+    try:
+        tim = parse_tim(project.asset_data(picture))
+    except FormatError:
+        return None                 # slot 15 holds other data in some areas
+    image = tim.image(tim.cluts.reshape(-1) if tim.cluts is not None else None)
+    opaque = np.asarray(image).copy()
+    opaque[..., 3] = 255
+    from PIL import Image
+    image = Image.fromarray(opaque)
+    tinted = image
+    if cells is not None:
+        data = project.asset_data(cells)
+        width, height = np.frombuffer(data, '<u2', 2)
+        if 4 + int(width) * int(height) <= len(data):
+            grid = np.frombuffer(data, np.uint8, int(width) * int(height), 4).reshape(height, width)
+            overlay = Image.fromarray(cell_colours()[grid]).resize((width * 8, height * 8), Image.NEAREST)
+            tinted = image.copy()
+            tinted.alpha_composite(overlay.crop((0, 0, image.width, image.height)))
+            used = sorted(set(grid.reshape(-1).tolist()) - {0})
+            notes.append('Town map cell values: ' + ' '.join(f'{v:02X}' for v in used)
+                         + '. Blue cells have bit 7 set.')
+    # Placements in a town are pixel positions on the picture.
+    corners = [(0, 0, -1), (image.width, 0, -1), (0, -image.height, -1), (image.width, -image.height, -1)]
+    entry = SceneEntry('Town picture', 'Geometry', quad(corners, image), picture,
+                       note=f'{image.width} x {image.height} pre-rendered picture. '
+                            'Town map shows it tinted by the 8 x 8 cell map.')
+    entry.alternative = quad(corners, tinted)
+    return entry
 
 
 def build_scene(project, path, index):
@@ -201,17 +255,20 @@ def build_scene(project, path, index):
             entries.append(SceneEntry(f'{name} | {asset.code:04X} #{i:03d}', category, mesh,
                                       asset, placement, active, note, frames))
     banks = []
-    x0, z0 = resolver.collision_origin(area, index - 1)
+    x0, z0, step = resolver.collision_frame(area, index - 1)
     for (kind, slot), asset in resources.items():
         if kind != 'WHM':
             continue
         try:
             # Area 0 keeps the near planes in slot 1 and continues 270 units
             # deeper in slot 0 (US routine 80042654); elsewhere slot 0 is used.
-            banks.append((parse_whm(project.asset_data(asset)), x0,
-                          z0 + (270 if area == 0 and slot == 0 and ('WHM', 1) in resources else 0)))
+            deeper = 3 * step if area == 0 and slot == 0 and ('WHM', 1) in resources else 0
+            banks.append((parse_whm(project.asset_data(asset)), x0, z0 + deeper, step))
         except FormatError as exc:
             notes.append(f'{asset.label}: {exc}')
+    town = town_picture(project, resources, notes)
+    if town:
+        entries.insert(0, town)
     return LevelScene(entries, list(resources.values()), vram, notes, collision_lines(banks))
 
 

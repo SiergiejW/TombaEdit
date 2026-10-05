@@ -144,6 +144,10 @@ def prepare_preview(project, node, context=None):
         data = project.payload(node)
         result["data"] = data
         result["size"] = len(data)
+    from formats.annotate import regions
+    name = Path(node.path).name.upper() if isinstance(node, DiscEntry) else ''
+    kind = node.kind if isinstance(node, Asset) else 'INS' if name.startswith('X') and name.endswith('.BIN') else ''
+    result['regions'] = regions(kind, data)
     # WFM can also be embedded in instruction binaries and standalone GAMs.
     wfms = []
     start = 0
@@ -601,7 +605,15 @@ class MainWindow(QMainWindow):
                         lambda row, col, old_row, old_col, sprite=view:
                             sprite.bank.setCurrentCell(row, 0) if 0 <= row < sprite.bank.rowCount() else None)
                     self.tabs.addTab(view, 'Assembled frames')
-            if isinstance(node, Asset) and node.kind in ('WPP', 'FOUR', 'INS', 'SPC', 'SAP', 'Unknown'):
+            from gui.widgets.hex_view import HexView
+            code = isinstance(node, Asset) and node.kind == 'INS' or (
+                isinstance(node, DiscEntry) and bool(result.get('regions')))
+            if code and self.current_data is not None:
+                # Code overlays have no viewer of their own; the annotated
+                # bytes are the view.
+                self.tabs.addTab(HexView(self.current_data, result.get('regions', ()),
+                                         note='addresses assume the overlay base 0x800E7388'), 'Structure')
+            if isinstance(node, Asset) and node.kind in ('WPP', 'FOUR', 'SPC', 'SAP', 'Unknown'):
                 from formats.archive.data_viewer import DataView
                 data_view = DataView(self.current_data, node.kind, node.code, node.ram)
                 self.tabs.addTab(data_view, f'{node.kind} records')
@@ -622,10 +634,12 @@ class MainWindow(QMainWindow):
                 if assets:
                     self.asset_table(assets)
             self.tabs.addTab(text_view(self.metadata(node, result)), "Information")
-            if self.current_data is not None:
-                self.tabs.addTab(text_view(hex_dump(self.current_data)), "Decoded file hex")
+            if self.current_data is not None and not code:
+                self.tabs.addTab(HexView(self.current_data, result.get('regions', ())), "Decoded file hex")
             if "raw" in result:
-                self.tabs.addTab(text_view(hex_dump(result["raw"], node.size)), "Disc hex")
+                shown = len(result["raw"])
+                self.tabs.addTab(HexView(result["raw"], note='' if shown >= node.size else
+                                         f'first {shown:,} of {node.size:,} bytes on disc'), "Disc hex")
             for label in self.tabs.findChildren(QLabel):
                 label.setTextInteractionFlags(Qt.TextInteractionFlag.TextSelectableByMouse)
             self.statusBar().showMessage("Ready | " + self.path_label.text())

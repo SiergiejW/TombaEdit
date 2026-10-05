@@ -98,14 +98,30 @@ class InitialPoseResolver:
             address = self.read_word(address + 8) if control & 0x4000 else address + 8
         return frames
 
-    def collision_origin(self, area, section):
-        """X and Z of collision column 0, plane 0 (table at 8007E9F8)."""
-        if not self.available or not 0 <= area < 20 or not 0 <= section < 8:
-            return 0, 0
+    def in_exe(self, address, size):
+        return self.base <= address and address + size <= self.base + len(self.exe) - 0x800
+
+    def collision_frame(self, area, section):
+        """Where a section's collision sits: (x0, z0, step).
+
+        Column 0 starts at x0 and plane 0 at z0 (table at 8007E9F8). Planes
+        follow every `step` units of Z: 90, or -90 when the section's first
+        entrance (table at 8007BF78, read by routine 800243E8) sets the flag
+        that makes routine 80042654 count planes towards the camera."""
+        x0 = z0 = 0
+        step = 90
+        if not self.available or not 0 <= area < 20 or not 0 <= section < 32:
+            return x0, z0, step
         table = self.exe_word(0x8007E9F8 + area * 4)
-        if not self.base <= table < self.base + len(self.exe) - 0x800 - 32:
-            return 0, 0
-        return struct.unpack_from('<hh', self.exe, table + section * 4 - self.base + 0x800)
+        if section < 8 and self.in_exe(table + section * 4, 4):
+            x0, z0 = struct.unpack_from('<hh', self.exe, table + section * 4 - self.base + 0x800)
+        sections = self.exe_word(0x8007BF78 + area * 4)
+        if self.in_exe(sections + section * 4, 4):
+            entrances = self.exe_word(sections + section * 4)
+            if self.in_exe(entrances, 8):
+                if struct.unpack_from('<H', self.exe, entrances + 6 - self.base + 0x800)[0] & 1:
+                    step = -90
+        return x0, z0, step
 
     def hook(self, uc, address, size, user):
         r = self.reg

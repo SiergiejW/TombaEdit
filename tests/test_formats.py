@@ -240,9 +240,9 @@ class WhmTests(unittest.TestCase):
         self.assertFalse(surface.wall)
         # A surface stores its rise across the column, not a second height.
         self.assertEqual(surface.extent, (-29, -26))
-        lines = collision_lines([(parse_whm(data), 100, 0)])
-        self.assertIn([100.0, 29.0, -45.0], lines[0].tolist())
-        self.assertIn([108.0, 26.0, -45.0], lines[0].tolist())
+        lines = collision_lines([(parse_whm(data), 100, 180, -90)])
+        self.assertIn([100.0, 29.0, -180.0], lines[0].tolist())
+        self.assertIn([108.0, 26.0, -180.0], lines[0].tolist())
 
 
 class WppTests(unittest.TestCase):
@@ -278,6 +278,30 @@ class WppTests(unittest.TestCase):
         image = frame_image(picture, [part], palette)
         self.assertEqual([image.getpixel((x, 0))[:3] for x in range(4)],
                          [(255, 0, 0), (0, 255, 0), (0, 0, 255), (255, 255, 255)])
+
+
+class AnnotateTests(unittest.TestCase):
+    def test_sprite_fields_cover_the_bank_without_overlap(self):
+        from formats.annotate import regions
+        data = struct.pack('<HH', 1, 4) + bytes(range(16))
+        found = regions('SPR', data)
+        self.assertEqual([(r.start, r.end) for r in found[:3]], [(0, 2), (2, 4), (4, 6)])
+        self.assertEqual(sum(r.end - r.start for r in found), len(data))
+        self.assertEqual(found[-1].name, 'Frame 0 part 0: X, Y offset')
+        self.assertEqual(regions('SEQ', data), [])
+
+    def test_overlay_functions_tables_and_animation_steps(self):
+        from formats.annotate import regions, OVERLAY_BASE
+        words = [1, OVERLAY_BASE + 8,                       # entry table
+                 0x27BDFFE8, 0x0C000000, 0x03E00008, 0,     # prologue, call, return, delay slot
+                 OVERLAY_BASE + 32, 0x80012345,             # pointer table
+                 0x00000005, 0x80030000]                    # step: frame 5, hold 3 ticks
+        found = regions('INS', struct.pack(f'<{len(words)}I', *words))
+        names = {(r.start, r.end): r.name for r in found}
+        self.assertEqual(names[(0, 4)], 'Entry count')
+        self.assertTrue(names[(8, 24)].startswith('Function'))
+        self.assertTrue(names[(24, 32)].startswith('Pointer table'))
+        self.assertTrue(names[(32, 40)].startswith('Animation step'))
 
 
 if __name__ == "__main__":

@@ -142,11 +142,27 @@ X, each leading to a span count and eight-byte spans: attribute, two signed
 words, parameter.
 
 An object's plane is its Z, less the section's origin from the table at
-8007E9F8, divided by 90. Its column is its X divided by 8. With bit 4 of the
+8007E9F8, divided by 90. Its column is its X less the origin's X, divided by
+8. Objects stand at whole multiples of 90, so plane n is drawn at the origin
+plus 90 n. Each entrance of a section has an eight-byte record in the table
+at 8007BF78: Tomba's position and a flag word. Bit 0 of the flag makes the
+lookup subtract instead, so that the planes run the other way from the
+origin; routine 800243E8 copies it to `1F8001C8` on entry. With bit 4 of the
 attribute set a span is a solid range between the two Y values. Otherwise it
 is a surface whose first word is the Y at the column's left edge and whose
 second is the rise across the column. Area 0 keeps its three nearest planes
 in WHM slot 1 and continues 270 units deeper in slot 0.
+
+## CLM
+
+Towns are not built from models. Slot 15 (8FFF) of a town section is a TIM
+image, 8 bits a pixel with a 256 colour palette: the whole town, drawn in
+advance. Slot 14 (8EFF or 8E80) is a map over it: a 16-bit width and height
+in cells, then one byte per 8 × 8 pixel cell, row by row. Zero is where
+nothing can walk. The non-zero values mark the walkable ground and special
+spots such as doorways; values with bit 7 set appear around doorways and
+obstacles, and their exact meaning is not established. Placement positions in a town are pixel positions on the
+picture. In areas without a picture the same slots hold other data.
 
 ## APD and object initialisation
 

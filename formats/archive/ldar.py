@@ -37,8 +37,7 @@ class Asset:
     @property
     def label(self):
         source = self.source.path.split("/")[-1] if self.source else f"Unresolved {self.file_id:04X}"
-        display = 'VRAM' if self.kind == 'GRPX' else self.kind
-        return f"{display} {self.code:04X}  |  {source} +{self.offset:06X}"
+        return f"{self.kind} {self.code:04X}  |  {source} +{self.offset:06X}"
 
 
 @dataclass

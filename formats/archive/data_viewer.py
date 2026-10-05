@@ -108,14 +108,32 @@ class CollisionMapView(QWidget):
         super().__init__()
         layout = QVBoxLayout(self)
         width, height = struct.unpack_from('<HH', data) if len(data) >= 4 else (0, 0)
-        dimensioned = code in (0x8EFF, 0x8E80) and width and height
+        if data[:4] == b'\x10\0\0\0':
+            # Slot 15 of a town section: the pre-rendered picture, as a TIM.
+            from formats.sprites.wpp import parse_tim
+            from disc.reader import FormatError
+            try:
+                tim = parse_tim(data)
+                image = np.asarray(tim.image(tim.cluts.reshape(-1) if tim.cluts is not None else None)).copy()
+                image[..., 3] = 255
+                layout.addWidget(QLabel(f'CLM {code:04X} | town picture, {tim.width} x {tim.height}, '
+                                        f'{"8" if tim.indices.max(initial=0) > 15 else "4"}-bit TIM'))
+                view = ImageView(Image.fromarray(image))
+                view.zoom.setCurrentIndex(0)
+                layout.addWidget(view)
+                return
+            except FormatError:
+                pass
+        dimensioned = code >> 8 == 0x8E and width and height
         if dimensioned:
             size = width * height
-            start = 8 if len(data) == 16392 else 4
+            # Rows follow the two size words directly; the rest of the
+            # buffer is unused.
+            start = 4
             if start + size <= len(data):
                 pixels = np.frombuffer(data[start:start + size], dtype=np.uint8).reshape(height, width)
                 self.pixels = pixels
-                layout.addWidget(QLabel(f'CLM {code:04X} | {width} x {height} indexed map | values 0..255'))
+                layout.addWidget(QLabel(f'CLM {code:04X} | {width} x {height} cells of 8 x 8 pixels'))
                 self.mode = QComboBox()
                 self.mode.addItems(['Distinct values', 'Grayscale values'])
                 self.mode.currentIndexChanged.connect(self.refresh)
@@ -150,3 +168,4 @@ class CollisionMapView(QWidget):
     def select(self, x, y):
         self.selected.setText(f'Cell ({x}, {y}) | value {int(self.pixels[y, x])} '
                               f'| 0x{int(self.pixels[y, x]):02X}')
+        print('selected: CLM ' + self.selected.text())

@@ -19,6 +19,7 @@ class WppView(QWidget):
         bar = QHBoxLayout()
         self.whole = QPushButton('Whole bank')
         self.whole.setCheckable(True)
+        self.whole.setChecked(True)
         self.whole.toggled.connect(self.refresh)
         bar.addWidget(self.whole)
         bar.addWidget(QLabel('Palette:'))
@@ -54,8 +55,7 @@ class WppView(QWidget):
         self.info.setTextInteractionFlags(Qt.TextInteractionFlag.TextSelectableByMouse)
         layout.addWidget(self.info)
         self.fill_palettes(0)
-        if pictures:
-            self.table.setCurrentCell(0, 0)
+        self.refresh()
 
     def fill_palettes(self, row):
         """Outfit rows for Tomba's frames; a TIM entry brings its own."""
