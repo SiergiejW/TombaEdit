@@ -16,6 +16,7 @@ class CollisionRecord:
     points: tuple
     depth: float
     turned: bool
+    route: str = 'Default route'
 
     @property
     def color(self):
@@ -51,7 +52,7 @@ def lines(rows):
     rectangles = {}
     for row in rows:
         if row.span.wall and row.span.length and row.span.y1:
-            rectangles.setdefault((id(row.source), row.span.plane, row.turned, row.depth), []).append(row)
+            rectangles.setdefault((id(row.source), row.span.plane, row.turned, row.depth, row.route), []).append(row)
             continue
         for a, b in zip(row.points[::2], row.points[1::2]):
             if a != b:
@@ -61,7 +62,8 @@ def lines(rows):
     # survive. This removes the comb of vertical lines through solid ground.
     for group in rectangles.values():
         horizontal, vertical = {}, {}
-        bounds = [(np.min(row.points, axis=0), np.max(row.points, axis=0)) for row in group]
+        bounds = [(tuple(min(p[i] for p in row.points) for i in range(3)),
+                   tuple(max(p[i] for p in row.points) for i in range(3))) for row in group]
         along = 2 if group[0].turned else 0
         for row in group:
             for a, b in zip(row.points[::2], row.points[1::2]):
@@ -75,16 +77,16 @@ def lines(rows):
             for (varying, fixed), intervals in axis.items():
                 boundaries = sorted({v for interval in intervals for v in interval})
                 pieces = []
+                across = along if varying == 1 else 1
+                centre = list(fixed); centre.insert(varying, 0)
+                coordinate = centre[across]
+                before = [(lo[varying], hi[varying]) for lo, hi in bounds
+                          if lo[across] < coordinate - .0001 < hi[across]]
+                after = [(lo[varying], hi[varying]) for lo, hi in bounds
+                         if lo[across] < coordinate + .0001 < hi[across]]
                 for low, high in zip(boundaries, boundaries[1:]):
                     middle = (low + high) / 2
-                    centre = list(fixed); centre.insert(varying, middle)
-                    across = along if varying == 1 else 1
-                    before, after = centre.copy(), centre.copy()
-                    before[across] -= .0001; after[across] += .0001
-                    def inside(p):
-                        return any(lo[along] < p[along] < hi[along] and lo[1] < p[1] < hi[1]
-                                   for lo, hi in bounds)
-                    if inside(before) != inside(after):
+                    if any(a < middle < b for a, b in before) != any(a < middle < b for a, b in after):
                         if pieces and pieces[-1][1] == low:
                             pieces[-1] = (pieces[-1][0], high)
                         else:

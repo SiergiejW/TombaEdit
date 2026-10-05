@@ -27,6 +27,8 @@ class SceneEntry:
     frames: list = field(default_factory=list)
     # A second mesh the viewer can swap in, such as a town's tinted picture.
     alternative: object = None
+    handler: int = None
+    animation_address: int = None
 
 
 @dataclass
@@ -365,27 +367,40 @@ def build_scene(project, path, index):
                     note = f'Fixed picture of {len(pieces)} rectangles, {image.width} x {image.height}, drawn behind the section.'
             if mesh is None:
                 mesh = marker(placement.position, placement.offset)
-            entries.append(SceneEntry(f'{name} | {asset.code:04X} #{i:03d}', category, mesh,
-                                      asset, placement, active, note, frames))
+            entry = SceneEntry(f'{name} | {asset.code:04X} #{i:03d}', category, mesh,
+                               asset, placement, active, note, frames)
+            entry.handler = resolver.handler_address(placement)
+            entry.animation_address = visual.get('animation_address')
+            entries.append(entry)
     from formats.collision.geometry import records, lines
     collision_records = []
     x0, z0, turned, only = resolver.collision_frame(area, index - 1)
     for (kind, slot), asset in resources.items():
-        if kind != 'WHM' or only not in (None, slot):
+        if kind != 'WHM' or only not in (None, slot) or not resolver.available:
             continue
         try:
             # Area 0 keeps the near planes in slot 1 and continues 270 units
             # deeper in slot 0 (US routine 80042654); elsewhere slot 0 is used.
-            deeper = 3 * PLANE_DEPTH if area == 0 and index != 4 and slot == 0 and ('WHM', 1) in resources else 0
+            deeper = 3 * PLANE_DEPTH if area == 0 and index < 4 and slot == 0 and ('WHM', 1) in resources else 0
             whm = parse_whm(project.asset_data(asset))
             collision_records.extend(records(whm, x0, z0 + deeper, turned, asset))
+        except FormatError as exc:
+            notes.append(f'{asset.label}: {exc}')
+    if resolver.available and area == 3 and index in (2, 6) and ('WHM', 1) in resources:
+        asset = resources['WHM', 1]
+        alt_x, alt_z, alt_turned, _ = resolver.collision_frame(area, index - 1, alternate=True)
+        try:
+            alternate = records(parse_whm(project.asset_data(asset)), alt_x, alt_z, alt_turned, asset)
+            for record in alternate:
+                record.route = 'Alternate mountain route'
+            collision_records.extend(alternate)
         except FormatError as exc:
             notes.append(f'{asset.label}: {exc}')
     town = town_picture(project, resources, notes)
     if town:
         entries.insert(0, town)
         backdrops = [(index + 1, backdrop) for index, backdrop in backdrops]
-    collision = lines(collision_records)
+    collision = lines([r for r in collision_records if r.route == 'Default route'])
     if collision is None and town is not None and getattr(town, 'cells', None) is not None:
         collision = town_lines(town.cells)
     # The art stops where the game's clear colour takes over. That colour is
@@ -402,6 +417,8 @@ def build_scene(project, path, index):
     context = (f'Path: {"Z" if turned else "X"}, origin {x0}; depth: {"-X" if turned else "Z"}, origin {z0}. '
                'Each WHM plane is a 2D X/Y test, selected by depth in 90-unit slices. '
                'First entrance orientation; changing entrance can change the active bank.')
+    if not resolver.available:
+        context = 'World collision origins are not verified for this executable. Open a WHM asset for its local X/Y boundaries.'
     return LevelScene(entries, list(resources.values()), vram, notes, collision, backdrops, sky,
                       collision_records, context)
 

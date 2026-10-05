@@ -214,10 +214,15 @@ shown for the base that area overlays are linked at.
 ### Collision
 
 A WHM bank is divided into depth planes 90 units apart and columns 8 units
-wide. Each column lists spans: walkable surfaces with a height and a slope,
-and solid vertical ranges. The WHM viewer draws one plane or all of them from
+wide. Each column lists floor, ceiling and side boundaries, and filled
+regions. Their base height, signed delta and packed horizontal interval
+are decoded from the game's evaluator. The WHM viewer draws one plane or all of them from
 the side, filters by attribute, and lets attribute values be named. The same
-data is what the level editor overlays in 3D.
+data is what the level editor overlays in 3D. Turn on **Collision** to use
+its side panel: filter by bank, plane or attribute, click a line or record,
+and press **F** or double-click to frame it. The mountain's alternate route
+can be selected separately. See [collision research](docs/collision.md) for
+verified details and the remaining gameplay fields.
 
 ## Supported releases
 
@@ -249,6 +254,7 @@ the glyph images and unmapped glyph numbers.
 ```powershell
 python -m unittest discover -s tests -v
 python -m tests.validate_disc "rom\Tomba! (USA).cue"
+python -m tests.validate_collision "rom\Tomba! (USA).cue"
 python tests/gui_smoke.py "rom\Tomba! (USA).cue"
 ```
 

@@ -185,21 +185,22 @@ def whm(data):
                     (2, 'position', 'origin', ''), (2, 'size', 'width', f'{parsed.width} units, 8 per column.'),
                     (2, 'size', 'height', ''), (2, 'pointer', 'offset of plane 1', '')), 'Header')
     for i in range(1, count):
-        out.append(Region(10 + (i - 1) * 2, 12 + (i - 1) * 2, 'pointer', f'Offset of plane {i}', ''))
+        out.append(Region(8 + i * 2, 10 + i * 2, 'pointer', f'Offset of plane {i}', ''))
     columns = parsed.width // 8
     for plane in parsed.planes:
         spans = plane.spans
         if not plane.columns:
             continue
-        base = (10 + 2 * (count - 1)) if plane.index == 0 else u16(data, 10 + (plane.index - 1) * 2)
+        base = u16(data, 8 + plane.index * 2)
         out.append(Region(base, base + columns * 2, 'pointer', f'Plane {plane.index}: column offsets',
                           'One 16-bit offset per 8 units of X, relative to the start of the plane.'))
         for span in spans:
             fields(out, span.offset, (
-                (2, 'clut', 'attribute', 'Bit 4 marks a solid range; other bits select behaviour.'),
-                (2, 'position', 'Y', 'Height at the left edge, negative upwards.'),
-                (2, 'size', 'end Y or rise', 'End of a solid range, or the rise of a surface across the column.'),
-                (2, 'uv', 'parameter', '')), f'Plane {plane.index} column {span.column} span')
+                (2, 'clut', 'attribute', 'Bits 0..3: floor, ceiling, left and right boundaries; bit 4: filled region.'),
+                (2, 'position', 'base Y', 'Base height, negative upwards.'),
+                (2, 'size', 'Y delta', 'Signed change from base Y, including filled regions.'),
+                (2, 'uv', 'horizontal interval / contact', 'Low nibble: start; next nibble: width; high byte: contact control.')),
+                f'Plane {plane.index} column {span.column} span')
     return out
 
 

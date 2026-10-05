@@ -216,7 +216,7 @@ class WmdTests(unittest.TestCase):
 
 class WhmTests(unittest.TestCase):
     def test_single_plane_x_column_and_signed_y(self):
-        data = (struct.pack('<6H', 0x0111, 0, 8, 0, 0, 2)
+        data = (struct.pack('<6H', 0x0111, 0, 8, 0, 10, 2)
                 + struct.pack('<H', 1)
                 + struct.pack('<HhhH', 0x1234, -64, 128, 0x80))
         whm = parse_whm(data)
@@ -230,7 +230,7 @@ class WhmTests(unittest.TestCase):
             parse_whm(data[:-1])
 
     def test_surface_slope_and_solid_range(self):
-        data = (struct.pack('<6H', 0x0111, 0, 8, 0, 0, 2)
+        data = (struct.pack('<6H', 0x0111, 0, 8, 0, 10, 2)
                 + struct.pack('<H', 2)
                 + struct.pack('<HhhH', 0x11, 0, -27, 0x80)
                 + struct.pack('<HhhH', 0x01, -29, 3, 0x80))

@@ -15,6 +15,14 @@ from disc.reader import FormatError
 PLANE_DEPTH = 90
 
 
+def attribute_shape(attribute):
+    if attribute & 0x10:
+        return 'Solid region'
+    return ' + '.join(name for bit, name in ((1, 'Floor'), (2, 'Ceiling'),
+                     (4, 'Push left'), (8, 'Push right'))
+                     if attribute & bit) or 'Inactive'
+
+
 def trunc_div(numerator, denominator):
     """Signed MIPS DIV rounds towards zero, including negative slopes."""
     return (-1 if numerator < 0 else 1) * (abs(numerator) // denominator)
@@ -53,11 +61,7 @@ class Span:
 
     @property
     def shape(self):
-        if self.wall:
-            return 'Solid region'
-        return ' + '.join(name for bit, name in ((1, 'Floor'), (2, 'Ceiling'),
-                         (4, 'Left boundary'), (8, 'Right boundary'))
-                         if self.attribute & bit) or 'Inactive'
+        return attribute_shape(self.attribute)
 
     def height_at(self, local_x, integer=False):
         """Floor evaluator 8004339C, before its contact tolerance tests.

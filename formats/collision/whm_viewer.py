@@ -7,7 +7,8 @@ from PyQt6.QtWidgets import (QWidget, QVBoxLayout, QHBoxLayout, QLabel,
     QComboBox, QPushButton, QSplitter, QTableWidget, QTableWidgetItem,
     QAbstractItemView, QHeaderView, QInputDialog)
 
-from formats.collision.whm import parse_whm
+from formats.collision.whm import parse_whm, attribute_shape
+from formats.collision.geometry import records, lines
 
 
 BEHAVIOR_NAMES = ('Standing', 'Ass-sliding', 'Set rotation', 'Butterflies',
@@ -25,6 +26,7 @@ class PlaneCanvas(QWidget):
         self.plane = -1
         self.attribute = None
         self.selected = None
+        self.line_cache = {}
         self.zoom = 1.0
         self.pan_x = self.pan_y = 0.0
         self.drag_from = None
@@ -56,6 +58,7 @@ class PlaneCanvas(QWidget):
 
     def paintEvent(self, event):
         painter = QPainter(self)
+        painter.setRenderHint(QPainter.RenderHint.Antialiasing)
         painter.fillRect(self.rect(), QColor('#202020'))
         ox, oy, scale, ymin, ymax = self.transform()
         painter.setPen(QPen(QColor('#454545')))
@@ -65,24 +68,25 @@ class PlaneCanvas(QWidget):
         for y in range((ymin // 128) * 128, ymax + 1, 128):
             screen = round(oy + y * scale)
             painter.drawLine(0, screen, self.width(), screen)
-        for span in self.visible_spans():
-            if self.attribute is not None and span.attribute != self.attribute:
-                continue
-            if self.plane < 0:
-                color = QColor(PLANE_COLORS[span.plane % len(PLANE_COLORS)])
-            else:
-                color = QColor.fromHsv((span.attribute * 47) % 360, 165, 225)
-            if span == self.selected:
-                color = QColor('#ff6060')
-            painter.setPen(QPen(color, 4 if span == self.selected else 2))
-            y0 = round(oy + span.y0 * scale)
-            if span.wall:
-                x = round(ox + (span.column * 8 + 4) * scale)
-                painter.drawLine(x, y0, x, round(oy + span.y1 * scale))
-            else:
-                painter.drawLine(round(ox + span.column * 8 * scale), y0,
-                                 round(ox + (span.column * 8 + 8) * scale),
-                                 round(oy + (span.y0 + span.y1) * scale))
+        key = (self.plane, self.attribute)
+        if key not in self.line_cache:
+            rows = records(self.whm, planes=None if self.plane < 0 else {self.plane})
+            self.line_cache[key] = lines([r for r in rows if
+                                         self.attribute is None or r.span.attribute == self.attribute])
+        geometry = self.line_cache[key]
+        if geometry is not None:
+            vertices, colors = geometry
+            for index in range(0, len(vertices), 2):
+                color = QColor.fromRgbF(*map(float, colors[index]))
+                painter.setPen(QPen(color, 1.5))
+                a, b = vertices[index:index + 2]
+                painter.drawLine(round(ox + a[0] * scale), round(oy - a[1] * scale),
+                                 round(ox + b[0] * scale), round(oy - b[1] * scale))
+        if self.selected is not None:
+            painter.setPen(QPen(QColor('#ff6060'), 3))
+            for (x0, y0), (x1, y1) in self.selected.segments:
+                painter.drawLine(round(ox + x0 * scale), round(oy + y0 * scale),
+                                 round(ox + x1 * scale), round(oy + y1 * scale))
         painter.setPen(QColor('#dddddd'))
         painter.drawText(8, self.height() - 7,
                          f'X 0..{self.whm.width} | Y {ymin}..{ymax} | Scroll: zoom | Right-drag: pan')
@@ -167,7 +171,7 @@ class WhmView(QWidget):
         side_layout.addWidget(self.attributes, 1)
         side_layout.addWidget(QLabel('Spans at selected X'))
         self.records = QTableWidget(0, 6)
-        self.records.setHorizontalHeaderLabels(['Plane', 'Attribute', 'Y', 'End / rise', 'Parameter', 'Offset'])
+        self.records.setHorizontalHeaderLabels(['Plane', 'Attribute', 'Base Y', 'Y delta', 'Parameter', 'Offset'])
         self.records.verticalHeader().hide()
         self.records.setEditTriggers(QAbstractItemView.EditTrigger.NoEditTriggers)
         self.records.setSelectionBehavior(QAbstractItemView.SelectionBehavior.SelectRows)
@@ -185,7 +189,7 @@ class WhmView(QWidget):
         self.refresh_attributes()
 
     def label(self, attribute):
-        return self.settings.value(f'whm/attributes/{attribute:04X}', '') or ''
+        return self.settings.value(f'whm/attributes/{attribute:04X}', '') or attribute_shape(attribute)
 
     def change_plane(self):
         self.canvas.plane = self.plane.currentData()
@@ -260,8 +264,8 @@ class WhmView(QWidget):
         self.canvas.selected = span
         self.canvas.update()
         name = self.label(span.attribute)
-        shape = (f'solid Y {span.y0}..{span.y1}' if span.wall else
-                 f'surface Y {span.y0}, rise {span.y1:+d}')
+        shape = (f'{span.shape}: Y {span.y0}..{span.y0 + span.y1} | '
+                 f'horizontal start {span.start}, width {span.length} | contact {span.contact}')
         text = (f'Plane {span.plane} | X {span.column * 8}..{span.column * 8 + 7} | '
                 f'{shape}\nAttribute 0x{span.attribute:04X}'
                 f'{" | " + name if name else ""} | parameter 0x{span.parameter:04X} | '

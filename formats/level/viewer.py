@@ -1,8 +1,9 @@
 """Section scene inspection using the standard model viewer controls."""
 from PyQt6.QtCore import Qt, QTimer, pyqtSignal
 from PyQt6.QtGui import QAction
-from PyQt6.QtWidgets import QHBoxLayout, QLabel, QComboBox, QPushButton, QStyle
+from PyQt6.QtWidgets import QHBoxLayout, QLabel, QComboBox, QPushButton, QStyle, QTabWidget
 from formats.models.wmd_viewer import ModelView
+from formats.collision.inspector import CollisionInspector
 
 # The game steps animation scripts once per frame at 30 frames a second.
 TICK_MS = 33
@@ -33,6 +34,24 @@ class LevelView(ModelView):
         self.filter.currentIndexChanged.connect(self.apply_filter)
         self.scope.currentIndexChanged.connect(self.apply_filter)
         self.objects.horizontalHeaderItem(1).setText('Scene object')
+        # Keep the familiar model list and viewport. Collision records occupy
+        # a second page of that same side panel, not a second scene viewport.
+        left_layout = self.objects.parentWidget().layout()
+        left_layout.itemAt(0).widget().setText('Scene inspection')
+        self.inspect_tabs = QTabWidget()
+        left_layout.replaceWidget(self.objects, self.inspect_tabs)
+        self.inspect_tabs.addTab(self.objects, 'Objects')
+        self.collision_inspector = CollisionInspector(self)
+        self.inspect_tabs.addTab(self.collision_inspector, 'Collision')
+        object_buttons = left_layout.itemAt(2).layout()
+        self.inspect_tabs.currentChanged.connect(lambda index: [
+            object_buttons.itemAt(i).widget().setVisible(index == 0)
+            for i in range(object_buttons.count()) if object_buttons.itemAt(i).widget()])
+        self.canvas.line_picker = lambda p: (self.inspect_tabs.currentIndex() == 1 and
+                                            self.collision_inspector.pick(p))
+        for column in (2, 3, 4):
+            self.objects.setColumnHidden(column, True)
+        self.objects.setMinimumWidth(350)
         self.objects.cellClicked.connect(self.show_entry)
         self.canvas.picked.connect(self.picked_entry)
         self.spread_action.setVisible(False)
@@ -43,8 +62,8 @@ class LevelView(ModelView):
         self.toolbar.addAction(gif)
         self.collision_action = self.toggle_action(
             QStyle.StandardPixmap.SP_FileDialogListView, 'Collision', self.toggle_collision, False,
-            'Draw the WHM collision spans over the level: green walkable surfaces, '
-            'magenta surfaces with special attributes and orange solid ranges.\n'
+            'Draw WHM boundaries: green floors, blue ceilings, magenta side boundaries '
+            'and orange solid regions. The Collision side panel filters and inspects records.\n'
             'In a town, outline the walkable cells of its map instead.')
         self.backdrop_action = self.toggle_action(
             QStyle.StandardPixmap.SP_DesktopIcon, 'Background', self.toggle_backdrop, True,
@@ -90,6 +109,7 @@ class LevelView(ModelView):
         for a in scene.resources:
             self.assets.addItem(a.label, a)
         self.notice.setText(' | '.join(scene.notes))
+        self.collision_inspector.set_scene(scene)
         self.apply_filter()
         self.canvas.fit(animate=False)
         resolved = sum(e.active and e.category in ('Models', 'Sprites') for e in scene.entries)
@@ -102,7 +122,15 @@ class LevelView(ModelView):
 
     def toggle_collision(self, value):
         self.canvas.show_lines = value
+        if value:
+            self.inspect_tabs.setCurrentIndex(1)
         self.canvas.update()
+
+    def frame_current(self):
+        if self.inspect_tabs.currentIndex() == 1 and self.collision_inspector.selected is not None:
+            self.collision_inspector.frame()
+        else:
+            super().frame_current()
 
     def save_gif(self):
         """One cycle of the selected object's animation as a GIF: a sprite's
@@ -256,6 +284,13 @@ class LevelView(ModelView):
             text += (f'\n\nPosition: {p.position}\nLayer: {p.layer}\nType: {p.kind:02X}'
                      f'\nVariant: {p.variant:02X}\nAPD offset: 0x{p.offset:04X}'
                      f'\nRelative placement: {p.relative}\nRecord: {p.raw.hex(" ").upper()}')
+        if e.handler is not None:
+            overlay = next((a for a in self.scene.resources if a.kind == 'INS'), None)
+            text += f'\n\nObject handler: 0x{e.handler:08X}'
+            if overlay is not None and 0x800E7388 <= e.handler < 0x800E7388 + overlay.size:
+                text += f'\n{overlay.label}\nHandler offset: 0x{e.handler - 0x800E7388:06X}'
+        if e.animation_address is not None:
+            text += f'\nAnimation script: 0x{e.animation_address:08X}'
         self.details.setPlainText(text)
         if e.mesh.image is not None:
             self.uv.set_image(e.mesh.image)

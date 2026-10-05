@@ -59,7 +59,7 @@ class StructuredView(QWidget):
         else:
             header = ' '.join(f'{v:04X}' for v in struct.unpack_from('<6H', data, 0)) if len(data) >= 12 else ''
             label = QLabel(f'WHM collision data | {len(data):,} bytes | Header words: {header}\n'
-                           'Record layout is not confirmed. Values below are read-only little-endian words.')
+                           'Raw little-endian words. The Collision planes tab decodes the boundaries and attributes.')
             label.setWordWrap(True)
             layout.addWidget(label)
             count = (len(data) + 15) // 16

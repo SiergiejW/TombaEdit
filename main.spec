@@ -27,7 +27,7 @@ a = Analysis(
                    'formats.collision.structured_viewer',
                    'formats.collision.whm_viewer',
                    'formats.models.four_viewer', 'formats.level.viewer',
-                   'formats.level.runtime', 'unicorn', 'unicorn.unicorn_py3.arch.mips',
+                   'formats.level.runtime', 'unicorn', 'unicorn.mips_const',
                    'formats.archive.data_viewer'],
     hookspath=[],
     hooksconfig={},

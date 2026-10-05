@@ -266,7 +266,7 @@ class InitialPoseResolver:
             return None
         return struct.unpack_from('<3h', self.exe, record - self.base + 0x800)
 
-    def collision_frame(self, area, section):
+    def collision_frame(self, area, section, alternate=False):
         """Where a section's collision sits: (along0, depth0, turned, slot).
 
         Collision is indexed by a coordinate along the path, 8 units a
@@ -282,7 +282,7 @@ class InitialPoseResolver:
         There the origin comes from the table at 8007E9E8 and the flag also
         picks which WHM slot is used, returned as `slot`."""
         along0 = depth0 = 0
-        turned, slot = False, None
+        turned, slot = False, 0
         entrance = None
         if not self.available or not 0 <= area < 20 or not 0 <= section < 32:
             return along0, depth0, turned, slot
@@ -293,16 +293,29 @@ class InitialPoseResolver:
                 entrance = struct.unpack_from('<3hH', self.exe, entrances - self.base + 0x800)
                 turned = bool(entrance[3] & 1)
         table = self.exe_word(0x8007E9F8 + area * 4)
+        if area == 0 and section < 3:
+            slot = None
         if area in (4, 12) and section < 4:
             table, slot = 0x8007E9E8, int(turned)
-        if section < 8 and self.in_exe(table + section * 4, 4):
+        elif area == 0 and section >= 3:
+            # The hut bypasses the village's split bank selection. Behind
+            # the hut and the pond clamp to plane 0 of their local slot 0;
+            # the base slot 1 is still loaded but is not their collision.
+            slot = 0
+        if self.in_exe(table + section * 4, 4):
             along0, depth0 = struct.unpack_from('<hh', self.exe, table + section * 4 - self.base + 0x800)
+        if alternate and area == 3 and section in (1, 5):
+            # 800427D0 branches on the signed route state at [800A53DC]+2.
+            # A negative state uses slot 1, the pair at 8007E9E4, and adds
+            # 90 to the queried depth before indexing the plane table.
+            along0, depth0 = struct.unpack_from('<hh', self.exe, 0x8007E9E4 - self.base + 0x800)
+            return along0, depth0 - 90, turned, 1
         # Sections limited to one plane (byte table at 8007EAF4) clamp every
         # depth to it, so their depth origin is not meaningful; the plane is
         # where Tomba enters.
         limits = self.exe_word(0x8007EAF4 + area * 4)
         single = self.in_exe(limits + section, 1) and self.exe[limits + section - self.base + 0x800] == 0
-        if turned and single and entrance is not None and slot is None:
+        if turned and single and entrance is not None and area not in (4, 12):
             depth0 = entrance[0]
         return along0, depth0, turned, slot
 
@@ -342,6 +355,13 @@ class InitialPoseResolver:
             # animation is set is enough to learn what the object shows.
             self.cache[key] = self.attempt(placement, False) or self.attempt(placement, True)
         return self.cache[key]
+
+    def handler_address(self, placement):
+        """The actual dispatch entry, for inspection of a placed object."""
+        if not self.available:
+            return None
+        table = MODEL_TABLE if placement.layer == 8 else TABLES.get(placement.layer)
+        return self.read_word(table + placement.kind * 4) if table is not None else None
 
     def attempt(self, placement, stop_at_animation):
         from unicorn import UcError
@@ -384,6 +404,7 @@ class InitialPoseResolver:
                         # +0D replaces the part CLUT with +08.
                         result.update(sprite=(sprite - 0x80400000) // 0x40000,
                                       frame=frames[0][0], frames=frames,
+                                      animation_address=anim,
                                       flip=not state[0x2E] & 1,
                                       tpage=struct.unpack_from('<H', state, 0x1E)[0],
                                       clut=struct.unpack_from('<H', state, 8)[0] if state[0xD] & 1 else None,

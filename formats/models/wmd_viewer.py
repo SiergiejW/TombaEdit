@@ -59,6 +59,8 @@ class MeshCanvas(CameraEventMixin, QOpenGLWidget):
         # Optional GL_LINES overlay: (vertices, colours).
         self.lines = None
         self.show_lines = False
+        self.selection_lines = None
+        self.line_picker = None
         # Dim everything but the selected model. The level editor turns this
         # off: a scene is read as a whole.
         self.highlight = True
@@ -280,14 +282,26 @@ class MeshCanvas(CameraEventMixin, QOpenGLWidget):
         if self.show_lines and self.lines is not None:
             vertices, colors = self.lines
             gl.glDisable(gl.GL_DEPTH_TEST)
+            gl.glEnable(gl.GL_BLEND)
+            gl.glBlendFunc(gl.GL_SRC_ALPHA, gl.GL_ONE_MINUS_SRC_ALPHA)
+            gl.glEnable(gl.GL_LINE_SMOOTH)
             gl.glLineWidth(1.5)
             gl.glEnableClientState(gl.GL_VERTEX_ARRAY)
             gl.glEnableClientState(gl.GL_COLOR_ARRAY)
             gl.glVertexPointer(3, gl.GL_FLOAT, 0, vertices)
             gl.glColorPointer(3, gl.GL_FLOAT, 0, colors)
             gl.glDrawArrays(gl.GL_LINES, 0, len(vertices))
+            if self.selection_lines is not None:
+                gl.glDisableClientState(gl.GL_COLOR_ARRAY)
+                gl.glColor3f(1., 1., .1)
+                gl.glLineWidth(3)
+                selected = np.asarray(self.selection_lines, np.float32)
+                gl.glVertexPointer(3, gl.GL_FLOAT, 0, selected)
+                gl.glDrawArrays(gl.GL_LINES, 0, len(selected))
             gl.glDisableClientState(gl.GL_VERTEX_ARRAY)
             gl.glDisableClientState(gl.GL_COLOR_ARRAY)
+            gl.glDisable(gl.GL_LINE_SMOOTH)
+            gl.glDisable(gl.GL_BLEND)
             gl.glEnable(gl.GL_DEPTH_TEST)
         if self.show_origin:
             gl.glDisable(gl.GL_DEPTH_TEST)
@@ -396,6 +410,8 @@ class MeshCanvas(CameraEventMixin, QOpenGLWidget):
         if event.button() != Qt.MouseButton.LeftButton:
             self.auto_fit = False
             return super().mousePressEvent(event)
+        if self.show_lines and self.line_picker is not None and self.line_picker(event.position()):
+            return
         ray = ray_through(self._model_view_projection(), event.position().x(), event.position().y(), self.width(), self.height())
         if ray is None:
             return
@@ -426,8 +442,7 @@ class ModelView(QWidget):
         self.canvas = MeshCanvas([], np.zeros((512, 1024), np.uint16))
         shortcut = QShortcut(QKeySequence('F'), self)
         shortcut.setContext(Qt.ShortcutContext.WidgetWithChildrenShortcut)
-        shortcut.activated.connect(lambda: self.canvas.fit(
-            {self.canvas.selected_model} if self.canvas.selected_model is not None else None))
+        shortcut.activated.connect(self.frame_current)
         def add_action(icon_kind, title, callback, checked=None):
             action = QAction(self.style().standardIcon(icon_kind), title, self)
             if checked is not None:
@@ -509,6 +524,7 @@ class ModelView(QWidget):
         self.canvas.cleanup()
         self.canvas.meshes, self.canvas.vram = list(meshes), vram
         self.canvas.lines = None
+        self.canvas.selection_lines = None
         self.canvas.backdrop = []
         self.canvas.sky = None
         # Level geometry opens from slightly above; single models square on.
@@ -575,6 +591,9 @@ class ModelView(QWidget):
             return
         self.canvas.selected_model = row
         self.canvas.fit({row})
+
+    def frame_current(self):
+        self.canvas.fit({self.canvas.selected_model} if self.canvas.selected_model is not None else None)
 
     def visibility_changed(self, item):
         if item.column() != 0:
