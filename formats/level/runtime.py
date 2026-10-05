@@ -41,6 +41,7 @@ class InitialPoseResolver:
         self.available = False
         self.reason = "This executable's object routines have not been located."
         self.cache = {}
+        self.object_states = {}
         self.queued = set()
         self.stop_at_animation = False
         found = executable(project)
@@ -392,7 +393,7 @@ class InitialPoseResolver:
     def resolve(self, placement):
         if not self.available or placement.layer not in (2, 3, 4, 5, 7):
             return {}
-        key = placement.raw
+        key = (placement.raw, placement.position)
         if key not in self.cache:
             # Most initialisers finish on their own. Some run into parts of
             # the game that are not here; for those, stopping where the
@@ -441,6 +442,15 @@ class InitialPoseResolver:
         from unicorn import UcError
         self.stop_at_animation = stop_at_animation
         r, raw, obj = self.reg, placement.raw, OBJECT
+        parents = []
+        parent = placement.parent
+        while parent is not None and len(parents) < 32:
+            self.resolve(parent)
+            state = self.object_states.get((parent.raw, parent.position))
+            if state is None:
+                break
+            parents.append((parent, state))
+            parent = parent.parent
         self.write(0x80000000, self.baseline)
         self.write(0x1F800000, self.scratch)
         self.write(obj, bytes(0x200))
@@ -456,10 +466,23 @@ class InitialPoseResolver:
             self.word(obj + 0xA0, self.model_spans[placement.model][0])
         for j, value in enumerate(placement.position):
             self.word(obj + 0x10 + j * 4, value << 16)
+        # APD modes 2/3 link the child at +90 to its parent's live object.
+        # Copy each initialized parent into separate memory, with its own
+        # coordinate pointers. Attached sprites read these in their updates.
+        for n, (parent, state) in enumerate(parents):
+            address = OBJECT + 0x4000 + n * 0x400
+            self.write(address, state)
+            for offset in (0x40, 0x44):
+                pointer = struct.unpack_from('<I', state, offset)[0]
+                if OBJECT <= pointer < OBJECT + 0x200:
+                    self.word(address + offset, address + pointer - OBJECT)
+            self.word(address + 0x90, address + 0x400 if n + 1 < len(parents) else 0)
+        if parents:
+            self.word(obj + 0x90, OBJECT + 0x4000)
         pc = self.read_word(self.build.tables[placement.layer] + placement.kind * 4)
         result = {}
         try:
-            for _ in range(4):
+            for step in range(4):
                 self.completed = False
                 self.run_handler(pc, obj, 4000)
                 sprite = self.read_word(obj + 0x3C)
@@ -469,11 +492,19 @@ class InitialPoseResolver:
                     result['model'] = self.model_pointers[model]
                     result['scale'] = struct.unpack('<3h', self.read(obj + 0x74, 6))
                     result['rotation'] = struct.unpack('<3i', self.read(obj + 0x84, 12))
+                    self.object_states[(raw, placement.position)] = self.read(obj, 0x200)
                     break
                 if SPR_MEMORY <= sprite < WMD_MEMORY and (sprite - SPR_MEMORY) % BANK_SPACING == 0:
                     if self.base <= anim < self.limit:
+                        if parents and step == 0 and not stop_at_animation:
+                            # Initialization names the image; the first update
+                            # attaches it to the parent (e.g. a hanging lamp).
+                            continue
                         frames = self.animation(anim)
                         state = self.read(obj, 0x30)
+                        self.object_states[(raw, placement.position)] = self.read(obj, 0x200)
+                        if parents:
+                            result['position'] = tuple(v / 65536 for v in struct.unpack('<3i', self.read(obj + 0x10, 12)))
                         # Draw routine 800487B0: bit 0 of +2E draws the parts as
                         # stored and a clear bit mirrors them about the origin;
                         # +1E is added to every part's texture page; bit 0 of

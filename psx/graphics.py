@@ -133,6 +133,24 @@ def render_sprite(parts, vram, page_base=0, shard=None, tpage=None, clut=None, g
                 pages[key] = sprite_texture_page(shard, page, vram, palette)
             else:
                 pages[key] = texture_page(vram, (page & ~31) | (((page & 31) + page_base) & 31), palette)
-        tile = pages[key].crop((sx, sy, sx + w, sy + h))
+        tile = sprite_part_image(pages[key], p)
         image.alpha_composite(tile, (x - left, y - top))
     return image
+
+
+def sprite_part_image(page, part):
+    """Sample all four UV corners, including mirrored and rotated parts.
+
+    Width and height describe the screen rectangle, not the direction the
+    UVs travel. Clock-room chairs and chandeliers have reversed U corners.
+    """
+    w, h = part[9:11]
+    uv = np.asarray(((part[0], part[1]), (part[3], part[4]),
+                     (part[7], part[8]), (part[11], part[12])), np.float64)
+    across = np.linspace(0, 1, w)[None, :, None]
+    down = np.linspace(0, 1, h)[:, None, None]
+    top = uv[0] * (1 - across) + uv[1] * across
+    bottom = uv[2] * (1 - across) + uv[3] * across
+    coords = np.rint(top * (1 - down) + bottom * down).astype(np.int32)
+    pixels = np.asarray(page)
+    return Image.fromarray(pixels[coords[:, :, 1] % page.height, coords[:, :, 0] % page.width])

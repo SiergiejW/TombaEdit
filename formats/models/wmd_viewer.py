@@ -19,6 +19,7 @@ from gui.widgets.camera_controls import (CameraControls, CameraEventMixin, CONTR
     MODEL_HEADING, MODEL_PITCH, FIELD_OF_VIEW)
 from gui.widgets.polygon_pick import ray_through, nearest_polygon
 from gui.theme import view_background
+from formats.models.selection import mesh_outline, POLYGON_OUTLINE, GEOMETRY_OUTLINE, MODEL_OUTLINE
 
 # Downward tilt a level opens with, close to the game's own camera.
 LEVEL_TILT = 10.0
@@ -64,7 +65,9 @@ class MeshCanvas(CameraEventMixin, QOpenGLWidget):
         # Dim everything but the selected model. The level editor turns this
         # off: a scene is read as a whole.
         self.highlight = True
-        self.selection_box = False
+        self.selection_outline = True
+        self.selection_types = []
+        self.outline_cache = None
         self.panorama_cache = None
         self.backdrop_rects = {}
         # Screen-space sprites behind the scene: [(index, Backdrop)].
@@ -311,6 +314,14 @@ class MeshCanvas(CameraEventMixin, QOpenGLWidget):
             mesh = self.meshes[i]
             if i not in self.visible:
                 continue
+            # Flat scenes still contain solid assets, such as the clock-room
+            # door. Keep depth within each model so its rear faces cannot
+            # cover its front. Clear it between objects to retain painter order.
+            local_depth = self.flat_mode and mesh.image is None
+            if local_depth:
+                gl.glClear(gl.GL_DEPTH_BUFFER_BIT)
+                gl.glEnable(gl.GL_DEPTH_TEST)
+                gl.glDepthFunc(gl.GL_LEQUAL)
             gl.glPushMatrix()
             gl.glTranslatef(*self.offset_for(i))
             gl.glFrontFace(gl.GL_CW if getattr(mesh, 'front_clockwise', True) else gl.GL_CCW)
@@ -349,12 +360,15 @@ class MeshCanvas(CameraEventMixin, QOpenGLWidget):
                     draw_colors = np.ascontiguousarray(draw_colors * 0.24)
                 gl.glColorPointer(3, gl.GL_FLOAT, 0, draw_colors)
                 drawn = self.displayed_vertices(mesh, vertices)
-                if self.flat_mode:
+                if self.flat_mode and not local_depth:
                     drawn = np.array(drawn, dtype=np.float32, copy=True)
                     drawn[:, 2] = 0
                 gl.glVertexPointer(3, gl.GL_FLOAT, 0, drawn)
                 gl.glDrawArrays(gl.GL_TRIANGLES, 0, len(vertices))
             gl.glPopMatrix()
+            if local_depth:
+                gl.glDisable(gl.GL_DEPTH_TEST)
+                gl.glDepthFunc(gl.GL_LESS)
             if billboard and self.backface_culling and not self.flat_mode:
                 gl.glEnable(gl.GL_CULL_FACE)
         gl.glDisableClientState(gl.GL_VERTEX_ARRAY)
@@ -362,7 +376,7 @@ class MeshCanvas(CameraEventMixin, QOpenGLWidget):
         gl.glDisableClientState(gl.GL_TEXTURE_COORD_ARRAY)
         gl.glDisable(gl.GL_TEXTURE_2D)
         gl.glPolygonMode(gl.GL_FRONT_AND_BACK, gl.GL_FILL)
-        if self.selection_box:
+        if self.selection_outline:
             self.paint_selection(gl)
         if self.show_lines and self.lines is not None:
             vertices, colors = self.lines
@@ -404,11 +418,14 @@ class MeshCanvas(CameraEventMixin, QOpenGLWidget):
             model_index, p = self.selected
             order = [0, 1, 3, 2] if len(p['vertices']) == 4 else [0, 1, 2]
             gl.glDisable(gl.GL_DEPTH_TEST)
-            gl.glColor3f(1, 1, 0)
+            gl.glColor3f(*POLYGON_OUTLINE)
             gl.glLineWidth(2)
             gl.glBegin(gl.GL_LINE_LOOP)
             for i in order:
                 points = self.displayed_vertices(self.meshes[model_index], p['vertices'])
+                if self.flat_mode and self.meshes[model_index].image is not None:
+                    points = np.array(points, copy=True)
+                    points[:, 2] = 0
                 gl.glVertex3f(*(np.asarray(points[i]) + self.offset_for(model_index)))
             gl.glEnd()
             gl.glEnable(gl.GL_DEPTH_TEST)
@@ -486,7 +503,7 @@ class MeshCanvas(CameraEventMixin, QOpenGLWidget):
             return
         gl.glDisable(gl.GL_DEPTH_TEST)
         gl.glDisable(gl.GL_CULL_FACE)
-        gl.glColor3f(1., 1., .1)
+        gl.glColor3f(*POLYGON_OUTLINE)
         gl.glLineWidth(2.)
         if index in self.backdrop_rects and self.show_backdrop:
             width = 240 * self.width() / max(1, self.height())
@@ -502,20 +519,21 @@ class MeshCanvas(CameraEventMixin, QOpenGLWidget):
             gl.glMatrixMode(gl.GL_MODELVIEW)
         elif 0 <= index < len(self.meshes):
             mesh = self.meshes[index]
-            arrays = [self.displayed_vertices(mesh, b[0]) + self.offset_for(index)
-                      for b in mesh.batches.values() if len(b[0])]
-            if arrays:
-                points = np.concatenate(arrays)
-                low, high = points.min(0), points.max(0)
-                if self.flat_mode:
-                    low[2] = high[2] = 0
-                corners = [np.where([(n >> bit) & 1 for bit in range(3)], high, low) for n in range(8)]
-                gl.glBegin(gl.GL_LINES)
-                for n in range(8):
-                    for bit in (1, 2, 4):
-                        if not n & bit:
-                            gl.glVertex3f(*corners[n]); gl.glVertex3f(*corners[n | bit])
-                gl.glEnd()
+            if self.outline_cache is None or self.outline_cache[0] is not mesh:
+                self.outline_cache = (mesh, mesh_outline(mesh))
+            points = self.displayed_vertices(mesh, self.outline_cache[1]) + self.offset_for(index)
+            if len(points):
+                kind = self.selection_types[index] if index < len(self.selection_types) else 'Models'
+                color = (POLYGON_OUTLINE if mesh.image is not None else
+                         GEOMETRY_OUTLINE if kind == 'Geometry' else MODEL_OUTLINE)
+                gl.glColor3f(*color)
+                if self.flat_mode and mesh.image is not None:
+                    points = np.array(points, copy=True)
+                    points[:, 2] = 0
+                gl.glEnableClientState(gl.GL_VERTEX_ARRAY)
+                gl.glVertexPointer(3, gl.GL_FLOAT, 0, np.ascontiguousarray(points, dtype=np.float32))
+                gl.glDrawArrays(gl.GL_LINES, 0, len(points))
+                gl.glDisableClientState(gl.GL_VERTEX_ARRAY)
         gl.glEnable(gl.GL_DEPTH_TEST)
         if self.backface_culling:
             gl.glEnable(gl.GL_CULL_FACE)

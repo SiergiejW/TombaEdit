@@ -370,7 +370,7 @@ def build_scene(project, path, index):
             frames, frames_first = [], None
             if mesh is None and 'sprite' in visual and visual['sprite'] in sprites:
                 bank, flip = visual['sprite'], visual.get('flip', False)
-                where = placement.position
+                where = visual.get('position', placement.position)
                 if visual.get('anchored'):
                     # Screen-list objects that keep pace with the camera count
                     # their Y from the top of the screen, a screen above where

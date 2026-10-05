@@ -26,7 +26,10 @@ def ordering_bucket(placement, visual, fixed_picture=False):
     bias = visual.get('sort_bias', int.from_bytes(placement.raw[13:14], 'little', signed=True))
     if fixed_picture:
         return 804 + bias
-    if visual.get('anchored') or placement.layer == 7 and placement.raw[12] == 1:
+    # Camera anchoring only changes position. Room furniture can follow the
+    # camera while using the ordinary actor draw list (US 80018C40), not
+    # the layer 7 screen-sprite renderer and its reserved backdrop buckets.
+    if placement.layer == 7 and placement.raw[12] == 1:
         return 804 + visual.get('screen_bias', bias)
     depth = 0 if visual.get('sort_fixed') else visual.get('sort_depth', placement.position[2]) // 4
     return max(0, depth + bias) + 4
@@ -45,6 +48,8 @@ def pick(meshes, order, visible, point, vram):
         if index not in visible:
             continue
         mesh = meshes[index]
+        best = None
+        best_depth = -float('inf')
         for polygon in reversed(mesh.polygons):
             vertices = np.asarray(polygon['vertices'])[:, :2]
             triangles = ((0, 1, 2), (3, 2, 1)) if len(vertices) == 4 else ((0, 1, 2),)
@@ -66,5 +71,14 @@ def pick(meshes, order, visible, point, vram):
                     y = min(image.height - 1, max(0, int(coord[1] * image.height)))
                     if image.getpixel((x, y))[3] <= 12:
                         continue
-                return index, polygon
+                if mesh.image is not None:
+                    return index, polygon
+                # Solid assets retain their internal depth in the flat view.
+                # Pick the front face rather than the last stored primitive.
+                z = np.asarray(polygon['vertices'])[list(triangle), 2]
+                depth = (1 - u - v) * z[0] + u * z[1] + v * z[2]
+                if depth > best_depth:
+                    best, best_depth = (index, polygon), depth
+        if best is not None:
+            return best
     return None

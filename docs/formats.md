@@ -313,7 +313,13 @@ signed object byte `+0F`, with four reserved ordering buckets in front
 (US `80048B14` and `80048B4C`). The editor keeps the relative initial depth
 from the object initializer. Fixed rectangles and screen sprites use bucket
 804 plus their ordering offset (`8004E014`, `8004E338`); screen mode 2
-reads the offset from word `+0E`. Town TIM art is the base layer. Larger
+reads the offset from word `+0E`. This screen-sprite rule applies to layer 7
+draw mode 1, not to every sprite that follows the camera. AREA09's clock-room
+furniture follows the camera but queues through `80018C40` on the ordinary
+actor draw list. Its clock at APD `82FF +00B0` has bias 92 and initial depth
+100, giving editor bucket 121 in front of the room picture at 804. Treating
+camera anchoring as a draw mode incorrectly put the clock at 896 behind
+the picture. Town TIM art is the base layer. Larger
 buckets paint behind smaller ones, with stable APD ordering for ties.
 This preserves the decoded initial drawing priorities; event-driven
 spawns and dynamic actor sorting are still outside the initial-state preview.

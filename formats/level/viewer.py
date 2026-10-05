@@ -72,7 +72,7 @@ class LevelView(ModelView):
         self.canvas.picked.connect(self.picked_entry)
         self.spread_action.setVisible(False)
         self.canvas.highlight = False
-        self.canvas.selection_box = True
+        self.canvas.selection_outline = True
         gif = QAction(self.style().standardIcon(QStyle.StandardPixmap.SP_DialogSaveButton), 'Save GIF', self)
         gif.setToolTip('Save one pass of the selected sprite\'s animation as a GIF.')
         gif.triggered.connect(self.save_gif)
@@ -145,6 +145,7 @@ class LevelView(ModelView):
         self.canvas.flat_drag = None
         self.set_data([entry.mesh for entry in scene.entries], scene.vram, 0x5080,
                       {i: e.name for i, e in enumerate(scene.entries)}, level=not flat)
+        self.canvas.selection_types = [e.category for e in scene.entries]
         self.canvas.controls_label.setText(
             ('2D view | Middle/right-drag: pan | Scroll: zoom\n'
              'Click: select visible object | F: frame selected\nDouble-click a row: frame it')

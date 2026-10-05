@@ -1,5 +1,5 @@
 """APD spawn records, traced through US routine 8005AA98."""
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 import struct
 from disc.reader import FormatError
 
@@ -10,6 +10,7 @@ class Placement:
     raw: bytes
     position: tuple
     relative: bool = False
+    parent: object = field(default=None, repr=False, compare=False)
 
     @property
     def layer(self): return self.raw[1] & 127
@@ -43,9 +44,11 @@ def parse_apd(data):
         position = struct.unpack_from('<3h', raw, 6)
         mode = raw[15] & 3
         relative = mode in (2, 3) and raw[1] & 127 not in (6, 7)
-        if relative and parent is not None:
-            position = tuple(a + b for a, b in zip(position, parent))
+        linked = parent if relative else None
+        if linked is not None:
+            position = tuple(a + b for a, b in zip(position, linked.position))
+        placement = Placement(at, raw, position, relative, linked)
         if mode in (1, 2) and raw[1] & 127 not in (6, 7):
-            parent = position
-        placements.append(Placement(at, raw, position, relative))
+            parent = placement
+        placements.append(placement)
     return placements
