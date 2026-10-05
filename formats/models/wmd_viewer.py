@@ -64,6 +64,7 @@ class MeshCanvas(CameraEventMixin, QOpenGLWidget):
         self.highlight = True
         # Screen-space sprites behind the scene: [(index, Backdrop)].
         self.backdrop = []
+        self.sky = None
         self.show_backdrop = True
         self.stats_label = QLabel(self)
         self.stats_label.setObjectName('viewerOverlay')
@@ -212,7 +213,7 @@ class MeshCanvas(CameraEventMixin, QOpenGLWidget):
     def paintGL(self):
         from OpenGL import GL as gl
         from OpenGL.GLU import gluPerspective
-        gl.glClearColor(*view_background(), 1)
+        gl.glClearColor(*(self.sky if self.sky and self.show_backdrop else view_background()), 1)
         gl.glClear(gl.GL_COLOR_BUFFER_BIT | gl.GL_DEPTH_BUFFER_BIT)
         if self.backface_culling:
             gl.glEnable(gl.GL_CULL_FACE)
@@ -350,8 +351,9 @@ class MeshCanvas(CameraEventMixin, QOpenGLWidget):
         for index, sprite in self.backdrop:
             if index not in self.visible:
                 continue
-            x = sprite.screen[0] - camera[0] * sprite.follow[0] + sprite.left
-            y = sprite.screen[1] - camera[1] * sprite.follow[1] + sprite.top
+            # Whole pixels, so neighbouring strips meet without seams.
+            x = math.floor(sprite.screen[0] - camera[0] * sprite.follow[0]) + sprite.left
+            y = math.floor(sprite.screen[1] - camera[1] * sprite.follow[1]) + sprite.top
             gl.glBindTexture(gl.GL_TEXTURE_2D, self.image_texture(gl, sprite.image))
             gl.glColor3f(1, 1, 1)
             low = (320 - width) / 2
@@ -502,6 +504,7 @@ class ModelView(QWidget):
         self.canvas.meshes, self.canvas.vram = list(meshes), vram
         self.canvas.lines = None
         self.canvas.backdrop = []
+        self.canvas.sky = None
         # Level geometry opens from slightly above; single models square on.
         level = code in (0x5080, 0x50FF) if level is None else level
         self.canvas.view_angles = (MODEL_HEADING, LEVEL_TILT if level else MODEL_PITCH)

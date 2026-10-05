@@ -111,7 +111,9 @@ markers.
   from the camera, each following a fraction of its movement, so they drift
   as the view is moved sideways, and looping scenery repeats. Interiors and
   other sections with a fixed picture behind them show it in place, with
-  their foreground pieces over it.
+  their foreground pieces over it. Behind all of it the view is cleared to
+  the colour at the top edge of the scenery, standing in for the game's own
+  sky colour, which is not stored with the section.
 - **Collision** overlays the section's WHM data: green walkable surfaces,
   magenta surfaces with special attributes, and orange outlines around solid
   ranges. Each plane is drawn at the depth where the objects that use it

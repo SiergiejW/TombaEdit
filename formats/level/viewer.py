@@ -79,7 +79,8 @@ class LevelView(ModelView):
             self.canvas.view_angles = (0.0, 0.0)    # a town picture is viewed square on
         self.canvas.lines = scene.collision
         self.canvas.backdrop = scene.backdrop
-        self.backdrop_action.setEnabled(bool(scene.backdrop))
+        self.canvas.sky = scene.sky
+        self.backdrop_action.setEnabled(bool(scene.backdrop) or scene.sky is not None)
         self.canvas.show_lines = self.collision_action.isChecked()
         self.collision_action.setEnabled(scene.collision is not None)
         self.town_action.setEnabled(any(e.alternative is not None for e in scene.entries))

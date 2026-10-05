@@ -54,6 +54,8 @@ class LevelScene:
     # Backdrop sprites, drawn behind everything in screen space: one
     # (entry index, Backdrop) per layer 7 placement that resolved.
     backdrop: list = field(default_factory=list)
+    # Colour to clear the view with while the backdrop is shown, or None.
+    sky: tuple = None
 
 
 def area_of(path):
@@ -98,6 +100,19 @@ def sprite_mesh(image, parts, position, flip, offset):
     x, y, z = np.asarray(position) * (1, -1, -1)
     return quad([(x+left,y-top,z),(x+left+image.width,y-top,z),
                  (x+left,y-top-image.height,z),(x+left+image.width,y-top-image.height,z)], image, offset=offset)
+
+
+def edge_colour(image):
+    """Most common colour along the first row of an image that has any
+    pixels: the sky a backdrop was painted to fade into."""
+    from collections import Counter
+    pixels = np.asarray(image.convert('RGBA'))
+    rows = np.nonzero(pixels[..., 3].any(axis=1))[0]
+    if not len(rows):
+        return None
+    row = pixels[rows[0]]
+    colour, _ = Counter(map(tuple, row[row[:, 3] > 0][:, :3].tolist())).most_common(1)[0]
+    return tuple(c / 255 for c in colour)
 
 
 def fixed_picture(pieces, vram):
@@ -318,13 +333,19 @@ def build_scene(project, path, index):
             frames, frames_first = [], None
             if mesh is None and 'sprite' in visual and visual['sprite'] in sprites:
                 bank, flip = visual['sprite'], visual.get('flip', False)
+                where = placement.position
+                if visual.get('anchored'):
+                    # Screen-list objects that keep pace with the camera count
+                    # their Y from the top of the screen, a screen above where
+                    # the level's own objects would put it. They belong to the
+                    # picture behind them and sit just in front of it.
+                    where = (where[0], where[1] - 240, where[2] + 1)
                 for frame, ticks in visual['frames']:
                     parts = sprites[bank][frame] if frame < len(sprites[bank]) else None
                     image = sprite_image(bank, frame, visual) if parts else None
                     if image is not None:
                         frames_first = frames_first or (parts, image)
-                        frames.append((sprite_mesh(image, parts, placement.position, flip,
-                                                   placement.offset), ticks))
+                        frames.append((sprite_mesh(image, parts, where, flip, placement.offset), ticks))
                 if frames:
                     mesh = frames[0][0]
                     category = 'Sprites'
@@ -353,10 +374,7 @@ def build_scene(project, path, index):
                 ax, ay = placement.position[:2]
                 sx, sy = visual['screen']
                 follow = visual['follow']
-                if visual.get('flip'):
-                    image = ImageOps.mirror(image)
                 left = min(p[13] for p in parts)
-                left = -left - image.width if visual.get('flip') else left
                 backdrops.append((len(entries), Backdrop(image, left, min(p[14] for p in parts),
                                                          (ax, ay), (sx, sy), follow,
                                                          visual.get('period', 0))))
@@ -405,7 +423,18 @@ def build_scene(project, path, index):
     collision = collision_lines(banks)
     if collision is None and town is not None and getattr(town, 'cells', None) is not None:
         collision = town_lines(town.cells)
-    return LevelScene(entries, list(resources.values()), vram, notes, collision, backdrops)
+    # The art stops where the game's clear colour takes over. That colour is
+    # not stored with the section, so the top edge of the highest piece of
+    # scenery stands in for it.
+    sky = None
+    if backdrops:
+        highest = min((b for _, b in backdrops), key=lambda b: b.screen[1] + b.top)
+        sky = edge_colour(highest.image)
+    else:
+        picture = next((e for e in entries if e.active and e.note.startswith('Fixed picture')), None)
+        if picture is not None:
+            sky = edge_colour(picture.mesh.image)
+    return LevelScene(entries, list(resources.values()), vram, notes, collision, backdrops, sky)
 
 
 def sprite_pages(project, path, index):

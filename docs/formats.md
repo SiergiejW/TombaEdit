@@ -222,6 +222,12 @@ with the level: its screen position is its placement less the camera words.
 The Y camera word is the world Y of the bottom of the screen, so the picture
 stands 240 units above where its placement reads.
 
+Scenery in other layers can work the same way. A handler that rewrites its
+object's position as placement less camera on every update, as the Lake's
+waves in layer 3 do, is giving a screen position too, and its placement uses
+the same top-of-screen Y as the picture behind it. Objects drawn from the
+screen lists are never mirrored.
+
 ## Models animated in place
 
 APD layer 8 objects are models from WMD slot 2, in a pool of 45 run through

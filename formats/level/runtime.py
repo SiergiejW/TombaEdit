@@ -27,6 +27,7 @@ class InitialPoseResolver:
         self.available = False
         self.reason = 'Object initialization is currently decoded for US retail.'
         self.cache = {}
+        self.queued = set()
         entries = [e for e in project.disc.files if e.path == 'SCUS_942.36']
         if not entries or area < 0:
             return
@@ -222,6 +223,10 @@ class InitialPoseResolver:
                 break
         if base is None or (start == 0 and follow == (0, 0) and base == anchor):
             return {}
+        if follow == (1.0, 1.0):
+            # Moves exactly with the camera: part of the level, not scenery
+            # behind it.
+            return dict(anchored=True)
         # Looping scenery comes back to the same place after the camera has
         # travelled one period; the strips of a loop are placed a period apart.
         period = 0
@@ -315,6 +320,8 @@ class InitialPoseResolver:
             uc.reg_write(r.UC_MIPS_REG_PC, uc.reg_read(r.UC_MIPS_REG_RA))
         elif address in DRAW_QUEUES:
             # Handing an object to a draw list needs lists nobody set up here.
+            # Which list it asked for says how it is drawn.
+            self.queued.add(address)
             uc.reg_write(r.UC_MIPS_REG_PC, uc.reg_read(r.UC_MIPS_REG_RA))
         elif address in (0x8001FFE8, 0x80023608, 0x800236F4):
             uc.reg_write(r.UC_MIPS_REG_V0, 0)
@@ -375,7 +382,16 @@ class InitialPoseResolver:
                             # Backdrop strips name a second frame in the word
                             # after the first; both are drawn at the anchor.
                             result['overlay'] = struct.unpack('<H', self.read(anim + 2, 2))[0]
+                        if placement.layer == 7:
+                            # Drawn from the screen-space list: the parts are
+                            # never mirrored there, and the object works out
+                            # its own screen position.
+                            result['flip'] = False
                             result.update(self.backdrop_motion(obj, pc, placement))
+                        elif self.backdrop_motion(obj, pc, placement).get('anchored'):
+                            # Scenery in other layers that also keeps its own
+                            # screen position, one to one with the camera.
+                            result['anchored'] = True
                         break
         except UcError:
             result = {}
