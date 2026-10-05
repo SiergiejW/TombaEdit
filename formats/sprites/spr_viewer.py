@@ -262,6 +262,9 @@ class SpriteView(QWidget):
             image, _ = self.sheet(list(range(len(self.frames))))
             self.parts.setRowCount(0)
             self.info.setText(f'Whole bank | {len(self.frames)} sprites')
+            if image.getbbox() is None and any(self.frames):
+                self.info.setText(self.info.text() + ' | Nothing to draw: the texture page or palette rows '
+                                  'these parts name are empty in this VRAM. The game fills them while it runs.')
         elif len(self.selected_indices()) > 1:
             indices = self.selected_indices()
             image, _ = self.sheet(indices)

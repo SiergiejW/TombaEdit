@@ -181,6 +181,7 @@ class MainWindow(QMainWindow):
         self.label_hashes = {}
         self.persistent = set()
         self.sprite_states = {}
+        self.restore_tab = None
         self.setWindowTitle("TombaEdit")
         self.setWindowIcon(icon("app"))
         self.resize(1380, 880)
@@ -421,7 +422,9 @@ class MainWindow(QMainWindow):
         item.setData(0, ROLE, node)
         folder = isinstance(node, tuple) or isinstance(node, DiscEntry) and node.directory
         standard = QStyle.StandardPixmap.SP_DirIcon
-        if folder:
+        if isinstance(node, tuple) and node[0] == 'group':
+            item.setIcon(0, icon('LEVEL'))      # a load group opens as a level
+        elif folder:
             if standard not in self.tree_icons:
                 self.tree_icons[standard] = self.style().standardIcon(standard)
             item.setIcon(0, self.tree_icons[standard])
@@ -458,6 +461,7 @@ class MainWindow(QMainWindow):
         if not item or not self.project:
             return
         node = item.data(0, ROLE)
+        self.restore_tab = None
         if isinstance(node, DiscEntry) and not node.directory and item.childCount():
             item.setExpanded(True)
         self.current_node = node
@@ -487,6 +491,9 @@ class MainWindow(QMainWindow):
 
     def context_changed(self):
         if self.current_node is not None:
+            # Same resource under another section's VRAM: come back to the
+            # tab that was open.
+            self.restore_tab = self.tabs.tabText(self.tabs.currentIndex())
             self.load_selection(self.path_label.text())
 
     def load_selection(self, title):
@@ -495,22 +502,13 @@ class MainWindow(QMainWindow):
         self.export_action.setEnabled(False)
         self.raw_action.setEnabled(False)
         self.path_label.setText(title)
-        self.clear_tabs()
         if isinstance(node, DiscEntry) and node.directory:
             self.generation += 1
             self.pool.clear()
             self.preview_ready(self.generation, prepare_preview(self.project, node), '')
             return
-        if isinstance(node, DiscEntry):
-            assets = self.project.by_source.get(node.path, [])
-            if assets:
-                self.asset_table(assets)
-            else:
-                self.tabs.addTab(text_view(f'{node.path}\n{node.size:,} bytes'), 'Information')
-        elif isinstance(node, Asset):
-            self.tabs.addTab(text_view(self.metadata(node, {'notes': []})), 'Information')
-        elif isinstance(node, tuple):
-            self.asset_table(self.project.ldars[node[1]][node[2]].assets)
+        # The viewer on screen stays until its replacement is ready; the
+        # details of the selection are on the Information tab.
         self.statusBar().showMessage("Decoding selection...")
         project = self.project
         context = self.context.currentIndex() if self.context.isVisible() else None
@@ -641,7 +639,12 @@ class MainWindow(QMainWindow):
                 self.tabs.addTab(HexView(result["raw"], note='' if shown >= node.size else
                                          f'first {shown:,} of {node.size:,} bytes on disc'), "Disc hex")
             for label in self.tabs.findChildren(QLabel):
-                label.setTextInteractionFlags(Qt.TextInteractionFlag.TextSelectableByMouse)
+                if not label.testAttribute(Qt.WidgetAttribute.WA_TransparentForMouseEvents):
+                    label.setTextInteractionFlags(Qt.TextInteractionFlag.TextSelectableByMouse)
+            wanted, self.restore_tab = self.restore_tab, None
+            for i in range(self.tabs.count()):
+                if wanted and self.tabs.tabText(i) == wanted:
+                    self.tabs.setCurrentIndex(i)
             self.statusBar().showMessage("Ready | " + self.path_label.text())
         except Exception as exc:
             self.tabs.addTab(text_view(f"Viewer error: {exc}\n\n{traceback.format_exc()}"), "Diagnostic")

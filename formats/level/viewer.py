@@ -173,9 +173,21 @@ class LevelView(ModelView):
                 f'APD offset 0x{e.placement.offset:04X} | {e.note}')
 
     def picked_entry(self, selected):
-        if selected is not None:
-            self.objects.setCurrentCell(selected[0], 1)
+        if selected is None:
+            return
+        self.objects.blockSignals(True)     # selecting the row would drop the polygon
+        self.objects.setCurrentCell(selected[0], 1)
+        self.objects.blockSignals(False)
+        self.canvas.selected_model = selected[0]
+        entry = self.scene.entries[selected[0]]
+        if entry.mesh.image is None and selected[1]['page'] >= 0:
+            # Geometry and models: the polygon's page with its UVs outlined.
+            self.show_polygon(selected, announce=False)
+            self.details.setPlainText(f'{entry.name}\n{entry.source.label}\n\n' + self.details.toPlainText())
+        else:
             self.show_entry(selected[0])
+        print('selected: ' + self.describe(selected[0]))
+        self.canvas.update()
 
     def open_asset(self):
         asset = self.assets.currentData()

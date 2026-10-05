@@ -145,7 +145,7 @@ the first usable row of the section's palette block.
 | Ctrl + wheel | Zoom about the pointer |
 | Wheel, Shift + wheel | Scroll down or sideways |
 | Left or middle drag | Pan |
-| Right click or drag | Put the CLUT crosshair on a palette row and read VRAM through it |
+| Ctrl + left click or drag, or the right button | Read VRAM through the palette row under the pointer; the crosshair follows |
 | Left drag on the crosshair | Move it |
 | Arrow keys | Next palette or row; with Shift a texture page or sixteen rows |
 

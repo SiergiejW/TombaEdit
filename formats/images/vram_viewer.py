@@ -31,7 +31,7 @@ MARK_MS = 1500
 
 CONTROLS = ('Ctrl + wheel: zoom | Wheel: scroll, Shift + wheel: sideways\n'
             'Left or middle drag: pan\n'
-            'Right click or drag: put the CLUT crosshair on a palette row\n'
+            'Ctrl + left click or drag, or right: read through the palette under the pointer\n'
             'Left drag on the crosshair: move it\n'
             'Arrows: next palette or row | Shift + arrows: page or 16 rows')
 
@@ -228,7 +228,11 @@ class VramCanvas(QWidget):
         self.setFocus()
         on_crosshair = (event.button() == Qt.MouseButton.LeftButton and self.crosshair is not None
                         and self.row_rect(self.crosshair).adjusted(-4, -4, 4, 4).contains(event.position()))
-        if event.button() == Qt.MouseButton.RightButton or on_crosshair:
+        with_ctrl = (event.button() == Qt.MouseButton.LeftButton
+                     and bool(event.modifiers() & Qt.KeyboardModifier.ControlModifier))
+        if with_ctrl:
+            on_crosshair = False
+        if event.button() == Qt.MouseButton.RightButton or on_crosshair or with_ctrl:
             self.picking = self.palette_at(event.position())
             if self.picking is not None and not on_crosshair:
                 self.picked_clut.emit(self.picking)

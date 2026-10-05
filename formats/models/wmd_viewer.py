@@ -528,15 +528,16 @@ class ModelView(QWidget):
         self.show_polygon(None)
         self.canvas.fit()
 
-    def show_polygon(self, selected):
+    def show_polygon(self, selected, announce=True):
         if selected is None:
             self.details.setPlainText('Click a triangle or quad to inspect its UVs.\n\nGLB exports visible models with embedded textures and vertex colours.\nPSX blend equations and overbright colours are approximated in glTF.')
             self.uv.set_image(Image.new('RGBA', (1, 1)))
             return
         index, p = selected
         texels = [(round(u * 256 - .5), round(v * 256 - .5)) for u, v in p['uv']]
-        print(f"selected: model {index:03d} {p['kind']} @ 0x{p['offset']:X} | page 0x{p['page'] & 0xFFFF:04X} "
-              f"CLUT 0x{p['clut']:04X} | UV {texels}")
+        if announce:
+            print(f"selected: model {index:03d} {p['kind']} @ 0x{p['offset']:X} | page 0x{p['page'] & 0xFFFF:04X} "
+                  f"CLUT 0x{p['clut']:04X} | UV {texels}")
         self.details.setPlainText(f"Object {index:03d} | {p['kind']}\nRecord @ 0x{p['offset']:X}\nPage: 0x{p['page']:04X}\nCLUT: 0x{p['clut']:04X}\nGPU command: 0x{p['command']:02X}\n\nUV: {texels}\n\nVertices: {p['vertices']}")
         image = texture_page(self.canvas.vram, p['page'], p['clut']).copy() if p['page'] >= 0 else Image.new('RGBA', (256, 256), (32, 32, 32, 255))
         order = [0, 1, 3, 2, 0] if len(texels) == 4 else [0, 1, 2, 0]

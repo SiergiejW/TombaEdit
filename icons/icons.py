@@ -14,6 +14,7 @@ FILES = {
     "STR": "graphics/clapperboard.png", "INS": "graphics/report.png",
     "GAM": "graphics/book-brown.png", "LDAR": "graphics/map.png",
     "FOUR": "graphics/border-all.png", "Unknown": "graphics/report.png",
+    "LEVEL": "tomba/79.png",
 }
 _cache = {}
 
