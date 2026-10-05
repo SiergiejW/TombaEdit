@@ -23,7 +23,8 @@ def backdrop_position(sprite, camera_position, heading, pitch, turned=False):
     path = -camera_position[2] if turned else camera_position[0]
     reference = (path - 160, -camera_position[1] - 240)
     period = abs(sprite.period) or 320
-    look = ((heading + 180) % 360 - 180) * period / 360
+    angle = (heading + 180) % 360 - 180
+    look = (angle if sprite.period else max(-90., min(90., angle))) * period / 360
     tilt = max(-90., min(90., pitch)) * 240 / 180
     return (sprite.screen[0] - reference[0] * sprite.follow[0] - look + sprite.left,
             sprite.screen[1] - reference[1] * sprite.follow[1] - tilt + sprite.top)

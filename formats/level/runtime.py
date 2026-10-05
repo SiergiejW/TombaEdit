@@ -29,7 +29,9 @@ def runtime_area(area, section):
 
 class InitialPoseResolver:
     def __init__(self, project, area, section, resources):
+        requested_area = area
         area = runtime_area(area, section)
+        self.area = area
         self.available = False
         self.reason = 'Object initialization is currently decoded for US retail.'
         self.cache = {}
@@ -59,6 +61,11 @@ class InitialPoseResolver:
         self.write(self.base, exe[0x800:])
         self.write(0x800E7388, project.asset_data(overlay))
         self.write(0x8009BCC8, struct.pack('<HH', area, max(0, section)))
+        if requested_area in (7, 12, 19):
+            variant = {7: 6, 12: 8, 19: 17}[requested_area]
+            if requested_area != 19 or section < 2:
+                self.write(0x8009EBA0, struct.pack('<H', variant))
+                self.write(0x8009C62B, bytes((1 if requested_area in (7, 19) else 8,)))
         self.model_pointers = {}
         self.model_spans = {}      # (slot, index) -> (address, size)
         for (family, slot), asset in resources.items():
@@ -336,6 +343,11 @@ class InitialPoseResolver:
         elif address == 0x800229FC:
             pass                # the animation setter runs like any other code
         elif address in (0x80022E44, 0x80022C08, 0x80022D3C, 0x80022F6C, 0x80023020, 0x800230BC):
+            # Visibility tests also mark byte +1, which initializers use to
+            # decide whether to start a sprite's animation.
+            obj = uc.reg_read(r.UC_MIPS_REG_A0)
+            if 0x80300000 <= obj < 0x80300200:
+                self.write(obj + 1, b'\x01')
             uc.reg_write(r.UC_MIPS_REG_V0, 1)
             uc.reg_write(r.UC_MIPS_REG_PC, uc.reg_read(r.UC_MIPS_REG_RA))
         elif address == 0x8005DE78:
@@ -363,6 +375,19 @@ class InitialPoseResolver:
             # the game that are not here; for those, stopping where the
             # animation is set is enough to learn what the object shows.
             self.cache[key] = self.attempt(placement, False) or self.attempt(placement, True)
+            if not self.cache[key] and self.area == 0 and placement.layer == 5 and placement.kind == 0x12:
+                # X00's initializer 80122F64 only draws this effect while
+                # the event bytes BCA8/BCA9 select state 7E. Show a labelled
+                # conditional pose instead of treating its link as missing.
+                baseline = self.baseline
+                changed = bytearray(baseline)
+                changed[0x9BCA8:0x9BCAA] = b'\x01\x7E'
+                self.baseline = bytes(changed)
+                result = self.attempt(placement, False) or self.attempt(placement, True)
+                self.baseline = baseline
+                if result:
+                    result['condition'] = 'Event effect: only visible when event bytes BCA8/BCA9 select state 7E.'
+                    self.cache[key] = result
         return self.cache[key]
 
     def handler_address(self, placement):
@@ -434,7 +459,7 @@ class InitialPoseResolver:
                             result['anchored'] = True
                         break
         except UcError:
-            result = {}
+            pass
         return result
 
 
