@@ -18,7 +18,7 @@ class InitialPoseResolver:
         self.reason = 'Object initialization is currently decoded for US retail.'
         self.cache = {}
         entries = [e for e in project.disc.files if e.path == 'SCUS_942.36']
-        if not entries:
+        if not entries or area < 0:
             return
         exe = project.disc.read(entries[0])
         if hashlib.sha1(exe).hexdigest() != US_SHA1:

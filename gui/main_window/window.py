@@ -319,10 +319,11 @@ class MainWindow(QMainWindow):
             "Disc folders\n  The original ISO9660 directory and files. Expand a file to inspect its LDAR resources.\n\n"
             "Areas / sections\n  Base resources and section-specific load groups, named from the area reference.\n"
             "  Select a group to inspect its load records and reconstructed VRAM.\n\n"
-            "Viewers\n  GAM decompression and resource ranges\n  WFM3 dialogue glyphs, control words and font atlas\n"
-            "  SPR frames with section VRAM and CLUTs\n  WMD geometry with textures and vertex colours\n"
-            "  VRAM pages, file metadata and hex\n\n"
-            "This first version browses and exports assets. Disc editing/repacking is not implemented."
+            "Viewers\n  Level editor with placed models, animated sprites and collision\n"
+            "  WMD models and FOUR deformations\n  SPR frames and WPP picture banks\n"
+            "  VRAM with palette crosshair\n  WHM collision planes and CLM maps\n"
+            "  WFM3 dialogue and font atlas\n  Music, sample banks and movies\n\n"
+            "Assets can be browsed and exported. Discs are not modified."
         ), "Welcome")
 
     def open_dialog(self):
@@ -868,7 +869,7 @@ class MainWindow(QMainWindow):
                 QMessageBox.warning(self, 'Cannot export labels', str(exc))
 
     def about(self):
-        QMessageBox.about(self, "TombaEdit 0.1", "Tomba! disc and asset browser\n\nBIN/CUE/ISO | LDAR | GAM | WFM3 | SPR | WMD | VRAM\n\nClassic Dark / Classic Bright\n\nDirect WMD preview includes textures and vertex colours.\nAPD placement, animation, exact PSX blending and disc repacking are future work.\n\nFormat research: vervalkon, zerovii, hansbonini/psx_tomba.\nSee README.md and docs/formats.md for validation and limitations.")
+        QMessageBox.about(self, "TombaEdit 0.1", "Tomba! disc and asset browser\n\nBIN/CUE/ISO | LDAR | GAM | WMD | FOUR | SPR | WPP | WHM | APD | WFM3 | SEQ | STR\n\nFormat research: vervalkon, zerovii, Woolmagician, hansbonini/psx_tomba.\nSee README.md and docs/formats.md for format details and known gaps.")
 
     def dragEnterEvent(self, event):
         if event.mimeData().hasUrls() and any(u.isLocalFile() and Path(u.toLocalFile()).suffix.lower() in (".bin", ".cue", ".iso") for u in event.mimeData().urls()):

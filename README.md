@@ -1,108 +1,184 @@
 # TombaEdit
 
-A classic desktop browser for **Tomba! / Tombi! (PlayStation)**, built with PyQt6.
-The default theme is Classic Dark; Settings → Theme also offers Classic Bright.
+A disc browser and asset viewer for **Tomba! / Tombi!** on the PlayStation,
+written in Python with PyQt6. It reads a disc image directly, follows the
+game's own load tables to find every resource, and shows levels, models,
+sprites, text, collision, palettes, music and movies without extracting
+anything first.
 
-## Run
+TombaEdit is read-only: it exports assets but does not rebuild discs.
 
-Python 3.10 or newer:
+## Running
+
+Python 3.10 or newer.
 
 ```powershell
 python -m pip install -r requirements.txt
 python main.py
-# Or open a disc immediately:
 python main.py "rom\Tomba! (USA).cue"
 ```
 
-Build a standalone Windows executable with `python -m PyInstaller main.spec`.
-The app uses the same classic icon set as Tomba2Edit, bundled in `icons/`.
+`python -m PyInstaller main.spec` builds a standalone Windows executable.
 
-## Browse
+## The disc tree
 
-1. **File → Open BIN / CUE / ISO**, or drop an image onto the window.
-2. The single tree shows the real ISO9660 folders and the area sections under
-   each area. Expand a file or section to see its LDAR resources.
-3. Select a resource to open its viewer. Double-click a Resources table row to
-   jump to that resource. The filter matches names, types, sections and offsets.
-4. **Export decoded file (binary)** writes the decompressed GAM bytes or
-   selected asset slice. **Export original disc file** writes its containing
-   ISO file. Viewers have format-specific exports, including PNG, GLB, MIDI,
-   WAV and movie frames.
+**File → Open BIN / CUE / ISO** loads an image; dropping one on the window does
+the same. The tree on the left is the disc's ISO9660 directory. Each `AREAnn`
+folder starts with a *Sections* node holding the area's load groups: the base
+group shared by the whole area, then one group per section in the order the
+game loads them. Files that a load group reads from can be expanded to the
+resources inside them.
 
-Supported previews:
+The filter box matches names, resource types, section names and offsets.
+`F2` names the selected file or resource. Names are stored against the
+content of the resource, so they follow it between regional releases, and can
+be exported and imported as JSON from the *Labels* menu.
 
-| Resource | Current behavior |
+**Export decoded file** writes the decompressed bytes of the selection.
+**Export original disc file** writes the file that contains it, as it is on
+the disc.
+
+Selecting a tree item, model, polygon, scene object, sprite, picture,
+palette or collision span prints a line to the console with its type, offsets
+and whatever identifies it inside its file, which is convenient when working
+alongside a hex editor or a debugger.
+
+## Viewers
+
+| Resource | Type codes | Viewer |
+| --- | --- | --- |
+| Load group | | Level editor: section geometry with placed models and sprites |
+| WMD | 50–55 | Models, with polygon and UV inspection and glTF export |
+| FOUR | 40–45 | Vertex deformations applied to their source model |
+| SPR | 30–3F | Sprite frames and their parts |
+| WPP | 60–63 | Packed pictures for Tomba's own frames, and the frames assembled |
+| GRPX | 10, 11 | VRAM as the section sees it |
+| WHM | 70, 71 | Collision spans by depth plane |
+| CLM | 8E, 8F | Collision maps as indexed images |
+| APD | 80–8B | Placement records |
+| WFM | D0, D1 | Dialogue rendered with the game font, and the glyph atlas |
+| SEQ, WVD | B0–B3 | Sequenced music and sample banks, with playback |
+| STR | | Movies, with frame, audio and video export |
+| CLUT files | | Palette cells with their PlayStation and RGB values |
+| INS and others | F0 | Records and hex |
+
+### 3D views
+
+Models, deformations and levels share one camera. A view opens looking along
+the game's depth axis, so a level appears as it does in play; levels start
+tilted slightly downwards.
+
+| Input | Action |
 | --- | --- |
-| GAM | Bounded LZ decoding, LDAR asset ranges, embedded WFM detection, hex |
-| WFM3 / D0FF / D1FF | Dialogue list, font-local glyph decoding, rendered text and font atlas |
-| SPR | Whole-bank sheet, non-draggable sprite table, piece records, individual and batch PNG export |
-| WMD | SMST-style toolbar and spread grid, model visibility list, polygon and UV inspection, lit or unlit GLB export |
-| GRPX | Labeled VRAM upload; all 4-bit pages first, plus 4/8/16-bit page views |
-| CLUT GAM | Clickable PlayStation colour cells and PSX/RGB values |
-| WVD / SEQ | Clickable sound-bank and sample lists, waveform, playback, WAV and MIDI export |
-| STR | One selected movie at a time, MDEC frames, XA audio, Tomba2Edit-style transport, PNG/WAV/raw STR export and video export when ffmpeg is installed |
-| WPP, WHM, APD, CLM, FOUR, INS, unknown | Typed resources, source ranges, metadata, hex and binary export |
+| Middle drag | Orbit |
+| Shift + middle drag | Pan |
+| Right drag | Look around; `WASD` moves, `Q`/`E` go down and up, Shift is faster |
+| Wheel | Zoom, or change the fly speed while looking around |
+| `F`, or double-click a row | Frame the selected model |
+| Left click | Select a polygon and show its record, page, CLUT and UVs |
 
-Geometry controls follow Tomba2Edit: middle drag orbits, Shift plus middle
-drag pans, right drag looks around, WASD moves, and the wheel zooms. The
-**Frame model** button recenters all visible models. Clicking a triangle or
-quad displays its source record and UV outline. A VRAM selector allows base
-resources to use a section's palette and texture uploads.
+With **Orbit Selection** on, a middle drag circles the selected model rather
+than the middle of the view. **Texture Mode** switches between textures and
+bare vertex colours, **Spread Parts** lays a bank of models out on a grid,
+and the model list hides or isolates individual models without moving the
+camera. glTF export writes the visible models with their textures, either
+unlit with the game's colours or lit for use elsewhere.
 
-## Scope of version 0.1
+### Level editor
 
-- Browsing and exporting only; no editing, recompression or disc rebuilding yet.
-- Labels can be renamed, imported and exported per game build.
-- USA retail is verified. Disc browsing is independent of game version, but LDAR
-  interpretation requires a verified executable file-link table anchored to
-  `SYS/LDSYS.BIN`. Builds with embedded LDARs (including Japanese layouts) are
-  not yet supported by the area view. Unrecognized builds retain disc browsing
-  and show a diagnostic instead of using a USA filename map.
-- Area/section labels follow the user's supplied reference. Additional LDAR
-  entries retain their numeric IDs; they are not guessed to be named rooms.
-- WFM text uses the game's font bitmaps and palette. The USA glyph dictionary
-  decodes observed glyphs into letters; other builds can still have unknown
-  glyphs. The current text frame is an approximation. Game-specific text
-  effects, timing and blinking are not simulated.
-- SPR frame assembly remains approximate. Dynamic WPP uploads and some sprite
-  flags are not decoded yet, so parts of a bank can show the wrong pixels or
-  palette. The page offset can be adjusted, but that does not replace the
-  missing upload sequence.
-- WMD displays stored mesh objects with textures and CLUTs. APD object
-  placement, stored-normal lighting, collision rendering and exact PSX blending
-  are not simulated, so it is not a complete game scene.
-- Movie video export needs ffmpeg on PATH. PNG frames, WAV sound and raw STR
-  export do not need it.
+Selecting a section's load group builds its scene: the section geometry, the
+models and sprites that its APD records place, and orange markers where an
+object's graphics are not known. Positions come from the APD records. What an
+object looks like is found by running that object's own initialisation code
+from the game executable in an isolated emulator, which yields its model or
+its sprite bank, animation script, texture page and palette. This is done for
+the US release; other releases show geometry, directly linked models and
+markers.
 
-## Validation
+- **Animate** plays the animation scripts of placed sprites at the game's
+  30 steps a second.
+- **Collision** overlays the section's WHM data: green walkable surfaces,
+  magenta surfaces with special attributes, and orange outlines around solid
+  ranges, each drawn at the depth of its collision plane.
+- *Show* limits the scene to geometry, models, sprites or unresolved objects,
+  and *Open asset* jumps to any resource the group loads.
+
+The scene is the state right after loading. Conditions, scripted spawns and
+movement are not simulated.
+
+### Sprites
+
+A sprite frame is a list of parts, each a rectangle of a texture page with an
+offset from the object's origin. Parts store their texture page relative to a
+base that the drawing object supplies, so the same bank can be used with
+different pages. With *Texture page base* on Auto the viewer uses the base of
+a placed object that shows the frame, the game's object table for banks that
+no object in the section uses, and otherwise the base that leaves the fewest
+empty pixels. The value can be set by hand.
+
+Tomba's own frames are not in VRAM. The game keeps them packed in a WPP bank
+and uploads one picture at a time. Opening a WPP bank lists its pictures;
+*Assembled frames* draws them through the matching SPR bank, and the sprite
+viewer does the same for Tomba's SPR bank. The palette list holds the outfit
+palettes of the selected section.
+
+### VRAM
+
+The VRAM tab shows the 1024 × 512 words a section has loaded, read as 4-bit
+indices in grey or false colour, through a 16 or 256 colour palette, or as
+15-bit pixels. The starting palette is one the open resource draws with, or
+the first usable row of the section's palette block.
+
+Right-click a palette row to read VRAM through it; dragging with the right
+button follows the pointer. The CLUT box takes a CLUT word and lists the
+palettes used by the open model or sprite bank. A red marker points at a
+newly chosen palette for a moment. With **Crosshair** ticked the palette row
+stays marked and the arrow keys move it by one palette or one row, or with
+Shift by a texture page or sixteen rows. **Page grid** outlines the texture
+pages. Wheel zooms, left or middle drag pans.
+
+### Collision
+
+A WHM bank is divided into depth planes 90 units apart and columns 8 units
+wide. Each column lists spans: walkable surfaces with a height and a slope,
+and solid vertical ranges. The WHM viewer draws one plane or all of them from
+the side, filters by attribute, and lets attribute values be named. The same
+data is what the level editor overlays in 3D.
+
+## Supported releases
+
+Disc browsing works for any release. Load groups need the executable's file
+link table, which is located from the disc and has been checked on the US
+retail disc (`SCUS_942.36`). Releases that embed their load tables elsewhere
+show the directory tree and file viewers only. Object initialisation, sprite
+texture pages and collision origins use addresses from the US executable and
+are skipped for other builds.
+
+Dialogue is decoded with a glyph table for the US font; other releases show
+the glyph images and unmapped glyph numbers.
+
+## Known gaps
+
+- Semi-transparency, and textures the game uploads while running other than
+  Tomba's frames. Objects that depend on them keep their markers.
+- Object rotation and scaling in the level view. Sprites are drawn one texel
+  to one world unit.
+- The meaning of most collision attribute bits and of the two unused words in
+  an animation step.
+- Movie video export needs `ffmpeg` on `PATH`; frames, audio and raw streams
+  do not.
+
+## Tests
 
 ```powershell
 python -m unittest discover -s tests -v
 python -m tests.validate_disc "rom\Tomba! (USA).cue"
 python tests/gui_smoke.py "rom\Tomba! (USA).cue"
-python tests/gui_media_smoke.py "rom\Tomba! (USA).cue"
 ```
 
-19 synthetic regression tests cover ISO and raw-sector layouts, CUE track
-selection/pregaps, directory cycles, GAM overlap and corruption, LDAR
-continuations, VRAM overwrite semantics, CLUTs, sprite page bases, WFM control
-arguments, and mesh decoding. Tests contain no game data.
+The unit tests build their inputs in memory and contain no game data.
+`validate_disc` decodes every resource on a real disc, and `gui_smoke` drives
+the window with a real OpenGL context.
 
-The supplied USA image was checked end-to-end:
-
-- 1,085 disc files; 1,054 file links matched to the ISO directory.
-- 20 LDARs, 248 load groups, 1,907 valid asset ranges; all VRAM groups reconstructed.
-- 227 WMD resources / 4,931 objects / 309,226 triangles decoded.
-- 334 SPR resources / 42,755 frame-table entries parsed.
-- 48 WFM3 resources / 9,971 dialogue entries / 4,541 glyphs parsed. One dialogue
-  retains an explicit control/boundary diagnostic.
-- 153 mesh objects from AREA00 base and section 00 matched the supplied OBJ
-  exports' triangle positions exactly (after coordinate conversion).
-- GUI checked with a real OpenGL context: disc open, tree navigation, textured
-  geometry, dialogue, sprite rendering, movie decoding, sound bank browsing,
-  CLUT inspection and both palettes.
-
-Counts include resources shared by multiple load groups; frame parsing is not
-a claim that every sprite's dynamic texture state is reconstructed.
-
-See [format notes](docs/formats.md) for implementation details and source credits.
+[Format notes](docs/formats.md) describe each format and where the knowledge
+of it comes from.

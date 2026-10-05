@@ -37,6 +37,12 @@ class LevelScene:
     collision: tuple = None
 
 
+def area_of(path):
+    """Area number of an LDARnn.BIN path; -1 for the system load table."""
+    stem = path.split('/')[-1].split('.')[0]
+    return int(stem[4:]) if stem.startswith('LDAR') and stem[4:].isdigit() else -1
+
+
 def loaded_resources(project, path, index):
     resources = {}
     groups = project.ldars[path]
@@ -121,7 +127,7 @@ def build_scene(project, path, index):
     resources = loaded_resources(project, path, index)
     vram = project.vram(path, index)
     entries, notes, models, sprites = [], [], {}, {}
-    area = int(path.split('LDAR')[-1].split('.')[0])
+    area = area_of(path)
     resolver = InitialPoseResolver(project, area, max(0, index-1), resources)
     slots = resolver.placement_slots(area, index-1) if resolver.available and index else None
     notes.append(resolver.reason)
@@ -216,8 +222,7 @@ def sprite_pages(project, path, index):
     cache = project.__dict__.setdefault('sprite_page_cache', {})
     if (path, index) not in cache:
         resources = loaded_resources(project, path, index)
-        area = int(path.split('LDAR')[-1].split('.')[0])
-        resolver = InitialPoseResolver(project, area, max(0, index - 1), resources)
+        resolver = InitialPoseResolver(project, area_of(path), max(0, index - 1), resources)
         pages = {}
         for (kind, slot), asset in resources.items():
             if kind != 'APD' or not resolver.available:

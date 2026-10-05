@@ -31,20 +31,21 @@ def export_glb(path, meshes, vram, unlit=True):
     materials = {}
     for mi, mesh in enumerate(meshes):
         primitives = []
+        image = getattr(mesh, "image", None)
         for key, (vertices, uv, colors) in mesh.batches.items():
             if not len(vertices):
                 continue
             page, clut, semi = key
-            key = ('image', id(mesh.image)) if getattr(mesh, 'image', None) is not None else key
+            key = ('image', id(image)) if image is not None else key
             if key not in materials:
                 material = dict(name=f'Page {page:04X} CLUT {clut:04X}', doubleSided=True,
                                 alphaMode='BLEND' if semi else 'MASK',
                                 pbrMetallicRoughness=dict(metallicFactor=0, roughnessFactor=1))
                 if unlit:
                     material['extensions'] = {'KHR_materials_unlit': {}}
-                if page >= 0 or mesh.image is not None:
+                if page >= 0 or image is not None:
                     stream = io.BytesIO()
-                    (mesh.image if mesh.image is not None else texture_page(vram, page, clut)).save(stream, format='PNG')
+                    (image if image is not None else texture_page(vram, page, clut)).save(stream, format='PNG')
                     idx = len(doc['images'])
                     doc['images'].append(dict(bufferView=view(stream.getvalue()), mimeType='image/png'))
                     doc['textures'].append(dict(source=idx, sampler=0))
@@ -53,7 +54,7 @@ def export_glb(path, meshes, vram, unlit=True):
                 doc['materials'].append(material)
             attrs = dict(POSITION=accessor(vertices, 'VEC3', True),
                          COLOR_0=accessor(np.clip(colors, 0, 1), 'VEC3'))
-            if page >= 0 or mesh.image is not None:
+            if page >= 0 or image is not None:
                 attrs['TEXCOORD_0'] = accessor(uv, 'VEC2')
             primitives.append(dict(attributes=attrs, material=materials[key], mode=4))
         if primitives:

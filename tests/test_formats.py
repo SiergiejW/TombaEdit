@@ -12,6 +12,8 @@ from tombaedit.graphics import rgba, texture_page, sprite_frames, render_sprite
 from tombaedit.wfm import Wfm
 from tombaedit.wmd import parse_wmd
 from formats.collision.whm import parse_whm
+from formats.level.scene import collision_lines
+from formats.sprites.wpp import parse_wpp, unpack, frame_image
 
 
 def record(name, lba, size, directory=False):
@@ -156,6 +158,13 @@ class GraphicsTests(unittest.TestCase):
         part = (0, 0, 480 << 6, 3, 0, 0, 0, 0, 0, 4, 1, 3, 0, -2, -1)
         self.assertIsNone(render_sprite([part], vram).getbbox())
         self.assertEqual(render_sprite([part], vram, 1).getpixel((0, 0)), (255, 0, 0, 255))
+        # The object's page base is added to the part's page word, and its
+        # palette replaces the part's when one is given.
+        self.assertEqual(render_sprite([part], vram, tpage=1).getpixel((0, 0)), (255, 0, 0, 255))
+        self.assertIsNone(render_sprite([part], vram, tpage=2).getbbox())
+        vram[481, 1] = 0x3E0
+        self.assertEqual(render_sprite([part], vram, tpage=1, clut=481 << 6).getpixel((0, 0)),
+                         (0, 255, 0, 255))
         with self.assertRaises(FormatError): sprite_frames(b"\x01\0\x04\0")
 
 
@@ -219,6 +228,56 @@ class WhmTests(unittest.TestCase):
                          (0x1234, -64, 128, 0x80))
         with self.assertRaises(FormatError):
             parse_whm(data[:-1])
+
+    def test_surface_slope_and_solid_range(self):
+        data = (struct.pack('<6H', 0x0111, 0, 8, 0, 0, 2)
+                + struct.pack('<H', 2)
+                + struct.pack('<HhhH', 0x11, 0, -27, 0x80)
+                + struct.pack('<HhhH', 0x01, -29, 3, 0x80))
+        solid, surface = parse_whm(data).planes[0].columns[0]
+        self.assertTrue(solid.wall)
+        self.assertEqual(solid.extent, (-27, 0))
+        self.assertFalse(surface.wall)
+        # A surface stores its rise across the column, not a second height.
+        self.assertEqual(surface.extent, (-29, -26))
+        lines = collision_lines([(parse_whm(data), 100, 0)])
+        self.assertIn([100.0, 29.0, -45.0], lines[0].tolist())
+        self.assertIn([108.0, 26.0, -45.0], lines[0].tolist())
+
+
+class WppTests(unittest.TestCase):
+    def bank(self, *entries):
+        table = 4 + 4 * (len(entries) + 1)
+        offsets, at = [], table
+        for entry in entries:
+            offsets.append(at)
+            at += len(entry)
+        return struct.pack(f'<{len(entries) + 2}I', len(entries), *offsets, at) + b''.join(entries)
+
+    def test_runs_literals_and_low_nibble_first(self):
+        # One word wide, two rows: a literal header, then a run of two 0x21
+        # bytes and two literals.
+        entry = bytes((0b00010000, 1, 0, 2, 0, 2, 0x21, 0x43, 0x65))
+        kind, pictures = parse_wpp(self.bank(entry))
+        self.assertEqual(kind, 'frames')
+        self.assertEqual((pictures[0].width, pictures[0].height), (4, 2))
+        self.assertEqual(pictures[0].indices.tolist(), [[1, 2, 1, 2], [3, 4, 5, 6]])
+        self.assertEqual(unpack(bytes((1, 3, 7)), 0, 3), b'\x07\x07\x07')
+
+    def test_rejects_bad_tables_and_sizes(self):
+        with self.assertRaises(FormatError):
+            parse_wpp(struct.pack('<3I', 1, 4, 99))
+        with self.assertRaises(FormatError):
+            parse_wpp(self.bank(bytes((0, 1, 0, 9, 0, 0x21))))
+
+    def test_frame_parts_are_relative_to_the_frame_corner(self):
+        entry = bytes((0, 1, 0, 1, 0, 0x21, 0x43))
+        picture = parse_wpp(self.bank(entry))[1][0]
+        palette = np.array([0, 0x1F, 0x3E0, 0x7C00, 0x7FFF] + [0] * 11, np.uint16)
+        part = (200, 96, 0, 203, 96, 0, 0, 200, 96, 4, 1, 203, 96, -2, 0)
+        image = frame_image(picture, [part], palette)
+        self.assertEqual([image.getpixel((x, 0))[:3] for x in range(4)],
+                         [(255, 0, 0), (0, 255, 0), (0, 0, 255), (255, 255, 255)])
 
 
 if __name__ == "__main__":
