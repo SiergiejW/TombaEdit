@@ -119,6 +119,9 @@ class Project:
                         self.ldars[entry.path] = parse_ldar(self.disc.read(entry), entry.path, self.catalog)
                     except FormatError as exc:
                         self.warnings.append(str(exc))
+            if not self.ldars:
+                from formats.archive.embedded import embedded_groups
+                self.ldars = embedded_groups(self.disc, self.catalog)
         self.by_source = {}
         for groups in self.ldars.values():
             for group in groups:

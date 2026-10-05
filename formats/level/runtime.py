@@ -22,8 +22,14 @@ NUDGE = 64
 TABLES = {2: 0x800772BC, 3: 0x8007C6B0, 4: 0x8007D30C, 5: 0x8007E8A8, 7: 0x8007D57C}
 
 
+def runtime_area(area, section):
+    """resolveAreaVariant maps resource variants back to gameplay areas."""
+    return 1 if area == 7 else 4 if area == 12 else 2 if area == 19 and section < 2 else area
+
+
 class InitialPoseResolver:
     def __init__(self, project, area, section, resources):
+        area = runtime_area(area, section)
         self.available = False
         self.reason = 'Object initialization is currently decoded for US retail.'
         self.cache = {}
@@ -93,6 +99,7 @@ class InitialPoseResolver:
         return struct.unpack_from('<I', self.exe, address - self.base + 0x800)[0]
 
     def placement_slots(self, area, section):
+        area = runtime_area(area, section)
         table = self.exe_word(0x8007F0C8 + area * 4)
         common = min(15, struct.unpack_from('<H', self.exe, 0x8007B294 + area * 2 - self.base + 0x800)[0])
         return tuple((self.exe_word(table + i * 4) - 0x1F800358) // 4
@@ -256,6 +263,7 @@ class InitialPoseResolver:
 
     def entrance(self, area, section):
         """Tomba's position at the section's first entrance, or None."""
+        area = runtime_area(area, section)
         if not self.available or not 0 <= area < 20 or not 0 <= section < 32:
             return None
         sections = self.exe_word(0x8007BF78 + area * 4)
@@ -281,6 +289,7 @@ class InitialPoseResolver:
         The mansion's four outer walls are one area seen from four sides.
         There the origin comes from the table at 8007E9E8 and the flag also
         picks which WHM slot is used, returned as `slot`."""
+        area = runtime_area(area, section)
         along0 = depth0 = 0
         turned, slot = False, 0
         entrance = None

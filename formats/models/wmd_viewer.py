@@ -68,6 +68,7 @@ class MeshCanvas(CameraEventMixin, QOpenGLWidget):
         self.backdrop = []
         self.sky = None
         self.show_backdrop = True
+        self.backdrop_turned = False
         self.stats_label = QLabel(self)
         self.stats_label.setObjectName('viewerOverlay')
         self.stats_label.setTextInteractionFlags(Qt.TextInteractionFlag.TextSelectableByMouse)
@@ -108,6 +109,14 @@ class MeshCanvas(CameraEventMixin, QOpenGLWidget):
 
     def offset_for(self, index):
         return self.spread_offsets.get(index, np.zeros(3)) if self.spread else np.zeros(3)
+
+    def displayed_vertices(self, mesh, vertices):
+        anchor = getattr(mesh, 'billboard_anchor', None)
+        if anchor is None:
+            return vertices
+        from formats.level.presentation import billboard_vertices
+        c = self.camera_controls
+        return billboard_vertices(vertices, anchor, c.camera_angle_h, c.camera_angle_v)
 
     def box(self, indices=None):
         """(low, high) corners of the visible meshes, or of `indices` among them."""
@@ -240,6 +249,9 @@ class MeshCanvas(CameraEventMixin, QOpenGLWidget):
                 continue
             gl.glPushMatrix()
             gl.glTranslatef(*self.offset_for(i))
+            billboard = getattr(mesh, 'billboard_anchor', None) is not None
+            if billboard:
+                gl.glDisable(gl.GL_CULL_FACE)
             for (page, clut, semi), (vertices, uv, colors) in mesh.batches.items():
                 use_texture = self.textured and (page >= 0 or mesh.image is not None)
                 if use_texture:
@@ -271,9 +283,12 @@ class MeshCanvas(CameraEventMixin, QOpenGLWidget):
                 if self.highlight and self.selected_model is not None and i != self.selected_model:
                     draw_colors = np.ascontiguousarray(draw_colors * 0.24)
                 gl.glColorPointer(3, gl.GL_FLOAT, 0, draw_colors)
-                gl.glVertexPointer(3, gl.GL_FLOAT, 0, vertices)
+                drawn = self.displayed_vertices(mesh, vertices)
+                gl.glVertexPointer(3, gl.GL_FLOAT, 0, drawn)
                 gl.glDrawArrays(gl.GL_TRIANGLES, 0, len(vertices))
             gl.glPopMatrix()
+            if billboard and self.backface_culling:
+                gl.glEnable(gl.GL_CULL_FACE)
         gl.glDisableClientState(gl.GL_VERTEX_ARRAY)
         gl.glDisableClientState(gl.GL_COLOR_ARRAY)
         gl.glDisableClientState(gl.GL_TEXTURE_COORD_ARRAY)
@@ -323,7 +338,8 @@ class MeshCanvas(CameraEventMixin, QOpenGLWidget):
             gl.glLineWidth(2)
             gl.glBegin(gl.GL_LINE_LOOP)
             for i in order:
-                gl.glVertex3f(*(np.asarray(p['vertices'][i]) + self.offset_for(model_index)))
+                points = self.displayed_vertices(self.meshes[model_index], p['vertices'])
+                gl.glVertex3f(*(np.asarray(points[i]) + self.offset_for(model_index)))
             gl.glEnd()
             gl.glEnable(gl.GL_DEPTH_TEST)
 
@@ -352,12 +368,8 @@ class MeshCanvas(CameraEventMixin, QOpenGLWidget):
         aspect = self.width() / max(1, self.height())
         width = 240 * aspect
         c = self.camera_controls
-        heading = math.radians(c.camera_angle_h)
-        # How far the camera stands along its own right-hand axis.
-        sideways = -c.camera_x * math.cos(heading) - c.camera_z * math.sin(heading)
-        per_degree = 240 / FIELD_OF_VIEW
-        turned = (c.camera_angle_h * per_degree, c.camera_angle_v * per_degree)
-        camera = (sideways - 160, 0)
+        from formats.level.presentation import backdrop_position
+        camera = (-c.camera_x, -c.camera_y, -c.camera_z)
         gl.glMatrixMode(gl.GL_PROJECTION)
         gl.glPushMatrix()
         gl.glLoadIdentity()
@@ -372,8 +384,8 @@ class MeshCanvas(CameraEventMixin, QOpenGLWidget):
             if index not in self.visible:
                 continue
             # Whole pixels, so neighbouring strips meet without seams.
-            x = math.floor(sprite.screen[0] - camera[0] * sprite.follow[0] - turned[0]) + sprite.left
-            y = math.floor(sprite.screen[1] - camera[1] * sprite.follow[1] - turned[1]) + sprite.top
+            x, y = backdrop_position(sprite, camera, c.camera_angle_h,
+                                     c.camera_angle_v, self.backdrop_turned)
             gl.glBindTexture(gl.GL_TEXTURE_2D, self.image_texture(gl, sprite.image))
             gl.glColor3f(1, 1, 1)
             low = (320 - width) / 2
@@ -419,7 +431,7 @@ class MeshCanvas(CameraEventMixin, QOpenGLWidget):
         vertices, faces, lookup = [], [], []
         for pi, (model_index, p) in enumerate(polygons):
             base = len(vertices)
-            vertices.extend(np.asarray(p['vertices']) + self.offset_for(model_index))
+            vertices.extend(self.displayed_vertices(self.meshes[model_index], p['vertices']) + self.offset_for(model_index))
             faces.append((base, base + 1, base + 2)); lookup.append(pi)
             if len(p['vertices']) == 4:
                 faces.append((base + 3, base + 2, base + 1)); lookup.append(pi)

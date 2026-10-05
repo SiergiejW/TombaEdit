@@ -1,6 +1,7 @@
 """Resolve executable File Link Arrays against the actual ISO directory."""
 from dataclasses import dataclass
 import struct
+import hashlib
 from disc.reader import DiscEntry, FormatError
 
 
@@ -24,12 +25,13 @@ class Catalog:
     offset: int
     links: dict
     matched: int
+    stride: int = 8
 
     @classmethod
     def discover(cls, disc):
         by_lba = {e.lba: e for e in disc.files}
-        anchor = disc.entries.get("SYS/LDSYS.BIN")
-        executables = [e for e in disc.files if e.path.startswith(("SCUS_", "SCES_", "SLPS_"))
+        anchor = disc.entries.get("SYS/LDSYS.BIN") or disc.entries.get('SYSTEM/A00000.GAM')
+        executables = [e for e in disc.files if e.path.startswith(("SCUS_", "SCES_", "SLPS_", 'SLPM_'))
                        or e.path.endswith(".EXE")]
         best = None
         for entry in executables:
@@ -38,6 +40,24 @@ class Catalog:
             data = disc.read(entry)
             if not data.startswith(b"PS-X EXE"):
                 continue
+            digest = hashlib.sha1(data).hexdigest()
+            if digest == '1e69d1414dcca09fe360fe69337fc8e62968fda7':
+                # This preview reserves 24 link indices between its system
+                # and area files. The executable's embedded load records use
+                # the original indices, including these empty slots.
+                links, matched = {}, 0
+                start = 0x66DF4
+                for index in range(1055):
+                    try:
+                        lba, size = link_record(data, start + index * 8)
+                    except (ValueError, struct.error):
+                        continue
+                    actual = by_lba.get(lba)
+                    if actual is not None:
+                        links[index] = DiscEntry(actual.path, lba, size)
+                        matched += 1
+                if matched > 1000:
+                    return cls(entry.path, start, links, matched)
             # Search for the actual LDSYS extent/size. Never assume a region's offset.
             candidates = []
             for pos in range(0x800, len(data) - 8, 4):
@@ -48,16 +68,22 @@ class Catalog:
                 if anchor and (lba, size) == (anchor.lba, anchor.size):
                     candidates.append(pos)
             for start in candidates:
+              for stride in ((8,) if anchor and anchor.path == 'SYS/LDSYS.BIN' else (8, 24)):
                 links, matched = {}, 0
-                for pos in range(start, len(data) - 7, 8):
+                holes = 0
+                for pos in range(start, len(data) - 7, stride):
                     try:
                         lba, size = link_record(data, pos)
                     except (ValueError, struct.error):
+                        if data[pos:pos + 8] == bytes(8) and holes < 64:
+                            holes += 1
+                            continue
                         break
+                    holes = 0
                     if lba < 0 or (lba + disc.start) * disc.stride >= disc.byte_size:
                         break
                     actual = by_lba.get(lba)
-                    index = (pos - start) // 8
+                    index = (pos - start) // stride
                     if actual is not None:
                         links[index] = DiscEntry(actual.path, lba, size)
                         matched += 1
@@ -68,7 +94,21 @@ class Catalog:
                 while links and links[max(links)].path.startswith("[unlisted"):
                     links.pop(max(links))
                 if matched >= 8 and (best is None or matched > best.matched):
-                    best = cls(entry.path, start, links, matched)
+                        best = cls(entry.path, start, links, matched, stride)
+            # The Pure Pure sampler stores 64-byte records with ISO names;
+            # CdSearchFile fills their extent fields at runtime.
+            needle = b'\\TOMBA\\A00000.GAM;1'
+            start = data.find(needle)
+            if start >= 0:
+                links = {}
+                for index, pos in enumerate(range(start, len(data), 64)):
+                    name = data[pos:pos + 46].split(b'\0')[0].decode('ascii', 'replace').split(';')[0].replace('\\', '/').lstrip('/')
+                    actual = disc.entries.get(name.upper())
+                    if actual is None:
+                        break
+                    links[index] = actual
+                if len(links) >= 8 and (best is None or len(links) > best.matched):
+                    best = cls(entry.path, start, links, len(links), 64)
         if best is None:
             raise FormatError("No verified file-link table found. Disc folders remain available; "
                               "this build's LDAR layout is not supported yet.")

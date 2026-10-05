@@ -391,7 +391,12 @@ class MainWindow(QMainWindow):
             stem = Path(path).stem
             area = int(stem[4:]) if stem.startswith("LDAR") else -1
             directory = f'AREA{area:02d}' if area >= 0 else 'SYS'
-            parent = self.file_items.get(directory, self.disc_tree.invisibleRootItem())
+            parent = self.file_items.get(directory)
+            if parent is None:
+                parent = next((item for name, item in self.file_items.items()
+                               if name.endswith('/' + directory)), None)
+            if parent is None:
+                parent = self.disc_tree.invisibleRootItem()
             root = self.item(parent, 'Sections', ('sections', path, 0))
             parent.takeChild(parent.indexOfChild(root))
             parent.insertChild(0, root)
@@ -854,7 +859,11 @@ class MainWindow(QMainWindow):
                 name = self.labels.label_for(self.label_hashes.get(key, ''))
                 if not name:
                     name = self.labels.bins.get(repr(key).upper(), '')
-                item.setText(0, f'{name} | {original}' if name else original)
+                text = f'{name} | {original}' if name else original
+                folder = isinstance(node, tuple) or isinstance(node, DiscEntry) and node.directory
+                if item.childCount() or folder:
+                    text += f' ({item.childCount()})'
+                item.setText(0, text)
             for i in range(item.childCount()):
                 visit(item.child(i))
         for i in range(self.disc_tree.topLevelItemCount()):

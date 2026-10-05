@@ -102,8 +102,10 @@ def sprite_mesh(image, parts, position, flip, offset):
         image = ImageOps.mirror(image)
         left = -left - image.width
     x, y, z = np.asarray(position) * (1, -1, -1)
-    return quad([(x+left,y-top,z),(x+left+image.width,y-top,z),
+    mesh = quad([(x+left,y-top,z),(x+left+image.width,y-top,z),
                  (x+left,y-top-image.height,z),(x+left+image.width,y-top-image.height,z)], image, offset=offset)
+    mesh.billboard_anchor = np.asarray((x, y, z))
+    return mesh
 
 
 def edge_colour(image):
@@ -251,9 +253,8 @@ def build_scene(project, path, index):
             try:
                 image = render_sprite(sprites[bank][frame], vram, tpage=visual.get('tpage', 0),
                                       clut=visual.get('clut'))
-                # A blank result means the pixels are uploaded while the game
-                # runs; the placement keeps its marker instead.
-                images[key] = image if image.getbbox() else None
+                # Blank frames are timed steps too, for instance a blink.
+                images[key] = image
             except FormatError:
                 images[key] = None
         return images[key]

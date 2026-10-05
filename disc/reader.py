@@ -35,6 +35,15 @@ def cue_track(path):
                 raise FormatError(f"Unsupported CUE data track: {track}")
             if current_file is None:
                 raise FormatError("CUE track has no FILE record")
+            if not current_file.is_file():
+                # Renamed single-track dumps often retain the old FILE name.
+                # Only use a substitute when the choice is unambiguous.
+                candidates = [p for p in path.parent.iterdir() if p.is_file()
+                              and p.suffix.lower() in ('.bin', '.iso', '.img')]
+                if len(candidates) != 1:
+                    raise FormatError(f'CUE image {current_file.name} is missing. '
+                                      'Open the data-track image or correct the FILE name.')
+                current_file = candidates[0]
             frames = (int(match[1]) * 60 + int(match[2])) * 75 + int(match[3])
             return current_file, frames, track
     raise FormatError("No supported data track with INDEX 01 in CUE")
