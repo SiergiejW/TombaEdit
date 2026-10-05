@@ -11,6 +11,7 @@ class Mesh:
     # key: (texture page, CLUT, semi-transparency); value: vertex/UV/colour arrays.
     batches: dict
     polygons: list = field(default_factory=list)
+    image: object = None
 
 
 def parse_wmd(data):

@@ -164,11 +164,11 @@ class MeshCanvas(CameraEventMixin, QOpenGLWidget):
             gl.glPushMatrix()
             gl.glTranslatef(*self.offset_for(i))
             for (page, clut, semi), (vertices, uv, colors) in mesh.batches.items():
-                use_texture = self.textured and page >= 0
+                use_texture = self.textured and (page >= 0 or mesh.image is not None)
                 if use_texture:
-                    key = (page, clut)
+                    key = ('image', id(mesh.image)) if mesh.image is not None else (page, clut)
                     if key not in self.textures:
-                        im = texture_page(self.vram, page, clut)
+                        im = mesh.image if mesh.image is not None else texture_page(self.vram, page, clut)
                         tex = int(gl.glGenTextures(1))
                         self.textures[key] = tex
                         gl.glBindTexture(gl.GL_TEXTURE_2D, tex)

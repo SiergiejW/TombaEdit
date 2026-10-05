@@ -64,6 +64,9 @@ def prepare_preview(project, node, context=None):
         _, path, index = node
         result["group"] = project.ldars[path][index]
         result["vram"] = project.vram(path, index)
+        if index:
+            from formats.level.scene import build_scene
+            result['level'] = build_scene(project, path, index)
         return result
     if isinstance(node, Asset):
         data = project.asset_data(node)
@@ -107,6 +110,19 @@ def prepare_preview(project, node, context=None):
                     break
         if node.kind == "WMD":
             result["meshes"] = parse_wmd(data)
+        if node.kind == 'FOUR':
+            from formats.models.four import parse_four
+            from formats.level.scene import loaded_resources
+            context = node.group or (1 if len(project.ldars[node.ldar]) > 1 else 0)
+            result['four'] = parse_four(data)
+            result['vram'] = project.vram(node.ldar, context)
+            result['four_candidates'] = []
+            for (kind, slot), asset in loaded_resources(project, node.ldar, context).items():
+                if kind == 'WMD':
+                    for i, mesh in enumerate(parse_wmd(project.asset_data(asset))):
+                        result['four_candidates'].append((f'WMD {asset.code:04X} model {i:03d}', mesh, (slot, i)))
+            result['four_preferred'] = ((1, (node.code >> 8) - 0x40 + 1)
+                if node.ldar == 'SYS/LDAR00.BIN' and 0x40 <= node.code >> 8 <= 0x42 else None)
     else:
         if node.directory:
             result["folder"] = node
@@ -244,6 +260,14 @@ class MainWindow(QMainWindow):
         self.model_view = ModelView()
         self.tabs.addTab(self.model_view, 'Geometry')
         self.persistent.add(self.model_view)
+        from formats.level.viewer import LevelView
+        from formats.models.four_viewer import FourView
+        self.level_view = LevelView()
+        self.level_view.open_resource.connect(self.jump_asset)
+        self.four_view = FourView()
+        for viewer, title in ((self.level_view, 'Level editor'), (self.four_view, 'Deformation')):
+            self.tabs.addTab(viewer, title)
+            self.persistent.add(viewer)
         self.split.addWidget(right)
         self.split.setSizes([440, 940])
         self.split.setStretchFactor(1, 1)
@@ -499,7 +523,14 @@ class MainWindow(QMainWindow):
                                lambda row: self.jump_file(folder.children[row].path))
             if "group" in result:
                 group = result["group"]
+                if 'level' in result:
+                    self.level_view.set_scene(result['level'])
+                    self.tabs.addTab(self.level_view, 'Level editor')
                 self.asset_table(group.assets)
+            if 'four' in result:
+                self.four_view.set_four(result['four'], result['four_candidates'],
+                                        result['vram'], result['four_preferred'])
+                self.tabs.addTab(self.four_view, 'Deformation')
             if 'movie' in result:
                 from formats.movie.movie_panel import MoviePanel
                 self.tabs.addTab(MoviePanel(self.project, result['movie']), 'Movie')

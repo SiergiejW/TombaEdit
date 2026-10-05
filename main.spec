@@ -3,6 +3,7 @@
 import os
 import sys
 from pathlib import Path
+from PyInstaller.utils.hooks import collect_dynamic_libs
 
 ROOT = Path(SPECPATH)
 icon_files = [(str(path), str(path.parent.relative_to(ROOT)))
@@ -19,12 +20,14 @@ app_icon = ROOT / 'icons' / 'tomba' / ('tomba1.png' if sys.platform == 'darwin' 
 a = Analysis(
     ['main.py'],
     pathex=[str(ROOT)],
-    binaries=[],
+    binaries=collect_dynamic_libs('unicorn'),
     datas=icon_files + text_files + multimedia,
     hiddenimports=['PyQt6.QtMultimedia', 'formats.movie.movie_panel',
                    'formats.audio.audio_viewer', 'formats.images.clut_viewer',
                    'formats.collision.structured_viewer',
                    'formats.collision.whm_viewer',
+                   'formats.models.four_viewer', 'formats.level.viewer',
+                   'formats.level.runtime', 'unicorn', 'unicorn.unicorn_py3.arch.mips',
                    'formats.archive.data_viewer'],
     hookspath=[],
     hooksconfig={},
