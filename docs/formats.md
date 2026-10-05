@@ -296,6 +296,30 @@ in the US demo and February preview.
 
 ## Backdrops
 
+### Flat town and interior views
+
+Town TIM scenes, cutaway house artwork and fixed-picture interiors use a
+2D orthographic viewport. Flat XY geometry can use it too. Sections with
+full WMD level geometry keep the 3D camera. Model assets placed in an
+otherwise flat room do not turn its picture into a perspective scene.
+The same viewport remains attached while switching modes. Middle/right
+drag pans, the wheel zooms, and F or a double-click frames the selected
+object. Initial framing uses the room artwork rather than distant spawn
+markers. Orbit, origin, culling and GLB controls are hidden in 2D.
+
+Flat rendering uses a painter pass, without a Z buffer or depth scaling.
+Ordinary sprite ordering follows projected depth divided by four plus the
+signed object byte `+0F`, with four reserved ordering buckets in front
+(US `80048B14` and `80048B4C`). The editor keeps the relative initial depth
+from the object initializer. Fixed rectangles and screen sprites use bucket
+804 plus their ordering offset (`8004E014`, `8004E338`); screen mode 2
+reads the offset from word `+0E`. Town TIM art is the base layer. Larger
+buckets paint behind smaller ones, with stable APD ordering for ties.
+This preserves the decoded initial drawing priorities; event-driven
+spawns and dynamic actor sorting are still outside the initial-state preview.
+Picking walks this painter order from front to back and tests texture alpha,
+so an invisible texel cannot intercept a click on a visible object behind it.
+
 APD layer 7 holds the scenery behind a level. Its objects live in their own
 pool of 6C-byte records and are run through the handler table at 8007D57C
 (routine 8003438C). A handler sets up a sprite like any other object, then on
