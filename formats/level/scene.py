@@ -287,6 +287,10 @@ def build_scene(project, path, index):
                 sprites[slot] = sprite_frames(project.asset_data(asset))
         except FormatError as exc:
             notes.append(f'{asset.label}: {exc}')
+    from formats.level.palettes import apply_model_palettes
+    palette_rows = apply_model_palettes(resolver, vram, models)
+    if palette_rows:
+        notes.append(f'{palette_rows} model palette rows decoded from the area overlay.')
     images = {}
     from formats.sprites.wpp import parse_wpp, frame_image, bank_palettes
     pictures = {}
@@ -392,6 +396,8 @@ def build_scene(project, path, index):
                                if len(frames) > 1 else 'Single-frame pose.'))
                     if bank in pictures:
                         note += ' Pixels decoded from the matching WPP animation bank.'
+                    if 'position' in visual:
+                        note += f' Attached pose at {visual["position"]}, calculated by its handler from the parent object.'
                     if len(frames) < 2:
                         frames = []
                     if visual.get('condition'):

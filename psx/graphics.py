@@ -145,8 +145,27 @@ def sprite_part_image(page, part):
     UVs travel. Clock-room chairs and chandeliers have reversed U corners.
     """
     w, h = part[9:11]
+    u0, v0, u1, v1, u2, v2, u3, v3 = (part[i] for i in (0, 1, 3, 4, 7, 8, 11, 12))
+    if (u0 == u2 and u1 == u3 and v0 == v1 and v2 == v3
+            and abs(u1 - u0) == w - 1 and abs(v2 - v0) == h - 1):
+        tile = page.crop((min(u0, u1), min(v0, v2), max(u0, u1) + 1, max(v0, v2) + 1))
+        if u1 < u0:
+            tile = tile.transpose(Image.Transpose.FLIP_LEFT_RIGHT)
+        if v2 < v0:
+            tile = tile.transpose(Image.Transpose.FLIP_TOP_BOTTOM)
+        return tile
     uv = np.asarray(((part[0], part[1]), (part[3], part[4]),
                      (part[7], part[8]), (part[11], part[12])), np.float64)
+    # UV bytes wrap at the page boundary. Use the screen extent to distinguish
+    # a wrapped edge from an intentionally reversed edge.
+    for end, start, extent in ((1, 0, w), (2, 0, h), (3, 2, w), (3, 1, h)):
+        for axis in range(2):
+            delta = uv[end, axis] - uv[start, axis]
+            if abs(delta) != extent - 1:
+                for wrapped in (delta - 256, delta + 256):
+                    if abs(wrapped) == extent - 1:
+                        uv[end, axis] = uv[start, axis] + wrapped
+                        break
     across = np.linspace(0, 1, w)[None, :, None]
     down = np.linspace(0, 1, h)[:, None, None]
     top = uv[0] * (1 - across) + uv[1] * across

@@ -66,6 +66,7 @@ class InitialPoseResolver:
         self.u.mem_map(0, 0x1000000)
         self.u.mem_map(0x1F800000, 0x1000)
         code = project.asset_data(overlay)
+        self.overlay_code = code
         self.limit = max(build.overlay + REACH, build.overlay + len(code))
         self.code = ((self.base, found.end), (build.overlay, self.limit))
         self.write(self.base, self.exe[0x800:])
@@ -479,6 +480,9 @@ class InitialPoseResolver:
             self.word(address + 0x90, address + 0x400 if n + 1 < len(parents) else 0)
         if parents:
             self.word(obj + 0x90, OBJECT + 0x4000)
+            self.word(OBJECT + 0x4000 + 0x94, obj)
+            for j, value in enumerate(struct.unpack_from('<3h', raw, 6)):
+                self.word(obj + 0x30 + j * 4, value << 16)
         pc = self.read_word(self.build.tables[placement.layer] + placement.kind * 4)
         result = {}
         try:

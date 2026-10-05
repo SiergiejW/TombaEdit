@@ -530,8 +530,9 @@ class MeshCanvas(CameraEventMixin, QOpenGLWidget):
                 if self.flat_mode and mesh.image is not None:
                     points = np.array(points, copy=True)
                     points[:, 2] = 0
+                points = np.ascontiguousarray(points, dtype=np.float32)
                 gl.glEnableClientState(gl.GL_VERTEX_ARRAY)
-                gl.glVertexPointer(3, gl.GL_FLOAT, 0, np.ascontiguousarray(points, dtype=np.float32))
+                gl.glVertexPointer(3, gl.GL_FLOAT, 0, points)
                 gl.glDrawArrays(gl.GL_LINES, 0, len(points))
                 gl.glDisableClientState(gl.GL_VERTEX_ARRAY)
         gl.glEnable(gl.GL_DEPTH_TEST)

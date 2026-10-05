@@ -326,6 +326,34 @@ spawns and dynamic actor sorting are still outside the initial-state preview.
 Picking walks this painter order from front to back and tests texture alpha,
 so an invisible texel cannot intercept a click on a visible object behind it.
 
+Solid WMD assets keep internal depth during the flat painter pass. Each
+asset gets a fresh depth buffer, so a door's rear primitives cannot cover
+its textured front, while another scene object still follows the decoded
+draw priority. Flat picking likewise chooses the nearest opaque face within
+each asset. The orthographic scene camera is unchanged.
+
+APD modes 2/3 retain their parent link, not just an added spawn position.
+The initial-pose trace copies initialized parents to separate object records,
+fixes their coordinate pointers and supplies the child's `+90` parent pointer
+and `+30` relative coordinates. Attached sprites get their first update before
+their pose is captured. X09 `8011ADBC` places the chandelier 76 units beneath
+its chain using the parent's angle; reading the APD child coordinates alone
+put it outside the room. Mirrored SPR parts use their four UV corners rather
+than a forward crop, which restores the right chair and chandelier artwork.
+
+Some model CLUTs are uploaded by area code. The clock door has two rows at
+VRAM `(128, 508)` and `(128, 509)`, copied from X09 `8012A5CC` by the call
+at `8011C1B4`. The preview decodes literal LoadImage setups in the loaded
+overlay and applies unique rows referenced by its WMD banks. Ambiguous or
+dynamic uploads are left unchanged. This previews the stored model colours
+without simulating the event flags that control when the door appears.
+
+Selection uses the actual sprite rectangle or mesh polygon edges, without
+a bounding box. Geometry edges use Tomba2Edit's orange `(0.80, 0.50, 0.05)`;
+asset edges use its amber `(0.75, 0.55, 0.10)`. The active triangle/quad is
+yellow and sprite rectangles are yellow. Billboard outlines follow the same
+camera-facing transform as their image, and animation updates their edges.
+
 APD layer 7 holds the scenery behind a level. Its objects live in their own
 pool of 6C-byte records and are run through the handler table at 8007D57C
 (routine 8003438C). A handler sets up a sprite like any other object, then on
