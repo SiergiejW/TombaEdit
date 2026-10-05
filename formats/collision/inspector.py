@@ -148,6 +148,17 @@ class CollisionInspector(QWidget):
         points = np.asarray(self.selected.points)
         lo, hi = points.min(axis=0), points.max(axis=0)
         radius = max(20., float(np.linalg.norm(hi - lo)) / 2)
+        if canvas.flat_mode:
+            import math
+            from gui.widgets.camera_controls import FIELD_OF_VIEW
+            centre = (lo + hi) / 2
+            centre[2] = 0
+            half = max(20., (hi[1] - lo[1]) / 2,
+                       (hi[0] - lo[0]) / 2 * canvas.height() / max(1, canvas.width())) * 1.08
+            canvas.camera_controls.glide_frame(centre, radius, heading=0, pitch=0,
+                margin=half / math.tan(math.radians(FIELD_OF_VIEW) / 2) / (radius * 1.2))
+            canvas.auto_fit = False
+            return
         canvas.camera_controls.glide_frame((lo + hi) / 2, radius,
                                           heading=90 if self.selected.turned else 0, pitch=0)
         canvas.auto_fit = False

@@ -29,6 +29,7 @@ class SceneEntry:
     alternative: object = None
     handler: int = None
     animation_address: int = None
+    draw_bucket: float = 0
 
 
 @dataclass
@@ -65,6 +66,7 @@ class LevelScene:
     town_views: list = field(default_factory=list)
     # Where the build loads the area's code overlay; 0 when not known.
     overlay: int = 0
+    view_2d: bool = False
 
 
 def area_of(path):
@@ -231,6 +233,7 @@ def town_picture(project, resources, notes):
                        note=f'{image.width} x {image.height} pre-rendered picture. '
                             'Town map shows it tinted by the 8 x 8 cell map.')
     entry.alternative = quad(corners, tinted)
+    entry.draw_bucket = float('inf')
     entry.cells = grid if cells is not None and tinted is not image else None
     return entry
 
@@ -448,6 +451,8 @@ def build_scene(project, path, index):
                                asset, placement, active, note, frames)
             entry.handler = resolver.handler_address(placement)
             entry.animation_address = visual.get('animation_address')
+            from formats.level.flat import ordering_bucket
+            entry.draw_bucket = ordering_bucket(placement, visual, fixed_picture=bool(pieces))
             entries.append(entry)
     orient_assemblies(entries)
     from formats.collision.geometry import records, lines
@@ -503,6 +508,8 @@ def build_scene(project, path, index):
     scene = LevelScene(entries, list(resources.values()), vram, notes, collision, backdrops, sky,
                        collision_records, context, locations, index)
     scene.overlay = resolver.build.overlay if resolver.available else 0
+    from formats.level.flat import is_flat
+    scene.view_2d = is_flat(entries)
     if town is not None:
         from formats.level.town import town_graphics
         profile = town_graphics(project, resources, area, index - 1)
@@ -517,7 +524,7 @@ def build_scene(project, path, index):
                          f'Texture page base {profile.pages[frame]}, CLUT 0x{profile.cluts[frame]:04X}. '
                          f'Cutaway artwork used within {profile.name}; characters are separate runtime sprites.')
                 scene.town_views.append((name, LevelScene([entry], list(resources.values()), vram,
-                    [entry.note], sky=(0., 0., 0.), locations=locations, location_index=index)))
+                    [entry.note], sky=(0., 0., 0.), locations=locations, location_index=index, view_2d=True)))
     return scene
 
 

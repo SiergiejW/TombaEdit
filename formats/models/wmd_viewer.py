@@ -72,6 +72,10 @@ class MeshCanvas(CameraEventMixin, QOpenGLWidget):
         self.sky = None
         self.show_backdrop = True
         self.backdrop_turned = False
+        self.flat_mode = False
+        self.flat_order = []
+        self.flat_frame = set()
+        self.flat_drag = None
         self.stats_label = QLabel(self)
         self.stats_label.setObjectName('viewerOverlay')
         self.stats_label.setTextInteractionFlags(Qt.TextInteractionFlag.TextSelectableByMouse)
@@ -123,6 +127,8 @@ class MeshCanvas(CameraEventMixin, QOpenGLWidget):
 
     def box(self, indices=None):
         """(low, high) corners of the visible meshes, or of `indices` among them."""
+        if self.flat_mode and indices is None and self.flat_frame & self.visible:
+            indices = self.flat_frame
         arrays = [batch[0] + self.offset_for(i)
                   for i, mesh in enumerate(self.meshes) if i in self.visible
                   and (indices is None or i in indices)
@@ -149,6 +155,14 @@ class MeshCanvas(CameraEventMixin, QOpenGLWidget):
         heading, pitch = self.view_angles
         margin = self.view_margin
         found = self.box(indices)
+        if self.flat_mode and found is not None:
+            lo, hi = found
+            half_height = max(1., (hi[1] - lo[1]) / 2,
+                              (hi[0] - lo[0]) / 2 * self.height() / max(1, self.width())) * 1.08
+            distance = half_height / math.tan(math.radians(FIELD_OF_VIEW) / 2)
+            margin = distance / (self.radius * 1.2)
+            self.center[2] = 0
+            heading = pitch = 0
         if found is not None:
             # The opening pose looks along Z, so X and Y are what has to fit
             # the viewport; a wide level in a narrow pane needs more distance
@@ -157,7 +171,8 @@ class MeshCanvas(CameraEventMixin, QOpenGLWidget):
             half = math.tan(math.radians(FIELD_OF_VIEW) / 2)
             aspect = self.width() / max(1, self.height())
             distance = max(height / 2 / half, width / 2 / (half * aspect)) * 1.08 + depth / 2
-            margin = max(distance, self.radius * 0.2) / (self.radius * 1.2)
+            if not self.flat_mode:
+                margin = max(distance, self.radius * 0.2) / (self.radius * 1.2)
         frame = camera.glide_frame if animate else camera.frame
         frame(self.center, self.radius, heading=heading, pitch=pitch, margin=margin)
         # Until the camera is moved by hand, a resize keeps everything framed.
@@ -199,6 +214,13 @@ class MeshCanvas(CameraEventMixin, QOpenGLWidget):
 
     def wheelEvent(self, event):
         self.auto_fit = False
+        if self.flat_mode:
+            c = self.camera_controls
+            c.stop_glide()
+            c.camera_z = -max(.25, min(1e7, abs(c.camera_z) * 1.15 ** (-event.angleDelta().y() / 120)))
+            self.update()
+            event.accept()
+            return
         super().wheelEvent(event)
 
     def keyPressEvent(self, event):
@@ -206,7 +228,33 @@ class MeshCanvas(CameraEventMixin, QOpenGLWidget):
             self.fit({self.selected_model} if self.selected_model is not None else None)
             event.accept()
             return
+        if self.flat_mode:
+            QOpenGLWidget.keyPressEvent(self, event)
+            return
         super().keyPressEvent(event)
+
+    def mouseMoveEvent(self, event):
+        if not self.flat_mode:
+            return super().mouseMoveEvent(event)
+        if self.flat_drag is not None:
+            c = self.camera_controls
+            step = self.flat_half_height() * 2 / max(1, self.height())
+            delta = event.position() - self.flat_drag
+            c.camera_x += delta.x() * step
+            c.camera_y -= delta.y() * step
+            self.flat_drag = event.position()
+            self.update()
+        event.accept()
+
+    def mouseReleaseEvent(self, event):
+        if not self.flat_mode:
+            return super().mouseReleaseEvent(event)
+        self.flat_drag = None
+        self.unsetCursor()
+        event.accept()
+
+    def flat_half_height(self):
+        return max(.1, abs(self.camera_controls.camera_z) * math.tan(math.radians(FIELD_OF_VIEW) / 2))
 
     def initializeGL(self):
         from OpenGL import GL as gl
@@ -229,7 +277,7 @@ class MeshCanvas(CameraEventMixin, QOpenGLWidget):
         from OpenGL.GLU import gluPerspective
         gl.glClearColor(*(self.sky if self.sky and self.show_backdrop else view_background()), 1)
         gl.glClear(gl.GL_COLOR_BUFFER_BIT | gl.GL_DEPTH_BUFFER_BIT)
-        if self.backface_culling:
+        if self.backface_culling and not self.flat_mode:
             gl.glEnable(gl.GL_CULL_FACE)
         else:
             gl.glDisable(gl.GL_CULL_FACE)
@@ -238,19 +286,29 @@ class MeshCanvas(CameraEventMixin, QOpenGLWidget):
         gl.glCullFace(gl.GL_BACK)
         gl.glMatrixMode(gl.GL_PROJECTION)
         gl.glLoadIdentity()
-        gluPerspective(45, self.width() / max(1, self.height()), max(0.01, self.radius / 1000), self.radius * 200)
+        if self.flat_mode:
+            half = self.flat_half_height()
+            width = half * self.width() / max(1, self.height())
+            gl.glOrtho(-width, width, -half, half, -self.radius * 200, self.radius * 200)
+            gl.glDisable(gl.GL_DEPTH_TEST)
+        else:
+            gluPerspective(45, self.width() / max(1, self.height()), max(0.01, self.radius / 1000), self.radius * 200)
+            gl.glEnable(gl.GL_DEPTH_TEST)
         gl.glMatrixMode(gl.GL_MODELVIEW)
         gl.glLoadIdentity()
         c = self.camera_controls
-        gl.glRotatef(c.camera_angle_v, 1, 0, 0)
-        gl.glRotatef(c.camera_angle_h, 0, 1, 0)
-        gl.glTranslatef(c.camera_x, c.camera_y, c.camera_z)
+        if not self.flat_mode:
+            gl.glRotatef(c.camera_angle_v, 1, 0, 0)
+            gl.glRotatef(c.camera_angle_h, 0, 1, 0)
+        gl.glTranslatef(c.camera_x, c.camera_y, 0 if self.flat_mode else c.camera_z)
         if self.backdrop and self.show_backdrop:
             self.paint_backdrop(gl)
         gl.glPolygonMode(gl.GL_FRONT_AND_BACK, gl.GL_LINE if self.wireframe else gl.GL_FILL)
         gl.glEnableClientState(gl.GL_VERTEX_ARRAY)
         gl.glEnableClientState(gl.GL_COLOR_ARRAY)
-        for i, mesh in enumerate(self.meshes):
+        order = self.flat_order if self.flat_mode else range(len(self.meshes))
+        for i in order:
+            mesh = self.meshes[i]
             if i not in self.visible:
                 continue
             gl.glPushMatrix()
@@ -291,10 +349,13 @@ class MeshCanvas(CameraEventMixin, QOpenGLWidget):
                     draw_colors = np.ascontiguousarray(draw_colors * 0.24)
                 gl.glColorPointer(3, gl.GL_FLOAT, 0, draw_colors)
                 drawn = self.displayed_vertices(mesh, vertices)
+                if self.flat_mode:
+                    drawn = np.array(drawn, dtype=np.float32, copy=True)
+                    drawn[:, 2] = 0
                 gl.glVertexPointer(3, gl.GL_FLOAT, 0, drawn)
                 gl.glDrawArrays(gl.GL_TRIANGLES, 0, len(vertices))
             gl.glPopMatrix()
-            if billboard and self.backface_culling:
+            if billboard and self.backface_culling and not self.flat_mode:
                 gl.glEnable(gl.GL_CULL_FACE)
         gl.glDisableClientState(gl.GL_VERTEX_ARRAY)
         gl.glDisableClientState(gl.GL_COLOR_ARRAY)
@@ -446,6 +507,8 @@ class MeshCanvas(CameraEventMixin, QOpenGLWidget):
             if arrays:
                 points = np.concatenate(arrays)
                 low, high = points.min(0), points.max(0)
+                if self.flat_mode:
+                    low[2] = high[2] = 0
                 corners = [np.where([(n >> bit) & 1 for bit in range(3)], high, low) for n in range(8)]
                 gl.glBegin(gl.GL_LINES)
                 for n in range(8):
@@ -459,18 +522,41 @@ class MeshCanvas(CameraEventMixin, QOpenGLWidget):
 
     def _model_view_projection(self):
         m = QMatrix4x4()
-        m.perspective(45, self.width() / max(1, self.height()), max(.01, self.radius / 1000), self.radius * 200)
         c = self.camera_controls
+        if self.flat_mode:
+            half = self.flat_half_height()
+            width = half * self.width() / max(1, self.height())
+            m.ortho(-width, width, -half, half, -self.radius * 200, self.radius * 200)
+            m.translate(c.camera_x, c.camera_y, 0)
+            return m
+        m.perspective(45, self.width() / max(1, self.height()), max(.01, self.radius / 1000), self.radius * 200)
         m.rotate(c.camera_angle_v, 1, 0, 0)
         m.rotate(c.camera_angle_h, 0, 1, 0)
         m.translate(c.camera_x, c.camera_y, c.camera_z)
         return m
 
     def mousePressEvent(self, event):
+        if self.flat_mode and event.button() in (Qt.MouseButton.MiddleButton, Qt.MouseButton.RightButton):
+            self.auto_fit = False
+            self.camera_controls.stop_glide()
+            self.flat_drag = event.position()
+            self.setCursor(Qt.CursorShape.ClosedHandCursor)
+            event.accept()
+            return
         if event.button() != Qt.MouseButton.LeftButton:
             self.auto_fit = False
             return super().mousePressEvent(event)
         if self.show_lines and self.line_picker is not None and self.line_picker(event.position()):
+            return
+        if self.flat_mode:
+            from formats.level.flat import pick
+            half = self.flat_half_height()
+            c = self.camera_controls
+            point = ((event.position().x() - self.width() / 2) * 2 * half / max(1, self.height()) - c.camera_x,
+                     (self.height() / 2 - event.position().y()) * 2 * half / max(1, self.height()) - c.camera_y)
+            self.selected = pick(self.meshes, self.flat_order, self.visible, point, self.vram)
+            self.picked.emit(self.selected)
+            self.update()
             return
         ray = ray_through(self._model_view_projection(), event.position().x(), event.position().y(), self.width(), self.height())
         if ray is None:

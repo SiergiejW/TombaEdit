@@ -4,6 +4,8 @@ from PyQt6.QtGui import QAction
 from PyQt6.QtWidgets import QHBoxLayout, QLabel, QComboBox, QPushButton, QStyle, QTabWidget
 from formats.models.wmd_viewer import ModelView
 from formats.collision.inspector import CollisionInspector
+from formats.level.flat import paint_order
+from gui.widgets.camera_controls import CONTROLS_HINT
 
 # The game steps animation scripts once per frame at 30 frames a second.
 TICK_MS = 33
@@ -128,10 +130,33 @@ class LevelView(ModelView):
             if index == scene.location_index:
                 self.locations.setCurrentIndex(self.locations.count() - 1)
         self.locations.blockSignals(False)
-        flat = not any(e.active and e.category in ('Geometry', 'Models') and e.mesh.image is None
-                       for e in scene.entries)
+        flat = scene.view_2d
+        self.canvas.camera_controls.stop_glide()
+        self.canvas.camera_controls.end_look()
+        self.canvas.camera_controls.end_orbit()
+        for key in self.canvas.camera_controls.keys_pressed:
+            self.canvas.camera_controls.keys_pressed[key] = False
+        self.canvas.flat_mode = flat
+        self.canvas.show_origin = self.origin_action.isChecked() and not flat
+        self.canvas.flat_order = paint_order(scene.entries)
+        self.canvas.flat_frame = {i for i, e in enumerate(scene.entries) if e.active
+            and (e.alternative is not None or e.note.startswith('Fixed picture')
+                 or town_index and e.category == 'Backgrounds')}
+        self.canvas.flat_drag = None
         self.set_data([entry.mesh for entry in scene.entries], scene.vram, 0x5080,
                       {i: e.name for i, e in enumerate(scene.entries)}, level=not flat)
+        self.canvas.controls_label.setText(
+            ('2D view | Middle/right-drag: pan | Scroll: zoom\n'
+             'Click: select visible object | F: frame selected\nDouble-click a row: frame it')
+            if flat else CONTROLS_HINT + '\nF: frame selected | Double-click a row: frame it')
+        self.canvas.controls_label.adjustSize()
+        for action in (self.culling_action, self.orbit_action, self.origin_action):
+            action.setVisible(not flat)
+        for action in self.toolbar.actions():
+            if action.text() == 'Export glTF':
+                action.setVisible(not flat)
+            elif action.text() in ('Frame Model', 'Frame view'):
+                action.setText('Frame view' if flat else 'Frame Model')
         if flat or any(e.alternative is not None for e in scene.entries):
             self.canvas.view_angles = (0.0, 0.0)    # a town picture is viewed square on
             self.filter.blockSignals(True)
@@ -160,9 +185,13 @@ class LevelView(ModelView):
         total = sum(e.active and e.placement is not None for e in scene.entries)
         summary = (f'{resolved}/{total} placed visuals resolved | {len(self.animated)} animated'
                    if not town_index else scene.entries[0].name)
-        self.canvas.stats_label.setText(summary + '\n'
+        self.canvas.stats_label.setText(('2D view | ' if flat else '3D view | ') + summary + '\n'
                                         'F: frame selected | Double-click a row: frame it')
         self.canvas.stats_label.adjustSize()
+        if flat:
+            self.details.setPlainText('Select an object in the picture or the list to inspect it.\n\n'
+                'The 2D view paints objects in game ordering priority. Transparent pixels '
+                'allow you to select visible objects behind them. Middle/right-drag pans; scroll zooms.')
         self.toggle_animation(self.animate_action.isChecked())
 
     def choose_location(self, row):
@@ -348,6 +377,8 @@ class LevelView(ModelView):
                 text += f'\n{overlay.label}\nHandler offset: 0x{e.handler - base:06X}'
         if e.animation_address is not None:
             text += f'\nAnimation script: 0x{e.animation_address:08X}'
+        if self.canvas.flat_mode:
+            text += f'\n\nDrawing order bucket: {e.draw_bucket:g} (higher draws behind)'
         self.details.setPlainText(text)
         if e.mesh.image is not None:
             self.uv.set_image(e.mesh.image)

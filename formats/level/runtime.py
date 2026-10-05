@@ -485,6 +485,11 @@ class InitialPoseResolver:
                                       tpage=struct.unpack_from('<H', state, 0x1E)[0],
                                       clut=struct.unpack_from('<H', state, 8)[0] if state[0xD] & 1 else None,
                                       blend=bool(state[0xD] & 0x80))
+                        result['sort_bias'] = struct.unpack_from('<b', state, 0xF)[0]
+                        result['sort_fixed'] = bool(state[0xB])
+                        result['sort_depth'] = struct.unpack_from('<h', state, 0x1A)[0]
+                        result['screen_bias'] = (struct.unpack_from('<h', state, 0xE)[0]
+                                                 if state[0xB] == 2 else result['sort_bias'])
                         if placement.layer == 7:
                             # Backdrop strips name a second frame in the word
                             # after the first; both are drawn at the anchor.
