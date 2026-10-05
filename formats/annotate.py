@@ -87,6 +87,10 @@ def wmd(data):
     count = u32(data, 0) if len(data) >= 4 else 0
     if not 0 < count <= 4096 or 4 + count * 4 > len(data):
         return out
+    from formats.models.wmd import layout_of, primitive_size, EARLY
+    layout = layout_of(data)
+    if layout is None:
+        return out
     out.append(Region(0, 4, 'count', 'Model count', f'{count} models.'))
     offsets = offset_table(out, data, count, 4, 'model') + [len(data)]
     for model, (start, end) in enumerate(zip(offsets, offsets[1:])):
@@ -98,7 +102,7 @@ def wmd(data):
             vertices = 3 + kind % 2
             colours = vertices if kind % 4 >= 2 else 1
             textured = kind < 4
-            size = 4 + colours * 4 + vertices * 8 + (0 if textured else colours * 8)
+            size = primitive_size(kind, layout)
             out.append(Region(at, at + 4, 'count', f'Model {model}: {WMD_KINDS[kind]} count',
                               f'{amount} primitives of {size} bytes.'))
             at += 4
@@ -106,6 +110,19 @@ def wmd(data):
                 if at + size > end:
                     break
                 p, name = at, f'Model {model} {WMD_KINDS[kind]} {n}'
+                if textured and layout == EARLY:
+                    # The 1997 layout: colours, a word per corner, positions.
+                    out.append(Region(p, p + colours * 4, 'colour', f'{name}: colours',
+                                      'Red, green, blue and the GPU command byte, per colour.'))
+                    p += colours * 4
+                    for corner in range(vertices):
+                        what = ('CLUT word', 'texture page word')[corner] if corner < 2 else 'unused'
+                        p = fields(out, p, ((2, 'uv', f'U, V of corner {corner}', ''),
+                                            (2, ('clut', 'page', 'padding', 'padding')[corner], what, '')), name)
+                    out.append(Region(p, p + vertices * 8, 'position', f'{name}: vertices',
+                                      'X, Y, Z as signed words and padding'))
+                    at += size
+                    continue
                 if textured:
                     p = fields(out, p, ((2, 'clut', 'CLUT word', ''), (2, 'page', 'texture page word', '')), name)
                 out.append(Region(p, p + colours * 4, 'colour', f'{name}: colours',
@@ -224,15 +241,18 @@ def wpp(data):
 
 def wfm(data):
     out = []
-    if data[:4] != b'WFM3' or len(data) < 144:
+    from formats.text.wfm import GLYPH_TABLE
+    glyph_table = GLYPH_TABLE.get(bytes(data[:4]))
+    if glyph_table is None or len(data) < glyph_table:
         return out
+    early = glyph_table == 16
     table, dialogues, glyphs = struct.unpack_from('<IHH', data, 8)
-    fields(out, 0, ((4, 'clut', 'magic', 'WFM3'), (4, 'padding', 'reserved', ''),
+    fields(out, 0, ((4, 'clut', 'magic', data[:4].decode('ascii')), (4, 'padding', 'reserved', ''),
                     (4, 'pointer', 'dialogue table offset', f'0x{table:X}'),
-                    (2, 'count', 'dialogue count', str(dialogues)), (2, 'count', 'glyph count', str(glyphs)),
-                    (128, 'padding', 'reserved', '')), 'Header')
+                    (2, 'count', 'dialogue count', str(dialogues)), (2, 'count', 'glyph count', str(glyphs)))
+           + (() if early else ((128, 'padding', 'reserved', ''),)), 'Header')
     for i in range(glyphs):
-        at = 144 + i * 2
+        at = glyph_table + i * 2
         if at + 2 > len(data):
             break
         pointer = u16(data, at)
@@ -241,8 +261,9 @@ def wfm(data):
             _, height, width, _ = struct.unpack_from('<4H', data, pointer)
             end = fields(out, pointer, ((2, 'clut', 'palette', ''), (2, 'size', 'height', ''),
                                         (2, 'size', 'width', ''), (2, 'padding', 'unused', '')), f'Glyph {i:03X}')
-            out.append(Region(end, min(len(data), end + (width * height + 1) // 2), 'colour',
-                              f'Glyph {i:03X}: pixels', '4 bits a pixel, low nibble first.'))
+            size = (width + 3) // 4 * 2 * height if early else (width * height + 1) // 2
+            out.append(Region(end, min(len(data), end + size), 'colour', f'Glyph {i:03X}: pixels',
+                              '4 bits a pixel, low nibble first' + (', each row padded to 16 bits.' if early else '.')))
     starts = []
     for i in range(dialogues):
         at = table + i * 2

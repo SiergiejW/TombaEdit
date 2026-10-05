@@ -1,8 +1,20 @@
-"""WMD mesh decoder. Eight primitive batches per object, verified against OBJ dumps."""
+"""WMD mesh decoder. Eight primitive batches per object, verified against OBJ dumps.
+
+Two layouts of a textured primitive exist. The builds from 1997 (the
+Japanese demo and the sampler disc) follow the GPU packet: colours, then one
+word per corner holding U, V and, for the first two corners, the CLUT and
+the texture page, then eight bytes of position per corner. Later builds put
+the CLUT and page first and fold U and V into the spare half of each
+position. Untextured primitives are the same in both.
+"""
 from dataclasses import dataclass, field
 import struct
 import numpy as np
 from disc.reader import FormatError
+
+KINDS = ('FT3', 'FT4', 'GT3', 'GT4', 'F3', 'F4', 'G3', 'G4')
+COMMANDS = (0x24, 0x2C, 0x34, 0x3C, 0x20, 0x28, 0x30, 0x38)
+RETAIL, EARLY = 'retail', 'early'
 
 
 @dataclass
@@ -14,7 +26,28 @@ class Mesh:
     image: object = None
 
 
-def parse_wmd(data):
+def primitive_size(kind, layout=RETAIL):
+    """Bytes one primitive of a batch occupies."""
+    corners = 3 + kind % 2
+    colours = corners if kind % 4 >= 2 else 1
+    if kind >= 4:
+        return 4 + colours * 4 + corners * 8 + colours * 8
+    if layout == EARLY:
+        return colours * 4 + corners * 4 + corners * 8
+    return 4 + colours * 4 + corners * 8
+
+
+def parse_wmd(data, layout=None):
+    """Decode a bank. `layout` is RETAIL or EARLY; left out, the retail
+    layout is tried first and the early one when the bank does not fit it."""
+    if layout is None:
+        try:
+            return parse_wmd(data, RETAIL)
+        except FormatError as newer:
+            try:
+                return parse_wmd(data, EARLY)
+            except FormatError:
+                raise newer from None
     if len(data) < 4:
         raise FormatError("WMD missing object count")
     count = struct.unpack_from("<I", data)[0]
@@ -34,21 +67,31 @@ def parse_wmd(data):
             nv = 3 + kind % 2
             nc = nv if kind % 4 >= 2 else 1
             textured = kind < 4
-            size = 4 + nc * 4 + nv * 8 + (0 if textured else nc * 8)
+            size = primitive_size(kind, layout)
             if pos + amount * size > end:
                 raise FormatError("WMD primitive data extends outside object")
             for _ in range(amount):
-                clut, page = struct.unpack_from("<HH", data, pos) if textured else (0, -1)
-                color_pos = pos + (4 if textured else 0)
+                early = textured and layout == EARLY
+                if early:
+                    # Corner words: U, V, then CLUT for the first corner and
+                    # texture page for the second.
+                    words = pos + nc * 4
+                    clut = struct.unpack_from("<H", data, words + 2)[0]
+                    page = struct.unpack_from("<H", data, words + 6)[0]
+                    color_pos = pos
+                else:
+                    clut, page = struct.unpack_from("<HH", data, pos) if textured else (0, -1)
+                    color_pos = pos + (4 if textured else 0)
                 colors = np.frombuffer(data, dtype=np.uint8, count=nc * 4, offset=color_pos).reshape(nc, 4)
                 cmd = int(colors[0, 3])
-                expected = (0x24, 0x2C, 0x34, 0x3C, 0x20, 0x28, 0x30, 0x38)[kind]
-                if cmd & 0xFC != expected:
+                if cmd & 0xFC != COMMANDS[kind]:
                     raise FormatError(f"Unexpected WMD GPU command {cmd:02X}")
-                vp = color_pos + nc * 4
+                vp = color_pos + nc * 4 + (nv * 4 if early else 0)
                 vertices, uv = [], []
                 for j in range(nv):
                     x, y, z, u, v = struct.unpack_from("<hhhBB", data, vp + j * 8)
+                    if early:
+                        u, v = data[words + j * 4], data[words + j * 4 + 1]
                     vertices.append((x, -y, -z))
                     uv.append(((u + 0.5) / 256, (v + 0.5) / 256))
                 # PSX texture modulation uses 128 as neutral. Raw-textured
@@ -62,7 +105,7 @@ def parse_wmd(data):
                 key = (page, clut, bool(cmd & 2))
                 polygons.append(dict(offset=pos, vertices=vertices, uv=uv,
                                      colors=cols, page=page, clut=clut, command=cmd,
-                                     kind=('FT3', 'FT4', 'GT3', 'GT4', 'F3', 'F4', 'G3', 'G4')[kind]))
+                                     kind=KINDS[kind]))
                 target = batches.setdefault(key, [[], [], []])
                 target[0].extend(vertices[j] for j in order)
                 target[1].extend(uv[j] for j in order)
@@ -73,3 +116,14 @@ def parse_wmd(data):
         meshes.append(Mesh(start, {key: tuple(np.asarray(a, dtype=np.float32) for a in arrays)
                                    for key, arrays in batches.items()}, polygons))
     return meshes
+
+
+def layout_of(data):
+    """Which textured layout a bank uses, or None if it is not a WMD."""
+    for layout in (RETAIL, EARLY):
+        try:
+            parse_wmd(data, layout)
+            return layout
+        except FormatError:
+            continue
+    return None

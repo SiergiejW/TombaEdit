@@ -21,6 +21,7 @@ from game import labels
 import hashlib
 
 ROLE = Qt.ItemDataRole.UserRole
+DISC_SUFFIXES = (".bin", ".cue", ".iso", ".img", ".ccd")
 
 
 class Signals(QObject):
@@ -56,6 +57,15 @@ def hex_dump(data, total=None):
     if total > 65536:
         rows.append(f"\nShowing first 65,536 of {total:,} bytes. Export for the complete file.")
     return "\n".join(rows)
+
+
+def find_all(data, needle, limit=64):
+    """Offsets of `needle` in `data`, up to `limit` of them."""
+    found, at = [], data.find(needle)
+    while at >= 0 and len(found) < limit:
+        found.append(at)
+        at = data.find(needle, at + len(needle))
+    return found
 
 
 def prepare_preview(project, node, context=None):
@@ -164,16 +174,13 @@ def prepare_preview(project, node, context=None):
     result['regions'] = regions(kind, data)
     # WFM can also be embedded in instruction binaries and standalone GAMs.
     wfms = []
-    start = 0
-    while len(wfms) < 16:
-        start = data.find(b"WFM3", start)
-        if start < 0:
-            break
+    from formats.text.wfm import MAGICS
+    starts = sorted(at for magic in MAGICS for at in find_all(data, magic))
+    for start in starts[:16]:
         try:
             wfms.append((start, Wfm(data[start:])))
         except FormatError as exc:
-            result["notes"].append(f"WFM3 candidate at {start:X}: {exc}")
-        start += 4
+            result["notes"].append(f"WFM candidate at {start:X}: {exc}")
     result["wfms"] = wfms
     return result
 
@@ -348,7 +355,7 @@ class MainWindow(QMainWindow):
 
     def open_dialog(self):
         path, _ = QFileDialog.getOpenFileName(self, "Open Tomba! disc", self.settings.value("last_dir", str(Path.cwd() / "rom")),
-                                              "Disc images (*.cue *.bin *.iso);;All files (*)")
+                                              "Disc images (*.cue *.bin *.iso *.img *.ccd);;All files (*)")
         if path:
             self.open_path(path)
 
@@ -570,7 +577,9 @@ class MainWindow(QMainWindow):
             if 'movie' in result:
                 from formats.movie.movie_panel import MoviePanel
                 self.tabs.addTab(MoviePanel(self.project, result['movie']), 'Movie')
-            if self.current_data is not None and (self.current_data.startswith(b'pQES') or isinstance(node, DiscEntry) and node.path.upper().endswith('.WVD')):
+            if self.current_data is not None and (self.current_data.startswith(b'pQES')
+                    or isinstance(node, DiscEntry) and node.path.upper().endswith('.WVD')
+                    or isinstance(node, Asset) and node.kind == 'WVD'):
                 from formats.audio.audio_viewer import AudioView
                 source = node.source.path if isinstance(node, Asset) and node.source else node.path if isinstance(node, DiscEntry) else ''
                 self.tabs.addTab(AudioView(self.current_data, self.project, source,
@@ -953,12 +962,12 @@ class MainWindow(QMainWindow):
         QMessageBox.about(self, "TombaEdit 0.1", "Tomba! disc and asset browser\n\nBIN/CUE/ISO | LDAR | GAM | WMD | FOUR | SPR | WPP | WHM | APD | WFM3 | SEQ | STR\n\nFormat research: vervalkon, zerovii, Woolmagician, hansbonini/psx_tomba.\nSee README.md and docs/formats.md for format details and known gaps.")
 
     def dragEnterEvent(self, event):
-        if event.mimeData().hasUrls() and any(u.isLocalFile() and Path(u.toLocalFile()).suffix.lower() in (".bin", ".cue", ".iso") for u in event.mimeData().urls()):
+        if event.mimeData().hasUrls() and any(u.isLocalFile() and Path(u.toLocalFile()).suffix.lower() in DISC_SUFFIXES for u in event.mimeData().urls()):
             event.acceptProposedAction()
 
     def dropEvent(self, event):
         for url in event.mimeData().urls():
-            if url.isLocalFile() and Path(url.toLocalFile()).suffix.lower() in (".bin", ".cue", ".iso"):
+            if url.isLocalFile() and Path(url.toLocalFile()).suffix.lower() in DISC_SUFFIXES:
                 self.open_path(url.toLocalFile())
                 break
 

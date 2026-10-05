@@ -21,6 +21,9 @@ def banks(data):
     if len(sections) != 2:
         raise FormatError('WVD needs sample and instrument sections')
     bodies, headers = (spans(data, *section) for section in sections)
+    # The 1997 builds list the instrument headers first and the samples second.
+    if bodies and data[bodies[0][0]:bodies[0][0] + 4] == sfx.MAGIC:
+        bodies, headers = headers, bodies
     if len(bodies) != len(headers):
         raise FormatError('WVD sample/header bank count differs')
     result = []

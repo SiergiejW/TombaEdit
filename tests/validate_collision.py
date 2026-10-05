@@ -11,7 +11,7 @@ from collections import Counter
 from unicorn import Uc, UC_ARCH_MIPS, UC_MODE_MIPS32, UC_MODE_LITTLE_ENDIAN, mips_const as r
 from formats.archive.ldar import Project
 from formats.collision.whm import parse_whm
-from formats.level.runtime import US_SHA1
+from game.builds import US_RETAIL as US_SHA1
 from formats.level.scene import loaded_resources, area_of
 from formats.level.runtime import InitialPoseResolver, runtime_area
 

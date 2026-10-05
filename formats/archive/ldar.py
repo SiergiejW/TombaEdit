@@ -15,8 +15,10 @@ def type_name(code):
     if code == 8: return "SAP"
     hi = code >> 8
     if hi in (0x8E, 0x8F): return "CLM"
-    return {1: "GRPX", 3: "SPR", 4: "FOUR", 5: "WMD", 6: "WPP",
-            7: "WHM", 8: "APD", 11: "SEQ", 13: "WFM", 15: "INS"}.get(hi >> 4, "Unknown")
+    # Family 9 is a sound bank. Retail loads those by name; earlier builds
+    # list them in their load groups.
+    return {1: "GRPX", 3: "SPR", 4: "FOUR", 5: "WMD", 6: "WPP", 7: "WHM", 8: "APD",
+            9: "WVD", 11: "SEQ", 13: "WFM", 15: "INS"}.get(hi >> 4, "Unknown")
 
 
 @dataclass
@@ -32,10 +34,17 @@ class Asset:
     size: int
     rect: tuple | None = None
     continuation: bool = False
+    # Set where a build files a resource under another family's code: the
+    # kind it really is and the slot later builds give it.
+    actual: tuple | None = None
 
     @property
     def kind(self):
-        return type_name(self.code)
+        return self.actual[0] if self.actual else type_name(self.code)
+
+    @property
+    def slot(self):
+        return self.actual[1] if self.actual else (self.code >> 8) & 15
 
     @property
     def label(self):
@@ -122,12 +131,36 @@ class Project:
             if not self.ldars:
                 from formats.archive.embedded import embedded_groups
                 self.ldars = embedded_groups(self.disc, self.catalog)
+        self.reclassify()
         self.by_source = {}
         for groups in self.ldars.values():
             for group in groups:
                 for asset in group.assets:
                     if asset.source:
                         self.by_source.setdefault(asset.source.path, []).append(asset)
+
+    def reclassify(self):
+        """Early builds keep a town's picture and cell map in placement slots
+        (81FF and 85FF on the sampler disc) where later ones use 8FFF and
+        8EFF. Placement lists are short and a multiple of 16 bytes, so
+        anything else in family 8 is looked at and named for what it holds."""
+        for groups in self.ldars.values():
+            for group in groups:
+                for asset in group.assets:
+                    if asset.code >> 12 != 8 or asset.code >> 8 in (0x8E, 0x8F) or asset.source is None:
+                        continue
+                    if asset.size % 16 == 0 and asset.size < 0x4000:
+                        continue
+                    try:
+                        head = self.asset_data(asset)[:8]
+                    except FormatError:
+                        continue
+                    if head[:4] == b'\x10\0\0\0' and head[4] in (0, 1, 2, 8, 9):
+                        asset.actual = ('CLM', 15)
+                    else:
+                        width, height = struct.unpack_from('<HH', head)
+                        if 0 < width <= 512 and 0 < height <= 512 and 4 + width * height <= asset.size:
+                            asset.actual = ('CLM', 14)
 
     def payload(self, entry):
         key = (entry.lba, entry.size)
@@ -150,6 +183,9 @@ class Project:
         data = self.payload(asset.source)
         end = asset.offset + asset.size
         if end > len(data):
+            # A code overlay's record can count the cleared memory after it.
+            if type_name(asset.code) == 'INS' and asset.offset < len(data):
+                return data[asset.offset:]
             raise FormatError(f"{asset.source.path}: LDAR range ends at {end:X}, payload is {len(data):X}")
         return data[asset.offset:end]
 

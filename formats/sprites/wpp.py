@@ -103,7 +103,10 @@ def parse_wpp(data):
     """Return (kind, pictures); kind is 'frames' or 'tim'."""
     if len(data) < 12:
         raise FormatError('WPP bank is too small')
-    first = struct.unpack_from('<I', data)[0]
+    first, second = struct.unpack_from('<II', data)
+    if first == 0x10 and second < 0x10:
+        # Early builds store the image on its own, neither packed nor indexed.
+        return 'tim', [parse_tim(data, 0, 0, len(data))]
     if first % 4 == 0 and 8 <= first <= len(data) and data[first:first + 4] == b'GAM\0':
         offsets = struct.unpack_from(f'<{first // 4}I', data)
         if any(a >= b for a, b in zip(offsets, offsets[1:])) or offsets[-1] > len(data):

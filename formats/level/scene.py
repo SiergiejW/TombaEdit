@@ -76,7 +76,7 @@ def loaded_resources(project, path, index):
     groups = project.ldars[path]
     for group in ([groups[0]] if index == 0 else [groups[0], groups[index]]):
         for asset in group.assets:
-            resources[asset.kind, (asset.code >> 8) & 15] = asset
+            resources[asset.kind, asset.slot] = asset
     return resources
 
 

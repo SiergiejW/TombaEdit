@@ -6,7 +6,7 @@ bases. The cutaway houses are scenery sprites, not separate LDAR sections.
 from dataclasses import dataclass, field
 import hashlib
 import struct
-from formats.level.runtime import US_SHA1
+from game.builds import BUILDS, US_RETAIL, executable
 
 
 @dataclass
@@ -31,8 +31,8 @@ def town_graphics(project, resources, area, section):
         return None
     if ('SPR', 13) not in resources or ('INS', 0) not in resources:
         return None
-    executable = next((e for e in project.disc.files if e.path == 'SCUS_942.36'), None)
-    if executable is None or hashlib.sha1(project.disc.read(executable)).hexdigest() != US_SHA1:
+    found = executable(project)
+    if found is None or found.build is not BUILDS[US_RETAIL]:
         return None
     data = project.asset_data(resources['INS', 0])
     if hashlib.sha1(data).hexdigest() != '9e19f8b912ab0fd1ea4050e8a2c51e6b8e533c5b':
@@ -44,7 +44,7 @@ def town_graphics(project, resources, area, section):
                             else (0x800FDE34, 0x80102930, 11))
     if len(frames) != (12 if baccus else 23):
         return None
-    base = 0x800E7388
+    base = found.build.overlay
 
     def unpack(fmt, address):
         if not base <= address <= base + len(data) - struct.calcsize(fmt):
@@ -82,11 +82,11 @@ def dwarf_graphics(project, resources, area, section):
     """
     if area not in (2, 19) or section != 0 or ('SPR', 11) not in resources or ('INS', 0) not in resources:
         return None
-    executable = next((e for e in project.disc.files if e.path == 'SCUS_942.36'), None)
-    if executable is None or hashlib.sha1(project.disc.read(executable)).hexdigest() != US_SHA1:
+    found = executable(project)
+    if found is None or found.build is not BUILDS[US_RETAIL]:
         return None
     data = project.asset_data(resources['INS', 0])
-    base = 0x800E7388
+    base = found.build.overlay
 
     def unpack(fmt, address):
         if not base <= address <= base + len(data) - struct.calcsize(fmt):

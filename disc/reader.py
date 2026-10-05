@@ -57,6 +57,11 @@ class Disc:
         hint = None
         if self.source.suffix.lower() == ".cue":
             self.path, self.start, hint = cue_track(self.source)
+        elif self.source.suffix.lower() in (".ccd", ".sub"):
+            # CloneCD keeps the sectors in the .img beside its control file.
+            self.path = self.source.with_suffix(".img")
+            if not self.path.is_file():
+                raise FormatError(f"CloneCD image {self.path.name} is missing beside {self.source.name}.")
         self.byte_size = self.path.stat().st_size
         candidates = [(2048, 0), (2352, 24), (2352, 16)]
         if hint:

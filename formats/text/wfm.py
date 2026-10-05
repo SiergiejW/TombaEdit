@@ -1,4 +1,4 @@
-"""WFM3 glyphs and dialogue control words, following the supplied WFM3 spec."""
+"""WFM glyphs and dialogue control words, after vervalkon's WFM3 notes."""
 from dataclasses import dataclass, field
 import hashlib
 import json
@@ -46,7 +46,7 @@ class Dialogue:
             if word >= 0xFF00:
                 if word == 0xFFF6 and args == (0, 0):
                     continue
-                name = CONTROLS.get(word, (f"UNKNOWN_{word:04X}", 0))[0]
+                name = {**EARLY_CONTROLS, **CONTROLS}.get(word, (f"UNKNOWN_{word:04X}", 0))[0]
                 parts.append(f"\n<{name}{''.join(f' {a:04X}' for a in args)}>")
             else:
                 if word & 0x4000:
@@ -57,28 +57,43 @@ class Dialogue:
         return "".join(parts).strip() + (f"\n\n{self.warning}" if self.warning else "")
 
 
+# Where the glyph pointer table starts. WFM1, used by the builds from 1997,
+# has the same 16-byte header as WFM3 without the 128 reserved bytes after it.
+GLYPH_TABLE = {b"WFM1": 16, b"WFM3": 144}
+# WFM1 text uses FFF4 inside running text with nothing after it.
+EARLY_CONTROLS = {0xFFF4: ("UNKNOWN_F4", 0)}
+MAGICS = tuple(GLYPH_TABLE)
+
+
 class Wfm:
     def __init__(self, data):
-        if len(data) < 144 or data[:4] != b"WFM3":
-            raise FormatError("Not a WFM3 font/dialogue resource")
+        self.version = bytes(data[:4])
+        glyph_table = GLYPH_TABLE.get(self.version)
+        if glyph_table is None or len(data) < glyph_table:
+            raise FormatError("Not a WFM font/dialogue resource")
         reserved, table, nd, ng = struct.unpack_from("<IIHH", data, 4)
-        if reserved or 144 + ng * 2 > len(data) or table + nd * 2 > len(data):
-            raise FormatError("Invalid WFM3 header or pointer tables")
+        if reserved or glyph_table + ng * 2 > len(data) or table + nd * 2 > len(data):
+            raise FormatError("Invalid WFM header or pointer tables")
         self.glyphs = []
         self.characters = []
         self.indices = []
         self.glyph_headers = []
         palette = [(0, 0, 0, 0)] + [(256 - i * 16,) * 3 + (255,) for i in range(1, 16)]
         for i in range(ng):
-            ptr = struct.unpack_from("<H", data, 144 + i * 2)[0]
+            ptr = struct.unpack_from("<H", data, glyph_table + i * 2)[0]
             if ptr + 8 > len(data):
                 raise FormatError("WFM glyph header outside resource")
             pal, height, width, unused = struct.unpack_from("<4H", data, ptr)
-            size = (width * height + 1) // 2
+            # WFM3 packs a glyph's pixels end to end. WFM1 starts every row
+            # on a 16-bit word, so a 10 pixel row takes six bytes.
+            row = (width + 3) // 4 * 2 if self.version == b"WFM1" else 0
+            size = row * height if row else (width * height + 1) // 2
             if not 0 < width <= 512 or not 0 < height <= 512 or ptr + 8 + size > len(data):
                 raise FormatError("Invalid WFM glyph dimensions")
             indices = [n for b in data[ptr + 8:ptr + 8 + size] for n in (b & 15, b >> 4)]
-            palette = [tuple(c) for c in rgba(EVENT_CLUT if height == 24 else DIALOGUE_CLUT)]
+            if row:
+                indices = [n for y in range(height) for n in indices[y * row * 2:y * row * 2 + width]]
+            palette = [tuple(c) for c in rgba(EVENT_CLUT if height in (20, 24) else DIALOGUE_CLUT)]
             self.indices.append(indices[:width * height])
             im = Image.new("RGBA", (width, height))
             im.putdata([palette[n] for n in indices[:width * height]])
@@ -91,17 +106,18 @@ class Wfm:
             raise FormatError("Dialogue pointer outside WFM resource")
         bounds = sorted(set(starts + [len(data)]))
         self.dialogues = []
+        controls = {**CONTROLS, **EARLY_CONTROLS} if self.version == b"WFM1" else CONTROLS
         for start in starts:
             end = next(p for p in bounds if p > start)
             pos, tokens, warning = start, [], ""
             while pos + 2 <= end:
                 word = struct.unpack_from("<H", data, pos)[0]
                 pos += 2
-                if word >= 0xFF00 and word not in CONTROLS:
+                if word >= 0xFF00 and word not in controls:
                     warning = f"Unknown control {word:04X}; decoding stopped at {pos - 2:04X}."
                     tokens.append((word, ()))
                     break
-                nargs = CONTROLS.get(word, ("", 0))[1]
+                nargs = controls.get(word, ("", 0))[1]
                 if pos + nargs * 2 > end:
                     warning = "Truncated control arguments."
                     break

@@ -124,7 +124,9 @@ class CollisionMapView(QWidget):
                 return
             except FormatError:
                 pass
-        dimensioned = code >> 8 == 0x8E and width and height
+        # The cell map sits in slot 14 from the 1998 builds on, and in a
+        # placement slot before that; either way it starts with its size.
+        dimensioned = 0 < width <= 512 and 0 < height <= 512 and 4 + width * height <= len(data)
         if dimensioned:
             size = width * height
             # Rows follow the two size words directly; the rest of the

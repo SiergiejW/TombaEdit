@@ -1,52 +1,58 @@
-"""Bounded MIPS initialization traces for the verified US retail executable.
+"""Bounded MIPS initialization traces for the executables in game.builds.
 
 This is an initial-pose resolver, not a running PSX emulator. It executes a
 single object's initializer in isolated memory. Audio, visibility and flag
 queries are stubbed; no BIOS, files, devices or game loop are exposed.
-Other builds keep their APD markers and directly linked models.
-"""
-import hashlib
-import struct
+A build whose addresses are not listed keeps its APD markers and directly
+linked models.
 
-US_SHA1 = '81cbc79f0230aeb4252e058039f47ac95a777f5a'
-# Handler tables by APD layer. Layers 2 to 5 share one object pool (routine
-# 8001DFE4); layer 7, the backdrop sprites, has its own pool and table
-# (routine 8003438C).
-# Layer 8 objects are models with a handler of their own, in a pool of 45
-# run through this table (routine 8002DB4C).
-MODEL_TABLE = 0x8007C68C
-# Routines that append an object to one of the per-frame draw lists.
-DRAW_QUEUES = (0x80018BC8, 0x80018C04, 0x80018C40, 0x80018C8C, 0x80018CC8, 0x80018D04, 0x80018D40)
+Routine addresses in the comments are the US retail ones. Handler tables go
+by APD layer: layers 2 to 5 share one object pool (routine 8001DFE4), layer
+7, the backdrop sprites, has its own pool and table (routine 8003438C), and
+layer 8 objects are models in a pool of 45 with a third (routine 8002DB4C).
+"""
+import struct
+from game.builds import executable
+
 # Camera step used to measure how far a backdrop sprite follows the camera.
 NUDGE = 64
-TABLES = {2: 0x800772BC, 3: 0x8007C6B0, 4: 0x8007D30C, 5: 0x8007E8A8, 7: 0x8007D57C}
+# Scratchpad words, the same in every build: the loaded SPR, WMD and APD
+# banks by slot, and the camera position.
+SPR_TABLE, WMD_TABLE, APD_TABLE = 0x1F8002C8, 0x1F800330, 0x1F800358
+CAMERA_X, CAMERA_Y = 0x1F800176, 0x1F800186
+# Where the resolver keeps its one object and the banks it loads.
+OBJECT, SPR_MEMORY, WMD_MEMORY, BANK_SPACING = 0x80300000, 0x80400000, 0x80800000, 0x40000
+# Scripts and tables are looked for from the executable to this far past the
+# start of the overlay.
+REACH = 0x58C78
 
 
-def runtime_area(area, section):
-    """resolveAreaVariant maps resource variants back to gameplay areas."""
+def runtime_area(area, section, early=False):
+    """resolveAreaVariant maps resource variants back to gameplay areas.
+    The 1997 builds have no variants."""
+    if early:
+        return area
     return 1 if area == 7 else 4 if area == 12 else 2 if area == 19 and section < 2 else area
 
 
 class InitialPoseResolver:
     def __init__(self, project, area, section, resources):
         requested_area = area
-        area = runtime_area(area, section)
-        self.area = area
         self.available = False
-        self.reason = 'Object initialization is currently decoded for US retail.'
+        self.reason = "This executable's object routines have not been located."
         self.cache = {}
         self.queued = set()
         self.stop_at_animation = False
-        entries = [e for e in project.disc.files if e.path == 'SCUS_942.36']
-        if not entries or area < 0:
+        found = executable(project)
+        if found is None or area < 0:
             return
-        exe = project.disc.read(entries[0])
-        if hashlib.sha1(exe).hexdigest() != US_SHA1:
-            return
-        self.exe = exe
-        self.base = struct.unpack_from('<I', exe, 0x18)[0]
+        self.build = build = found.build
+        area = runtime_area(area, section, build.early)
+        self.area = area
+        self.exe, self.base = found.data, found.base
         overlay = next((a for a in resources.values() if a.kind == 'INS'), None)
         if overlay is None:
+            self.reason = 'The load group has no code overlay to run its objects from.'
             return
         try:
             from unicorn import Uc, UC_ARCH_MIPS, UC_MODE_MIPS32, UC_MODE_LITTLE_ENDIAN, UC_HOOK_CODE
@@ -58,25 +64,28 @@ class InitialPoseResolver:
         self.u = Uc(UC_ARCH_MIPS, UC_MODE_MIPS32 | UC_MODE_LITTLE_ENDIAN)
         self.u.mem_map(0, 0x1000000)
         self.u.mem_map(0x1F800000, 0x1000)
-        self.write(self.base, exe[0x800:])
-        self.write(0x800E7388, project.asset_data(overlay))
-        self.write(0x8009BCC8, struct.pack('<HH', area, max(0, section)))
-        if requested_area in (7, 12, 19):
+        code = project.asset_data(overlay)
+        self.limit = max(build.overlay + REACH, build.overlay + len(code))
+        self.code = ((self.base, found.end), (build.overlay, self.limit))
+        self.write(self.base, self.exe[0x800:])
+        self.write(build.overlay, code)
+        self.write(build.area, struct.pack('<HH', area, max(0, section)))
+        if build.variant and requested_area in (7, 12, 19):
             variant = {7: 6, 12: 8, 19: 17}[requested_area]
             if requested_area != 19 or section < 2:
-                self.write(0x8009EBA0, struct.pack('<H', variant))
-                self.write(0x8009C62B, bytes((1 if requested_area in (7, 19) else 8,)))
+                self.write(build.variant[0], struct.pack('<H', variant))
+                self.write(build.variant[1], bytes((1 if requested_area in (7, 19) else 8,)))
         self.model_pointers = {}
         self.model_spans = {}      # (slot, index) -> (address, size)
         for (family, slot), asset in resources.items():
             if family not in ('SPR', 'WMD'):
                 continue
-            address = (0x80400000 if family == 'SPR' else 0x80800000) + slot * 0x40000
+            address = (SPR_MEMORY if family == 'SPR' else WMD_MEMORY) + slot * BANK_SPACING
             data = project.asset_data(asset)
-            if len(data) >= 0x40000:
+            if len(data) >= BANK_SPACING:
                 continue
             self.write(address, data)
-            self.word((0x1F8002C8 if family == 'SPR' else 0x1F800330) + slot * 4, address)
+            self.word((SPR_TABLE if family == 'SPR' else WMD_TABLE) + slot * 4, address)
             if family == 'WMD':
                 count = struct.unpack_from('<I', data)[0]
                 if count <= 4096 and 4 + 4 * count <= len(data):
@@ -88,7 +97,7 @@ class InitialPoseResolver:
         self.scratch = self.read(0x1F800000, 0x1000)
         self.u.hook_add(UC_HOOK_CODE, self.hook)
         self.available = True
-        self.reason = 'Initial poses traced from the US executable and the area X overlay.'
+        self.reason = f'Initial poses traced from the {build.name} executable and the area overlay.'
 
     def read(self, address, count):
         return bytes(self.u.mem_read(address & 0x1FFFFFFF, count))
@@ -106,10 +115,10 @@ class InitialPoseResolver:
         return struct.unpack_from('<I', self.exe, address - self.base + 0x800)[0]
 
     def placement_slots(self, area, section):
-        area = runtime_area(area, section)
-        table = self.exe_word(0x8007F0C8 + area * 4)
-        common = min(15, struct.unpack_from('<H', self.exe, 0x8007B294 + area * 2 - self.base + 0x800)[0])
-        return tuple((self.exe_word(table + i * 4) - 0x1F800358) // 4
+        area = runtime_area(area, section, self.build.early)
+        table = self.exe_word(self.build.slot_tables + area * 4)
+        common = min(15, struct.unpack_from('<H', self.exe, self.build.common + area * 2 - self.base + 0x800)[0])
+        return tuple((self.exe_word(table + i * 4) - APD_TABLE) // 4
                      for i in (section & 7, common))
 
     def picture_parts(self, placement):
@@ -122,12 +131,12 @@ class InitialPoseResolver:
         word, an X and Y offset from the object, U, V, width, height, the
         palette's VRAM position and a blend flag. Returns
         [(tpage, x, y, u, v, width, height, clut)]."""
-        if not self.available or placement.layer != 7 or placement.raw[12] != 2:
+        if not self.available or placement.layer != 7 or placement.raw[12] != 2 or not self.build.pictures:
             return []
         try:
-            at = self.read_word(0x8007EBEC + placement.variant * 4)
+            at = self.read_word(self.build.pictures + placement.variant * 4)
             parts = []
-            while len(parts) < 64 and 0x80010000 <= at < 0x80140000:
+            while len(parts) < 64 and self.base <= at < self.limit:
                 tpage, x, y, u, v, width, height, clut_x, clut_y, _ = struct.unpack('<hhhBBHHhhh', self.read(at, 18))
                 if tpage == 0x7FFF:
                     return parts
@@ -153,18 +162,18 @@ class InitialPoseResolver:
             return []
         if placement.raw in self.cache:
             return self.cache[placement.raw]
-        r, raw, obj = self.reg, placement.raw, 0x80300000
+        r, raw, obj = self.reg, placement.raw, OBJECT
         address, size = self.model_spans[placement.model]
         original = self.read(address, size)
-        pc = self.read_word(MODEL_TABLE + placement.kind * 4)
+        pc = self.read_word(self.build.tables[8] + placement.kind * 4)
         x, y = placement.position[:2]
         found = []
         for camera in ((x - 160, y - 120), (0, 0), (x + 200, y - 120), (x - 500, y - 120)):
             self.write(0x80000000, self.baseline)
             self.write(0x1F800000, self.scratch)
             self.write(address, original)
-            self.write(0x1F800176, struct.pack('<h', max(-32768, min(32767, camera[0]))))
-            self.write(0x1F800186, struct.pack('<h', max(-32768, min(32767, camera[1]))))
+            self.write(CAMERA_X, struct.pack('<h', max(-32768, min(32767, camera[0]))))
+            self.write(CAMERA_Y, struct.pack('<h', max(-32768, min(32767, camera[1]))))
             self.write(obj, bytes(0x200))
             self.word(obj + 0x40, obj + 0x10)
             self.word(obj + 0x44, obj + 0x18)
@@ -214,8 +223,8 @@ class InitialPoseResolver:
         def update(camera_x, camera_y):
             self.write(obj, ready)
             self.write(0x1F800000, scratch)
-            self.write(0x1F800176, struct.pack('<h', camera_x))
-            self.write(0x1F800186, struct.pack('<h', camera_y))
+            self.write(CAMERA_X, struct.pack('<h', camera_x))
+            self.write(CAMERA_Y, struct.pack('<h', camera_y))
             try:
                 self.u.reg_write(r.UC_MIPS_REG_SP, 0x803F0000)
                 self.u.reg_write(r.UC_MIPS_REG_RA, 0x80001000)
@@ -256,7 +265,7 @@ class InitialPoseResolver:
         continues, 4000 and C000 jump through the pointer that follows, and
         8000 holds the frame. Returns [(frame, ticks)] for one pass."""
         frames, seen = [], set()
-        while address not in seen and len(frames) < 512 and 0x80010000 <= address < 0x80140000:
+        while address not in seen and len(frames) < 512 and self.base <= address < self.limit:
             seen.add(address)
             frame, _, _, control = struct.unpack('<4H', self.read(address, 8))
             frames.append((frame, control & 0x3FFF or 1))
@@ -270,10 +279,12 @@ class InitialPoseResolver:
 
     def entrance(self, area, section):
         """Tomba's position at the section's first entrance, or None."""
-        area = runtime_area(area, section)
-        if not self.available or not 0 <= area < 20 or not 0 <= section < 32:
+        if not self.available:
             return None
-        sections = self.exe_word(0x8007BF78 + area * 4)
+        area = runtime_area(area, section, self.build.early)
+        if not 0 <= area < 20 or not 0 <= section < 32:
+            return None
+        sections = self.exe_word(self.build.entrances + area * 4)
         if not self.in_exe(sections + section * 4, 4):
             return None
         record = self.exe_word(sections + section * 4)
@@ -296,23 +307,26 @@ class InitialPoseResolver:
         The mansion's four outer walls are one area seen from four sides.
         There the origin comes from the table at 8007E9E8 and the flag also
         picks which WHM slot is used, returned as `slot`."""
-        area = runtime_area(area, section)
         along0 = depth0 = 0
         turned, slot = False, 0
         entrance = None
-        if not self.available or not 0 <= area < 20 or not 0 <= section < 32:
+        if not self.available:
             return along0, depth0, turned, slot
-        sections = self.exe_word(0x8007BF78 + area * 4)
+        build = self.build
+        area = runtime_area(area, section, build.early)
+        if not 0 <= area < 20 or not 0 <= section < 32:
+            return along0, depth0, turned, slot
+        sections = self.exe_word(build.entrances + area * 4)
         if self.in_exe(sections + section * 4, 4):
             entrances = self.exe_word(sections + section * 4)
             if self.in_exe(entrances, 8):
                 entrance = struct.unpack_from('<3hH', self.exe, entrances - self.base + 0x800)
                 turned = bool(entrance[3] & 1)
-        table = self.exe_word(0x8007E9F8 + area * 4)
+        table = self.exe_word(build.origins + area * 4)
         if area == 0 and section < 3:
             slot = None
         if area in (4, 12) and section < 4:
-            table, slot = 0x8007E9E8, int(turned)
+            table, slot = build.wall_origins, int(turned)
         elif area == 0 and section >= 3:
             # The hut bypasses the village's split bank selection. Behind
             # the hut and the pond clamp to plane 0 of their local slot 0;
@@ -320,54 +334,56 @@ class InitialPoseResolver:
             slot = 0
         if self.in_exe(table + section * 4, 4):
             along0, depth0 = struct.unpack_from('<hh', self.exe, table + section * 4 - self.base + 0x800)
-        if alternate and area == 3 and section in (1, 5):
+        if alternate and area == 3 and section in (1, 5) and build.alternate_origin:
             # 800427D0 branches on the signed route state at [800A53DC]+2.
             # A negative state uses slot 1, the pair at 8007E9E4, and adds
             # 90 to the queried depth before indexing the plane table.
-            along0, depth0 = struct.unpack_from('<hh', self.exe, 0x8007E9E4 - self.base + 0x800)
+            along0, depth0 = struct.unpack_from('<hh', self.exe, build.alternate_origin - self.base + 0x800)
             return along0, depth0 - 90, turned, 1
         # Sections limited to one plane (byte table at 8007EAF4) clamp every
         # depth to it, so their depth origin is not meaningful; the plane is
-        # where Tomba enters.
-        limits = self.exe_word(0x8007EAF4 + area * 4)
-        single = self.in_exe(limits + section, 1) and self.exe[limits + section - self.base + 0x800] == 0
+        # where Tomba enters. The 1997 builds keep the limits in place of the
+        # per-area pointers.
+        limits, stride, width = build.plane_limits
+        limits = limits + area * stride + section * width if stride else self.exe_word(limits + area * 4) + section
+        single = self.in_exe(limits, width) and not any(self.exe[limits - self.base + 0x800:][:width])
         if turned and single and entrance is not None and area not in (4, 12):
             depth0 = entrance[0]
         return along0, depth0, turned, slot
 
     def hook(self, uc, address, size, user):
-        r = self.reg
-        if address == 0x800229FC and self.stop_at_animation:
+        r, build = self.reg, self.build
+        if address == build.set_animation and self.stop_at_animation:
             self.completed = True
             uc.emu_stop()
-        elif address == 0x800229FC:
+        elif address == build.set_animation:
             pass                # the animation setter runs like any other code
-        elif address in (0x80022E44, 0x80022C08, 0x80022D3C, 0x80022F6C, 0x80023020, 0x800230BC):
+        elif address in build.visibility:
             # Visibility tests also mark byte +1, which initializers use to
             # decide whether to start a sprite's animation.
             obj = uc.reg_read(r.UC_MIPS_REG_A0)
-            if 0x80300000 <= obj < 0x80300200:
+            if OBJECT <= obj < OBJECT + 0x200:
                 self.write(obj + 1, b'\x01')
             uc.reg_write(r.UC_MIPS_REG_V0, 1)
             uc.reg_write(r.UC_MIPS_REG_PC, uc.reg_read(r.UC_MIPS_REG_RA))
-        elif address == 0x8005DE78:
+        elif address == build.get_clut:
             # GetClut(x, y): objects that pick their palette this way keep it.
             x, y = uc.reg_read(r.UC_MIPS_REG_A0), uc.reg_read(r.UC_MIPS_REG_A1)
             uc.reg_write(r.UC_MIPS_REG_V0, (y & 511) << 6 | (x >> 4) & 63)
             uc.reg_write(r.UC_MIPS_REG_PC, uc.reg_read(r.UC_MIPS_REG_RA))
-        elif address in DRAW_QUEUES:
+        elif address in build.draw_queues:
             # Handing an object to a draw list needs lists nobody set up here.
             # Which list it asked for says how it is drawn.
             self.queued.add(address)
             uc.reg_write(r.UC_MIPS_REG_PC, uc.reg_read(r.UC_MIPS_REG_RA))
-        elif address in (0x8001FFE8, 0x80023608, 0x800236F4):
+        elif address in build.silent:
             uc.reg_write(r.UC_MIPS_REG_V0, 0)
             uc.reg_write(r.UC_MIPS_REG_PC, uc.reg_read(r.UC_MIPS_REG_RA))
-        elif not (0x80010000 <= address < 0x80097FA8 or 0x800E7388 <= address < 0x80140000):
+        elif not any(start <= address < end for start, end in self.code):
             uc.emu_stop()
 
     def resolve(self, placement):
-        if not self.available or placement.layer not in TABLES:
+        if not self.available or placement.layer not in (2, 3, 4, 5, 7):
             return {}
         key = placement.raw
         if key not in self.cache:
@@ -375,13 +391,14 @@ class InitialPoseResolver:
             # the game that are not here; for those, stopping where the
             # animation is set is enough to learn what the object shows.
             self.cache[key] = self.attempt(placement, False) or self.attempt(placement, True)
-            if not self.cache[key] and self.area == 0 and placement.layer == 5 and placement.kind == 0x12:
+            event = self.build.event
+            if not self.cache[key] and event and self.area == 0 and placement.layer == 5 and placement.kind == 0x12:
                 # X00's initializer 80122F64 only draws this effect while
                 # the event bytes BCA8/BCA9 select state 7E. Show a labelled
                 # conditional pose instead of treating its link as missing.
                 baseline = self.baseline
                 changed = bytearray(baseline)
-                changed[0x9BCA8:0x9BCAA] = b'\x01\x7E'
+                changed[event & 0x1FFFFF:(event & 0x1FFFFF) + 2] = b'\x01\x7E'
                 self.baseline = bytes(changed)
                 result = self.attempt(placement, False) or self.attempt(placement, True)
                 self.baseline = baseline
@@ -394,13 +411,13 @@ class InitialPoseResolver:
         """The actual dispatch entry, for inspection of a placed object."""
         if not self.available:
             return None
-        table = MODEL_TABLE if placement.layer == 8 else TABLES.get(placement.layer)
+        table = self.build.tables.get(placement.layer)
         return self.read_word(table + placement.kind * 4) if table is not None else None
 
     def attempt(self, placement, stop_at_animation):
         from unicorn import UcError
         self.stop_at_animation = stop_at_animation
-        r, raw, obj = self.reg, placement.raw, 0x80300000
+        r, raw, obj = self.reg, placement.raw, OBJECT
         self.write(0x80000000, self.baseline)
         self.write(0x1F800000, self.scratch)
         self.write(obj, bytes(0x200))
@@ -413,7 +430,7 @@ class InitialPoseResolver:
         self.write(obj + 0x2E, bytes((raw[5], 0)))
         for j, value in enumerate(placement.position):
             self.word(obj + 0x10 + j * 4, value << 16)
-        pc = self.read_word(TABLES[placement.layer] + placement.kind * 4)
+        pc = self.read_word(self.build.tables[placement.layer] + placement.kind * 4)
         result = {}
         try:
             for _ in range(4):
@@ -428,15 +445,15 @@ class InitialPoseResolver:
                 if model in self.model_pointers:
                     result['model'] = self.model_pointers[model]
                     break
-                if 0x80400000 <= sprite < 0x80800000 and (sprite - 0x80400000) % 0x40000 == 0:
-                    if 0x80010000 <= anim < 0x80140000:
+                if SPR_MEMORY <= sprite < WMD_MEMORY and (sprite - SPR_MEMORY) % BANK_SPACING == 0:
+                    if self.base <= anim < self.limit:
                         frames = self.animation(anim)
                         state = self.read(obj, 0x30)
                         # Draw routine 800487B0: bit 0 of +2E draws the parts as
                         # stored and a clear bit mirrors them about the origin;
                         # +1E is added to every part's texture page; bit 0 of
                         # +0D replaces the part CLUT with +08.
-                        result.update(sprite=(sprite - 0x80400000) // 0x40000,
+                        result.update(sprite=(sprite - SPR_MEMORY) // BANK_SPACING,
                                       frame=frames[0][0], frames=frames,
                                       animation_address=anim,
                                       flip=not state[0x2E] & 1,
@@ -464,17 +481,15 @@ class InitialPoseResolver:
 
 
 def table_pages(project):
-    """Texture page base per SPR slot from the US object table at 8007D6E4
-    (twelve-byte entries: page base, animation, slot, script pointer). Used
-    for banks that no placed object shows. Empty for other builds."""
-    entries = [e for e in project.disc.files if e.path == 'SCUS_942.36']
-    if not entries:
+    """Texture page base per SPR slot from the object table at 8007D6E4 in
+    US retail (twelve-byte entries: page base, animation, slot, script
+    pointer). Used for banks that no placed object shows. Empty for builds
+    where the table has not been located."""
+    found = executable(project)
+    if found is None or not found.build.pages:
         return {}
-    exe = project.disc.read(entries[0])
-    if hashlib.sha1(exe).hexdigest() != US_SHA1:
-        return {}
-    base, votes, at = struct.unpack_from('<I', exe, 0x18)[0], {}, 0x8007D6E4
-    while True:
+    exe, base, votes, at = found.data, found.base, {}, found.build.pages
+    while found.holds(at, 12):
         page, _, slot, pointer = struct.unpack_from('<BBhI', exe, at - base + 0x800)
         if not (0 <= slot < 16 and page < 32 and 0x80010000 <= pointer < 0x80200000):
             break
