@@ -67,7 +67,8 @@ class ImageView(QWidget):
         self.image = image
         self.canvas.set_image(qimage(image))
         self.dimensions.setText(f'{image.width} x {image.height}')
-        if not preserve_view:
+        # "Fit" means the picture on screen fits, whichever one it is.
+        if not preserve_view or self.zoom.currentIndex() == 0:
             self.scale_image()
         else:
             for bar, value in zip(bars, scroll):

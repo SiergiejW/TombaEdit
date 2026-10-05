@@ -177,33 +177,49 @@ objects say otherwise, and the frames of the other characters need the base
 set by hand. The viewer opens on a
 sheet of the whole bank; selecting a row shows that frame and its parts.
 
+The section's VRAM runs along the bottom of the tab, with every control of
+the VRAM view. Selecting a sprite or a piece puts the crosshair on the
+palette it is drawn through and outlines, in the piece's colour, the
+rectangle of VRAM its pixels come from. Putting the crosshair on another
+palette redraws through it whatever *Crosshair recolours* names: the
+selected pieces, the sprite, or the whole bank. *Reset CLUTs* undoes it.
+Saved pictures show what is on screen.
+
 Tomba's own frames are not in VRAM. The game keeps them packed in a WPP bank
 and uploads one picture at a time; the phoenix is stored the same way.
 Opening a WPP bank lists its pictures, with the same saving choices as a
 sprite bank: one picture, a sheet with its layout, the selected rows or all
 of them. *Assembled frames* draws the pictures through the matching SPR bank,
 and the sprite viewer does the same for those SPR banks. The palette list
-offers the palettes the matching SPR bank names where VRAM holds them, and
-for Tomba the outfit rows of the selected section's palette block.
+of the picture viewer offers the palettes the matching SPR bank names where
+VRAM holds them, and for Tomba the outfit rows of the selected section's
+palette block.
 
 ### VRAM
 
-The VRAM tab shows the 1024 × 512 words a section has loaded, on top of
-the item and effect graphics the game loads once at boot, read as 4-bit
-indices in grey or false colour, through a 16 or 256 colour palette, or as
-15-bit pixels. The starting palette is one the open resource draws with, or
-the first usable row of the section's palette block.
+The VRAM view shows the 1024 × 512 words a section has loaded, on top of
+the item and effect graphics the game loads once at boot. It is a tab of
+its own for models and load groups and the lower pane of the sprite tab.
+
+Two things are chosen separately. *Pixels* is how the words are cut up:
+4-bit and 8-bit for indexed textures, 16-bit for palettes and direct-colour
+pictures, 24-bit for decoded movie frames. *Colours* applies to the two
+indexed readings: through the palette at the crosshair, as grey, or in false
+colour that sets neighbouring indices apart. Changing the reading keeps the
+same words in the middle of the view.
+
+The crosshair marks a palette row, starting on one the open resource draws
+with. Moving it never scrolls or zooms the view and never changes the
+reading; it can be hidden with its checkbox.
 
 | Input | Action |
 | --- | --- |
 | Ctrl + wheel | Zoom about the pointer |
 | Wheel, Shift + wheel | Scroll down or sideways |
 | Left or middle drag | Pan |
-| Ctrl + left click or drag, or the right button | Read VRAM through the palette row under the pointer; the crosshair follows |
+| Ctrl + left click or drag, or the right button | Put the crosshair on the palette row under the pointer |
 | Left drag on the crosshair | Move it |
 | Arrow keys | Next palette or row; with Shift a texture page or sixteen rows |
-
-The crosshair marks the palette in use and can be hidden with its checkbox.
 The CLUT box takes a CLUT word and lists the palettes used by the open model
 or sprite bank. A red marker points at a newly chosen palette for a moment.
 **Page grid** outlines the texture pages.
