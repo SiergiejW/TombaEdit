@@ -7,6 +7,7 @@ from formats.level.runtime import InitialPoseResolver
 from formats.models.wmd import parse_wmd
 from formats.models.four import rebuild_mesh
 from psx.graphics import sprite_frames, render_sprite
+from formats.collision.whm import parse_whm, PLANE_DEPTH
 from disc.reader import FormatError
 
 
@@ -19,6 +20,8 @@ class SceneEntry:
     placement: object = None
     active: bool = True
     note: str = ''
+    # Animated sprites: [(mesh, ticks)] for one pass of the object's script.
+    frames: list = field(default_factory=list)
 
 
 @dataclass
@@ -27,6 +30,8 @@ class LevelScene:
     resources: list
     vram: object
     notes: list = field(default_factory=list)
+    # Collision overlay as GL line arrays: (vertices, colours), both N x 3.
+    collision: tuple = None
 
 
 def loaded_resources(project, path, index):
@@ -56,8 +61,7 @@ def marker(position, offset):
     return quad([(x-5,y,z),(x,y+8,z),(x,y-8,z),(x+5,y,z)], color=(1,.5,.15), offset=offset)
 
 
-def sprite_mesh(parts, vram, shard, position, flip, offset):
-    image = render_sprite(parts, vram, shard=shard)
+def sprite_mesh(image, parts, position, flip, offset):
     left = min((p[13] for p in parts), default=0)
     top = min((p[14] for p in parts), default=0)
     if flip:
@@ -66,6 +70,27 @@ def sprite_mesh(parts, vram, shard, position, flip, offset):
     x, y, z = np.asarray(position) * (1, -1, -1)
     return quad([(x+left,y-top,z),(x+left+image.width,y-top,z),
                  (x+left,y-top-image.height,z),(x+left+image.width,y-top-image.height,z)], image, offset=offset)
+
+
+def collision_lines(banks):
+    """Collision spans as line segments. `banks` is [(Whm, x0, z0)]. A plane
+    is a 90 unit slice of depth and a column is 8 units of X; see whm.py."""
+    vertices, colours = [], []
+    for whm, x0, z0 in banks:
+        for plane in whm.planes:
+            z = -(z0 + plane.index * PLANE_DEPTH + PLANE_DEPTH / 2)
+            for span in plane.spans:
+                x = x0 + span.column * 8
+                if span.wall:
+                    vertices += [(x + 4, -span.y0, z), (x + 4, -span.y1, z)]
+                    colour = (.85, .45, .15)
+                else:
+                    vertices += [(x, -span.y0, z), (x + 8, -(span.y0 + span.y1), z)]
+                    colour = (.35, 1., .35) if span.attribute == 1 else (1., .3, .9)
+                colours += [colour, colour]
+    if not vertices:
+        return None
+    return np.asarray(vertices, np.float32), np.asarray(colours, np.float32)
 
 
 def build_scene(project, path, index):
@@ -88,12 +113,18 @@ def build_scene(project, path, index):
                 sprites[slot] = sprite_frames(project.asset_data(asset))
         except FormatError as exc:
             notes.append(f'{asset.label}: {exc}')
-    texture = next((a for a in project.ldars[path][index].assets if a.kind == 'GRPX'
-                    and a.rect and a.rect[2] >= 64 and a.rect[3] >= 256), None)
-    if texture is None:
-        texture = next((a for a in resources.values() if a.kind == 'GRPX'
-                        and a.rect and a.rect[2] >= 64 and a.rect[3] >= 256), None)
-    shard = (texture.rect[2], texture.rect[3], project.asset_data(texture)) if texture else None
+    images = {}
+
+    def sprite_image(bank, frame, visual):
+        key = (bank, frame, visual.get('tpage'), visual.get('clut'))
+        if key not in images:
+            try:
+                images[key] = render_sprite(sprites[bank][frame], vram, tpage=visual.get('tpage', 0),
+                                            clut=visual.get('clut'))
+            except FormatError:
+                images[key] = None
+        return images[key]
+
     for (kind, slot), asset in resources.items():
         if kind != 'APD':
             continue
@@ -114,14 +145,38 @@ def build_scene(project, path, index):
                 if bank in models and model < len(models[bank]):
                     mesh = translated(models[bank][model], placement.position)
                     category, note = 'Models', f'WMD bank {bank}, model {model}. Translation from APD; dynamic rotation is not simulated.'
-            if mesh is None and 'sprite' in visual:
-                bank, frame = visual['sprite'], visual['frame']
-                if bank in sprites and frame < len(sprites[bank]) and sprites[bank][frame]:
-                    mesh = sprite_mesh(sprites[bank][frame], vram, shard, placement.position,
-                                       visual.get('flip', False), placement.offset)
-                    category, note = 'Sprites', f'SPR bank {bank}, frame {frame}. Initial pose traced from the game code.'
+            frames = []
+            if mesh is None and 'sprite' in visual and visual['sprite'] in sprites:
+                bank, flip = visual['sprite'], visual.get('flip', False)
+                for frame, ticks in visual['frames']:
+                    parts = sprites[bank][frame] if frame < len(sprites[bank]) else None
+                    image = sprite_image(bank, frame, visual) if parts else None
+                    if image is not None:
+                        frames.append((sprite_mesh(image, parts, placement.position, flip,
+                                                   placement.offset), ticks))
+                if frames:
+                    mesh = frames[0][0]
+                    category = 'Sprites'
+                    note = (f'SPR bank {bank}, frame {visual["frames"][0][0]}, texture page base '
+                            f'0x{visual.get("tpage", 0):X}. '
+                            + (f'{len(frames)} animation steps, {sum(t for _, t in frames)} ticks per pass.'
+                               if len(frames) > 1 else 'Single-frame pose.'))
+                    if len(frames) < 2:
+                        frames = []
             if mesh is None:
                 mesh = marker(placement.position, placement.offset)
             entries.append(SceneEntry(f'{name} | {asset.code:04X} #{i:03d}', category, mesh,
-                                      asset, placement, active, note))
-    return LevelScene(entries, list(resources.values()), vram, notes)
+                                      asset, placement, active, note, frames))
+    banks = []
+    x0, z0 = resolver.collision_origin(area, index - 1)
+    for (kind, slot), asset in resources.items():
+        if kind != 'WHM':
+            continue
+        try:
+            # Area 0 keeps the near planes in slot 1 and continues 270 units
+            # deeper in slot 0 (US routine 80042654); elsewhere slot 0 is used.
+            banks.append((parse_whm(project.asset_data(asset)), x0,
+                          z0 + (270 if area == 0 and slot == 0 and ('WHM', 1) in resources else 0)))
+        except FormatError as exc:
+            notes.append(f'{asset.label}: {exc}')
+    return LevelScene(entries, list(resources.values()), vram, notes, collision_lines(banks))

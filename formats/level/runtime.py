@@ -83,6 +83,30 @@ class InitialPoseResolver:
         return tuple((self.exe_word(table + i * 4) - 0x1F800358) // 4
                      for i in (section & 7, common))
 
+    def animation(self, address):
+        """Follow an animation script: eight-byte steps of frame, two unused
+        words here, and a duration whose top bits end the step list. 0000
+        continues, 4000 and C000 jump through the pointer that follows, and
+        8000 holds the frame. Returns [(frame, ticks)] for one pass."""
+        frames, seen = [], set()
+        while address not in seen and len(frames) < 512 and 0x80010000 <= address < 0x80140000:
+            seen.add(address)
+            frame, _, _, control = struct.unpack('<4H', self.read(address, 8))
+            frames.append((frame, control & 0x3FFF or 1))
+            if control & 0xC000 == 0x8000:
+                break
+            address = self.read_word(address + 8) if control & 0x4000 else address + 8
+        return frames
+
+    def collision_origin(self, area, section):
+        """X and Z of collision column 0, plane 0 (table at 8007E9F8)."""
+        if not self.available or not 0 <= area < 20 or not 0 <= section < 8:
+            return 0, 0
+        table = self.exe_word(0x8007E9F8 + area * 4)
+        if not self.base <= table < self.base + len(self.exe) - 0x800 - 32:
+            return 0, 0
+        return struct.unpack_from('<hh', self.exe, table + section * 4 - self.base + 0x800)
+
     def hook(self, uc, address, size, user):
         r = self.reg
         if address == 0x800229FC:
@@ -134,9 +158,18 @@ class InitialPoseResolver:
                     break
                 if 0x80400000 <= sprite < 0x80800000 and (sprite - 0x80400000) % 0x40000 == 0:
                     if 0x80010000 <= anim < 0x80140000:
-                        frame = struct.unpack('<H', self.read(anim, 2))[0]
-                        result.update(sprite=(sprite - 0x80400000) // 0x40000, frame=frame,
-                                      flip=bool(struct.unpack('<H', self.read(obj + 0x2E, 2))[0] & 1))
+                        frames = self.animation(anim)
+                        state = self.read(obj, 0x30)
+                        # Draw routine 800487B0: bit 0 of +2E draws the parts as
+                        # stored and a clear bit mirrors them about the origin;
+                        # +1E is added to every part's texture page; bit 0 of
+                        # +0D replaces the part CLUT with +08.
+                        result.update(sprite=(sprite - 0x80400000) // 0x40000,
+                                      frame=frames[0][0], frames=frames,
+                                      flip=not state[0x2E] & 1,
+                                      tpage=struct.unpack_from('<H', state, 0x1E)[0],
+                                      clut=struct.unpack_from('<H', state, 8)[0] if state[0xD] & 1 else None,
+                                      blend=bool(state[0xD] & 0x80))
                         break
         except UcError:
             result = {}

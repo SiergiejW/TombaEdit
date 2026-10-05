@@ -66,7 +66,16 @@ def sprite_texture_page(shard, page, vram, clut):
     return Image.fromarray(rgba(palette[indices]))
 
 
-def render_sprite(parts, vram, page_base=0, shard=None):
+def part_page(part, base=0):
+    """Texture page word a part is drawn with once the object's base is added."""
+    return ((part[5] | part[6] << 8) + base) & 0x1FF
+
+
+def render_sprite(parts, vram, page_base=0, shard=None, tpage=None, clut=None):
+    """Composite one frame. With `tpage` the parts are read from VRAM the way
+    the game draws them: the value is added to each part's page word and
+    `clut` replaces the part palette. Without it the older page guesses
+    (`page_base`, or the section's texture upload in `shard`) are used."""
     if not parts:
         return Image.new("RGBA", (1, 1))
     left = min(p[13] for p in parts)
@@ -76,10 +85,16 @@ def render_sprite(parts, vram, page_base=0, shard=None):
     image = Image.new("RGBA", (max(1, right - left), max(1, bottom - top)))
     pages = {}
     for p in reversed(parts):
-        sx, sy, clut, _, _, page, _, _, _, w, h, _, _, x, y = p
-        key = (page, clut)
+        sx, sy, part_clut, _, _, page, _, _, _, w, h, _, _, x, y = p
+        palette = clut or part_clut
+        key = (page, p[6], palette)
         if key not in pages:
-            pages[key] = sprite_texture_page(shard, page, vram, clut) if shard else texture_page(vram, (page & ~31) | (((page & 31) + page_base) & 31), clut)
+            if tpage is not None:
+                pages[key] = texture_page(vram, part_page(p, tpage), palette)
+            elif shard:
+                pages[key] = sprite_texture_page(shard, page, vram, palette)
+            else:
+                pages[key] = texture_page(vram, (page & ~31) | (((page & 31) + page_base) & 31), palette)
         tile = pages[key].crop((sx, sy, sx + w, sy + h))
         image.alpha_composite(tile, (x - left, y - top))
     return image

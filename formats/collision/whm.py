@@ -1,14 +1,20 @@
-"""Tomba 1 WHM: X-indexed collision spans on multiple 2D planes.
+"""Tomba 1 WHM: collision spans indexed by depth plane and X column.
 
-Each plane owns one offset per eight X units. A column starts with a u16
-span count, then that many eight-byte records. The two signed middle words
-are shown as candidate Y endpoints. The last word and the attribute word remain visible
-without assigning undocumented gameplay meanings to their bits.
+US routine 80042654 picks a plane from an object's Z, 90 units per plane,
+and a column from its X, 8 units per column. A column starts with a u16 span
+count followed by eight-byte spans: attribute, two signed words and a
+parameter. With bit 4 of the attribute set the span is a solid range between
+the two Y values. Otherwise it is a walkable surface: the first word is its Y
+at the left edge of the column and the second the rise across the column, so
+neighbouring columns join into slopes. Y is negative upwards, as in the
+models. The remaining attribute bits and the parameter are shown raw.
 """
 from dataclasses import dataclass
 import struct
 
 from disc.reader import FormatError
+
+PLANE_DEPTH = 90
 
 
 @dataclass(frozen=True)
@@ -20,6 +26,16 @@ class Span:
     y0: int
     y1: int
     parameter: int
+
+    @property
+    def wall(self):
+        return bool(self.attribute & 0x10)
+
+    @property
+    def extent(self):
+        """Lowest and highest Y the span touches."""
+        end = self.y1 if self.wall else self.y0 + self.y1
+        return min(self.y0, end), max(self.y0, end)
 
 
 @dataclass

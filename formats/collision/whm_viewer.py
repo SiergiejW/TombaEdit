@@ -38,8 +38,8 @@ class PlaneCanvas(QWidget):
         spans = self.visible_spans()
         if not spans:
             return -100, 100
-        low = min(min(span.y0, span.y1) for span in spans)
-        high = max(max(span.y0, span.y1) for span in spans)
+        low = min(span.extent[0] for span in spans)
+        high = max(span.extent[1] for span in spans)
         pad = max(16, (high - low) // 20)
         return low - pad, high + pad
 
@@ -75,13 +75,14 @@ class PlaneCanvas(QWidget):
             if span == self.selected:
                 color = QColor('#ff6060')
             painter.setPen(QPen(color, 4 if span == self.selected else 2))
-            x = round(ox + (span.column * 8 + 4) * scale)
             y0 = round(oy + span.y0 * scale)
-            y1 = round(oy + span.y1 * scale)
-            if abs(y1 - y0) < 2:
-                painter.drawLine(x - 2, y0, x + 2, y0)
+            if span.wall:
+                x = round(ox + (span.column * 8 + 4) * scale)
+                painter.drawLine(x, y0, x, round(oy + span.y1 * scale))
             else:
-                painter.drawLine(x, y0, x, y1)
+                painter.drawLine(round(ox + span.column * 8 * scale), y0,
+                                 round(ox + (span.column * 8 + 8) * scale),
+                                 round(oy + (span.y0 + span.y1) * scale))
         painter.setPen(QColor('#dddddd'))
         painter.drawText(8, self.height() - 7,
                          f'X 0..{self.whm.width} | Y {ymin}..{ymax} | Scroll: zoom | Right-drag: pan')
@@ -101,8 +102,8 @@ class PlaneCanvas(QWidget):
         candidates = [span for plane in planes for span in plane.columns[x]
                       if self.attribute is None or span.attribute == self.attribute]
         self.selected = min(candidates,
-                            key=lambda span: max(min(span.y0, span.y1) - y, 0,
-                                                 y - max(span.y0, span.y1))) if candidates else None
+                            key=lambda span: max(span.extent[0] - y, 0,
+                                                 y - span.extent[1])) if candidates else None
         self.picked.emit((x, self.selected))
         self.update()
 
@@ -166,7 +167,7 @@ class WhmView(QWidget):
         side_layout.addWidget(self.attributes, 1)
         side_layout.addWidget(QLabel('Spans at selected X'))
         self.records = QTableWidget(0, 6)
-        self.records.setHorizontalHeaderLabels(['Plane', 'Attribute', 'Y 0', 'Y 1', 'Parameter', 'Offset'])
+        self.records.setHorizontalHeaderLabels(['Plane', 'Attribute', 'Y', 'End / rise', 'Parameter', 'Offset'])
         self.records.verticalHeader().hide()
         self.records.setEditTriggers(QAbstractItemView.EditTrigger.NoEditTriggers)
         self.records.setSelectionBehavior(QAbstractItemView.SelectionBehavior.SelectRows)
@@ -259,8 +260,11 @@ class WhmView(QWidget):
         self.canvas.selected = span
         self.canvas.update()
         name = self.label(span.attribute)
-        self.details.setText(
-            f'Plane {span.plane} | X {span.column * 8}..{span.column * 8 + 7} | '
-            f'Y {span.y0}..{span.y1}\nAttribute 0x{span.attribute:04X}'
-            f'{" | " + name if name else ""} | parameter 0x{span.parameter:04X} | '
-            f'file offset 0x{span.offset:06X}')
+        shape = (f'solid Y {span.y0}..{span.y1}' if span.wall else
+                 f'surface Y {span.y0}, rise {span.y1:+d}')
+        text = (f'Plane {span.plane} | X {span.column * 8}..{span.column * 8 + 7} | '
+                f'{shape}\nAttribute 0x{span.attribute:04X}'
+                f'{" | " + name if name else ""} | parameter 0x{span.parameter:04X} | '
+                f'file offset 0x{span.offset:06X}')
+        self.details.setText(text)
+        print('selected: WHM span | ' + text.replace('\n', ' | '))
