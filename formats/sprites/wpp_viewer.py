@@ -105,7 +105,9 @@ class WppView(QWidget):
         if name.startswith('VRAM CLUT') and self.custom_clut is not None:
             import numpy as np
             x, y = (self.custom_clut & 63) * 16, (self.custom_clut >> 6) & 511
-            count = 256 if self.kind == 'tim' and picture.indices.max(initial=0) >= 16 else 16
+            eight_bit = (picture.cluts is not None and picture.cluts.shape[-1] == 256
+                         or picture.indices.max(initial=0) >= 16)
+            count = 256 if self.kind == 'tim' and eight_bit else 16
             flat = self.vram.reshape(-1)
             return flat[(y * 1024 + x + np.arange(count)) % flat.size]
         if 0 <= index < len(self.palettes):
@@ -116,7 +118,7 @@ class WppView(QWidget):
                 return picture.cluts[row]
         return None
 
-    def override_palette(self, word):
+    def override_palette(self, word, announce=True):
         if self.vram is None:
             return
         self.custom_clut = int(word) & 0x7FFF
@@ -126,7 +128,8 @@ class WppView(QWidget):
         self.palette.blockSignals(False)
         self.vram_view.show_clut(self.custom_clut, flash=False)
         self.refresh()
-        self.clut_selected.emit(self.custom_clut)
+        if announce:
+            self.clut_selected.emit(self.custom_clut)
 
     def choose_palette(self):
         self.refresh()

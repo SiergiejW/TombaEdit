@@ -365,15 +365,12 @@ class MeshCanvas(CameraEventMixin, QOpenGLWidget):
         return self.textures[key]
 
     def paint_backdrop(self, gl):
-        """Layer 7 sprites on a 320 x 240 screen that fills the view's height.
+        """Stitch layer 7 strips into a horizon panorama for editor free-look.
 
-        The game places each from the camera position scaled by the sprite's
-        own factor, so distant scenery drifts slowly. Here the backdrop is
-        treated as scenery a long way off: sliding the camera sideways
-        scrolls each sprite by its factor, turning the camera carries the
-        whole backdrop across the view, and looking up or down moves it down
-        or up, at the rate the view itself turns. Moving towards or away from
-        the level leaves it alone."""
+        Sideways movement follows each layer's game parallax factor. A turn
+        scrolls one repeat; pitch is limited. Camera height and forward
+        movement cannot push the panorama off-screen.
+        """
         aspect = self.width() / max(1, self.height())
         width = 240 * aspect
         c = self.camera_controls

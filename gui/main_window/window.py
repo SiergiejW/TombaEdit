@@ -770,10 +770,12 @@ class MainWindow(QMainWindow):
                         lambda row, col, old_row, old_col, sprite=view:
                             sprite.bank.setCurrentCell(row, 0) if 0 <= row < sprite.bank.rowCount() else None)
                     self.tabs.addTab(view, 'Assembled frames')
-                    pictures_view.clut_selected.connect(view.override_palette)
+                    pictures_view.clut_selected.connect(
+                        lambda word, sprite=view: sprite.override_palette(word, scope=2))
                     view.vram_view.clut_picked.connect(
                         lambda word, pictures=pictures_view, sprite=view:
-                            pictures.override_palette(word) if sprite.palette_scope.currentIndex() == 2 else None)
+                            pictures.override_palette(word, announce=False)
+                            if sprite.palette_scope.currentIndex() == 2 else None)
             from gui.widgets.hex_view import HexView
             code = isinstance(node, Asset) and node.kind == 'INS' or (
                 isinstance(node, DiscEntry) and bool(result.get('regions')))

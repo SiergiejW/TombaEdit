@@ -308,9 +308,9 @@ class SpriteView(QWidget):
                                                  max(o[1] + o[3] for o in focus) - top)
         self.vram_view.canvas.update()
 
-    def override_palette(self, value):
+    def override_palette(self, value, scope=None):
         """Redraw through the palette the crosshair was put on."""
-        scope = self.palette_scope.currentIndex()
+        scope = self.palette_scope.currentIndex() if scope is None else scope
         selected = {item.row() for item in self.parts.selectedItems()}
         if scope == 0 and not selected:
             scope = 1               # nothing picked out: the sprite as a whole
