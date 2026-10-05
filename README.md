@@ -23,7 +23,7 @@ python main.py "rom\Tomba! (USA).cue"
 ## The disc tree
 
 **File → Open BIN / CUE / ISO** loads an image; dropping one on the window does
-the same. The tree on the left is the disc's ISO9660 directory. Each `AREAnn`
+the same. CloneCD images open from either the `.img` or the `.ccd` beside it. The tree on the left is the disc's ISO9660 directory. Each `AREAnn`
 folder starts with a *Sections* node holding the area's load groups: the base
 group shared by the whole area, then one group per section in the order the
 game loads them. Files that a load group reads from can be expanded to the
@@ -226,12 +226,38 @@ verified details and the remaining gameplay fields.
 
 ## Supported releases
 
-Disc browsing works for any release. Load groups need the executable's file
-link table, which is located from the disc and has been checked on the US
-retail disc (`SCUS_942.36`). Releases that embed their load tables elsewhere
-show the directory tree and file viewers only. Object initialisation, sprite
-texture pages and collision origins use addresses from the US executable and
-are skipped for other builds.
+Disc browsing and the file viewers work for any release. Load groups need
+the executable's file link table, which is located from the disc itself. The
+level editor additionally needs to know where an executable keeps its object
+routines and tables; `game/builds.py` lists them for these builds:
+
+| Executable | Build | Areas on the disc |
+| --- | --- | --- |
+| `SCUS_942.36` | US retail | all |
+| `SCUS_942.55` | US demo | 00 to 02 |
+| `SLPS_011.44` | Preview dated 3 February 1998 | all |
+| `SLPM_801.65` | Japanese demo, 1997 | 00 |
+| `TOMBA/TOMBA.EXE` | Pure Pure 09 sampler (PCPX-96093), 1997 | 01 and 02 |
+
+On these, placed objects are resolved to their models and sprites, placement
+banks are filtered by section, and collision is put at its world position. An
+executable that is not listed still opens: its levels show their geometry,
+with every placed object as a marker.
+
+The two builds from 1997 store several resources differently: text is WFM1,
+textured model primitives are laid out as GPU packets, picture banks can be a
+single TIM, sound banks list their headers first, and a town's picture and
+cell map sit in placement slots. Each is read in its own form;
+[the format notes](docs/formats.md) describe the differences.
+
+The preview and the two 1997 builds have no `SYS/LDAR*.BIN` files; their load
+groups are read out of the executable.
+
+The cutaway house interiors of the towns come from tables in the town
+overlays, which are found by their content. The sampler's Dwarf Village has
+no interiors in its bank, and Hidden Village's are not found in the preview.
+The sampler also lacks the table that gives sprite banks no placed object
+uses their texture page, so those banks open on page 0.
 
 Dialogue is decoded with a glyph table for the US font; other releases show
 the glyph images and unmapped glyph numbers.

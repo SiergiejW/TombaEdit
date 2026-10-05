@@ -171,7 +171,10 @@ def prepare_preview(project, node, context=None):
     from formats.annotate import regions
     name = Path(node.path).name.upper() if isinstance(node, DiscEntry) else ''
     kind = node.kind if isinstance(node, Asset) else 'INS' if name.startswith('X') and name.endswith('.BIN') else ''
-    result['regions'] = regions(kind, data)
+    from game.builds import executable
+    known = executable(project)
+    result['overlay_base'] = known.build.overlay if known else None
+    result['regions'] = regions(kind, data, result['overlay_base'])
     # WFM can also be embedded in instruction binaries and standalone GAMs.
     wfms = []
     from formats.text.wfm import MAGICS
@@ -641,8 +644,10 @@ class MainWindow(QMainWindow):
             if code and self.current_data is not None:
                 # Code overlays have no viewer of their own; the annotated
                 # bytes are the view.
+                from formats.annotate import OVERLAY_BASE
+                base = result.get('overlay_base') or OVERLAY_BASE
                 self.tabs.addTab(HexView(self.current_data, result.get('regions', ()),
-                                         note='addresses assume the overlay base 0x800E7388'), 'Structure')
+                                         note=f'addresses assume the overlay base 0x{base:08X}'), 'Structure')
             if isinstance(node, Asset) and node.kind in ('WPP', 'FOUR', 'SPC', 'SAP', 'Unknown'):
                 from formats.archive.data_viewer import DataView
                 data_view = DataView(self.current_data, node.kind, node.code, node.ram)

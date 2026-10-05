@@ -1,12 +1,15 @@
-"""Town drawing settings decoded from the retail INFO overlays.
+"""Town drawing settings decoded from the INFO overlays.
 
 The village's scenery and NPCs share SPR slot 11, but use different page
 bases. The cutaway houses are scenery sprites, not separate LDAR sections.
+
+The tables are found by their content, so a build that moves them is read
+the same way; addresses in the comments are the US retail ones. Every value
+is checked against the bank it describes before it is used.
 """
 from dataclasses import dataclass, field
-import hashlib
 import struct
-from game.builds import BUILDS, US_RETAIL, executable
+from game.builds import executable
 
 
 @dataclass
@@ -21,9 +24,9 @@ class TownGraphics:
 def town_graphics(project, resources, area, section):
     """Cutaway artwork in the current town's loaded bank.
 
-    Only verified retail contexts are interpreted. Baccus Pier also uses
-    INFO2, but its bank 13 contains fences, not the village's house frames.
-    Loading a common overlay or an NPC bank does not imply rooms exist.
+    Only the sections known to have rooms are interpreted. Baccus Pier also
+    uses INFO2, but its bank 13 contains fences, not the village's house
+    frames. Loading a common overlay or an NPC bank does not imply rooms exist.
     """
     if (area, section) in ((2, 0), (19, 0)):
         return dwarf_graphics(project, resources, area, section)
@@ -32,16 +35,13 @@ def town_graphics(project, resources, area, section):
     if ('SPR', 13) not in resources or ('INS', 0) not in resources:
         return None
     found = executable(project)
-    if found is None or found.build is not BUILDS[US_RETAIL]:
+    if found is None or found.build.early:
         return None
     data = project.asset_data(resources['INS', 0])
-    if hashlib.sha1(data).hexdigest() != '9e19f8b912ab0fd1ea4050e8a2c51e6b8e533c5b':
-        return None
     from psx.graphics import sprite_frames
     frames = sprite_frames(project.asset_data(resources['SPR', 13]))
     baccus = area == 5
-    table, scripts, count = ((0x800FDDC4, 0x80102004, 12) if baccus
-                            else (0x800FDE34, 0x80102930, 11))
+    count = 12 if baccus else 11
     if len(frames) != (12 if baccus else 23):
         return None
     base = found.build.overlay
@@ -51,10 +51,44 @@ def town_graphics(project, resources, area, section):
             raise IndexError('Town table pointer outside INFO2 overlay')
         return struct.unpack_from(fmt, data, address - base)
 
+    def house_scripts(table):
+        """The script list of an object record that shows one frame of bank
+        13 per script, in order, each held for 60 ticks: the houses."""
+        page, _, bank, _, animation = unpack('<4HI', table)
+        if (page, bank) != (2, 13):
+            return None
+        for index in range(count):
+            frame, _, _, control = unpack('<4H', unpack('<I', animation + index * 4)[0])
+            if frame != index or control != 0x803C:
+                return None
+        return animation
+
+    # Baccus Village's record is at 800FDDC4 and Hidden Village's at
+    # 800FDE34. Both hold frames 0 up, so the one with a script per frame
+    # of the loaded bank and no more is the section's.
+    table = scripts = None
+    for at in range(0, len(data) - 12, 4):
+        if data[at:at + 2] != b'\x02\0' or data[at + 4:at + 6] != b'\x0d\0':
+            continue
+        try:
+            found_scripts = house_scripts(base + at)
+        except (struct.error, IndexError):
+            continue
+        if found_scripts is None:
+            continue
+        try:
+            extra = unpack('<4H', unpack('<I', found_scripts + count * 4)[0])
+            if extra[0] == count and extra[3] == 0x803C:
+                continue            # a longer list: the other village's record
+        except (struct.error, IndexError):
+            pass
+        table, scripts = base + at, found_scripts
+        break
+    if table is None:
+        return None
+
     try:
         page, _, bank, _, animation = unpack('<4HI', table)
-        if (page, bank, animation) != (2, 13, scripts):
-            return None
         profile = TownGraphics(bank=bank, name='Baccus Village' if baccus else 'Hidden Village')
         for index in range(count):
             frame, _, _, control = unpack('<4H', unpack('<I', scripts + index * 4)[0])
@@ -83,10 +117,16 @@ def dwarf_graphics(project, resources, area, section):
     if area not in (2, 19) or section != 0 or ('SPR', 11) not in resources or ('INS', 0) not in resources:
         return None
     found = executable(project)
-    if found is None or found.build is not BUILDS[US_RETAIL]:
+    if found is None:
         return None
     data = project.asset_data(resources['INS', 0])
     base = found.build.overlay
+    # The scenery table opens with the style every house uses: page 2, CLUT
+    # 7FC8, bank 11. The NPC record follows 0x74 bytes on (800EDB2C).
+    at = bytes(data).find(struct.pack('<3H', 2, 0x7FC8, 11))
+    if at < 0 or at % 4:
+        return None
+    scenery = base + at
 
     def unpack(fmt, address):
         if not base <= address <= base + len(data) - struct.calcsize(fmt):
@@ -94,11 +134,8 @@ def dwarf_graphics(project, resources, area, section):
         return struct.unpack_from(fmt, data, address - base)
 
     try:
-        styles = [unpack('<4HI', 0x800EDAB8 + n * 12) for n in range(3)]
-        # Check the overlay before interpreting absolute pointers.
-        if styles[0][:3] != (2, 0x7FC8, 11):
-            return None
-        npc_page, npc_bank = unpack('<HH', 0x800EDB2C)
+        styles = [unpack('<4HI', scenery + n * 12) for n in range(3)]
+        npc_page, npc_bank = unpack('<HH', scenery + 0x74)
         if npc_bank != 11:
             return None
         profile = TownGraphics()
@@ -119,9 +156,7 @@ def dwarf_graphics(project, resources, area, section):
         # The NPC table includes frames 425 to 430 as well as 0 to 403.
         # These scripts sit between scenery scripts in memory, so contiguous
         # frame ranges or a sequential script scan would misclassify them.
-        npc_scripts = unpack('<I', 0x800EDB30)[0]
-        if npc_scripts != 0x800F00C0:
-            return None
+        npc_scripts = unpack('<I', scenery + 0x78)[0]
         for n in range(216):
             for frame, _ in steps(unpack('<I', npc_scripts + n * 4)[0]):
                 profile.pages[frame] = npc_page

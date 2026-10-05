@@ -63,6 +63,8 @@ class LevelScene:
     locations: list = field(default_factory=list)
     location_index: int = 0
     town_views: list = field(default_factory=list)
+    # Where the build loads the area's code overlay; 0 when not known.
+    overlay: int = 0
 
 
 def area_of(path):
@@ -434,6 +436,7 @@ def build_scene(project, path, index):
                  for g in project.ldars[path][1:] if g.assets]
     scene = LevelScene(entries, list(resources.values()), vram, notes, collision, backdrops, sky,
                        collision_records, context, locations, index)
+    scene.overlay = resolver.build.overlay if resolver.available else 0
     if town is not None:
         from formats.level.town import town_graphics
         profile = town_graphics(project, resources, area, index - 1)

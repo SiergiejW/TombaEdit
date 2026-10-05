@@ -29,11 +29,10 @@ def texture_page(vram, tpage, clut, palette=None):
     x, y = (tpage & 15) * 64, ((tpage >> 4) & 1) * 256
     depth = (tpage >> 7) & 3
     yy = (np.arange(256) + y) % 512
-    if depth == 2:
+    if depth >= 2:
+        # Depth 3 is reserved; the GPU reads it as 15-bit colour as well.
         words = vram[np.ix_(yy, (np.arange(256) + x) % 1024)]
         return Image.fromarray(rgba(words))
-    if depth not in (0, 1):
-        raise FormatError(f"Reserved texture depth in page {tpage:04X}")
     per_word = 4 if depth == 0 else 2
     px = np.arange(256)
     words = vram[np.ix_(yy, (x + px // per_word) % 1024)]

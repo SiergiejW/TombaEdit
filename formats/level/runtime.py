@@ -129,7 +129,8 @@ class InitialPoseResolver:
         draws a fixed picture: the table at 8007EBEC, indexed by the variant,
         points at 18-byte records ending in 7FFF. A record is a texture page
         word, an X and Y offset from the object, U, V, width, height, the
-        palette's VRAM position and a blend flag. Returns
+        palette's VRAM position and a blend flag; the sampler's records have
+        no flag and are 16 bytes. Returns
         [(tpage, x, y, u, v, width, height, clut)]."""
         if not self.available or placement.layer != 7 or placement.raw[12] != 2 or not self.build.pictures:
             return []
@@ -137,13 +138,13 @@ class InitialPoseResolver:
             at = self.read_word(self.build.pictures + placement.variant * 4)
             parts = []
             while len(parts) < 64 and self.base <= at < self.limit:
-                tpage, x, y, u, v, width, height, clut_x, clut_y, _ = struct.unpack('<hhhBBHHhhh', self.read(at, 18))
+                tpage, x, y, u, v, width, height, clut_x, clut_y = struct.unpack('<hhhBBHHhh', self.read(at, 16))
                 if tpage == 0x7FFF:
                     return parts
                 if not (0 < width <= 256 and 0 < height <= 256):
                     break
                 parts.append((tpage & 0x1FF, x, y, u, v, width, height, (clut_y & 511) << 6 | (clut_x >> 4) & 63))
-                at += 18
+                at += self.build.picture_record
         except Exception:
             pass
         return []

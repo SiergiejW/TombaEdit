@@ -8,8 +8,8 @@ decoder of their own, such as code overlays, are classified word by word.
 from dataclasses import dataclass
 import struct
 
-# Area overlays are linked for this address; the loader ignores the address
-# in their load record (routine 80021D70).
+# Area overlays are linked for one address per build, US retail's being this
+# one; the loader ignores the address in their load record (routine 80021D70).
 OVERLAY_BASE = 0x800E7388
 RAM_LOW, RAM_HIGH = 0x80010000, 0x80200000
 JR_RA = 0x03E00008
@@ -378,13 +378,14 @@ ANNOTATORS = {'SPR': spr, 'WMD': wmd, 'FOUR': four, 'APD': apd, 'WHM': whm, 'WPP
               'INS': instructions}
 
 
-def regions(kind, data):
-    """Sorted, non-overlapping regions of a resource, or [] if its layout is unknown."""
+def regions(kind, data, base=None):
+    """Sorted, non-overlapping regions of a resource, or [] if its layout is
+    unknown. `base` is where the build loads its code overlays."""
     annotator = ANNOTATORS.get(kind)
     if annotator is None:
         return []
     try:
-        found = annotator(data)
+        found = annotator(data, base) if base and annotator is instructions else annotator(data)
     except (struct.error, IndexError, ValueError):
         return []
     found.sort(key=lambda region: (region.start, region.end))

@@ -151,13 +151,19 @@ class MoviePanel(QWidget):
         self.buffer=QBuffer(self);self.buffer.setData(QByteArray(data))
         self.buffer.open(QIODevice.OpenModeFlag.ReadOnly)
         self.player.setSourceDevice(self.buffer,QUrl('movie.wav'))
-        self.player.setPosition(round(self.timeline.value()/self.movie.fps*1000))
+        # A stream of sound alone has no frames and so no frame rate.
+        fps=self.movie.fps
+        self.player.setPosition(round(self.timeline.value()/fps*1000) if fps else 0)
         self.player.play();self.timer.start()
         set_glyph(self.play_button,'pause')
         self.status.setText('Playing with XA sound')
 
     def tick(self):
         if not self.movie:return
+        if not self.movie.frames:
+            # Sound alone: let it play out.
+            if not self.movie.has_audio or self.player.playbackState()!=QMediaPlayer.PlaybackState.PlayingState:self.stop()
+            return
         if self.movie.has_audio:
             index=round(self.player.position()*self.movie.fps/1000)
         else:

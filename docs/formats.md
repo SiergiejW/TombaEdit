@@ -3,6 +3,8 @@
 What TombaEdit knows about each format, and how it was established. Addresses
 are for the US retail executable, `SCUS_942.36`. Where a description comes
 from reading the game's code, the routine is named so it can be checked.
+Other builds have the same routines and tables at other addresses;
+[Builds](#builds) lists them.
 
 ## Disc and file links
 
@@ -10,13 +12,22 @@ from reading the game's code, the routine is named so it can be checked.
 MODE1/2352, and MODE2/2352 data tracks. CUE `FILE`, `TRACK`, and `INDEX 01` determine
 the data track and its physical start. Logical reads cross sector boundaries
 without including sync/header/ECC bytes. Directory cycles, invalid extents and
-unsupported interleaved/multi-extent records are rejected.
+unsupported interleaved/multi-extent records are rejected. A CloneCD control
+file (`.ccd`) stands for the `.img` of the same name.
 
 `catalog.py` locates the executable's File Link Array using the disc's actual
 LDSYS extent and size. It validates BCD minute/second/frame records and matches
 LBAs against ISO files. Conversion is `(minute * 60 + second) * 75 + frame - 150`.
 The US executable resolves to byte offset `0x699A0`. This is discovered,
 not a hardcoded regional offset. Trailing unverified records are excluded.
+
+Three other shapes of the table exist. The Japanese demo spaces its records
+24 bytes apart. The February 1998 preview leaves 24 unused indices between
+its system and area files. The Pure Pure 09 sampler stores 64-byte records
+holding ISO file names (`\TOMBA\A00000.GAM;1`), which the game resolves with
+`CdSearchFile` when it starts. The builds without `SYS/LDAR*.BIN` files keep
+their load groups in the executable, where `formats/archive/embedded.py`
+finds them by the same record layout.
 
 ## LDAR and GAM
 
@@ -51,7 +62,25 @@ column holds Tomba's outfits, one row each.
 The loader (routine 80021D70) files each resource pointer by the high nibble
 of its type code and the slot in the next nibble: SPR at `1F8002C8`, FOUR at
 `1F800310`, WMD at `1F800330`, WPP at `1F800348`, WHM at `1F800308` and APD
-at `1F800358`, four bytes per slot.
+at `1F800358`, four bytes per slot. These scratchpad addresses are the same
+in every build.
+
+Family 9 is a sound bank (WVD). Retail opens its sound banks by name; the
+earlier builds list them in their load groups. A code overlay's record can
+give a length longer than the file, counting the cleared memory after it.
+
+The 1997 builds have no slots 14 and 15 for a town's cell map and picture and
+file them under placement slots instead (85FF and 81FF on the sampler).
+Placement lists are short and a multiple of sixteen bytes long, so a family 8
+resource that is neither is named by what it starts with: a TIM header is the
+picture, a width and height that fit the length is the cell map.
+
+## WVD
+
+Two sections, each an offset table: the SPU sample bodies of every bank, and
+the VAB header of every bank. Builds from 1998 put the bodies first; the 1997
+builds put the headers first. The header section is the one whose first entry
+starts with `pBAV`.
 
 ## WFM3
 
@@ -61,6 +90,12 @@ glyphs, a relative dialogue-offset table, and 16-bit dialogue words. Glyph IDs
 use twelve bits; sound/blink flags are preserved. Control argument counts differ:
 for example FFF9 and FFF7 take one word, while FFFA/FFF8/FFF6 take two. Unknown
 controls stop decoding explicitly because their argument lengths are unknown.
+
+The 1997 builds use WFM1. Its header is the first sixteen bytes of the WFM3
+one, with the glyph offsets straight after it instead of 128 reserved bytes
+later. A glyph's rows each start on a 16-bit word, so a row of ten pixels
+takes six bytes where WFM3 packs the pixels end to end. Control FFF4 appears
+inside running text and takes no arguments.
 
 ## WMD
 
@@ -86,6 +121,14 @@ and a final four-byte word. Primitive sizes and GPU families are checked, and
 each object must end exactly at its next pointer. Quads split into triangles
 `0,1,2` and `3,2,1`. The preview converts coordinates to `(x,-y,-z)`. Texture
 modulation treats 128 as neutral; raw texture commands bypass vertex colour.
+
+The 1997 builds lay a textured primitive out as the GPU packet it becomes:
+the RGB/command words, then one word per corner with U and V in its low half,
+then an eight-byte `<hhh>` position per corner. The high half of the first
+corner's word is the CLUT and of the second's the texture page. That makes
+FT3 40 bytes, FT4 52, GT3 48 and GT4 64, against 32, 40, 40 and 52 later.
+Untextured primitives are identical in both. A bank is read in the later
+layout first and in this one if its batches do not fit.
 
 All 4,931 objects passed these boundary checks. A separate comparison of 153
 AREA00 objects against those OBJ files found identical triangle positions.
@@ -136,7 +179,9 @@ slot reserved for Tomba whenever his frame number changes. The SPR bank in
 slot 0 has one frame per picture of the bank in WPP slot 0, and SPR slot 5
 pairs with WPP slot 2.
 
-WPP slot 3 holds GAM-compressed TIM images behind a bare offset table.
+WPP slot 3 holds GAM-compressed TIM images behind a bare offset table. In
+the 1997 builds a bank can also be one TIM on its own, neither packed nor
+indexed.
 
 ## WHM
 
@@ -264,6 +309,45 @@ Handler tables hold addresses inside the area overlays for types that only
 one area uses. The overlays share their first 2DE6C bytes; code after that is
 specific to the area, so such an entry is only meaningful with that area's
 overlay loaded.
+
+## Builds
+
+`game/builds.py` describes each executable the level editor can run objects
+from, keyed by its SHA-1:
+
+| Executable | Build | Overlay base | Area word |
+| --- | --- | --- | --- |
+| `SCUS_942.36` | US retail | `800E7388` | `8009BCC8` |
+| `SCUS_942.55` | US demo | `800DDCA0` | `80092640` |
+| `SLPS_011.44` | Preview, 3 February 1998 | `800EDAA8` | `800A2440` |
+| `SLPM_801.65` | Japanese demo | `800E7698` | `8009A810` |
+| `TOMBA.EXE` | Pure Pure 09 sampler | `800ED548` | `800A2248` |
+
+An entry holds the six tables of object routines (APD layers 2 to 5, 7 and
+8), the routines the emulator answers itself (the animation setter, the six
+visibility tests, `GetClut`, the seven draw-list appenders, the sound call
+and two flag tests), and the per-area tables for placement slots, entrances,
+collision origins, plane limits, fixed pictures and sprite pages.
+
+The engine is the same in all five, which is how the addresses were found.
+The three object dispatchers (8001DFD4, 8003438C and 8002DB4C in retail)
+are instruction for instruction identical once jump targets and the
+operands of address loads are masked out, so each build's copy is located by
+that pattern and its tables read from the same instructions. Other routines
+were paired the same way, or through the calls made at matching positions of
+routines already paired. Tables with no matching code were identified by
+their content: the placement slot table is the only run of pointers to runs
+of scratchpad addresses from `1F800358`.
+
+An overlay's load address follows from the overlay alone. Its `jal` targets
+beyond the executable minus the offsets of its own stack prologues agree on
+one value, which is the base.
+
+Differences that are not just addresses: the 1997 builds have no area
+variants (retail maps areas 7, 12 and 19 onto 1, 4 and 2), and they store
+plane limits in place rather than behind per-area pointers, one byte a
+section and sixteen an area in the Japanese demo, one 16-bit word a section
+and twelve an area in the sampler.
 
 ## Sources
 

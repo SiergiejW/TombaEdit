@@ -340,8 +340,9 @@ class LevelView(ModelView):
         if e.handler is not None:
             overlay = next((a for a in self.scene.resources if a.kind == 'INS'), None)
             text += f'\n\nObject handler: 0x{e.handler:08X}'
-            if overlay is not None and 0x800E7388 <= e.handler < 0x800E7388 + overlay.size:
-                text += f'\n{overlay.label}\nHandler offset: 0x{e.handler - 0x800E7388:06X}'
+            base = self.scene.overlay
+            if overlay is not None and base and base <= e.handler < base + overlay.size:
+                text += f'\n{overlay.label}\nHandler offset: 0x{e.handler - base:06X}'
         if e.animation_address is not None:
             text += f'\nAnimation script: 0x{e.animation_address:08X}'
         self.details.setPlainText(text)

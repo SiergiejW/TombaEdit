@@ -39,6 +39,7 @@ class Build:
     plane_limits: tuple
     pages: int | None       # twelve-byte object records naming a texture page per SPR slot
     early: bool = False     # a 1997 build: no area variants
+    picture_record: int = 18    # bytes a rectangle of a fixed picture takes
 
     @property
     def event(self):
@@ -101,9 +102,9 @@ BUILDS = {
         get_clut=0x8005953C,
         draw_queues=(0x800198D0, 0x8001990C, 0x80019948, 0x80019984, 0x800199C0, 0x800199FC, 0x80019A38),
         silent=(0x80021568, 0x80024418, 0x800244BC),
-        slot_tables=0x80073F14, common=0x80071BCC, pictures=None, entrances=0x80072110,
+        slot_tables=0x80073F14, common=0x80071BCC, pictures=0x80073CC4, entrances=0x80072110,
         origins=0x80073994, wall_origins=0x80073984, alternate_origin=None,
-        plane_limits=(0x800739B4, 24, 2), pages=None, early=True),
+        plane_limits=(0x800739B4, 24, 2), pages=None, early=True, picture_record=16),
 }
 
 
