@@ -17,6 +17,7 @@ class WavePreview(QWidget):
         self.setCursor(Qt.CursorShape.PointingHandCursor)
         self.envelope = None
         self.position = 0.
+        self.placeholder = 'Select a sample'
 
     def set_wav(self, data):
         try:
@@ -38,6 +39,7 @@ class WavePreview(QWidget):
         except (EOFError, wave.Error, ValueError):
             self.envelope = None
         self.position = 0.
+        self.placeholder = 'Select a sample'
         self.update()
 
     def set_position(self, fraction):
@@ -56,7 +58,7 @@ class WavePreview(QWidget):
         painter.fillRect(self.rect(), QColor('#181818' if dark else '#eeeeee'))
         if self.envelope is None:
             painter.setPen(QColor('#888888'))
-            painter.drawText(self.rect(), Qt.AlignmentFlag.AlignCenter, 'Select a sample')
+            painter.drawText(self.rect(), Qt.AlignmentFlag.AlignCenter, self.placeholder)
             return
         mid = self.height()/2
         half = max(1, mid-3)

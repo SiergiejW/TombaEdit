@@ -529,7 +529,7 @@ class ModelView(QWidget):
         if meshes is not None:
             self.set_data(meshes, vram, code)
 
-    def set_data(self, meshes, vram, code=0, names=None, rename_callback=None, level=None):
+    def set_data(self, meshes, vram, code=0, names=None, rename_callback=None, level=None, spread=None):
         self.rename_callback = rename_callback
         self.model_names = names or {}
         had_meshes = bool(self.canvas.meshes)
@@ -560,7 +560,9 @@ class ModelView(QWidget):
         self.canvas.visible = set(range(len(meshes)))
         self.canvas.selected_model = None
         self.spread_action.blockSignals(True)
-        self.spread_action.setChecked(code not in (0x5080, 0x50FF))
+        # Level geometry is one piece; a bank of separate models is laid out
+        # side by side unless the caller knows its parts belong together.
+        self.spread_action.setChecked(code not in (0x5080, 0x50FF) if spread is None else spread)
         self.spread_action.blockSignals(False)
         self.canvas.spread = self.spread_action.isChecked()
         if meshes:

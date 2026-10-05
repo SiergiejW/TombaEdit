@@ -68,6 +68,90 @@ def find_all(data, needle, limit=64):
     return found
 
 
+def folder_vram(project, node):
+    """VRAM with every TIM beside a file uploaded: the textures of a model
+    are the pictures shipped in its folder."""
+    import numpy as np
+    from formats.images import tim
+    vram = np.zeros((512, 1024), np.uint16)
+    folder = node.path.rsplit('/', 1)[0] + '/' if '/' in node.path else ''
+    for entry in project.disc.files:
+        rest = entry.path[len(folder):]
+        if entry.path.startswith(folder) and '/' not in rest and rest.upper().endswith('.TIM') and entry.size < 4 << 20:
+            try:
+                tim.upload(vram, tim.parse(project.disc.read(entry)))
+            except FormatError:
+                continue
+    return vram
+
+
+def stock_preview(project, node, data, result):
+    """Open a disc file that is in one of the console's stock formats, or
+    an archive of them, whatever game it belongs to."""
+    from formats.archive import containers
+    from formats.audio import smf, sources as sound, vab
+    from formats.images import tim
+    name, upper = Path(node.path).name, node.path.upper()
+    kind = containers.sniff(data)
+    entries = project.disc.entries
+    if upper.endswith('.WVD'):
+        result['audio'] = ('Sounds', name, sound.wvd_sources(data))
+    elif kind == 'TIM':
+        result['tim'] = tim.parse(data)
+    elif kind == 'TMD':
+        from formats.models import tmd
+        result['tmd'] = tmd.parse(data)
+        result['vram'] = folder_vram(project, node)
+    elif kind == 'MIDI':
+        result['audio'] = ('Music', name, sound.sequence_sources(
+            smf.to_seq(data), Path(name).stem, sound.disc_banks(project), near=node.path))
+    elif kind == 'VAB':
+        result['audio'] = ('Sounds', name, [sound.BankSource(name, vab.whole(data)[0])])
+    elif kind == 'VAB header' or upper.endswith('.VB'):
+        # A header and its waveforms are two files of one name.
+        stem = upper.rsplit('.', 1)[0]
+        head = data if kind == 'VAB header' else next(
+            (project.disc.read(entries[stem + ext]) for ext in ('.VH', '.VA') if stem + ext in entries), b'')
+        body = entries.get(stem + '.VB') if kind == 'VAB header' else node
+        if vab.header_size(head) and body is not None:
+            waves = data if body is node else project.disc.read(body)
+            result['audio'] = ('Sounds', name, [sound.BankSource(Path(stem).name, vab.canonical(head, waves))])
+    if any(key in result for key in ('audio', 'tim', 'tmd')) or data[:4] == b'pQES' \
+            or project.by_source.get(node.path) or len(data) > 48 << 20:
+        return
+    layout, items = containers.contents(data)
+    if layout in ('LVL', 'RAQ') or any(item.kind != 'Data' for item in items):
+        result['contents'] = (layout, items)
+    elif len(data) < 1 << 16 and readable(data):
+        result['text'] = readable(data)
+
+
+def readable(data):
+    """The file as text if that is what it is, else ''. Configuration and
+    script files are ASCII or Shift-JIS with ordinary line ends."""
+    raw = bytes(data).rstrip(b'\0')
+    if not raw or any(byte < 9 or 13 < byte < 32 for byte in raw):
+        return ''
+    for encoding in ('ascii', 'shift_jis'):
+        try:
+            return raw.decode(encoding)
+        except UnicodeDecodeError:
+            continue
+    return ''
+
+
+def executable_header(data):
+    """What a PS-X EXE header says, as lines for the Information tab."""
+    if bytes(data[:8]) != b'PS-X EXE' or len(data) < 0x800:
+        return ''
+    entry, _gp, base, size = struct.unpack_from('<4I', data, 0x10)
+    stack = struct.unpack_from('<I', data, 0x30)[0]
+    region = bytes(data[0x4C:0x80]).split(b'\0')[0].decode('ascii', 'replace')
+    return (f'PlayStation executable\nLoads at: 0x{base:08X}\nCode and data: {size:,} bytes '
+            f'(to 0x{base + size:08X})\nStarts at: 0x{entry:08X}\nStack: 0x{stack:08X}\n'
+            + (f'Marker: {region}\n' if region else ''))
+
+
 def prepare_preview(project, node, context=None):
     result = {"node": node, "notes": [], "data": None}
     if isinstance(node, tuple):
@@ -159,8 +243,17 @@ def prepare_preview(project, node, context=None):
             return result
         result["raw"] = project.disc.read(node, 65536)
         result["size"] = node.size
-        if node.path.upper().endswith('.STR'):
+        from formats.audio import sources as sound
+        # A file of streaming sectors is not read as bytes: its sound is in
+        # the part of each sector an ordinary read leaves out.
+        stream = sound.stream_kind(project.disc, node)
+        if stream == 'movie' or not stream and node.path.upper().endswith('.STR'):
             result['movie'] = node.path
+            return result
+        if stream:
+            first, count = project.disc.start + node.lba, (node.size + 2047) // 2048
+            source = (sound.XaSource if stream == 'xa' else sound.PcmSource)(node.path, project.disc.path, first, count)
+            result['audio'] = ('Streams' if stream == 'xa' else 'CD audio', Path(node.path).name, [source])
             return result
         if node.size > 64 * 1024 * 1024:
             result["notes"].append("Large file: preview limited to the first 64 KiB.")
@@ -168,6 +261,17 @@ def prepare_preview(project, node, context=None):
         data = project.payload(node)
         result["data"] = data
         result["size"] = len(data)
+        stock_preview(project, node, data, result)
+    if 'audio' not in result and (isinstance(node, Asset) and node.kind == 'WVD' or data[:4] == b'pQES'):
+        from formats.audio import sources as sound
+        source = node.source.path if isinstance(node, Asset) and node.source else getattr(node, 'path', '')
+        name = Path(source).name or 'Sound'
+        if data[:4] == b'pQES':
+            from formats.archive.containers import sequence
+            result['audio'] = ('Music', name, sound.sequence_sources(
+                sequence(data)[0] or data, Path(source).stem or 'Sequence', sound.disc_banks(project), near=source))
+        else:
+            result['audio'] = ('Sounds', name, sound.wvd_sources(data))
     from formats.annotate import regions
     name = Path(node.path).name.upper() if isinstance(node, DiscEntry) else ''
     kind = node.kind if isinstance(node, Asset) else 'INS' if name.startswith('X') and name.endswith('.BIN') else ''
@@ -580,14 +684,29 @@ class MainWindow(QMainWindow):
             if 'movie' in result:
                 from formats.movie.movie_panel import MoviePanel
                 self.tabs.addTab(MoviePanel(self.project, result['movie']), 'Movie')
-            if self.current_data is not None and (self.current_data.startswith(b'pQES')
-                    or isinstance(node, DiscEntry) and node.path.upper().endswith('.WVD')
-                    or isinstance(node, Asset) and node.kind == 'WVD'):
+            if 'audio' in result:
                 from formats.audio.audio_viewer import AudioView
-                source = node.source.path if isinstance(node, Asset) and node.source else node.path if isinstance(node, DiscEntry) else ''
-                self.tabs.addTab(AudioView(self.current_data, self.project, source,
-                                           self.labels, self.persist_labels),
-                                 'Music' if self.current_data.startswith(b'pQES') else 'Sounds')
+                tab, title, found = result['audio']
+                for source in found:
+                    source.labels = self.labels
+                self.tabs.addTab(AudioView(found, title, self.labels, self.persist_labels,
+                                           self.export_stem(node)), tab)
+            if 'tim' in result:
+                from formats.images.tim_viewer import TimView
+                self.tabs.addTab(TimView(result['tim']), 'Picture')
+            if 'text' in result:
+                self.tabs.addTab(text_view(result['text']), 'Text')
+            if 'tmd' in result:
+                from formats.models.tmd import jointed
+                self.model_view.set_data(result['tmd'], result['vram'], level=False, spread=jointed(result['tmd']))
+                self.tabs.addTab(self.model_view, 'Model')
+            if 'contents' in result:
+                from formats.archive.container_viewer import ContainerView
+                from formats.audio.sources import disc_banks
+                project = self.project
+                self.tabs.addTab(ContainerView(result['contents'][0], result['contents'][1], node.path,
+                                               lambda: disc_banks(project), self.labels, self.persist_labels),
+                                 'Contents')
             if "meshes" in result:
                 meshes = result['meshes']
                 keys = [labels.content_key(self.current_data[m.offset:
@@ -719,6 +838,7 @@ class MainWindow(QMainWindow):
                 text += f"Decoded bytes: {len(result['data']):,}\n"
             if result.get("raw", b"").startswith(b"GAM\0"):
                 text += "Compression: GAM LZ\nExpand this file or use Resources to select LDAR-defined ranges.\n"
+            text += executable_header(result.get("raw", b""))
         else:
             text = f"LDAR: {node[1]}\nGroup: {node[2]}\nBase VRAM is loaded first, then this group's uploads overwrite it.\n"
         if result["notes"]:

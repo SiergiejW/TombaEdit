@@ -16,6 +16,13 @@ FILES = {
     "FOUR": "graphics/border-all.png", "Unknown": "graphics/report.png",
     "LEVEL": "tomba/79.png",
 }
+# Stock PlayStation files and other games' archives, under the nearest
+# picture there is.
+for kinds, like in ((("TIM",), "GRPX"), (("TMD",), "WMD"), (("MOV",), "STR"),
+                    (("XA", "XAX", "VH", "VB", "VA", "VAB", "MID", "DA"), "SEQ"),
+                    (("LPK", "APK", "PAK", "LVL", "RAQ", "FAR", "DAT"), "GAM")):
+    for kind in kinds:
+        FILES[kind] = FILES[like]
 _cache = {}
 
 

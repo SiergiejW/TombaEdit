@@ -46,10 +46,14 @@ FILTERS = ((0, 0), (60, 0), (115, -52), (98, -55))
 
 
 def coding(byte):
-    """What a sector's coding byte says: (channels, rate, bits)."""
-    return (2 if byte & 3 else 1,
-            18900 if (byte >> 2) & 3 else 37800,
-            8 if (byte >> 4) & 3 else 4)
+    """What a sector's coding byte says: (channels, rate, bits).
+
+    Each field is two bits of which only the value 1 means the other
+    setting; the drive plays the reserved values 2 and 3 as it plays 0,
+    and some discs do carry them."""
+    return (2 if byte & 3 == 1 else 1,
+            18900 if (byte >> 2) & 3 == 1 else 37800,
+            8 if (byte >> 4) & 3 == 1 else 4)
 
 
 # How a source frames its sectors: (stride, payload offset, has subheader).

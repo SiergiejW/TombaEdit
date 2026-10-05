@@ -36,7 +36,11 @@ class MoviePanel(QWidget):
     def __init__(self, project, selected=None):
         super().__init__()
         self.project = project
-        self.entries = [e for e in project.disc.files if e.path.upper().endswith('.STR')]
+        # Movies go by .STR or .MOV; a file of either name that holds only
+        # sound is left to the sound viewer.
+        from formats.audio.sources import stream_kind
+        self.entries = [e for e in project.disc.files if e.path.upper().endswith(('.STR', '.MOV'))
+                        and (e.path == selected or stream_kind(project.disc, e) in ('movie', ''))]
         self.movie = None; self.generation = 0; self.frame_busy = False
         self.last_frame = -1; self.frames = {}
         self.pool = QThreadPool.globalInstance()
