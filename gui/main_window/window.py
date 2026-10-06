@@ -182,6 +182,28 @@ def prepare_preview(project, node, context=None):
             from formats.level.runtime import table_pages
             slot = (node.code >> 8) & 15
             result['sprite_pages'] = sprite_pages(project, node.ldar, context).get(slot, {})
+            from formats.level.scene import sprite_cluts, lend_palettes
+            result['sprite_cluts'] = dict(sprite_cluts(project, node.ldar, context).get(slot, {}))
+            # A frame this section does not place may be placed, with a
+            # palette of its object's own, in another section of the area.
+            from psx.graphics import palette_missing
+            for other in groups[1:]:
+                if other.index == context or not other.assets or not any(
+                        i not in result['sprite_cluts'] and any(palette_missing(result['vram'], part[2]) for part in frame)
+                        for i, frame in enumerate(frames)):
+                    continue
+                for frame, word in sprite_cluts(project, node.ldar, other.index).get(slot, {}).items():
+                    result['sprite_cluts'].setdefault(frame, word)
+            result['vram'], lent = lend_palettes(project, node.ldar, context, frames, result['vram'],
+                                                 result['sprite_cluts'], data)
+            if lent:
+                here = sorted({group - 1 for _, donor, group in lent if donor == node.ldar})
+                away = sorted({Path(donor).stem for _, donor, group in lent if donor != node.ldar})
+                result['notes'].append(
+                    f'{len(lent)} palettes this section does not load were taken from '
+                    + ' and '.join(filter(None, (
+                        here and 'section ' + ', '.join(f'{s:02d}' for s in here) + ' of the area',
+                        away and 'the same bank in ' + ', '.join(away)))) + '.')
             from psx.graphics import guess_page
             # Pages where this bank's own group, then the section, start a
             # texture upload.
@@ -196,7 +218,7 @@ def prepare_preview(project, node, context=None):
                                   area_of(node.ldar), context - 1)
             if town is not None and slot == town.bank:
                 result['sprite_pages'].update(town.pages)
-                result['sprite_cluts'] = town.cluts
+                result['sprite_cluts'].update(town.cluts)
             # Tomba's own banks have no pixels in VRAM; a picture bank with
             # one entry per frame supplies them.
             for candidate in loaded:

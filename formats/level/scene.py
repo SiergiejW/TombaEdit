@@ -571,10 +571,11 @@ def sprite_pages(project, path, index):
     from every object the load group places. The SPR viewer uses them to draw
     a bank the way the level does."""
     cache = project.__dict__.setdefault('sprite_page_cache', {})
+    palettes = project.__dict__.setdefault('sprite_clut_cache', {})
     if (path, index) not in cache:
         resources = loaded_resources(project, path, index)
         resolver = InitialPoseResolver(project, area_of(path), max(0, index - 1), resources)
-        pages = {}
+        pages, cluts = {}, {}
         for (kind, slot), asset in resources.items():
             if kind != 'APD' or not resolver.available:
                 continue
@@ -587,5 +588,64 @@ def sprite_pages(project, path, index):
                 if 'sprite' in visual:
                     for frame, _ in visual['frames']:
                         pages.setdefault(visual['sprite'], {}).setdefault(frame, visual['tpage'])
+                        if visual.get('clut') is not None:
+                            cluts.setdefault(visual['sprite'], {}).setdefault(frame, visual['clut'] & 0x7FFF)
         cache[path, index] = pages
+        palettes[path, index] = cluts
     return cache[path, index]
+
+
+def sprite_cluts(project, path, index):
+    """Palettes by SPR slot and frame, {slot: {frame: CLUT word}}, for the
+    frames whose object draws them through a palette of its own instead of
+    the one stored in their parts."""
+    sprite_pages(project, path, index)
+    return project.sprite_clut_cache[path, index]
+
+
+def same_banks(project, data):
+    """Load tables of other areas that hold this very sprite bank. Areas
+    share enemies and items by carrying a copy of the bank each."""
+    import hashlib
+    index = project.__dict__.get('sprite_bank_index')
+    if index is None:
+        index = project.__dict__['sprite_bank_index'] = {}
+        for path, groups in project.ldars.items():
+            for group in groups:
+                for asset in group.assets:
+                    if asset.kind == 'SPR' and asset.source is not None:
+                        try:
+                            digest = hashlib.sha1(project.asset_data(asset)).digest()
+                        except FormatError:
+                            continue
+                        index.setdefault(digest, [])
+                        if path not in index[digest]:
+                            index[digest].append(path)
+    return index.get(hashlib.sha1(data).digest(), [])
+
+
+def lend_palettes(project, path, index, frames, vram, cluts=None, data=None):
+    """(VRAM, [(CLUT word, load table, group it came from)]) with the
+    palettes a bank needs and this section has not loaded copied in from
+    sections that have: the other sections of the area first, since a bank
+    in the base group is shared and each section loads the palettes for
+    what it shows of it, then the sections of any area that carries the
+    same bank (`data`)."""
+    from psx.graphics import palette_missing
+    wanted = {part[2] & 0x7FFF for frame in frames for part in frame} | set((cluts or {}).values())
+    missing = sorted(word for word in wanted if palette_missing(vram, word))
+    lent = []
+    if missing:
+        vram = vram.copy()
+        donors = [path] + [other for other in (same_banks(project, data) if data is not None else []) if other != path]
+        for word in missing:
+            x, y = (word & 63) * 16, (word >> 6) & 511
+            for donor in donors:
+                group = next((g.index for g in project.ldars[donor][1:] if g.assets
+                              and (donor, g.index) != (path, index)
+                              and not palette_missing(project.vram(donor, g.index), word)), None)
+                if group is not None:
+                    vram[y, x:x + 16] = project.vram(donor, group)[y, x:x + 16]
+                    lent.append((word, donor, group))
+                    break
+    return vram, lent
