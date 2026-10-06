@@ -1,6 +1,7 @@
 """Disc folders and LDAR area/section browser."""
 from pathlib import Path
 import struct
+import sys
 import traceback
 from PyQt6.QtCore import Qt, QSize, QSettings, QObject, QRunnable, QThreadPool, pyqtSignal
 from PyQt6.QtGui import QAction, QActionGroup, QKeySequence
@@ -367,6 +368,7 @@ class MainWindow(QMainWindow):
         self.file_items = {}
         self.tree_icons = {}
         self.labels = labels.LabelSet()
+        self.builtin_labels = {}
         self.label_hashes = {}
         self.persistent = set()
         self.sprite_states = {}
@@ -414,6 +416,9 @@ class MainWindow(QMainWindow):
         self.action(label_menu, 'Rename selected...', self.rename_selected, 'F2')
         self.action(label_menu, 'Import labels...', self.import_labels)
         self.action(label_menu, 'Export labels...', self.export_labels)
+        if not getattr(sys, 'frozen', False):
+            # Running from source: names can be made part of the tool.
+            self.action(label_menu, 'Save as built-in labels', self.save_builtin_labels)
         help_menu = self.menuBar().addMenu("&Help")
         self.action(help_menu, "About / supported formats", self.about)
         toolbar = QToolBar("File", self)
@@ -551,13 +556,26 @@ class MainWindow(QMainWindow):
         self.label_hashes.clear()
         serial = Path(project.catalog.executable).name if project.catalog else project.disc.volume
         self.labels = labels.LabelSet(name=project.disc.source.stem, build=serial, serial=serial)
+        # The names that come with the tool for this build, from its labels
+        # folder; names given on this machine are laid over them.
+        self.builtin_labels = {}
+        try:
+            shipped = labels.load(self.builtin_path(serial))
+            self.labels.entries.update(shipped.entries)
+            self.labels.bins.update(shipped.bins)
+            self.labels.areas.update(shipped.areas)
+            self.builtin_labels = {key: entry.name for key, entry in shipped.entries.items()}
+        except ValueError:
+            pass
         saved = self.settings.value('labels/' + serial, '')
         if saved:
             try:
-                import json
                 # Load through the same validated parser as an imported file.
                 from game.label_store import from_json
-                self.labels = from_json(saved)
+                own = from_json(saved)
+                self.labels.entries.update(own.entries)
+                self.labels.bins.update(own.bins)
+                self.labels.areas.update(own.areas)
             except (ValueError, TypeError):
                 pass
         self.context.hide()
@@ -1059,7 +1077,32 @@ class MainWindow(QMainWindow):
         import json
         from game.label_store import document
         serial = Path(self.project.catalog.executable).name if self.project.catalog else self.project.disc.volume
-        self.settings.setValue('labels/' + serial, json.dumps(document(self.labels)))
+        # Only what differs from the names that come with the tool is kept
+        # here, so a later release's names are not hidden by old copies.
+        own = labels.LabelSet(name=self.labels.name, build=self.labels.build, serial=self.labels.serial,
+                              bins=self.labels.bins, areas=self.labels.areas,
+                              entries={key: entry for key, entry in self.labels.entries.items()
+                                       if entry.name != self.builtin_labels.get(key, '')})
+        self.settings.setValue('labels/' + serial, json.dumps(document(own)))
+
+    def builtin_path(self, serial):
+        return str(Path(labels.labels_dir()) / (serial + '.json'))
+
+    def save_builtin_labels(self):
+        """Write every name into the labels folder, as the set that is
+        packaged with the tool for this build of the game."""
+        if self.project is None:
+            return
+        path = self.builtin_path(self.labels.serial)
+        try:
+            Path(path).parent.mkdir(exist_ok=True)
+            labels.save(self.labels, path, keep_existing=False)
+        except OSError as exc:
+            QMessageBox.warning(self, 'Cannot save labels', str(exc))
+            return
+        self.builtin_labels = {key: entry.name for key, entry in self.labels.entries.items()}
+        self.persist_labels()
+        self.statusBar().showMessage(f'{self.labels.named} names written to {path}')
 
     def rename_selected(self):
         node = self.current_node

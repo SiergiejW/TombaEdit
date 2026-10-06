@@ -16,6 +16,7 @@ from PyQt6.QtWidgets import (QWidget, QVBoxLayout, QHBoxLayout, QLabel, QSpinBox
     QPushButton, QSplitter, QTableWidget, QTableWidgetItem, QAbstractItemView,
     QHeaderView, QFileDialog, QMessageBox, QCheckBox, QComboBox, QMenu, QInputDialog)
 from gui.widgets.image_view import ImageView, file_stem
+from gui.widgets.sheet_layout import SpacingControls
 from game.labels import content_key
 from formats.images.vram_viewer import VramView
 from disc.reader import FormatError
@@ -27,6 +28,9 @@ PART_COLOURS = ((255, 80, 80, 255), (80, 220, 255, 255), (255, 220, 60, 255), (1
 
 
 FRAME_COLOUR = (255, 255, 255, 255)
+# Shades of a sprite's box where the origin's column or row crosses it: the
+# darkest in line with the origin, lighter one and two pixels to each side.
+ORIGIN_SHADES = (30, 115, 190)
 
 LABEL = 6   # the bank list's column of labels
 
@@ -70,8 +74,9 @@ class SpriteView(QWidget):
         self.origin.setChecked(True)
         self.origin.toggled.connect(self.refresh)
         bar.addWidget(self.origin)
-        self.frame_bounds = QCheckBox('Sprite bounds')
-        self.frame_bounds.setToolTip('Draw a box around every sprite, on its own and on a sheet. '
+        self.frame_bounds = QCheckBox('Bounds')
+        self.frame_bounds.setToolTip('Draw a box round every sprite, one pixel outside it, on its own and on a sheet, with dark '
+                                     'marks on it in line with the sprite\'s origin. '
                                      'Saved pictures include the boxes while this is ticked.')
         self.frame_bounds.toggled.connect(self.refresh)
         bar.addWidget(self.frame_bounds)
@@ -99,6 +104,9 @@ class SpriteView(QWidget):
         self.page_base.setVisible(renderer is None)
         bar.addWidget(self.page_label)
         bar.addWidget(self.page_base)
+        self.spacing = SpacingControls()
+        self.spacing.changed.connect(self.refresh)
+        bar.addWidget(self.spacing)
         bar.addStretch()
         layout.addLayout(bar)
         export_bar = QHBoxLayout()
@@ -284,12 +292,29 @@ class SpriteView(QWidget):
                     grey_missing=self.grey.isChecked())
             except FormatError:
                 self.cache[index] = Image.new('RGBA', (1, 1))
-        image = self.cache[index]
+        image, border = self.cache[index], 0
         if self.bounds.isChecked() and self.frames[index]:
             image = self.outlined(image, self.frames[index])
         if self.frame_bounds.isChecked() and self.frames[index]:
-            image = image.copy()
-            ImageDraw.Draw(image).rectangle((0, 0, image.width - 1, image.height - 1), outline=FRAME_COLOUR)
+            # The box goes round the sprite, one pixel outside its own.
+            framed = Image.new('RGBA', (image.width + 2, image.height + 2))
+            framed.alpha_composite(image, (1, 1))
+            image, border = framed, 1
+            draw = ImageDraw.Draw(image)
+            right, bottom = image.width - 1, image.height - 1
+            draw.rectangle((0, 0, right, bottom), outline=FRAME_COLOUR)
+            # The box is darkened in the column and the row of the sprite's
+            # origin, where they fall inside it: two marks for each.
+            x = 1 - min(part[13] for part in self.frames[index])
+            y = 1 - min(part[14] for part in self.frames[index])
+            for step, shade in reversed(list(enumerate(ORIGIN_SHADES))):
+                colour = (shade, shade, shade, 255)
+                if 0 < x < right:
+                    for edge in (0, bottom):
+                        draw.line((max(0, x - step), edge, min(right, x + step), edge), fill=colour)
+                if 0 < y < bottom:
+                    for edge in (0, right):
+                        draw.line((edge, max(0, y - step), edge, min(bottom, y + step)), fill=colour)
         if not origin or not self.frames[index]:
             return image
         bounds = [part for frame in self.frames for part in frame]
@@ -297,7 +322,7 @@ class SpriteView(QWidget):
         top = min([part[14] for part in bounds] + [0])
         right = max([part[13]+part[9] for part in bounds] + [1])
         bottom = max([part[14]+part[10] for part in bounds] + [1])
-        out = Image.new('RGBA', (right-left, bottom-top))
+        out = Image.new('RGBA', (right-left + 2*border, bottom-top + 2*border))
         out.alpha_composite(image, (min(p[13] for p in self.frames[index])-left,
                                     min(p[14] for p in self.frames[index])-top))
         return out
@@ -438,15 +463,14 @@ class SpriteView(QWidget):
     def sheet(self, indices):
         if not indices:
             return Image.new('RGBA', (1, 1)), []
-        images = [self.frame_image(i, self.origin.isChecked()) for i in indices]
-        width = max(im.width for im in images) + 8
-        height = max(im.height for im in images) + 8
-        cols = max(1, math.ceil(math.sqrt(len(indices))))
-        out = Image.new('RGBA', (width*cols, height*math.ceil(len(indices)/cols)))
+        # Packed, each sprite is cut to its own pixels; the room round its
+        # origin is only kept where every sprite has an equal cell.
+        origin = self.origin.isChecked() and self.spacing.even.isChecked()
+        images = [self.frame_image(i, origin) for i in indices]
+        places, size = self.spacing.arrange([im.size for im in images])
+        out = Image.new('RGBA', size)
         records = []
-        draw = ImageDraw.Draw(out)
-        for n, (index, image) in enumerate(zip(indices, images)):
-            x, y = n%cols*width, n//cols*height
+        for index, image, (x, y) in zip(indices, images, places):
             out.alpha_composite(image, (x, y))
 
             records.append(dict(sprite=index, x=x, y=y, width=image.width, height=image.height))

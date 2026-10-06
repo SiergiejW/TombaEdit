@@ -15,13 +15,14 @@ import PyQt6
 plugins = Path(PyQt6.__file__).parent / 'Qt6' / 'plugins' / 'multimedia'
 multimedia = [(str(path), 'PyQt6/Qt6/plugins/multimedia')
               for path in plugins.iterdir() if path.is_file()] if plugins.is_dir() else []
+label_files = [(str(path), 'labels') for path in (ROOT / 'labels').glob('*.json')]
 app_icon = ROOT / 'icons' / 'tomba' / ('tomba1.png' if sys.platform == 'darwin' else 'tomba1.ico')
 
 a = Analysis(
     ['main.py'],
     pathex=[str(ROOT)],
     binaries=collect_dynamic_libs('unicorn'),
-    datas=icon_files + text_files + multimedia,
+    datas=icon_files + text_files + multimedia + label_files,
     hiddenimports=['PyQt6.QtMultimedia', 'formats.movie.movie_panel',
                    'formats.audio.audio_viewer', 'formats.images.clut_viewer',
                    'formats.collision.structured_viewer',

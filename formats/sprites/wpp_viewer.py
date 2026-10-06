@@ -9,6 +9,7 @@ from PyQt6.QtWidgets import (QWidget, QVBoxLayout, QHBoxLayout, QLabel, QComboBo
     QPushButton, QSplitter, QTableWidget, QTableWidgetItem, QAbstractItemView,
     QHeaderView, QFileDialog, QMessageBox)
 from gui.widgets.image_view import ImageView, file_stem
+from gui.widgets.sheet_layout import SpacingControls
 
 
 class WppView(QWidget):
@@ -32,10 +33,13 @@ class WppView(QWidget):
         self.palette = QComboBox()
         self.palette.currentIndexChanged.connect(self.choose_palette)
         bar.addWidget(self.palette)
-        self.bounds = QCheckBox('Picture bounds')
-        self.bounds.setToolTip('Draw a box around every picture. Saved pictures include it while this is ticked.')
+        self.bounds = QCheckBox('Bounds')
+        self.bounds.setToolTip('Draw a box round every picture, one pixel outside it. Saved pictures include it while this is ticked.')
         self.bounds.toggled.connect(self.refresh)
         bar.addWidget(self.bounds)
+        self.spacing = SpacingControls()
+        self.spacing.changed.connect(self.refresh)
+        bar.addWidget(self.spacing)
         bar.addStretch()
         layout.addLayout(bar)
         saves = QHBoxLayout()
@@ -154,8 +158,11 @@ class WppView(QWidget):
     def render(self, picture):
         image = picture.image(self.colours(picture))
         if self.bounds.isChecked():
-            image = image.copy()
-            ImageDraw.Draw(image).rectangle((0, 0, image.width - 1, image.height - 1), outline=(255, 255, 255, 255))
+            # The box goes round the picture, one pixel outside its own.
+            framed = Image.new('RGBA', (image.width + 2, image.height + 2))
+            framed.alpha_composite(image.convert('RGBA'), (1, 1))
+            ImageDraw.Draw(framed).rectangle((0, 0, framed.width - 1, framed.height - 1), outline=(255, 255, 255, 255))
+            return framed
         return image
 
     def selected_rows(self):
@@ -178,15 +185,12 @@ class WppView(QWidget):
             self.refresh()
 
     def sheet(self, rows):
-        """Pictures laid out on a grid, and where each one landed."""
+        """Pictures laid out on one sheet, and where each one landed."""
         images = [self.render(self.pictures[row]) for row in rows]
-        width = max(im.width for im in images) + 4
-        height = max(im.height for im in images) + 4
-        columns = max(1, math.ceil(math.sqrt(len(images) * height / width)))
-        sheet = Image.new('RGBA', (width * columns, height * math.ceil(len(images) / columns)))
+        places, size = self.spacing.arrange([im.size for im in images])
+        sheet = Image.new('RGBA', size)
         records = []
-        for n, (row, image) in enumerate(zip(rows, images)):
-            x, y = n % columns * width, n // columns * height
+        for row, image, (x, y) in zip(rows, images, places):
             sheet.alpha_composite(image, (x, y))
             records.append(dict(picture=self.pictures[row].index, x=x, y=y, width=image.width, height=image.height))
         return sheet, records
