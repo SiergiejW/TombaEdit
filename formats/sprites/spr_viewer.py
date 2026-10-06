@@ -6,6 +6,7 @@ selected pieces, the sprite or the whole bank through that palette, and
 selecting a sprite or a piece moves it to the palette they use and outlines
 where in VRAM their pixels come from.
 """
+from gui.console import announce
 import json
 import math
 from pathlib import Path
@@ -181,7 +182,10 @@ class SpriteView(QWidget):
         if self.page_base.value() >= 0:
             return self.page_base.value()
         if self.known:
-            return self.pages[min(self.known, key=lambda frame: abs(frame - index))]
+            # A character's frames follow one another, so a frame nothing
+            # places goes with the last placed frame before it.
+            before = [frame for frame in self.known if frame <= index]
+            return self.pages[before[-1] if before else self.known[0]]
         if self.guess is None:
             self.guess = guess_page(self.frames, self.vram)
         return self.guess
@@ -259,7 +263,7 @@ class SpriteView(QWidget):
             self.info.setText(self.info.text() + ' | palette row empty in this VRAM'
                               + (', shown in grey' if self.grey.isChecked() else ''))
         self.show_in_vram()
-        print(f'selected: sprite {row:03d} | {len(frame)} pieces'
+        announce(f'sprite {row:03d} | {len(frame)} pieces'
               + ('' if self.renderer or not frame else f' | texture page base 0x{self.base_for(row):X}'))
 
     def frame_sprite(self, row, column):

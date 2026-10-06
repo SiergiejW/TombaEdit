@@ -1,4 +1,5 @@
 """Section scene inspection using the standard model viewer controls."""
+from gui.console import announce
 from PyQt6.QtCore import Qt, QTimer, pyqtSignal
 from PyQt6.QtGui import QAction, QColor, QIcon, QPixmap
 from PyQt6.QtWidgets import QHBoxLayout, QLabel, QComboBox, QPushButton, QStyle, QTabWidget
@@ -435,7 +436,7 @@ class LevelView(ModelView):
             self.details.setPlainText(f'{entry.name}\n{entry.source.label}\n\n' + self.details.toPlainText())
         else:
             self.show_entry(selected[0])
-        print('selected: ' + self.describe(selected[0]))
+        announce('' + self.describe(selected[0]))
         self.canvas.update()
 
     def open_asset(self):

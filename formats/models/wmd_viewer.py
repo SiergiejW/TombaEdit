@@ -1,4 +1,5 @@
 """Classic Qt image, dialogue, sprite and interactive OpenGL mesh viewers."""
+from gui.console import announce
 import math
 import numpy as np
 from PIL import Image
@@ -790,7 +791,7 @@ class ModelView(QWidget):
         self.show_polygon(None)
         self.canvas.update()
         if 0 <= row < len(self.canvas.meshes) and self.objects.item(row, 4):
-            print('selected: ' + self.describe(row))
+            announce('' + self.describe(row))
 
     def describe(self, row):
         return (f'{self.objects.item(row, 1).text()} | '

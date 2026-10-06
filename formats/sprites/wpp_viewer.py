@@ -1,4 +1,5 @@
 """Browser for WPP picture banks."""
+from gui.console import announce
 import json
 import math
 from pathlib import Path
@@ -169,7 +170,7 @@ class WppView(QWidget):
         else:
             self.refresh()
         picture = self.pictures[row]
-        print(f'selected: WPP picture {picture.index:03d} | {picture.width} x {picture.height} | '
+        announce(f'WPP picture {picture.index:03d} | {picture.width} x {picture.height} | '
               f'{picture.packed:,} packed bytes @ 0x{picture.offset:06X}')
 
     def selection_changed(self):

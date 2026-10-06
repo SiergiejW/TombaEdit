@@ -1,4 +1,5 @@
 """The contents of an archive, each entry opened in the viewer for its kind."""
+from gui.console import announce
 from pathlib import Path
 import numpy as np
 from PyQt6.QtCore import Qt
@@ -143,7 +144,7 @@ class ContainerView(QWidget):
             self.show_widget(self.viewer(item, data))
         except Exception as exc:
             self.show_widget(text_view(f'{item.name}: {exc}'))
-        print(f'selected: {self.name} entry {item.name} | {item.kind} | offset 0x{item.offset:X}, {item.size:,} bytes'
+        announce(f'{self.name} entry {item.name} | {item.kind} | offset 0x{item.offset:X}, {item.size:,} bytes'
               + (f' | {item.note}' if item.note else ''))
 
     def viewer(self, item, data):

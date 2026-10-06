@@ -1,4 +1,5 @@
 """Read-only views for indexed and less documented LDAR data."""
+from gui.console import announce
 import struct
 import colorsys
 import numpy as np
@@ -170,4 +171,4 @@ class CollisionMapView(QWidget):
     def select(self, x, y):
         self.selected.setText(f'Cell ({x}, {y}) | value {int(self.pixels[y, x])} '
                               f'| 0x{int(self.pixels[y, x]):02X}')
-        print('selected: CLM ' + self.selected.text())
+        announce('CLM ' + self.selected.text())

@@ -1,4 +1,5 @@
 """Bank, plane and original-record inspection for a level's WHM overlay."""
+from gui.console import announce
 import numpy as np
 from PyQt6.QtCore import Qt, QEvent, QSettings
 from PyQt6.QtGui import QVector4D
@@ -138,7 +139,7 @@ class CollisionInspector(QWidget):
         canvas.selected = None; canvas.selected_model = None
         canvas.selection_lines = self.selected.points
         self.viewer.details.setPlainText(describe(self.selected))
-        print('selected: collision | ' + describe(self.selected).replace('\n', ' | '))
+        announce('collision | ' + describe(self.selected).replace('\n', ' | '))
         canvas.update()
 
     def frame(self):

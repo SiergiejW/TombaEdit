@@ -156,6 +156,13 @@ def sprite_part_image(page, part):
         return tile
     uv = np.asarray(((part[0], part[1]), (part[3], part[4]),
                      (part[7], part[8]), (part[11], part[12])), np.float64)
+    # Most parts name their last texel; some name the one after it, the way
+    # a quad's far edge is not drawn. Such an edge is the part's own width or
+    # height away from its start, and is brought in by one.
+    for end, start, axis, extent in ((1, 0, 0, w), (3, 2, 0, w), (2, 0, 1, h), (3, 1, 1, h)):
+        delta = uv[end, axis] - uv[start, axis]
+        if abs(delta) == extent and extent > 1:
+            uv[end, axis] -= np.sign(delta)
     # UV bytes wrap at the page boundary. Use the screen extent to distinguish
     # a wrapped edge from an intentionally reversed edge.
     for end, start, extent in ((1, 0, w), (2, 0, h), (3, 2, w), (3, 1, h)):

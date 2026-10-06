@@ -1,4 +1,5 @@
 """Preview model deformation banks with compatible WMD source geometry."""
+from gui.console import announce
 from PyQt6.QtCore import Qt, QTimer
 from PyQt6.QtWidgets import QHBoxLayout, QLabel, QComboBox, QSlider, QPushButton
 from formats.models.four import deform, topology
@@ -86,7 +87,7 @@ class FourView(ModelView):
         changed = deform(mesh, self.morphs[pose], self.weight.value())
         if reset:
             self.set_data([changed], self.vram, 0x5080, {0: label}, level=False)
-            print(f'selected: deformation {pose:03d} on {label}')
+            announce(f'deformation {pose:03d} on {label}')
         else:
             self.canvas.meshes = [changed]
             self.canvas.selected = None

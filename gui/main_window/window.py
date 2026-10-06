@@ -846,6 +846,11 @@ class MainWindow(QMainWindow):
                                          f'first {shown:,} of {node.size:,} bytes on disc'), "Disc hex")
             # Exports are offered under the name of what is open.
             stem = self.export_stem(node)
+            from gui import console
+            where = (f'{node.ldar} group {node.group}' if isinstance(node, Asset) else
+                     node.path if isinstance(node, DiscEntry) else f'{node[1]} group {node[2]}')
+            console.context = ' | '.join(dict.fromkeys(
+                ((node.label,) if isinstance(node, Asset) else ()) + (where, stem)))
             for i in range(self.tabs.count()):
                 widget = self.tabs.widget(i)
                 for viewer in [widget] + widget.findChildren(ImageView):

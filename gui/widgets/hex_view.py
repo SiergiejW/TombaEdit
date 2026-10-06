@@ -5,6 +5,7 @@ than a kilobyte. Regions come from formats/annotate.py: each is painted in
 the colour of its group, described in the line under the table when a byte
 in it is selected, and listed on the right for jumping to.
 """
+from gui.console import announce
 from bisect import bisect_right
 import struct
 from PyQt6.QtCore import Qt, QAbstractTableModel, QModelIndex, QEvent
@@ -241,6 +242,6 @@ class HexView(QWidget):
         if region is not None:
             text += (f'\n{region.name} (0x{self.model.base + region.start:X}, {region.end - region.start} bytes)'
                      + (f': {region.detail}' if region.detail else ''))
-            print(f'selected: byte 0x{self.model.base + offset:X} | {region.name}'
+            announce(f'byte 0x{self.model.base + offset:X} | {region.name}'
                   + (f' | {region.detail}' if region.detail else ''))
         self.info.setText(text)

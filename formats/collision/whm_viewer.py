@@ -1,4 +1,5 @@
 """Interactive X/Y viewer for Tomba 1 WHM collision planes."""
+from gui.console import announce
 from collections import Counter
 
 from PyQt6.QtCore import Qt, pyqtSignal, QSettings
@@ -271,4 +272,4 @@ class WhmView(QWidget):
                 f'{" | " + name if name else ""} | parameter 0x{span.parameter:04X} | '
                 f'file offset 0x{span.offset:06X}')
         self.details.setText(text)
-        print('selected: WHM span | ' + text.replace('\n', ' | '))
+        announce('WHM span | ' + text.replace('\n', ' | '))

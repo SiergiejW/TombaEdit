@@ -16,6 +16,7 @@ Zoom and pan draw a source rectangle of one unscaled pixmap, so the cost of
 a repaint does not grow with the zoom.
 """
 import colorsys
+from gui.console import announce
 import numpy as np
 from PyQt6.QtCore import QPointF, QRectF, Qt, QTimer, pyqtSignal
 from PyQt6.QtGui import QColor, QImage, QPainter, QPen, QPixmap, QPolygonF
@@ -460,7 +461,7 @@ class VramView(QWidget):
         """The user chose a palette: show it and tell whoever is listening."""
         self.show_clut(word)
         x, y = clut_xy(self.clut)
-        print(f'selected: CLUT 0x{self.clut:04X} @ ({x}, {y}) ({self.name})')
+        announce(f'CLUT 0x{self.clut:04X} @ ({x}, {y}) ({self.name})')
         self.clut_picked.emit(self.clut)
 
     def set_clut(self, word, announce=True):
