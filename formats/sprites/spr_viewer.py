@@ -370,6 +370,7 @@ class SpriteView(QWidget):
             self.info.setText('No sprites in this bank')
             return
         if self.whole.isChecked():
+            subject = ('bank',)
             image, _ = self.sheet(list(range(len(self.frames))))
             self.parts.setRowCount(0)
             self.info.setText(f'Whole bank | {len(self.frames)} sprites')
@@ -378,11 +379,13 @@ class SpriteView(QWidget):
                                   'name is empty in this VRAM. Try another texture page base or section.')
         elif len(self.selected_indices()) > 1:
             indices = self.selected_indices()
+            subject = ('sheet', tuple(indices))
             image, _ = self.sheet(indices)
             self.parts.setRowCount(0)
             self.info.setText(f'{len(indices)} selected sprites | {image.width} x {image.height}')
         else:
             index = min(self.frame_index, len(self.frames)-1)
+            subject = ('sprite', index)
             image = self.frame_image(index, self.origin.isChecked())
             frame = self.frames[index]
             selected_parts = {item.row() for item in self.parts.selectedItems()}
@@ -405,7 +408,7 @@ class SpriteView(QWidget):
             self.info.setText(f'Sprite {index:03d} | {len(frame)} pieces | {image.width} x {image.height}')
         if self.clut_overrides:
             self.info.setText(self.info.text() + ' | Recoloured from the crosshair; PNG exports include it')
-        self.image.set_image(image, preserve_view=self.image.image is not None)
+        self.image.set_image(image, subject=subject)
 
     def selected_indices(self):
         return sorted({item.row() for item in self.bank.selectedItems()})

@@ -39,7 +39,7 @@ class MeshCanvas(CameraEventMixin, QOpenGLWidget):
         self.textured = True
         self.colored = True
         self.wireframe = False
-        self.backface_culling = False
+        self.backface_culling = True
         self.show_origin = False
         self.spread = True
         self.spread_offsets = {}
@@ -67,6 +67,7 @@ class MeshCanvas(CameraEventMixin, QOpenGLWidget):
         self.highlight = True
         self.selection_outline = True
         self.selection_types = []
+        self.selection_colors = []      # per mesh, or empty for the stock ones
         self.outline_cache = None
         self.panorama_cache = None
         self.backdrop_rects = {}
@@ -309,8 +310,15 @@ class MeshCanvas(CameraEventMixin, QOpenGLWidget):
         gl.glPolygonMode(gl.GL_FRONT_AND_BACK, gl.GL_LINE if self.wireframe else gl.GL_FILL)
         gl.glEnableClientState(gl.GL_VERTEX_ARRAY)
         gl.glEnableClientState(gl.GL_COLOR_ARRAY)
-        order = self.flat_order if self.flat_mode else range(len(self.meshes))
-        for i in order:
+        # Semi-transparent primitives are drawn after everything solid, so
+        # what is behind them is there to blend with. A flat scene is painted
+        # in the game's own order instead, each object whole.
+        if self.flat_mode:
+            order = [(None, i) for i in self.flat_order]
+        else:
+            order = [(False, i) for i in range(len(self.meshes))] + [
+                (True, i) for i, mesh in enumerate(self.meshes) if any(key[2] for key in mesh.batches)]
+        for blended, i in order:
             mesh = self.meshes[i]
             if i not in self.visible:
                 continue
@@ -329,6 +337,10 @@ class MeshCanvas(CameraEventMixin, QOpenGLWidget):
             if billboard:
                 gl.glDisable(gl.GL_CULL_FACE)
             for (page, clut, semi), (vertices, uv, colors) in mesh.batches.items():
+                if blended is not None and semi != blended:
+                    continue
+                if semi:
+                    self.blend(gl, page)
                 use_texture = self.textured and (page >= 0 or mesh.image is not None)
                 if use_texture:
                     key = ('image', id(mesh.image)) if mesh.image is not None else (page, clut)
@@ -365,6 +377,10 @@ class MeshCanvas(CameraEventMixin, QOpenGLWidget):
                     drawn[:, 2] = 0
                 gl.glVertexPointer(3, gl.GL_FLOAT, 0, drawn)
                 gl.glDrawArrays(gl.GL_TRIANGLES, 0, len(vertices))
+                if semi:
+                    gl.glBlendEquation(gl.GL_FUNC_ADD)
+                    gl.glDisable(gl.GL_BLEND)
+                    gl.glDepthMask(gl.GL_TRUE)
             gl.glPopMatrix()
             if local_depth:
                 gl.glDisable(gl.GL_DEPTH_TEST)
@@ -418,7 +434,10 @@ class MeshCanvas(CameraEventMixin, QOpenGLWidget):
             model_index, p = self.selected
             order = [0, 1, 3, 2] if len(p['vertices']) == 4 else [0, 1, 2]
             gl.glDisable(gl.GL_DEPTH_TEST)
-            gl.glColor3f(*POLYGON_OUTLINE)
+            # A sprite or marker is one rectangle, drawn in its class colour;
+            # a polygon picked inside a model stands out from the model's.
+            flat_card = self.meshes[model_index].image is not None or len(self.meshes[model_index].polygons) == 1
+            gl.glColor3f(*(self.outline_color(model_index) if flat_card else POLYGON_OUTLINE))
             gl.glLineWidth(2)
             gl.glBegin(gl.GL_LINE_LOOP)
             for i in order:
@@ -497,13 +516,37 @@ class MeshCanvas(CameraEventMixin, QOpenGLWidget):
         gl.glPopMatrix()
         gl.glMatrixMode(gl.GL_MODELVIEW)
 
+    @staticmethod
+    def blend(gl, page):
+        """Set up one of the console's four blends, chosen by bits 5 and 6
+        of the texture page word: the average of what is there and the new
+        pixel, their sum, their difference, or the old plus a quarter of the
+        new. The console blends only texels flagged for it and draws the
+        rest of the primitive solid; the flag is not kept with the decoded
+        texture, so the whole primitive is blended here."""
+        mode = (page >> 5) & 3 if page >= 0 else 0
+        gl.glEnable(gl.GL_BLEND)
+        gl.glDepthMask(gl.GL_FALSE)
+        gl.glBlendColor(0, 0, 0, .25 if mode == 3 else .5)
+        gl.glBlendEquation(gl.GL_FUNC_REVERSE_SUBTRACT if mode == 2 else gl.GL_FUNC_ADD)
+        if mode == 0:
+            gl.glBlendFunc(gl.GL_CONSTANT_ALPHA, gl.GL_CONSTANT_ALPHA)
+        elif mode == 3:
+            gl.glBlendFunc(gl.GL_CONSTANT_ALPHA, gl.GL_ONE)
+        else:
+            gl.glBlendFunc(gl.GL_ONE, gl.GL_ONE)
+
+    def outline_color(self, index):
+        """The class colour of a mesh where the viewer was given one."""
+        return self.selection_colors[index] if index < len(self.selection_colors) else POLYGON_OUTLINE
+
     def paint_selection(self, gl):
         index = self.selected_model
         if index is None or index not in self.visible:
             return
         gl.glDisable(gl.GL_DEPTH_TEST)
         gl.glDisable(gl.GL_CULL_FACE)
-        gl.glColor3f(*POLYGON_OUTLINE)
+        gl.glColor3f(*self.outline_color(index))
         gl.glLineWidth(2.)
         if index in self.backdrop_rects and self.show_backdrop:
             width = 240 * self.width() / max(1, self.height())
@@ -524,7 +567,8 @@ class MeshCanvas(CameraEventMixin, QOpenGLWidget):
             points = self.displayed_vertices(mesh, self.outline_cache[1]) + self.offset_for(index)
             if len(points):
                 kind = self.selection_types[index] if index < len(self.selection_types) else 'Models'
-                color = (POLYGON_OUTLINE if mesh.image is not None else
+                color = (self.selection_colors[index] if index < len(self.selection_colors) else
+                         POLYGON_OUTLINE if mesh.image is not None else
                          GEOMETRY_OUTLINE if kind == 'Geometry' else MODEL_OUTLINE)
                 gl.glColor3f(*color)
                 if self.flat_mode and mesh.image is not None:
@@ -622,7 +666,7 @@ class ModelView(QWidget):
             'Texture Mode', lambda value: self.toggle('textured', value), True)
         self.texture_action.setToolTip('Show CLUT textures. Turn off to inspect WMD vertex colours.')
         self.culling_action = add_action(QStyle.StandardPixmap.SP_DialogNoButton,
-            'Backface Culling', lambda value: self.toggle('backface_culling', value), False)
+            'Backface Culling', lambda value: self.toggle('backface_culling', value), True)
         self.spread_action = add_action(QStyle.StandardPixmap.SP_FileDialogDetailedView,
             'Spread Parts', self.toggle_spread, True)
         self.spread_action.setToolTip('Lay every model on a numbered grid, as in the Tomba2Edit SMST viewer.')

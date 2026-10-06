@@ -31,6 +31,20 @@ class SceneEntry:
     animation_address: int = None
     draw_bucket: float = 0
 
+    @property
+    def object_class(self):
+        """What kind of thing this is: the APD layer and type of a placed
+        object, which pick its routine, or what the entry is otherwise."""
+        if self.placement is not None:
+            return f'{self.placement.layer}:{self.placement.kind:02X}'
+        return 'Town' if self.name == 'Town picture' else self.category
+
+    @property
+    def color(self):
+        """(r, g, b) the entry is marked in: its dot in the list, its marker
+        and its selection outline."""
+        return class_color(self.placement)
+
 
 @dataclass
 class Backdrop:
@@ -108,9 +122,25 @@ def quad(vertices, image=None, color=(1, 1, 1), offset=0):
     return rebuild_mesh([polygon], offset, image)
 
 
-def marker(position, offset):
+# The level's own geometry, which has no class to tell apart.
+AREA_COLOR = (0.75, 0.75, 0.78)
+GOLDEN_RATIO_CONJUGATE = 0.6180339887498949
+
+
+def class_color(placement):
+    """One colour per object class, as Tomba2Edit marks them: a walk round
+    the hue wheel by the golden ratio, so classes numbered next to each
+    other land far apart. Every object of a class shares it."""
+    if placement is None:
+        return AREA_COLOR
+    import colorsys
+    number = placement.layer * 97 + placement.kind
+    return colorsys.hsv_to_rgb(number * GOLDEN_RATIO_CONJUGATE % 1.0, 0.7, 1.0)
+
+
+def marker(position, offset, color=(1, .5, .15)):
     x, y, z = np.asarray(position) * (1, -1, -1)
-    return quad([(x-5,y,z),(x,y+8,z),(x,y-8,z),(x+5,y,z)], color=(1,.5,.15), offset=offset)
+    return quad([(x-5,y,z),(x,y+8,z),(x,y-8,z),(x+5,y,z)], color=color, offset=offset)
 
 
 def sprite_mesh(image, parts, position, flip, offset):
@@ -270,19 +300,20 @@ def build_scene(project, path, index):
     resources = loaded_resources(project, path, index)
     vram = project.vram(path, index)
     entries, notes, models, sprites = [], [], {}, {}
+    geometry = []       # listed after the objects placed in it
     backdrops = []
     area = area_of(path)
     resolver = InitialPoseResolver(project, area, max(0, index-1), resources)
     slots = resolver.placement_slots(area, index-1) if resolver.available and index else None
     notes.append(resolver.reason)
-    notes.append('Initial state preview. Event conditions and scripted spawns are not simulated. Orange markers have unresolved visuals.')
+    notes.append('Initial state preview. Event conditions and scripted spawns are not simulated. Diamond markers, in the colour of their class, have unresolved visuals.')
     for (kind, slot), asset in resources.items():
         try:
             if kind == 'WMD':
                 models[slot] = parse_wmd(project.asset_data(asset))
                 if slot == 0:
                     for i, mesh in enumerate(models[slot]):
-                        entries.append(SceneEntry(f'Geometry {i:03d}', 'Geometry', mesh, asset))
+                        geometry.append(SceneEntry(f'Geometry {i:03d}', 'Geometry', mesh, asset))
             elif kind == 'SPR':
                 sprites[slot] = sprite_frames(project.asset_data(asset))
         except FormatError as exc:
@@ -452,7 +483,7 @@ def build_scene(project, path, index):
                     mesh, category = quad(corners, image, offset=placement.offset), 'Backgrounds'
                     note = f'Fixed picture of {len(pieces)} rectangles, {image.width} x {image.height}, drawn behind the section.'
             if mesh is None:
-                mesh = marker(placement.position, placement.offset)
+                mesh = marker(placement.position, placement.offset, class_color(placement))
             entry = SceneEntry(f'{name} | {asset.code:04X} #{i:03d}', category, mesh,
                                asset, placement, active, note, frames)
             entry.handler = resolver.handler_address(placement)
@@ -460,6 +491,7 @@ def build_scene(project, path, index):
             from formats.level.flat import ordering_bucket
             entry.draw_bucket = ordering_bucket(placement, visual, fixed_picture=bool(pieces))
             entries.append(entry)
+    entries.extend(geometry)
     orient_assemblies(entries)
     from formats.collision.geometry import records, lines
     collision_records = []

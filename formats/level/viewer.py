@@ -1,6 +1,6 @@
 """Section scene inspection using the standard model viewer controls."""
 from PyQt6.QtCore import Qt, QTimer, pyqtSignal
-from PyQt6.QtGui import QAction
+from PyQt6.QtGui import QAction, QColor, QIcon, QPixmap
 from PyQt6.QtWidgets import QHBoxLayout, QLabel, QComboBox, QPushButton, QStyle, QTabWidget
 from formats.models.wmd_viewer import ModelView
 from formats.collision.inspector import CollisionInspector
@@ -65,9 +65,15 @@ class LevelView(ModelView):
             for i in range(object_buttons.count()) if object_buttons.itemAt(i).widget()])
         self.canvas.line_picker = lambda p: (self.inspect_tabs.currentIndex() == 1 and
                                             self.collision_inspector.pick(p))
-        for column in (2, 3, 4):
+        # The triangle count's column carries the object class here.
+        self.objects.horizontalHeaderItem(2).setText('Class')
+        self.objects.setColumnWidth(2, 76)
+        for column in (3, 4):
             self.objects.setColumnHidden(column, True)
         self.objects.setMinimumWidth(350)
+        # The pane has to be as wide as the list, or the last column is cut off.
+        self.inspect_tabs.parentWidget().setMinimumWidth(390)
+        self.class_icons = {}
         self.objects.cellClicked.connect(self.show_entry)
         self.canvas.picked.connect(self.picked_entry)
         self.spread_action.setVisible(False)
@@ -146,6 +152,16 @@ class LevelView(ModelView):
         self.set_data([entry.mesh for entry in scene.entries], scene.vram, 0x5080,
                       {i: e.name for i, e in enumerate(scene.entries)}, level=not flat)
         self.canvas.selection_types = [e.category for e in scene.entries]
+        self.canvas.selection_colors = [e.color for e in scene.entries]
+        self.objects.blockSignals(True)
+        for row, entry in enumerate(scene.entries):
+            self.objects.item(row, 1).setIcon(self.class_icon(entry.color))
+            self.objects.item(row, 2).setText(entry.object_class)
+            self.objects.item(row, 2).setToolTip(
+                f'APD layer {entry.placement.layer}, type {entry.placement.kind:02X}: every object of this '
+                'class runs the same routine and is marked in the same colour.' if entry.placement else '')
+        self.objects.blockSignals(False)
+        self.objects.setColumnWidth(2, 76)
         self.canvas.controls_label.setText(
             ('2D view | Middle/right-drag: pan | Scroll: zoom\n'
              'Click: select visible object | F: frame selected\nDouble-click a row: frame it')
@@ -194,6 +210,14 @@ class LevelView(ModelView):
                 'The 2D view paints objects in game ordering priority. Transparent pixels '
                 'allow you to select visible objects behind them. Middle/right-drag pans; scroll zooms.')
         self.toggle_animation(self.animate_action.isChecked())
+
+    def class_icon(self, color):
+        """A square of the class colour for the list."""
+        if color not in self.class_icons:
+            pixmap = QPixmap(12, 12)
+            pixmap.fill(QColor.fromRgbF(*color))
+            self.class_icons[color] = QIcon(pixmap)
+        return self.class_icons[color]
 
     def choose_location(self, row):
         location = self.locations.itemData(row)
@@ -364,7 +388,7 @@ class LevelView(ModelView):
         if self.scene is None or not 0 <= row < len(self.scene.entries):
             return
         e = self.scene.entries[row]
-        text = f'{e.name}\n{e.category}\n{e.source.label}\n\n{e.note}'
+        text = f'{e.name}\n{e.category} | class {e.object_class}\n{e.source.label}\n\n{e.note}'
         if e.placement:
             p = e.placement
             text += (f'\n\nPosition: {p.position}\nLayer: {p.layer}\nType: {p.kind:02X}'

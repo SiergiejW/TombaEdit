@@ -196,15 +196,15 @@ class WppView(QWidget):
             return
         rows = self.selected_rows()
         if self.whole.isChecked():
-            self.image.set_image(self.sheet(list(range(len(self.pictures))))[0], preserve_view=self.image.image is not None)
+            self.image.set_image(self.sheet(list(range(len(self.pictures))))[0], subject=('bank',))
             self.info.setText(f'Whole bank | {len(self.pictures)} pictures')
         elif len(rows) > 1:
             image = self.sheet(rows)[0]
-            self.image.set_image(image, preserve_view=self.image.image is not None)
+            self.image.set_image(image, subject=('sheet', tuple(rows)))
             self.info.setText(f'{len(rows)} selected pictures | {image.width} x {image.height}')
         else:
             picture = self.pictures[max(0, self.table.currentRow())]
-            self.image.set_image(self.render(picture), preserve_view=self.image.image is not None)
+            self.image.set_image(self.render(picture), subject=('picture', picture.index))
             what = 'GAM-compressed TIM' if self.kind == 'tim' else 'run-length packed frame'
             self.info.setText(f'Picture {picture.index:03d} | {what} | {picture.width} x {picture.height} | '
                               f'{picture.packed:,} bytes packed')

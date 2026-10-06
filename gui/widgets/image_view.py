@@ -61,14 +61,20 @@ class ImageView(QWidget):
         if image is not None:
             self.set_image(image)
 
-    def set_image(self, image, preserve_view=False):
+    def set_image(self, image, preserve_view=False, subject=None):
+        """Show a picture. `subject` says what it is a picture of: the same
+        subject drawn again (with outlines, through another palette) keeps
+        the zoom and scroll it is being looked at with, and a new one is
+        framed afresh."""
         bars = (self.view.horizontalScrollBar(), self.view.verticalScrollBar())
         scroll = [bar.value() for bar in bars]
+        if subject is not None:
+            preserve_view = self.image is not None and subject == getattr(self, 'subject', None)
+            self.subject = subject
         self.image = image
         self.canvas.set_image(qimage(image))
         self.dimensions.setText(f'{image.width} x {image.height}')
-        # "Fit" means the picture on screen fits, whichever one it is.
-        if not preserve_view or self.zoom.currentIndex() == 0:
+        if not preserve_view:
             self.scale_image()
         else:
             for bar, value in zip(bars, scroll):
