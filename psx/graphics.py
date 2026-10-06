@@ -23,16 +23,25 @@ def palette_missing(vram, clut, colours=16):
     return not vram[y, x:x + colours].any()
 
 
-def texture_page(vram, tpage, clut, palette=None):
+def texture_page(vram, tpage, clut, palette=None, flagged=None):
     """One 256 x 256 texture page through a palette: the row `clut` names, or
-    the sixteen colour words given in `palette`."""
+    the sixteen colour words given in `palette`.
+
+    Bit 15 of a colour word marks it for blending: a semi-transparent
+    primitive blends the texels that carry it and draws the rest solid.
+    `flagged` keeps only the texels with the bit (True) or without it
+    (False) and leaves the others clear."""
+    def picture(words):
+        if flagged is not None:
+            words = np.where((words >> 15 == 1) == flagged, words, 0)
+        return Image.fromarray(rgba(words))
     x, y = (tpage & 15) * 64, ((tpage >> 4) & 1) * 256
     depth = (tpage >> 7) & 3
     yy = (np.arange(256) + y) % 512
     if depth >= 2:
         # Depth 3 is reserved; the GPU reads it as 15-bit colour as well.
         words = vram[np.ix_(yy, (np.arange(256) + x) % 1024)]
-        return Image.fromarray(rgba(words))
+        return picture(words)
     per_word = 4 if depth == 0 else 2
     px = np.arange(256)
     words = vram[np.ix_(yy, (x + px // per_word) % 1024)]
@@ -42,7 +51,7 @@ def texture_page(vram, tpage, clut, palette=None):
     cx, cy = (clut & 63) * 16, (clut >> 6) & 511
     flat = vram.reshape(-1)
     palette = flat[(cy * 1024 + cx + np.arange(16 if depth == 0 else 256)) % flat.size]
-    return Image.fromarray(rgba(palette[indices]))
+    return picture(palette[indices])
 
 
 def sprite_frames(data):

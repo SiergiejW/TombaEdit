@@ -337,16 +337,24 @@ class MeshCanvas(CameraEventMixin, QOpenGLWidget):
             billboard = getattr(mesh, 'billboard_anchor', None) is not None
             if billboard:
                 gl.glDisable(gl.GL_CULL_FACE)
-            for (page, clut, semi), (vertices, uv, colors) in mesh.batches.items():
-                if blended is not None and semi != blended:
-                    continue
+            # A semi-transparent textured primitive is two layers: the
+            # texels flagged for blending, and the rest of it drawn solid.
+            jobs = []
+            for (page, clut, semi), arrays in mesh.batches.items():
+                split = semi and self.textured and page >= 0 and mesh.image is None
+                layers = ((None,) if not semi else ('solid', 'blend') if split else ('blend',))
+                jobs += [(page, clut, layer, arrays) for layer in layers
+                         if blended is None or (layer == 'blend') == blended]
+            for page, clut, layer, (vertices, uv, colors) in jobs:
+                semi = layer == 'blend'
                 if semi:
                     self.blend(gl, page)
                 use_texture = self.textured and (page >= 0 or mesh.image is not None)
                 if use_texture:
-                    key = ('image', id(mesh.image)) if mesh.image is not None else (page, clut)
+                    key = ('image', id(mesh.image)) if mesh.image is not None else (page, clut, layer)
                     if key not in self.textures:
-                        im = mesh.image if mesh.image is not None else texture_page(self.vram, page, clut)
+                        im = mesh.image if mesh.image is not None else texture_page(
+                            self.vram, page, clut, flagged=None if layer is None else layer == 'blend')
                         tex = int(gl.glGenTextures(1))
                         self.textures[key] = tex
                         gl.glBindTexture(gl.GL_TEXTURE_2D, tex)
@@ -522,9 +530,7 @@ class MeshCanvas(CameraEventMixin, QOpenGLWidget):
         """Set up one of the console's four blends, chosen by bits 5 and 6
         of the texture page word: the average of what is there and the new
         pixel, their sum, their difference, or the old plus a quarter of the
-        new. The console blends only texels flagged for it and draws the
-        rest of the primitive solid; the flag is not kept with the decoded
-        texture, so the whole primitive is blended here."""
+        new."""
         mode = (page >> 5) & 3 if page >= 0 else 0
         gl.glEnable(gl.GL_BLEND)
         gl.glDepthMask(gl.GL_FALSE)
