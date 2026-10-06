@@ -34,6 +34,12 @@ The filter box matches names, resource types, section names and offsets.
 content of the resource, so they follow it between regional releases, and can
 be exported and imported as JSON from the *Labels* menu.
 
+Single sprites of a bank and single models of a WMD take labels too, shown
+in a *Label* column of their lists. Select one row or several, right-click
+and choose **Rename...**: the name typed is given to every selected row, and
+an empty name removes it. These labels are kept in the same set as the file
+names, so the same export and import carries them.
+
 **Export decoded file** writes the decompressed bytes of the selection.
 **Export original disc file** writes the file that contains it, as it is on
 the disc.

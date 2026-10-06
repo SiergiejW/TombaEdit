@@ -14,8 +14,9 @@ from PIL import Image, ImageDraw
 from PyQt6.QtCore import Qt, pyqtSignal, QItemSelectionModel
 from PyQt6.QtWidgets import (QWidget, QVBoxLayout, QHBoxLayout, QLabel, QSpinBox,
     QPushButton, QSplitter, QTableWidget, QTableWidgetItem, QAbstractItemView,
-    QHeaderView, QFileDialog, QMessageBox, QCheckBox, QComboBox)
+    QHeaderView, QFileDialog, QMessageBox, QCheckBox, QComboBox, QMenu, QInputDialog)
 from gui.widgets.image_view import ImageView, file_stem
+from game.labels import content_key
 from formats.images.vram_viewer import VramView
 from disc.reader import FormatError
 from psx.graphics import render_sprite, part_page, guess_page, palette_missing
@@ -26,6 +27,8 @@ PART_COLOURS = ((255, 80, 80, 255), (80, 220, 255, 255), (255, 220, 60, 255), (1
 
 
 FRAME_COLOUR = (255, 255, 255, 255)
+
+LABEL = 6   # the bank list's column of labels
 
 
 class SpriteView(QWidget):
@@ -42,6 +45,8 @@ class SpriteView(QWidget):
         self.cluts = dict(cluts or {})  # CLUTs supplied by a custom drawing object
         self.known = sorted(self.pages)
         self.names = {}                 # frame -> what it is a picture of
+        self.label_set = None           # the names people give frames
+        self.save_labels = None
         self.guess = default
         self.export_name = 'sprites'    # prefix of default file names, set by the window
         self.cache = {}
@@ -109,21 +114,30 @@ class SpriteView(QWidget):
         splitter = QSplitter()
         splitter.setChildrenCollapsible(False)
         left = QWidget()
-        left.setMinimumWidth(410)
+        left.setMinimumWidth(420)
         ll = QVBoxLayout(left)
         ll.addWidget(QLabel('Sprites'))
-        self.bank = QTableWidget(len(frames), 6)
-        self.bank.setHorizontalHeaderLabels(['Sprite', '#', 'Parts', 'W', 'H', 'Pages'])
+        self.bank = QTableWidget(len(frames), 7)
+        self.bank.setHorizontalHeaderLabels(['Sprite', '#', 'Parts', 'W', 'H', 'Pages', 'Label'])
+        # The label is listed beside the sprite it names.
+        self.bank.horizontalHeader().moveSection(LABEL, 1)
+        self.bank.setContextMenuPolicy(Qt.ContextMenuPolicy.CustomContextMenu)
+        self.bank.customContextMenuRequested.connect(self.bank_menu)
         self.bank.verticalHeader().hide()
         self.bank.setSelectionBehavior(QAbstractItemView.SelectionBehavior.SelectRows)
         self.bank.setSelectionMode(QAbstractItemView.SelectionMode.ExtendedSelection)
         self.bank.setEditTriggers(QAbstractItemView.EditTrigger.NoEditTriggers)
         self.bank.setDragDropMode(QAbstractItemView.DragDropMode.NoDragDrop)
         self.bank.setDragEnabled(False)
-        self.bank.horizontalHeader().setSectionResizeMode(0, QHeaderView.ResizeMode.Stretch)
-        for column, width in enumerate((0, 36, 48, 36, 36, 86)):
-            if column:
-                self.bank.setColumnWidth(column, width)
+        # Every column is wide enough for its text; the labels take what
+        # is left, and the list scrolls sideways when the pane is narrower.
+        for column, width in enumerate((190, 48, 58, 48, 48, 96, 150)):
+            self.bank.setColumnWidth(column, width)
+        self.bank.horizontalHeader().setMinimumSectionSize(44)
+        self.bank.horizontalHeader().setStretchLastSection(False)
+        self.bank.horizontalHeader().setSectionResizeMode(LABEL, QHeaderView.ResizeMode.Stretch)
+        self.bank.horizontalHeader().setMinimumSectionSize(44)
+        self.bank.setHorizontalScrollMode(QAbstractItemView.ScrollMode.ScrollPerPixel)
         self.bank.currentCellChanged.connect(self.row_changed)
         self.bank.cellDoubleClicked.connect(self.frame_sprite)
         self.bank.itemSelectionChanged.connect(self.selected)
@@ -149,7 +163,7 @@ class SpriteView(QWidget):
         pieces.setMinimumHeight(120)
         right.setSizes([330, 150])
         splitter.addWidget(right)
-        splitter.setSizes([410, 780])
+        splitter.setSizes([680, 780])
         # VRAM along the bottom; its crosshair is the sprites' palette control.
         self.vram_view = VramView(vram, {p[2] & 0x7FFF for frame in frames for p in frame}, 'VRAM', embedded=True)
         self.palette_scope = QComboBox()
@@ -173,6 +187,60 @@ class SpriteView(QWidget):
         self.info.setTextInteractionFlags(Qt.TextInteractionFlag.TextSelectableByMouse)
         layout.addWidget(self.info)
         self.rebuild()
+
+    def frame_key(self, index):
+        """What a frame's label is kept under: a hash of its part records,
+        so the same frame in another bank carries the same name. A frame
+        with no parts has nothing to tell it by and cannot be named."""
+        frame = self.frames[index]
+        return content_key(repr([tuple(part) for part in frame]).encode()) if frame else ''
+
+    def label(self, index):
+        key = self.frame_key(index)
+        return self.label_set.label_for(key) or '' if key and self.label_set is not None else ''
+
+    def set_labels(self, label_set, save):
+        """Take the label set frames are named in, and what stores it."""
+        self.label_set, self.save_labels = label_set, save
+        self.reload_labels()
+
+    def reload_labels(self):
+        self.bank.blockSignals(True)
+        for index in range(len(self.frames)):
+            self.bank.item(index, LABEL).setText(self.label(index))
+        self.bank.blockSignals(False)
+
+    def bank_menu(self, point):
+        rows = self.selected_indices()
+        if not rows or self.label_set is None:
+            return
+        menu = QMenu(self)
+        rename = menu.addAction('Rename...' if len(rows) == 1 else f'Rename {len(rows)} sprites...')
+        clear = menu.addAction('Clear label' if len(rows) == 1 else 'Clear labels')
+        clear.setEnabled(any(self.label(row) for row in rows))
+        chosen = menu.exec(self.bank.viewport().mapToGlobal(point))
+        if chosen is rename:
+            self.rename_frames(rows)
+        elif chosen is clear:
+            self.label_frames(rows, '')
+
+    def rename_frames(self, rows):
+        """Ask for one name and give it to every selected frame."""
+        old = {self.label(row) for row in rows}
+        name, accepted = QInputDialog.getText(
+            self, 'Name sprite' if len(rows) == 1 else f'Name {len(rows)} sprites',
+            'Label (empty removes it):', text=old.pop() if len(old) == 1 else '')
+        if accepted:
+            self.label_frames(rows, name.strip())
+
+    def label_frames(self, rows, name):
+        for row in rows:
+            key = self.frame_key(row)
+            if key:
+                self.label_set.rename(key, name, kind='SPR frame')
+        if self.save_labels:
+            self.save_labels()
+        self.reload_labels()
 
     def title(self, index):
         """A frame's row: its number, and the objects that show it."""
@@ -260,7 +328,7 @@ class SpriteView(QWidget):
                 width = height = 0
                 pages = ''
             values = [self.title(i), str(i), str(len(frame)), str(width),
-                      str(height), pages]
+                      str(height), pages, self.label(i)]
             for col, value in enumerate(values):
                 self.bank.setItem(i, col, QTableWidgetItem(value))
         self.bank.blockSignals(False)
@@ -277,7 +345,8 @@ class SpriteView(QWidget):
             self.info.setText(self.info.text() + ' | palette row empty in this VRAM'
                               + (', shown in grey' if self.grey.isChecked() else ''))
         self.show_in_vram()
-        announce(f'sprite {row:03d} | {", ".join(self.names.get(row, ())) or "not placed"} | {len(frame)} pieces'
+        announce(f'sprite {row:03d} | ' + (f'"{self.label(row)}" | ' if self.label(row) else '')
+              + f'{", ".join(self.names.get(row, ())) or "not placed"} | {len(frame)} pieces'
               + ('' if self.renderer or not frame else f' | texture page base 0x{self.base_for(row):X}'))
 
     def frame_sprite(self, row, column):

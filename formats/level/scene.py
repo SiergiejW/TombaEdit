@@ -588,7 +588,7 @@ def sprite_pages(project, path, index):
     if (path, index) not in cache:
         resources = loaded_resources(project, path, index)
         resolver = InitialPoseResolver(project, area_of(path), max(0, index - 1), resources)
-        pages, cluts, shown = {}, {}, {}
+        pages, cluts, shown, built = {}, {}, {}, {}
         from game.classes import class_name
         runtime = getattr(resolver, 'area', area_of(path))
         for (kind, slot), asset in resources.items():
@@ -600,9 +600,14 @@ def sprite_pages(project, path, index):
                 continue
             for placement in placements:
                 visual = resolver.resolve(placement)
+                label = (class_name(runtime, placement.layer, placement.kind)
+                         or f'class {placement.layer}:{placement.kind:02X}')
+                model = visual.get('model', placement.model)
+                if model:
+                    users = built.setdefault(model[0], {}).setdefault(model[1], [])
+                    if label not in users:
+                        users.append(label)
                 if 'sprite' in visual:
-                    label = (class_name(runtime, placement.layer, placement.kind)
-                             or f'class {placement.layer}:{placement.kind:02X}')
                     for frame, _ in visual['frames']:
                         pages.setdefault(visual['sprite'], {}).setdefault(frame, visual['tpage'])
                         users = shown.setdefault(visual['sprite'], {}).setdefault(frame, [])
@@ -613,6 +618,7 @@ def sprite_pages(project, path, index):
         cache[path, index] = pages
         palettes[path, index] = cluts
         owners[path, index] = shown
+        project.__dict__.setdefault('model_owner_cache', {})[path, index] = built
     return cache[path, index]
 
 
@@ -622,6 +628,13 @@ def sprite_owners(project, path, index):
     name is listed by its layer and type."""
     sprite_pages(project, path, index)
     return project.sprite_owner_cache[path, index]
+
+
+def model_owners(project, path, index):
+    """Which classes of object are built from each model, {WMD slot:
+    {model: [name]}}."""
+    sprite_pages(project, path, index)
+    return project.model_owner_cache[path, index]
 
 
 def sprite_cluts(project, path, index):

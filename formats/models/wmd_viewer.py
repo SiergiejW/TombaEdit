@@ -8,7 +8,7 @@ from PyQt6.QtGui import QImage, QPixmap, QFontDatabase, QSurfaceFormat, QMatrix4
 from PyQt6.QtWidgets import (QWidget, QVBoxLayout, QHBoxLayout, QLabel, QComboBox,
     QCheckBox, QPushButton, QSpinBox, QSplitter, QListWidget, QPlainTextEdit,
     QGraphicsView, QGraphicsScene, QFileDialog, QMessageBox, QTableWidget,
-    QTableWidgetItem, QAbstractItemView, QHeaderView, QToolBar, QStyle, QInputDialog)
+    QTableWidgetItem, QAbstractItemView, QHeaderView, QToolBar, QStyle, QInputDialog, QMenu)
 from PyQt6.QtOpenGLWidgets import QOpenGLWidget
 from psx.graphics import texture_page, render_sprite
 
@@ -24,6 +24,7 @@ from formats.models.selection import mesh_outline, POLYGON_OUTLINE, GEOMETRY_OUT
 
 # Downward tilt a level opens with, close to the game's own camera.
 LEVEL_TILT = 10.0
+LABEL = 5   # the model list's column of labels
 from PIL import ImageDraw
 
 class MeshCanvas(CameraEventMixin, QOpenGLWidget):
@@ -714,16 +715,24 @@ class ModelView(QWidget):
         left.setMinimumWidth(220)
         ll = QVBoxLayout(left)
         ll.addWidget(QLabel('Models'))
-        self.objects = QTableWidget(0, 5)
-        self.objects.setHorizontalHeaderLabels(['Show', 'Model', 'Tris', 'Quads', 'Offset'])
+        self.objects = QTableWidget(0, 6)
+        self.objects.setHorizontalHeaderLabels(['Show', 'Model', 'Tris', 'Quads', 'Offset', 'Label'])
+        # The label is listed beside the model it names, and only where
+        # models can be named.
+        self.objects.horizontalHeader().moveSection(LABEL, 2)
+        self.objects.setColumnWidth(LABEL, 150)
+        self.objects.setColumnHidden(LABEL, True)
+        self.objects.setContextMenuPolicy(Qt.ContextMenuPolicy.CustomContextMenu)
+        self.objects.customContextMenuRequested.connect(self.objects_menu)
         self.objects.verticalHeader().hide()
         self.objects.setEditTriggers(QAbstractItemView.EditTrigger.NoEditTriggers)
         self.objects.setSelectionBehavior(QAbstractItemView.SelectionBehavior.SelectRows)
         self.objects.setSelectionMode(QAbstractItemView.SelectionMode.SingleSelection)
-        self.objects.setColumnWidth(0, 40)
-        self.objects.setColumnWidth(2, 43)
-        self.objects.setColumnWidth(3, 49)
-        self.objects.setColumnWidth(4, 78)
+        self.objects.setColumnWidth(0, 52)
+        self.objects.setColumnWidth(2, 54)
+        self.objects.setColumnWidth(3, 62)
+        self.objects.setColumnWidth(4, 92)
+        self.objects.horizontalHeader().setMinimumSectionSize(44)
         self.objects.horizontalHeader().setSectionResizeMode(1, QHeaderView.ResizeMode.Stretch)
         self.objects.itemChanged.connect(self.visibility_changed)
         self.objects.currentCellChanged.connect(self.model_selected)
@@ -754,9 +763,21 @@ class ModelView(QWidget):
         if meshes is not None:
             self.set_data(meshes, vram, code)
 
-    def set_data(self, meshes, vram, code=0, names=None, rename_callback=None, level=None, spread=None):
+    def set_data(self, meshes, vram, code=0, names=None, rename_callback=None, level=None, spread=None,
+                 label_lookup=None):
+        """`rename_callback(rows, name)` stores one label for several models
+        and `label_lookup(row)` reads a model's label back; a list given
+        both can be multi-selected and named."""
         self.rename_callback = rename_callback
+        self.label_lookup = label_lookup
         self.model_names = names or {}
+        self.objects.setColumnHidden(LABEL, rename_callback is None)
+        # A list with labels needs the room for them.
+        sizes = self.split.sizes()
+        if rename_callback is not None and sum(sizes) and sizes[0] < 480:
+            self.split.setSizes([480, max(300, sizes[1] - (480 - sizes[0])), sizes[2]])
+        self.objects.setSelectionMode(QAbstractItemView.SelectionMode.SingleSelection if rename_callback is None
+                                      else QAbstractItemView.SelectionMode.ExtendedSelection)
         had_meshes = bool(self.canvas.meshes)
         self.canvas.cleanup()
         self.canvas.meshes, self.canvas.vram = list(meshes), vram
@@ -775,7 +796,8 @@ class ModelView(QWidget):
         for i, mesh in enumerate(meshes):
             triangles = sum(1 for p in mesh.polygons if len(p['vertices']) == 3)
             quads = sum(1 for p in mesh.polygons if len(p['vertices']) == 4)
-            entries = ['', self.model_names.get(i) or f'Model {i:03d}', str(triangles), str(quads), f'0x{mesh.offset:06X}']
+            entries = ['', self.model_names.get(i) or f'Model {i:03d}', str(triangles), str(quads),
+                       f'0x{mesh.offset:06X}', self.model_label(i)]
             for column, value in enumerate(entries):
                 item = QTableWidgetItem(value)
                 if column == 0:
@@ -801,16 +823,46 @@ class ModelView(QWidget):
         self.canvas.stats_label.move(6, 6)
         self.show_polygon(None)
 
-    def rename_model(self):
-        row = self.objects.currentRow()
-        if row < 0 or self.rename_callback is None:
+    def model_label(self, row):
+        return self.label_lookup(row) or '' if self.label_lookup else ''
+
+    def selected_rows(self):
+        return sorted({item.row() for item in self.objects.selectedItems()})
+
+    def reload_labels(self):
+        self.objects.blockSignals(True)
+        for row in range(self.objects.rowCount()):
+            if self.objects.item(row, LABEL):
+                self.objects.item(row, LABEL).setText(self.model_label(row))
+        self.objects.blockSignals(False)
+
+    def objects_menu(self, point):
+        rows = self.selected_rows()
+        if not rows or self.rename_callback is None:
             return
-        name, accepted = QInputDialog.getText(self, 'Name model',
-            'Label (empty restores the original name):', text=self.model_names.get(row, ''))
+        menu = QMenu(self)
+        rename = menu.addAction('Rename...' if len(rows) == 1 else f'Rename {len(rows)} models...')
+        clear = menu.addAction('Clear label' if len(rows) == 1 else 'Clear labels')
+        clear.setEnabled(any(self.model_label(row) for row in rows))
+        chosen = menu.exec(self.objects.viewport().mapToGlobal(point))
+        if chosen is rename:
+            self.rename_model()
+        elif chosen is clear:
+            self.rename_callback(rows, '')
+            self.reload_labels()
+
+    def rename_model(self):
+        """Ask for one name and give it to every selected model."""
+        rows = self.selected_rows()
+        if not rows or self.rename_callback is None:
+            return
+        old = {self.model_label(row) for row in rows}
+        name, accepted = QInputDialog.getText(
+            self, 'Name model' if len(rows) == 1 else f'Name {len(rows)} models',
+            'Label (empty removes it):', text=old.pop() if len(old) == 1 else '')
         if accepted:
-            self.rename_callback(row, name.strip())
-            self.model_names[row] = name.strip()
-            self.objects.item(row, 1).setText(name.strip() or f'Model {row:03d}')
+            self.rename_callback(rows, name.strip())
+            self.reload_labels()
 
     def model_selected(self, row, column, old_row, old_column):
         self.canvas.selected = None
@@ -822,6 +874,7 @@ class ModelView(QWidget):
 
     def describe(self, row):
         return (f'{self.objects.item(row, 1).text()} | '
+                + (f'"{self.model_label(row)}" | ' if self.model_label(row) else '') +
                 f'{self.objects.item(row, 2).text()} triangles, {self.objects.item(row, 3).text()} quads '
                 f'@ {self.objects.item(row, 4).text()}')
 
@@ -859,13 +912,14 @@ class ModelView(QWidget):
 
     def isolate(self):
         selected = self.objects.currentRow()
+        chosen = set(self.selected_rows()) or {selected}
         if selected < 0:
             return
         self.objects.blockSignals(True)
         for row in range(self.objects.rowCount()):
-            self.objects.item(row, 0).setCheckState(Qt.CheckState.Checked if row == selected else Qt.CheckState.Unchecked)
+            self.objects.item(row, 0).setCheckState(Qt.CheckState.Checked if row in chosen else Qt.CheckState.Unchecked)
         self.objects.blockSignals(False)
-        self.canvas.visible = {selected}
+        self.canvas.visible = chosen
         self.canvas.fit()
 
     def toggle(self, name, value):

@@ -187,7 +187,9 @@ def prepare_preview(project, node, context=None):
             # A frame is named for the objects that show it, in this section
             # first and then in the others of the area.
             result['sprite_names'] = {}
-            for group in [groups[context]] + [g for g in groups[1:] if g.index != context and g.assets]:
+            from formats.level.scene import loaded_resources
+            for group in [g for g in [groups[context]] + [g for g in groups[1:] if g.index != context and g.assets]
+                          if g.index and loaded_resources(project, node.ldar, g.index).get(('SPR', slot)) is node]:
                 for frame, users in sprite_owners(project, node.ldar, group.index).get(slot, {}).items():
                     known = result['sprite_names'].setdefault(frame, [])
                     known += [user for user in users if user not in known]
@@ -262,6 +264,15 @@ def prepare_preview(project, node, context=None):
                     break
         if node.kind == "WMD":
             result["meshes"] = parse_wmd(data)
+            # A model is named for the objects built from it.
+            from formats.level.scene import model_owners
+            result['model_names'] = {}
+            from formats.level.scene import loaded_resources
+            for group in [g for g in groups if g.index and g.assets
+                          and loaded_resources(project, node.ldar, g.index).get(('WMD', node.slot)) is node]:
+                for model, users in model_owners(project, node.ldar, group.index).get(node.slot, {}).items():
+                    known = result['model_names'].setdefault(model, [])
+                    known += [user for user in users if user not in known]
         if node.kind == 'FOUR':
             from formats.models.four import parse_four
             from formats.level.scene import loaded_resources
@@ -762,11 +773,16 @@ class MainWindow(QMainWindow):
                 keys = [labels.content_key(self.current_data[m.offset:
                     meshes[i + 1].offset if i + 1 < len(meshes) else len(self.current_data)])
                     for i, m in enumerate(meshes)]
-                names = {i: self.labels.label_for(key) for i, key in enumerate(keys)}
-                def rename_model(index, name):
-                    self.labels.rename(keys[index], name, kind='WMD model')
+                owners = result.get('model_names', {})
+                # A model is listed by the objects built from it; the label
+                # someone gave it has a column of its own.
+                names = {i: f'Model {i:03d}  ' + ', '.join(owners[i]) for i in owners if owners[i]}
+                def rename_models(rows, name):
+                    for row in rows:
+                        self.labels.rename(keys[row], name, kind='WMD model', start=meshes[row].offset)
                     self.persist_labels()
-                self.model_view.set_data(meshes, result['vram'], node.code, names, rename_model)
+                self.model_view.set_data(meshes, result['vram'], node.code, names, rename_models,
+                                         label_lookup=lambda row: self.labels.label_for(keys[row]))
                 self.tabs.addTab(self.model_view, "Geometry")
             if "sprites" in result:
                 renderer = None
@@ -777,6 +793,7 @@ class MainWindow(QMainWindow):
                 view = SpriteView(result['sprites'], result['vram'], result.get('sprite_pages'), renderer,
                                   result.get('sprite_default'), result.get('sprite_cluts'))
                 view.set_names(result.get('sprite_names', {}))
+                view.set_labels(self.labels, self.persist_labels)
                 key = self.node_key(node)
                 view.restore_state(self.sprite_states.get(key, []))
                 view.selection_changed.connect(lambda state, k=key: self.sprite_states.__setitem__(k, state))
@@ -807,6 +824,7 @@ class MainWindow(QMainWindow):
                     pictures_view.table.currentCellChanged.connect(
                         lambda row, col, old_row, old_col, sprite=view:
                             sprite.bank.setCurrentCell(row, 0) if 0 <= row < sprite.bank.rowCount() else None)
+                    view.set_labels(self.labels, self.persist_labels)
                     self.tabs.addTab(view, 'Assembled frames')
                     pictures_view.clut_selected.connect(
                         lambda word, sprite=view: sprite.override_palette(word, scope=2))
@@ -1105,6 +1123,10 @@ class MainWindow(QMainWindow):
                 self.labels.areas.update(incoming.areas)
             self.persist_labels()
             self.index_labels()
+            # Lists of sprites and models that are open show the new names.
+            for index in range(self.tabs.count()):
+                if hasattr(self.tabs.widget(index), 'reload_labels'):
+                    self.tabs.widget(index).reload_labels()
         except (OSError, ValueError) as exc:
             QMessageBox.warning(self, 'Cannot import labels', str(exc))
 
