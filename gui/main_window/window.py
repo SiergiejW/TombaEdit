@@ -3,7 +3,7 @@ from pathlib import Path
 import struct
 import sys
 import traceback
-from PyQt6.QtCore import Qt, QSize, QSettings, QObject, QRunnable, QThreadPool, pyqtSignal
+from PyQt6.QtCore import Qt, QSize, QSettings, QTimer, QObject, QRunnable, QThreadPool, pyqtSignal
 from PyQt6.QtGui import QAction, QActionGroup, QKeySequence
 from PyQt6.QtWidgets import (QMainWindow, QWidget, QVBoxLayout, QHBoxLayout, QLabel,
     QLineEdit, QSplitter, QTreeWidget, QTreeWidgetItem, QTabWidget, QFileDialog,
@@ -23,6 +23,8 @@ from game.builds import executable
 import hashlib
 
 ROLE = Qt.ItemDataRole.UserRole
+# Milliseconds a selection may take to open before the window says so.
+DECODING_DELAY = 150
 DISC_SUFFIXES = (".bin", ".cue", ".iso", ".img", ".ccd")
 
 
@@ -362,6 +364,7 @@ class MainWindow(QMainWindow):
         self.current_node = None
         self.current_data = None
         self.generation = 0
+        self.decoded = 0                # the last selection whose viewers were built
         self.pool = QThreadPool(self)
         self.pool.setMaxThreadCount(1)
         self.asset_items = {}
@@ -720,16 +723,32 @@ class MainWindow(QMainWindow):
             self.pool.clear()
             self.preview_ready(self.generation, prepare_preview(self.project, node), '')
             return
-        # The viewer on screen stays until its replacement is ready; the
-        # details of the selection are on the Information tab.
-        self.statusBar().showMessage("Decoding selection...")
+        self.statusBar().showMessage(f'Decoding {title}...')
         project = self.project
         context = self.context.currentIndex() if self.context.isVisible() else None
         self.submit(lambda: prepare_preview(project, node, context), self.preview_ready)
+        # A selection that opens at once replaces the viewer on screen
+        # directly; one that takes longer has the old viewer taken away and
+        # says what is being decoded.
+        generation = self.generation
+        QTimer.singleShot(DECODING_DELAY, lambda: self.show_decoding(generation, title))
+
+    def show_decoding(self, generation, title):
+        if generation != self.generation or self.decoded == generation:
+            return
+        self.clear_tabs()
+        notice = QLabel(f'Decoding...\n\n{title}')
+        notice.setAlignment(Qt.AlignmentFlag.AlignCenter)
+        notice.setWordWrap(True)
+        font = notice.font()
+        font.setPointSize(font.pointSize() + 3)
+        notice.setFont(font)
+        self.tabs.addTab(notice, 'Decoding')
 
     def preview_ready(self, generation, result, error):
         if generation != self.generation:
             return
+        self.decoded = generation
         self.clear_tabs()
         if error:
             self.tabs.addTab(text_view(error + "\n\nThis resource could not be decoded. Its original disc file can still be exported."), "Diagnostic")
