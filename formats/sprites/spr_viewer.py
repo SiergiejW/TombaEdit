@@ -41,6 +41,7 @@ class SpriteView(QWidget):
         self.pages = dict(pages or {})
         self.cluts = dict(cluts or {})  # CLUTs supplied by a custom drawing object
         self.known = sorted(self.pages)
+        self.names = {}                 # frame -> what it is a picture of
         self.guess = default
         self.export_name = 'sprites'    # prefix of default file names, set by the window
         self.cache = {}
@@ -173,6 +174,19 @@ class SpriteView(QWidget):
         layout.addWidget(self.info)
         self.rebuild()
 
+    def title(self, index):
+        """A frame's row: its number, and the objects that show it."""
+        return f'Sprite {index:03d}' + (f'  {", ".join(self.names[index])}' if self.names.get(index) else '')
+
+    def set_names(self, names):
+        """Name frames for the classes of object drawn with them."""
+        self.names = dict(names)
+        self.bank.blockSignals(True)
+        for index in range(len(self.frames)):
+            self.bank.item(index, 0).setText(self.title(index))
+            self.bank.item(index, 0).setToolTip(', '.join(self.names.get(index, ())))
+        self.bank.blockSignals(False)
+
     def zoom_by(self, step):
         self.image.zoom.setCurrentIndex(max(0, min(self.image.zoom.count()-1,
                                                    self.image.zoom.currentIndex()+step)))
@@ -245,7 +259,7 @@ class SpriteView(QWidget):
             else:
                 width = height = 0
                 pages = ''
-            values = [f'Sprite {i:03d}', str(i), str(len(frame)), str(width),
+            values = [self.title(i), str(i), str(len(frame)), str(width),
                       str(height), pages]
             for col, value in enumerate(values):
                 self.bank.setItem(i, col, QTableWidgetItem(value))
@@ -263,7 +277,7 @@ class SpriteView(QWidget):
             self.info.setText(self.info.text() + ' | palette row empty in this VRAM'
                               + (', shown in grey' if self.grey.isChecked() else ''))
         self.show_in_vram()
-        announce(f'sprite {row:03d} | {len(frame)} pieces'
+        announce(f'sprite {row:03d} | {", ".join(self.names.get(row, ())) or "not placed"} | {len(frame)} pieces'
               + ('' if self.renderer or not frame else f' | texture page base 0x{self.base_for(row):X}'))
 
     def frame_sprite(self, row, column):

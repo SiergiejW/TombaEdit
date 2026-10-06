@@ -183,7 +183,14 @@ def prepare_preview(project, node, context=None):
             from formats.level.runtime import table_pages
             slot = (node.code >> 8) & 15
             result['sprite_pages'] = sprite_pages(project, node.ldar, context).get(slot, {})
-            from formats.level.scene import sprite_cluts, lend_palettes
+            from formats.level.scene import sprite_cluts, lend_palettes, sprite_owners
+            # A frame is named for the objects that show it, in this section
+            # first and then in the others of the area.
+            result['sprite_names'] = {}
+            for group in [groups[context]] + [g for g in groups[1:] if g.index != context and g.assets]:
+                for frame, users in sprite_owners(project, node.ldar, group.index).get(slot, {}).items():
+                    known = result['sprite_names'].setdefault(frame, [])
+                    known += [user for user in users if user not in known]
             result['sprite_cluts'] = dict(sprite_cluts(project, node.ldar, context).get(slot, {}))
             # A frame this section does not place may be placed, with a
             # palette of its object's own, in another section of the area.
@@ -769,6 +776,7 @@ class MainWindow(QMainWindow):
                                                 (node.code >> 8) & 15 == 0)
                 view = SpriteView(result['sprites'], result['vram'], result.get('sprite_pages'), renderer,
                                   result.get('sprite_default'), result.get('sprite_cluts'))
+                view.set_names(result.get('sprite_names', {}))
                 key = self.node_key(node)
                 view.restore_state(self.sprite_states.get(key, []))
                 view.selection_changed.connect(lambda state, k=key: self.sprite_states.__setitem__(k, state))

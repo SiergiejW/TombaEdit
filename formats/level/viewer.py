@@ -68,12 +68,12 @@ class LevelView(ModelView):
                                             self.collision_inspector.pick(p))
         # The triangle count's column carries the object class here.
         self.objects.horizontalHeaderItem(2).setText('Class')
-        self.objects.setColumnWidth(2, 76)
+        self.objects.setColumnWidth(2, 150)
         for column in (3, 4):
             self.objects.setColumnHidden(column, True)
         self.objects.setMinimumWidth(350)
         # The pane has to be as wide as the list, or the last column is cut off.
-        self.inspect_tabs.parentWidget().setMinimumWidth(390)
+        self.inspect_tabs.parentWidget().setMinimumWidth(470)
         self.class_icons = {}
         self.objects.cellClicked.connect(self.show_entry)
         self.canvas.picked.connect(self.picked_entry)
@@ -157,12 +157,13 @@ class LevelView(ModelView):
         self.objects.blockSignals(True)
         for row, entry in enumerate(scene.entries):
             self.objects.item(row, 1).setIcon(self.class_icon(entry.color))
-            self.objects.item(row, 2).setText(entry.object_class)
+            self.objects.item(row, 2).setText(entry.class_label)
             self.objects.item(row, 2).setToolTip(
-                f'APD layer {entry.placement.layer}, type {entry.placement.kind:02X}: every object of this '
+                (f'{entry.class_name}. {entry.class_note}\n' if entry.class_name else '')
+                + f'APD layer {entry.placement.layer}, type {entry.placement.kind:02X}: every object of this '
                 'class runs the same routine and is marked in the same colour.' if entry.placement else '')
         self.objects.blockSignals(False)
-        self.objects.setColumnWidth(2, 76)
+        self.objects.setColumnWidth(2, 150)
         self.canvas.controls_label.setText(
             ('2D view | Middle/right-drag: pan | Scroll: zoom\n'
              'Click: select visible object | F: frame selected\nDouble-click a row: frame it')
@@ -389,7 +390,8 @@ class LevelView(ModelView):
         if self.scene is None or not 0 <= row < len(self.scene.entries):
             return
         e = self.scene.entries[row]
-        text = f'{e.name}\n{e.category} | class {e.object_class}\n{e.source.label}\n\n{e.note}'
+        text = (f'{e.name}\n{e.category} | class {e.class_label}\n'
+                + (e.class_note + '\n' if e.class_note else '') + f'{e.source.label}\n\n{e.note}')
         if e.placement:
             p = e.placement
             text += (f'\n\nPosition: {p.position}\nLayer: {p.layer}\nType: {p.kind:02X}'
@@ -419,7 +421,7 @@ class LevelView(ModelView):
         e = self.scene.entries[row]
         if not e.placement:
             return f'{e.name} | {e.source.label}'
-        return (f'{e.name} | {e.category} | position {e.placement.position} | '
+        return (f'{e.name} | {e.class_name or "unnamed class"} | {e.category} | position {e.placement.position} | '
                 f'APD offset 0x{e.placement.offset:04X} | {e.note}')
 
     def picked_entry(self, selected):

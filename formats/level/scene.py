@@ -30,6 +30,13 @@ class SceneEntry:
     handler: int = None
     animation_address: int = None
     draw_bucket: float = 0
+    class_name: str = ''    # what the class is, where it has been identified
+    class_note: str = ''
+
+    @property
+    def class_label(self):
+        """The class as listed: its layer and type, and its name if known."""
+        return f'{self.object_class} {self.class_name}'.strip()
 
     @property
     def object_class(self):
@@ -304,6 +311,9 @@ def build_scene(project, path, index):
     backdrops = []
     area = area_of(path)
     resolver = InitialPoseResolver(project, area, max(0, index-1), resources)
+    from game.classes import class_name, class_note
+    # Classes are named by the area whose code runs them.
+    runtime = getattr(resolver, 'area', area)
     slots = resolver.placement_slots(area, index-1) if resolver.available and index else None
     notes.append(resolver.reason)
     notes.append('Initial state preview. Event conditions and scripted spawns are not simulated. Diamond markers, in the colour of their class, have unresolved visuals.')
@@ -487,6 +497,8 @@ def build_scene(project, path, index):
             entry = SceneEntry(f'{name} | {asset.code:04X} #{i:03d}', category, mesh,
                                asset, placement, active, note, frames)
             entry.handler = resolver.handler_address(placement)
+            entry.class_name = class_name(runtime, placement.layer, placement.kind)
+            entry.class_note = class_note(runtime, placement.layer, placement.kind)
             entry.animation_address = visual.get('animation_address')
             from formats.level.flat import ordering_bucket
             entry.draw_bucket = ordering_bucket(placement, visual, fixed_picture=bool(pieces))
@@ -572,10 +584,13 @@ def sprite_pages(project, path, index):
     a bank the way the level does."""
     cache = project.__dict__.setdefault('sprite_page_cache', {})
     palettes = project.__dict__.setdefault('sprite_clut_cache', {})
+    owners = project.__dict__.setdefault('sprite_owner_cache', {})
     if (path, index) not in cache:
         resources = loaded_resources(project, path, index)
         resolver = InitialPoseResolver(project, area_of(path), max(0, index - 1), resources)
-        pages, cluts = {}, {}
+        pages, cluts, shown = {}, {}, {}
+        from game.classes import class_name
+        runtime = getattr(resolver, 'area', area_of(path))
         for (kind, slot), asset in resources.items():
             if kind != 'APD' or not resolver.available:
                 continue
@@ -586,13 +601,27 @@ def sprite_pages(project, path, index):
             for placement in placements:
                 visual = resolver.resolve(placement)
                 if 'sprite' in visual:
+                    label = (class_name(runtime, placement.layer, placement.kind)
+                             or f'class {placement.layer}:{placement.kind:02X}')
                     for frame, _ in visual['frames']:
                         pages.setdefault(visual['sprite'], {}).setdefault(frame, visual['tpage'])
+                        users = shown.setdefault(visual['sprite'], {}).setdefault(frame, [])
+                        if label not in users:
+                            users.append(label)
                         if visual.get('clut') is not None:
                             cluts.setdefault(visual['sprite'], {}).setdefault(frame, visual['clut'] & 0x7FFF)
         cache[path, index] = pages
         palettes[path, index] = cluts
+        owners[path, index] = shown
     return cache[path, index]
+
+
+def sprite_owners(project, path, index):
+    """Which classes of object show each frame, {slot: {frame: [name]}}: a
+    frame is named for the things that are drawn with it. A class without a
+    name is listed by its layer and type."""
+    sprite_pages(project, path, index)
+    return project.sprite_owner_cache[path, index]
 
 
 def sprite_cluts(project, path, index):
