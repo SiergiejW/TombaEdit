@@ -707,8 +707,11 @@ class ModelView(QWidget):
             'Export glTF', self.export)
         layout.addWidget(self.toolbar)
         split = QSplitter()
+        # Panes shrink to their minimum and stay; none snaps shut.
+        split.setChildrenCollapsible(False)
+        self.split = split
         left = QWidget()
-        left.setMinimumWidth(320)
+        left.setMinimumWidth(220)
         ll = QVBoxLayout(left)
         ll.addWidget(QLabel('Models'))
         self.objects = QTableWidget(0, 5)

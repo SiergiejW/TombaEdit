@@ -71,9 +71,10 @@ class LevelView(ModelView):
         self.objects.setColumnWidth(2, 150)
         for column in (3, 4):
             self.objects.setColumnHidden(column, True)
-        self.objects.setMinimumWidth(350)
+        self.objects.setMinimumWidth(200)
         # The pane has to be as wide as the list, or the last column is cut off.
-        self.inspect_tabs.parentWidget().setMinimumWidth(470)
+        self.inspect_tabs.parentWidget().setMinimumWidth(240)
+        self.split.setSizes([470, 640, 280])
         self.class_icons = {}
         self.objects.cellClicked.connect(self.show_entry)
         self.canvas.picked.connect(self.picked_entry)
