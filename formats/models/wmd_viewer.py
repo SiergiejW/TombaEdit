@@ -41,6 +41,7 @@ class MeshCanvas(CameraEventMixin, QOpenGLWidget):
         self.colored = True
         self.wireframe = False
         self.backface_culling = True
+        self.transparency = True     # blend what the model data marks semi-transparent
         self.show_origin = False
         self.spread = True
         self.spread_offsets = {}
@@ -311,6 +312,14 @@ class MeshCanvas(CameraEventMixin, QOpenGLWidget):
         gl.glPolygonMode(gl.GL_FRONT_AND_BACK, gl.GL_LINE if self.wireframe else gl.GL_FILL)
         gl.glEnableClientState(gl.GL_VERTEX_ARRAY)
         gl.glEnableClientState(gl.GL_COLOR_ARRAY)
+        # Blending is on only while a semi-transparent layer is drawn. The
+        # state outlives a frame and the toolkit paints with it in between,
+        # so it is put back here rather than assumed.
+        gl.glDisable(gl.GL_BLEND)
+        gl.glBlendEquation(gl.GL_FUNC_ADD)
+        gl.glBlendFunc(gl.GL_SRC_ALPHA, gl.GL_ONE_MINUS_SRC_ALPHA)
+        gl.glDepthMask(gl.GL_TRUE)
+        gl.glColorMask(True, True, True, True)
         # Semi-transparent primitives are drawn after everything solid, so
         # what is behind them is there to blend with. A flat scene is painted
         # in the game's own order instead, each object whole.
@@ -341,6 +350,7 @@ class MeshCanvas(CameraEventMixin, QOpenGLWidget):
             # texels flagged for blending, and the rest of it drawn solid.
             jobs = []
             for (page, clut, semi), arrays in mesh.batches.items():
+                semi = semi and self.transparency
                 split = semi and self.textured and page >= 0 and mesh.image is None
                 layers = ((None,) if not semi else ('solid', 'blend') if split else ('blend',))
                 jobs += [(page, clut, layer, arrays) for layer in layers
@@ -388,8 +398,10 @@ class MeshCanvas(CameraEventMixin, QOpenGLWidget):
                 gl.glDrawArrays(gl.GL_TRIANGLES, 0, len(vertices))
                 if semi:
                     gl.glBlendEquation(gl.GL_FUNC_ADD)
+                    gl.glBlendFunc(gl.GL_SRC_ALPHA, gl.GL_ONE_MINUS_SRC_ALPHA)
                     gl.glDisable(gl.GL_BLEND)
                     gl.glDepthMask(gl.GL_TRUE)
+                    gl.glColorMask(True, True, True, True)
             gl.glPopMatrix()
             if local_depth:
                 gl.glDisable(gl.GL_DEPTH_TEST)
@@ -534,6 +546,8 @@ class MeshCanvas(CameraEventMixin, QOpenGLWidget):
         mode = (page >> 5) & 3 if page >= 0 else 0
         gl.glEnable(gl.GL_BLEND)
         gl.glDepthMask(gl.GL_FALSE)
+        # The view's own alpha stays opaque; only colour is blended.
+        gl.glColorMask(True, True, True, False)
         gl.glBlendColor(0, 0, 0, .25 if mode == 3 else .5)
         gl.glBlendEquation(gl.GL_FUNC_REVERSE_SUBTRACT if mode == 2 else gl.GL_FUNC_ADD)
         if mode == 0:
@@ -674,6 +688,10 @@ class ModelView(QWidget):
         self.texture_action.setToolTip('Show CLUT textures. Turn off to inspect WMD vertex colours.')
         self.culling_action = add_action(QStyle.StandardPixmap.SP_DialogNoButton,
             'Backface Culling', lambda value: self.toggle('backface_culling', value), True)
+        self.transparency_action = add_action(QStyle.StandardPixmap.SP_TitleBarShadeButton,
+            'Transparency', lambda value: self.toggle('transparency', value), True)
+        self.transparency_action.setToolTip('Blend the texels the model data marks semi-transparent, such as water '
+                                            'and shadows. Turn off to draw everything solid.')
         self.spread_action = add_action(QStyle.StandardPixmap.SP_FileDialogDetailedView,
             'Spread Parts', self.toggle_spread, True)
         self.spread_action.setToolTip('Lay every model on a numbered grid, as in the Tomba2Edit SMST viewer.')
