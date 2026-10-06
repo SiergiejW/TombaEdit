@@ -106,6 +106,72 @@ def town_graphics(project, resources, area, section):
         return None
 
 
+def character_pages(data, base, slot, count):
+    """{frame: texture page base} for a bank of town characters, read from
+    the overlay that spawns them, or {} if it does not say.
+
+    A town's characters are not placed by APD records. The overlay keeps a
+    run of twelve-byte records for them, one per character: four size
+    bytes, a page base, the SPR slot and a pointer to a list of animation
+    scripts (800FDD80 for Baccus Village). A bank holds several characters
+    whose art sits on different pages, so each record's scripts say which
+    frames go with its page.
+
+    One overlay serves several towns, each with a bank of its own in the
+    same slot. The run that belongs to this bank is the one whose frames
+    reach exactly its last frame and never give one frame two pages; if no
+    run does, nothing is returned. Frames no script shows take the page of
+    the character before them."""
+    data = bytes(data)
+    end = base + len(data)
+    tails = []
+    for at in range(4, len(data) - 8, 4):
+        page, bank, table = struct.unpack_from('<HHI', data, at)
+        if page < 32 and bank < 16 and base <= table < end - 4 and table % 4 == 0:
+            tails.append((at, page, bank, table))
+    starts = sorted({tail[3] for tail in tails})
+    runs, last = [], None
+    for at, page, bank, table in tails:
+        if bank != slot:
+            continue
+        # A list ends where the next record's begins, or at the first entry
+        # that is not a script of this bank.
+        frames, stop = set(), next((start for start in starts if start > table), end)
+        for entry in range(table, stop, 4):
+            script, seen, steps = struct.unpack_from('<I', data, entry - base)[0], set(), []
+            while script not in seen and len(seen) < 64 and base <= script <= end - 12 and script % 4 == 0:
+                seen.add(script)
+                frame, _, _, control = struct.unpack_from('<4H', data, script - base)
+                if frame >= count:
+                    steps = []
+                    break
+                steps.append(frame)
+                mode = control & 0xC000
+                if mode == 0x8000:
+                    break
+                script = struct.unpack_from('<I', data, script + 8 - base)[0] if mode else script + 8
+            if not steps:
+                break
+            frames.update(steps)
+        if not frames:
+            continue
+        if last is None or at - last > 0x40:
+            runs.append([])
+        runs[-1].append((page, frames))
+        last = at
+    for run in runs:
+        pages, clash = {}, False
+        for page, frames in run:
+            for frame in frames:
+                clash = clash or pages.setdefault(frame, page) != page
+        if not clash and max(pages) == count - 1 and len(set(pages.values())) > 1:
+            current = pages[min(pages)]
+            for frame in range(count):
+                current = pages.setdefault(frame, current)
+            return pages
+    return {}
+
+
 def dwarf_graphics(project, resources, area, section):
     """Return verified frame settings, or None for a different load context.
 

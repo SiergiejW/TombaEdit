@@ -18,6 +18,7 @@ from formats.models.wmd import parse_wmd
 from psx.graphics import sprite_frames
 from icons.icons import icon
 from game import labels
+from game.builds import executable
 import hashlib
 
 ROLE = Qt.ItemDataRole.UserRole
@@ -219,6 +220,14 @@ def prepare_preview(project, node, context=None):
             if town is not None and slot == town.bank:
                 result['sprite_pages'].update(town.pages)
                 result['sprite_cluts'].update(town.cluts)
+            elif not result['sprite_pages'] and executable(project) is not None:
+                # A bank nothing places: the characters a town overlay spawns.
+                from formats.level.town import character_pages
+                known = executable(project)
+                overlay = next((a for a in loaded if a.kind == 'INS'), None)
+                if overlay is not None:
+                    result['sprite_pages'] = character_pages(project.asset_data(overlay), known.build.overlay,
+                                                             slot, len(frames))
             # Tomba's own banks have no pixels in VRAM; a picture bank with
             # one entry per frame supplies them.
             for candidate in loaded:
@@ -297,7 +306,6 @@ def prepare_preview(project, node, context=None):
     from formats.annotate import regions
     name = Path(node.path).name.upper() if isinstance(node, DiscEntry) else ''
     kind = node.kind if isinstance(node, Asset) else 'INS' if name.startswith('X') and name.endswith('.BIN') else ''
-    from game.builds import executable
     known = executable(project)
     result['overlay_base'] = known.build.overlay if known else None
     result['regions'] = regions(kind, data, result['overlay_base'])
