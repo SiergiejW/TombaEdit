@@ -11,6 +11,7 @@ is not repeated here.
 """
 from dataclasses import dataclass, replace
 import hashlib
+from game.areas import language_name
 import struct
 
 
@@ -149,7 +150,7 @@ def european(language, late, early=0):
     and overlays sit from the first language's, `early` its tables."""
     e = EUROPE
     return replace(
-        e, name=f'European, language {language}', overlay=e.overlay + late, area=e.area + late,
+        e, name=f'European ({language_name(language)})', overlay=e.overlay + late, area=e.area + late,
         variant=tuple(v + late for v in e.variant), tables={k: v + early for k, v in e.tables.items()},
         get_clut=e.get_clut + early, slot_tables=e.slot_tables + early, common=e.common + early,
         pictures=e.pictures + early, entrances=e.entrances + early, origins=e.origins + early,

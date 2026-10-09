@@ -7,6 +7,18 @@ AREAS = dict(enumerate([
     "Village of Civilization (Clock Tower)", "Village of Civilization (Iron Tower)",
     "Village of Civilization (Y Crossing)", "Hidden Village",
 ]))
+# The languages of the European disc, in the order of its programs
+# (EXE/MAIN0.EXE to MAIN8.EXE) and of its sets of load tables.
+LANGUAGES = ('English', 'French', 'German', 'Italian', 'Dutch', 'Spanish', 'Portuguese', 'Swedish', 'Danish')
+
+
+def language_name(number):
+    """Name of a language of a disc that has several; '' for a disc with one."""
+    if number is None:
+        return ''
+    return LANGUAGES[number] if 0 <= number < len(LANGUAGES) else f'Language {number}'
+
+
 SECTIONS = {
     0: ["Village of All Beginnings", "Forest of All Beginnings", "Forest of All Beginnings (hut entrance)", "100 Year Old Man's Hut", "Behind the Hut", "Ol' Pond"],
     1: ["Forest of 100 Flowers", "Forest of 100 Flowers (right entrance)", "Wobbly Wharf", "Watch Tower", "Charity Square"],

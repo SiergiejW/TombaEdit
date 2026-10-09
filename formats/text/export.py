@@ -18,6 +18,7 @@ import json
 from dataclasses import dataclass, field
 from pathlib import Path
 from formats.archive.ldar import table_name
+from game.areas import language_name
 from formats.text.wfm import Wfm, MAGICS, CONTROLS, EARLY_CONTROLS
 from disc.reader import FormatError
 
@@ -91,8 +92,10 @@ class Bank:
     @property
     def place(self):
         if self.area >= 0:
-            return f'AREA{self.area:02d}' + ('' if self.language is None else f' language {self.language}')
-        return 'SYSTEM' if self.table else 'files'
+            return f'AREA{self.area:02d}' + ('' if self.language is None else ' ' + language_name(self.language))
+        if self.table:
+            return 'SYSTEM' + ('' if self.language is None else ' ' + language_name(self.language))
+        return 'files'
 
 
 def collect(project, area=None, language=None, progress=None):
@@ -163,7 +166,7 @@ def describe(bank):
     if bank.area >= 0:
         out['area'] = bank.area
     if bank.language is not None:
-        out['language'] = bank.language
+        out['language'] = language_name(bank.language)
     return out
 
 

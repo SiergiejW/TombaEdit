@@ -11,9 +11,9 @@ from PyQt6.QtWidgets import (QMainWindow, QWidget, QVBoxLayout, QHBoxLayout, QLa
     QHeaderView, QMenu, QApplication, QStyle, QComboBox, QInputDialog)
 from disc.reader import DiscEntry, FormatError
 from formats.archive.ldar import Project, Asset, area_number, table_name, system_table, bank_screens
-from game.areas import AREAS, section_name
+from game.areas import AREAS, section_name, language_name
 from gui.theme import apply_theme
-from gui.viewers import text_view, ImageView, DialogueView, SpriteView, ModelView, VramView
+from gui.viewers import text_view, ImageView, DialogueView, GlyphView, SpriteView, ModelView, VramView
 from formats.text.wfm import Wfm
 from formats.models.wmd import parse_wmd
 from psx.graphics import sprite_frames
@@ -423,6 +423,7 @@ class MainWindow(QMainWindow):
         super().__init__()
         tolerant_console()
         self.settings = QSettings()
+        self.load_glyphs()
         self.project = None
         self.current_node = None
         self.current_data = None
@@ -463,6 +464,7 @@ class MainWindow(QMainWindow):
         open_action.setIcon(self.style().standardIcon(QStyle.StandardPixmap.SP_DriveDVDIcon))
         self.export_action = self.action(file_menu, "Export decoded &file (binary)...", self.export_payload, "Ctrl+E")
         self.raw_action = self.action(file_menu, "Export original disc &file...", self.export_raw)
+        self.action(file_menu, "Export &text...", self.export_text, "Ctrl+T")
         file_menu.addSeparator()
         self.action(file_menu, "E&xit", self.close, "Alt+F4")
         view = self.menuBar().addMenu("&View")
@@ -481,6 +483,11 @@ class MainWindow(QMainWindow):
         self.action(label_menu, 'Rename selected...', self.rename_selected, 'F2')
         self.action(label_menu, 'Import labels...', self.import_labels)
         self.action(label_menu, 'Export labels...', self.export_labels)
+        label_menu.addSeparator()
+        self.action(label_menu, 'Import glyph characters...', self.import_glyphs)
+        self.action(label_menu, 'Export glyph characters...', self.export_glyphs)
+        if not getattr(sys, 'frozen', False):
+            self.action(label_menu, 'Save glyph characters as built-in', self.save_builtin_glyphs)
         if not getattr(sys, 'frozen', False):
             # Running from source: names can be made part of the tool.
             self.action(label_menu, 'Save as built-in labels', self.save_builtin_labels)
@@ -653,7 +660,10 @@ class MainWindow(QMainWindow):
         self.disc_tree.setUpdatesEnabled(False)
         self.disc_tree.clear()
         self.populate_disc(project.disc.root, self.disc_tree.invisibleRootItem())
-        for path, groups in project.ldars.items():
+        languages = sorted({table_name(path)[0] for path in project.ldars} - {None})
+        first_language = languages[0] if languages else None
+        other_languages = {}
+        for path, groups in sorted(project.ldars.items(), key=lambda kv: (table_name(kv[0])[0] or 0, kv[0])):
             area = area_number(path)
             directory = f'AREA{area:02d}' if area >= 0 else 'SYS'
             parent = self.file_items.get(directory)
@@ -662,9 +672,22 @@ class MainWindow(QMainWindow):
                                if name.endswith('/' + directory)), None)
             if parent is None:
                 parent = self.disc_tree.invisibleRootItem()
-            root = self.item(parent, 'Sections', ('sections', path, 0))
-            parent.takeChild(parent.indexOfChild(root))
-            parent.insertChild(0, root)
+            tongue = table_name(path)[0]
+            if tongue in (None, first_language):
+                root = self.item(parent, 'Sections', ('sections', path, 0))
+                parent.takeChild(parent.indexOfChild(root))
+                parent.insertChild(0, root)
+            else:
+                # The other languages of a disc that has several are the
+                # same sections again with their own text: kept together,
+                # one folder a language, below the first language's.
+                others = other_languages.get(id(parent))
+                if others is None:
+                    others = self.item(parent, 'Other languages', ('languages', path, 0))
+                    parent.takeChild(parent.indexOfChild(others))
+                    parent.insertChild(1, others)
+                    other_languages[id(parent)] = others
+                root = self.item(others, language_name(tongue), ('sections', path, 0))
             root.setToolTip(0, f'{path}: base load group followed by sections in LDAR order')
             for g in groups:
                 label = "Base - Shared area resources" if g.index == 0 else f"Section {g.index - 1:02d} - {section_name(area, g.index - 1)}"
@@ -940,8 +963,15 @@ class MainWindow(QMainWindow):
                 self.tabs.addTab(ClutView(self.current_data), 'CLUT colours')
             for offset, wfm in result.get("wfms", []):
                 suffix = f" @{offset:X}" if offset else ""
-                self.tabs.addTab(DialogueView(wfm), "Dialogue" + suffix)
-                self.tabs.addTab(ImageView(wfm.atlas()), "Glyphs" + suffix)
+                source = node.source.path if isinstance(node, Asset) and node.source else getattr(node, 'path', '')
+                dialogue = DialogueView(wfm, self.export_stem(node) + suffix, source,
+                                        (node.offset if isinstance(node, Asset) else 0) + offset)
+                glyphs = GlyphView(wfm)
+                # A character typed for a glyph is kept, and shows in the entries at once.
+                glyphs.changed.connect(dialogue.relist)
+                glyphs.changed.connect(self.persist_glyphs)
+                self.tabs.addTab(dialogue, "Dialogue" + suffix)
+                self.tabs.addTab(glyphs, "Glyphs" + suffix)
             if "vram" in result and 'sprites' not in result:
                 # Sprites carry the section's VRAM in their own tab.
                 cluts = {p['clut'] for m in result.get('meshes', []) for p in m.polygons if p['page'] >= 0}
@@ -1219,6 +1249,112 @@ class MainWindow(QMainWindow):
                 visit(item.child(i))
         for i in range(self.disc_tree.topLevelItemCount()):
             visit(self.disc_tree.topLevelItem(i))
+
+    def load_glyphs(self):
+        """Characters typed for glyphs on this machine, kept between sessions."""
+        import json
+        from formats.text import wfm
+        try:
+            saved = json.loads(self.settings.value('glyphs/characters', '') or '{}')
+        except ValueError:
+            saved = {}
+        wfm.USER_GLYPHS.update({key: value for key, value in saved.items()
+                                if isinstance(key, str) and isinstance(value, str)})
+
+    def persist_glyphs(self):
+        import json
+        from formats.text import wfm
+        self.settings.setValue('glyphs/characters', json.dumps(wfm.USER_GLYPHS, ensure_ascii=False))
+
+    def reread_glyphs(self):
+        """Show a changed set of glyph characters in the text tabs that are open."""
+        for index in range(self.tabs.count()):
+            widget = self.tabs.widget(index)
+            if isinstance(widget, GlyphView):
+                widget.wfm.recognise()
+                widget.refill()
+            elif isinstance(widget, DialogueView):
+                widget.wfm.recognise()
+                widget.relist()
+
+    def import_glyphs(self):
+        import json
+        from formats.text import wfm
+        path, _ = QFileDialog.getOpenFileName(self, 'Import glyph characters', '', 'Glyph characters (*.json)')
+        if not path:
+            return
+        try:
+            loaded = json.loads(Path(path).read_text('utf-8'))
+            if not isinstance(loaded, dict) or not all(isinstance(k, str) and isinstance(v, str) for k, v in loaded.items()):
+                raise ValueError('the file is not a table of glyph keys and characters')
+        except (OSError, ValueError) as exc:
+            QMessageBox.warning(self, 'Cannot import glyph characters', str(exc))
+            return
+        wfm.USER_GLYPHS.update(loaded)
+        self.persist_glyphs()
+        self.reread_glyphs()
+        self.statusBar().showMessage(f'{len(loaded)} glyph characters imported.')
+
+    def export_glyphs(self):
+        import json
+        from formats.text import wfm
+        path, _ = QFileDialog.getSaveFileName(self, 'Export glyph characters', 'glyph characters.json',
+                                              'Glyph characters (*.json)')
+        if path:
+            try:
+                Path(path).write_text(json.dumps(wfm.USER_GLYPHS, ensure_ascii=False, indent=1, sort_keys=True) + '\n',
+                                      'utf-8')
+            except OSError as exc:
+                QMessageBox.warning(self, 'Cannot export glyph characters', str(exc))
+
+    def save_builtin_glyphs(self):
+        """Add the characters typed here to the dictionary packaged with the tool."""
+        import json
+        from formats.text import wfm
+        path = Path(wfm.__file__).with_name('glyph_dictionary.json')
+        try:
+            merged = json.loads(path.read_text('utf-8'))
+            merged.update({key: value for key, value in wfm.USER_GLYPHS.items() if value})
+            path.write_text(json.dumps(merged, ensure_ascii=False, indent=1) + '\n', 'utf-8')
+        except (OSError, ValueError) as exc:
+            QMessageBox.warning(self, 'Cannot save glyph characters', str(exc))
+            return
+        wfm.GLYPH_DICTIONARY.update(merged)
+        self.statusBar().showMessage(f'{len(merged)} glyph characters in {path}')
+
+    def export_text(self):
+        """Ask what text to export and how, and write it."""
+        if self.project is None:
+            return
+        from gui.text_export import TextExportDialog
+        from formats.text import export
+        node = self.current_node
+        table = node.ldar if isinstance(node, Asset) else node[1] if isinstance(node, tuple) else None
+        tongue, area = table_name(table) if table else (None, -1)
+        dialog = TextExportDialog(self, self.project, area if area >= 0 else None, tongue,
+                                  self.project.disc.source.stem + ' text')
+        if not dialog.exec():
+            return
+        chosen = dialog.options()
+        project, title = self.project, self.project.disc.source.stem
+        self.statusBar().showMessage('Reading text banks...')
+
+        def work():
+            banks = export.collect(project, chosen['area'], chosen['language'])
+            written = export.write(banks, chosen['target'], chosen['kind'], chosen['layout'], title,
+                                   chosen['controls'], chosen['unknown'], chosen['raw'])
+            return (len(banks), sum(len(bank.wfm.dialogues) for bank in banks),
+                    sum(bank.unknown for bank in banks), written)
+
+        def done(generation, result, error):
+            if error or result is None:
+                QMessageBox.warning(self, 'Text not exported', error or 'Nothing was written.')
+                return
+            banks, entries, unknown, written = result
+            self.statusBar().showMessage(
+                f'{entries:,} entries of {banks} text banks written to {len(written)} file'
+                + ('s' if len(written) != 1 else '') + (f'; {unknown} glyphs have no character yet' if unknown else ''))
+        self.submit(work, done)
 
     def import_labels(self):
         if self.project is None:
