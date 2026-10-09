@@ -17,10 +17,23 @@ def rgba(words):
 GREY_RAMP = np.array([0] + [level | level << 5 | level << 10 for level in range(3, 32, 2)], np.uint16)
 
 
+# The game keeps its palettes in the rows of VRAM from here down; above
+# them a CLUT word names a place among the textures.
+PALETTE_ROWS = 448
+
+
+def palette_runtime(clut):
+    """True when a CLUT word names a row among the textures: a slot the game
+    writes a palette into while it runs, which holds texture pixels until
+    then."""
+    return (clut >> 6) & 511 < PALETTE_ROWS
+
+
 def palette_missing(vram, clut, colours=16):
-    """True when the palette row a CLUT word names holds nothing."""
+    """True when the palette a CLUT word names is not in this VRAM: its row
+    holds nothing, or is a slot the game fills while it runs."""
     x, y = (clut & 63) * 16, (clut >> 6) & 511
-    return not vram[y, x:x + colours].any()
+    return palette_runtime(clut) or not vram[y, x:x + colours].any()
 
 
 def texture_page(vram, tpage, clut, palette=None, flagged=None):

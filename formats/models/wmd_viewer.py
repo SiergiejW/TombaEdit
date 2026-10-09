@@ -15,6 +15,7 @@ from psx.graphics import texture_page, render_sprite
 
 
 from gui.widgets.image_view import ImageView, text_view, qimage
+from gui.widgets.columns import adjustable
 
 from gui.widgets.camera_controls import (CameraControls, CameraEventMixin, CONTROLS_HINT,
     MODEL_HEADING, MODEL_PITCH, FIELD_OF_VIEW)
@@ -73,6 +74,8 @@ class MeshCanvas(CameraEventMixin, QOpenGLWidget):
         self.selection_colors = []      # per mesh, or empty for the stock ones
         self.outline_cache = None
         self.panorama_cache = None
+        self.backdrop_travel = None     # sideways distance the backdrop has scrolled by
+        self.backdrop_at = (0, 0)
         self.backdrop_rects = {}
         # Screen-space sprites behind the scene: [(index, Backdrop)].
         self.backdrop = []
@@ -487,14 +490,24 @@ class MeshCanvas(CameraEventMixin, QOpenGLWidget):
         """Stitch layer 7 strips into a horizon panorama for editor free-look.
 
         Sideways movement follows each layer's game parallax factor. A turn
-        scrolls one repeat; pitch is limited. Camera height and forward
-        movement cannot push the panorama off-screen.
+        scrolls one repeat; pitch is limited. Camera height and movement
+        forwards or backwards leave the panorama where it is.
         """
         aspect = self.width() / max(1, self.height())
         width = 240 * aspect
         c = self.camera_controls
         from formats.level.presentation import panorama_layers, panorama_position
-        camera = (-c.camera_x, -c.camera_y, -c.camera_z)
+        # How far the camera has gone sideways: only the part of each move
+        # that is across the way it faces counts, so going forwards or
+        # backwards at an angle does not slide the backdrop.
+        x, z = -c.camera_x, -c.camera_z
+        if self.backdrop_travel is None:
+            self.backdrop_travel = -z if self.backdrop_turned else x
+        else:
+            h = -math.radians(c.camera_angle_h)
+            self.backdrop_travel += (x - self.backdrop_at[0]) * math.cos(h) - (z - self.backdrop_at[1]) * math.sin(h)
+        self.backdrop_at = (x, z)
+        camera = (self.backdrop_travel, 0, 0)
         key = (id(self.backdrop), frozenset(self.visible))
         if self.panorama_cache is None or self.panorama_cache[0] != key:
             self.panorama_cache = (key, panorama_layers(self.backdrop, self.visible))
@@ -512,8 +525,7 @@ class MeshCanvas(CameraEventMixin, QOpenGLWidget):
         gl.glTexEnvi(gl.GL_TEXTURE_ENV, gl.GL_TEXTURE_ENV_MODE, gl.GL_REPLACE)
         for sprite in self.panorama_cache[1]:
             # Whole pixels, so neighbouring strips meet without seams.
-            x, y = panorama_position(sprite, camera, c.camera_angle_h,
-                                     c.camera_angle_v, self.backdrop_turned)
+            x, y = panorama_position(sprite, camera, c.camera_angle_h, c.camera_angle_v)
             gl.glBindTexture(gl.GL_TEXTURE_2D, self.image_texture(gl, sprite.image))
             gl.glColor3f(1, 1, 1)
             low = (320 - width) / 2
@@ -733,7 +745,8 @@ class ModelView(QWidget):
         self.objects.setColumnWidth(3, 62)
         self.objects.setColumnWidth(4, 92)
         self.objects.horizontalHeader().setMinimumSectionSize(44)
-        self.objects.horizontalHeader().setSectionResizeMode(1, QHeaderView.ResizeMode.Stretch)
+        self.objects.setColumnWidth(1, 170)
+        adjustable(self.objects)
         self.objects.itemChanged.connect(self.visibility_changed)
         self.objects.currentCellChanged.connect(self.model_selected)
         self.objects.cellDoubleClicked.connect(self.frame_selected)

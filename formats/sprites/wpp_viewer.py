@@ -4,12 +4,13 @@ import json
 import math
 from pathlib import Path
 from PIL import Image, ImageDraw
-from PyQt6.QtCore import Qt, pyqtSignal
+from PyQt6.QtCore import Qt, pyqtSignal, QTimer
 from PyQt6.QtWidgets import (QWidget, QVBoxLayout, QHBoxLayout, QLabel, QComboBox, QCheckBox,
     QPushButton, QSplitter, QTableWidget, QTableWidgetItem, QAbstractItemView,
     QHeaderView, QFileDialog, QMessageBox)
 from gui.widgets.image_view import ImageView, file_stem
 from gui.widgets.sheet_layout import SpacingControls
+from gui.widgets.columns import adjustable
 
 
 class WppView(QWidget):
@@ -22,6 +23,10 @@ class WppView(QWidget):
         self.kind, self.pictures, self.palettes = kind, pictures, list(palettes)
         self.vram, self.custom_clut = vram, None
         self.export_name = 'pictures'   # prefix of default file names, set by the window
+        self.relayout = QTimer(self)
+        self.relayout.setSingleShot(True)
+        self.relayout.setInterval(120)
+        self.relayout.timeout.connect(self.fit_sheet)
         layout = QVBoxLayout(self)
         bar = QHBoxLayout()
         self.whole = QPushButton('Whole bank')
@@ -57,7 +62,8 @@ class WppView(QWidget):
         self.table.setEditTriggers(QAbstractItemView.EditTrigger.NoEditTriggers)
         self.table.setSelectionBehavior(QAbstractItemView.SelectionBehavior.SelectRows)
         self.table.setSelectionMode(QAbstractItemView.SelectionMode.ExtendedSelection)
-        self.table.horizontalHeader().setSectionResizeMode(0, QHeaderView.ResizeMode.Stretch)
+        self.table.setColumnWidth(0, 150)
+        adjustable(self.table)
         for row, picture in enumerate(pictures):
             values = (f'Picture {picture.index:03d}', str(picture.width), str(picture.height),
                       f'{picture.packed:,}', f'0x{picture.offset:06X}')
@@ -161,7 +167,7 @@ class WppView(QWidget):
             # The box goes round the picture, one pixel outside its own.
             framed = Image.new('RGBA', (image.width + 2, image.height + 2))
             framed.alpha_composite(image.convert('RGBA'), (1, 1))
-            ImageDraw.Draw(framed).rectangle((0, 0, framed.width - 1, framed.height - 1), outline=(255, 255, 255, 255))
+            ImageDraw.Draw(framed).rectangle((0, 0, framed.width - 1, framed.height - 1), outline=(30, 30, 30, 128))
             return framed
         return image
 
@@ -184,10 +190,21 @@ class WppView(QWidget):
         if not self.whole.isChecked():
             self.refresh()
 
+    def resizeEvent(self, event):
+        """A sheet is laid out again for the new shape of its pane."""
+        super().resizeEvent(event)
+        self.relayout.start()
+
+    def fit_sheet(self):
+        if self.pictures and self.image.zoom.currentIndex() == 0 and (
+                self.whole.isChecked() or len(self.selected_rows()) > 1):
+            self.image.subject = None
+            self.refresh()
+
     def sheet(self, rows):
         """Pictures laid out on one sheet, and where each one landed."""
         images = [self.render(self.pictures[row]) for row in rows]
-        places, size = self.spacing.arrange([im.size for im in images])
+        places, size = self.spacing.arrange([im.size for im in images], self.image.view)
         sheet = Image.new('RGBA', size)
         records = []
         for row, image, (x, y) in zip(rows, images, places):

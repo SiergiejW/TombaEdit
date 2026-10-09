@@ -44,7 +44,7 @@ class InitialPoseResolver:
         self.object_states = {}
         self.queued = set()
         self.stop_at_animation = False
-        found = executable(project)
+        found = executable(project, next((a.ldar for a in resources.values()), None))
         if found is None or area < 0:
             return
         self.build = build = found.build
@@ -157,7 +157,8 @@ class InitialPoseResolver:
                     return parts
                 if not (0 < width <= 256 and 0 < height <= 256):
                     break
-                parts.append((tpage & 0x1FF, x, y, u, v, width, height, (clut_y & 511) << 6 | (clut_x >> 4) & 63))
+                parts.append((tpage & 0x1FF, x, y + self.build.picture_top, u, v, width, height,
+                              (clut_y & 511) << 6 | (clut_x >> 4) & 63))
                 at += self.build.picture_record
         except Exception:
             pass
@@ -545,12 +546,12 @@ class InitialPoseResolver:
         return result
 
 
-def table_pages(project):
+def table_pages(project, table=None):
     """Texture page base per SPR slot from the object table at 8007D6E4 in
     US retail (twelve-byte entries: page base, animation, slot, script
     pointer). Used for banks that no placed object shows. Empty for builds
     where the table has not been located."""
-    found = executable(project)
+    found = executable(project, table)
     if found is None or not found.build.pages:
         return {}
     exe, base, votes, at = found.data, found.base, {}, found.build.pages

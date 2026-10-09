@@ -1,6 +1,7 @@
 """LDAR load groups, source ranges, and ordered VRAM uploads."""
 from dataclasses import dataclass, field
 from collections import OrderedDict
+import re
 import struct
 import numpy as np
 from disc.reader import FormatError
@@ -8,6 +9,29 @@ from formats.archive.gam import decompress
 
 
 SYSTEM_LDAR = 'SYS/LDSYS.BIN'
+TABLE_NAME = re.compile(r'LD(\d?)(?:AR(\d+)|SYS)$')
+
+
+def table_name(path):
+    """(language, area) of a load table's path. SYS/LDAR04.BIN is (None, 4)
+    and SYS/LDSYS.BIN (None, -1); the European disc has a set of tables for
+    each language, so its SYS/LD2AR04.BIN is (2, 4). (None, -1) for a path
+    that is not a load table."""
+    found = TABLE_NAME.match(path.split('/')[-1].split('.')[0].upper())
+    if found is None:
+        return None, -1
+    return (int(found[1]) if found[1] else None), (int(found[2]) if found[2] else -1)
+
+
+def area_number(path):
+    """Area a load table belongs to; -1 for a system table."""
+    return table_name(path)[1]
+
+
+def system_table(path):
+    """Path of the system load table that goes with an area's."""
+    language = table_name(path)[0]
+    return SYSTEM_LDAR if language is None else f'SYS/LD{language}SYS.BIN'
 
 
 def type_name(code):
@@ -117,17 +141,30 @@ class Project:
         self.warnings = []
         self.cache = OrderedDict()
         self.cache_bytes = 0
-        try:
-            self.catalog = Catalog.discover(self.disc)
-        except FormatError as exc:
-            self.warnings.append(str(exc))
+        tables = [e for e in self.disc.files if e.path.startswith("SYS/LD") and e.path.endswith(".BIN")]
+        # A disc with a set of load tables for each language has a program
+        # for each too, and every program links its own files.
+        self.catalogs = {}
+        for language in sorted({table_name(e.path)[0] for e in tables}, key=lambda n: -1 if n is None else n):
+            try:
+                self.catalogs[language] = Catalog.discover(self.disc, language)
+            except FormatError as exc:
+                self.warnings.append(str(exc) if language is None else f'Language {language}: {exc}')
+        if not tables:
+            try:
+                self.catalogs[None] = Catalog.discover(self.disc)
+            except FormatError as exc:
+                self.warnings.append(str(exc))
+        self.catalog = next(iter(self.catalogs.values()), None)
         if self.catalog:
-            for entry in self.disc.files:
-                if entry.path.startswith("SYS/LD") and entry.path.endswith(".BIN"):
-                    try:
-                        self.ldars[entry.path] = parse_ldar(self.disc.read(entry), entry.path, self.catalog)
-                    except FormatError as exc:
-                        self.warnings.append(str(exc))
+            for entry in tables:
+                catalog = self.catalogs.get(table_name(entry.path)[0])
+                if catalog is None:
+                    continue
+                try:
+                    self.ldars[entry.path] = parse_ldar(self.disc.read(entry), entry.path, catalog)
+                except FormatError as exc:
+                    self.warnings.append(str(exc))
             if not self.ldars:
                 from formats.archive.embedded import embedded_groups
                 self.ldars = embedded_groups(self.disc, self.catalog)
@@ -196,8 +233,8 @@ class Project:
         # The first group of the system table is loaded at boot and its
         # lower half of VRAM is never replaced: item and effect sprites on
         # pages 20 and 21, with their palettes.
-        system = self.ldars.get(SYSTEM_LDAR)
-        if system and path != SYSTEM_LDAR:
+        system = self.ldars.get(system_table(path))
+        if system and area_number(path) >= 0:
             wanted.insert(0, (system[0], 256))
         for group, top in wanted:
             for asset in group.assets:

@@ -34,7 +34,7 @@ def town_graphics(project, resources, area, section):
         return None
     if ('SPR', 13) not in resources or ('INS', 0) not in resources:
         return None
-    found = executable(project)
+    found = executable(project, resources['INS', 0].ldar)
     if found is None or found.build.early:
         return None
     data = project.asset_data(resources['INS', 0])
@@ -182,7 +182,7 @@ def dwarf_graphics(project, resources, area, section):
     """
     if area not in (2, 19) or section != 0 or ('SPR', 11) not in resources or ('INS', 0) not in resources:
         return None
-    found = executable(project)
+    found = executable(project, resources['INS', 0].ldar)
     if found is None:
         return None
     data = project.asset_data(resources['INS', 0])

@@ -65,10 +65,10 @@ class ContainerView(QWidget):
                                  'QTableWidget::item:selected:!active {background-color: #494949; color: white;}')
         header = self.table.horizontalHeader()
         header.setDefaultAlignment(Qt.AlignmentFlag.AlignLeft | Qt.AlignmentFlag.AlignVCenter)
-        for column, mode in enumerate((QHeaderView.ResizeMode.Interactive, QHeaderView.ResizeMode.ResizeToContents,
-                                       QHeaderView.ResizeMode.ResizeToContents, QHeaderView.ResizeMode.ResizeToContents,
-                                       QHeaderView.ResizeMode.Stretch)):
-            header.setSectionResizeMode(column, mode)
+        from gui.widgets.columns import adjustable
+        for column in (1, 2, 3):
+            self.table.setColumnWidth(column, 96)
+        adjustable(self.table)
         self.table.setColumnWidth(0, 170)
         self.table.currentCellChanged.connect(lambda row, *rest: self.choose(row))
         split.addWidget(self.table)

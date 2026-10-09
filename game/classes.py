@@ -22,7 +22,7 @@ SHARED = {
     (5, 0x00): 'Blue orb',
     (4, 0x45): 'Post with arm',
     (8, 0x00): 'AP box',
-    (4, 0x1B): 'Pink mushroom platform',
+    (4, 0x1B): 'Pig cart',
     (7, 0x03): 'Hut interior',
     (5, 0x12): 'Fish',
     (2, 0x02): 'Koma Pig',
@@ -192,7 +192,7 @@ AREAS = {
         (3, 0x54): 'Jar',
     },
     0: {
-        (2, 0x06): 'Purple bush',
+        (2, 0x06): 'Purple growth',
         (7, 0x00): 'Cloud',
         (7, 0x01): 'Sea',
         (4, 0x0A): 'Wooden post',

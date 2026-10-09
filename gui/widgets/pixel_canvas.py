@@ -86,8 +86,10 @@ class PixelCanvas(QWidget):
         self.resize(1, 1)
         self.update()
 
-    def set_zoom(self, zoom):
-        zoom = snap_zoom(zoom)
+    def set_zoom(self, zoom, exact=False):
+        """Zoom to the step nearest `zoom`, or to `zoom` itself when `exact`:
+        a picture fitted to its pane is scaled to fill it, not to a step."""
+        zoom = max(MIN_ZOOM / 4, min(MAX_ZOOM, zoom)) if exact else snap_zoom(zoom)
         if zoom == self.zoom:
             return
         self.zoom = zoom
@@ -121,8 +123,8 @@ class PixelCanvas(QWidget):
             return
 
         z = self.zoom
-        if z < 1:
-            # Shrunk to fit, the whole thing is small and cheap to draw
+        if z < 1 or z != int(z):
+            # Shrunk or fitted, the whole thing is small and cheap to draw
             # at once - and drawing it in pieces would leave rounding
             # seams between them.
             painter.drawImage(QRect(0, 0, self.scaled(self.image.width()),

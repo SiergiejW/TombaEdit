@@ -91,9 +91,9 @@ class LevelScene:
 
 
 def area_of(path):
-    """Area number of an LDARnn.BIN path; -1 for the system load table."""
-    stem = path.split('/')[-1].split('.')[0]
-    return int(stem[4:]) if stem.startswith('LDAR') and stem[4:].isdigit() else -1
+    """Area number of a load table's path; -1 for a system load table."""
+    from formats.archive.ldar import area_number
+    return area_number(path)
 
 
 def loaded_resources(project, path, index):

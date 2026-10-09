@@ -11,32 +11,34 @@ import json
 import math
 from pathlib import Path
 from PIL import Image, ImageDraw
-from PyQt6.QtCore import Qt, pyqtSignal, QItemSelectionModel
+from PyQt6.QtCore import Qt, pyqtSignal, QItemSelectionModel, QTimer
 from PyQt6.QtWidgets import (QWidget, QVBoxLayout, QHBoxLayout, QLabel, QSpinBox,
     QPushButton, QSplitter, QTableWidget, QTableWidgetItem, QAbstractItemView,
     QHeaderView, QFileDialog, QMessageBox, QCheckBox, QComboBox, QMenu, QInputDialog)
 from gui.widgets.image_view import ImageView, file_stem
 from gui.widgets.sheet_layout import SpacingControls
+from gui.widgets.columns import adjustable
 from game.labels import content_key
 from formats.images.vram_viewer import VramView
 from disc.reader import FormatError
-from psx.graphics import render_sprite, part_page, guess_page, palette_missing
+from psx.graphics import render_sprite, part_page, guess_page, palette_missing, palette_runtime
 
 
 PART_COLOURS = ((255, 80, 80, 255), (80, 220, 255, 255), (255, 220, 60, 255), (120, 255, 120, 255),
                 (255, 120, 255, 255), (255, 160, 60, 255))
 
 
-FRAME_COLOUR = (255, 255, 255, 255)
-# Shades of a sprite's box where the origin's column or row crosses it: the
-# darkest in line with the origin, lighter one and two pixels to each side.
-ORIGIN_SHADES = (30, 115, 190)
+FRAME_COLOUR = (30, 30, 30, 128)       # half transparent
+ORIGIN_COLOUR = (0, 0, 0, 0)    # gaps in a sprite's box in line with its origin
 
 LABEL = 6   # the bank list's column of labels
 
 
 class SpriteView(QWidget):
     selection_changed = pyqtSignal(list)
+    # How the panes were last dragged, kept from one bank to the next:
+    # splitter name -> sizes.
+    pane_sizes = {}
 
     def __init__(self, frames, vram, pages=None, renderer=None, default=None, cluts=None):
         """`pages` maps frame numbers to the texture page base of an object
@@ -48,6 +50,11 @@ class SpriteView(QWidget):
         self.pages = dict(pages or {})
         self.cluts = dict(cluts or {})  # CLUTs supplied by a custom drawing object
         self.known = sorted(self.pages)
+        self.borrowed = {}              # frame nothing places -> the page base it is drawn with
+        self.relayout = QTimer(self)
+        self.relayout.setSingleShot(True)
+        self.relayout.setInterval(120)
+        self.relayout.timeout.connect(self.fit_sheet)
         self.names = {}                 # frame -> what it is a picture of
         self.label_set = None           # the names people give frames
         self.save_labels = None
@@ -75,8 +82,8 @@ class SpriteView(QWidget):
         self.origin.toggled.connect(self.refresh)
         bar.addWidget(self.origin)
         self.frame_bounds = QCheckBox('Bounds')
-        self.frame_bounds.setToolTip('Draw a box round every sprite, one pixel outside it, on its own and on a sheet, with dark '
-                                     'marks on it in line with the sprite\'s origin. '
+        self.frame_bounds.setToolTip('Draw a box round every sprite, one pixel outside it, on its own and on a sheet, with gaps '
+                                     'in it in line with the sprite\'s origin. '
                                      'Saved pictures include the boxes while this is ticked.')
         self.frame_bounds.toggled.connect(self.refresh)
         bar.addWidget(self.frame_bounds)
@@ -137,13 +144,12 @@ class SpriteView(QWidget):
         self.bank.setEditTriggers(QAbstractItemView.EditTrigger.NoEditTriggers)
         self.bank.setDragDropMode(QAbstractItemView.DragDropMode.NoDragDrop)
         self.bank.setDragEnabled(False)
-        # Every column is wide enough for its text; the labels take what
-        # is left, and the list scrolls sideways when the pane is narrower.
+        # Every column is wide enough for its text and can be dragged; the
+        # list scrolls sideways when the pane is narrower.
         for column, width in enumerate((190, 48, 58, 48, 48, 96, 150)):
             self.bank.setColumnWidth(column, width)
         self.bank.horizontalHeader().setMinimumSectionSize(44)
-        self.bank.horizontalHeader().setStretchLastSection(False)
-        self.bank.horizontalHeader().setSectionResizeMode(LABEL, QHeaderView.ResizeMode.Stretch)
+        adjustable(self.bank)
         self.bank.horizontalHeader().setMinimumSectionSize(44)
         self.bank.setHorizontalScrollMode(QAbstractItemView.ScrollMode.ScrollPerPixel)
         self.bank.currentCellChanged.connect(self.row_changed)
@@ -191,6 +197,11 @@ class SpriteView(QWidget):
         stack.setStretchFactor(0, 3); stack.setStretchFactor(1, 1)
         stack.setSizes([500, 230])
         layout.addWidget(stack, 1)
+        for name, part in (('lists', splitter), ('pieces', right), ('vram', stack)):
+            if name in self.pane_sizes:
+                part.setSizes(self.pane_sizes[name])
+            part.splitterMoved.connect(
+                lambda position, index, name=name, part=part: self.pane_sizes.__setitem__(name, part.sizes()))
         self.info = QLabel()
         self.info.setTextInteractionFlags(Qt.TextInteractionFlag.TextSelectableByMouse)
         layout.addWidget(self.info)
@@ -251,31 +262,47 @@ class SpriteView(QWidget):
         self.reload_labels()
 
     def title(self, index):
-        """A frame's row: its number, and the objects that show it."""
-        return f'Sprite {index:03d}' + (f'  {", ".join(self.names[index])}' if self.names.get(index) else '')
+        """A frame's row: its number. What it is called is its label."""
+        return f'Sprite {index:03d}'
 
     def set_names(self, names):
-        """Name frames for the classes of object drawn with them."""
+        """Take the classes of object each frame is drawn by, for the line
+        printed when a frame is selected."""
         self.names = dict(names)
-        self.bank.blockSignals(True)
-        for index in range(len(self.frames)):
-            self.bank.item(index, 0).setText(self.title(index))
-            self.bank.item(index, 0).setToolTip(', '.join(self.names.get(index, ())))
-        self.bank.blockSignals(False)
 
     def zoom_by(self, step):
         self.image.zoom.setCurrentIndex(max(0, min(self.image.zoom.count()-1,
                                                    self.image.zoom.currentIndex()+step)))
 
+    def resizeEvent(self, event):
+        """A sheet is laid out again for the new shape of its pane."""
+        super().resizeEvent(event)
+        self.relayout.start()
+
+    def columns(self, index):
+        """The columns of VRAM a frame's palettes are in."""
+        return {part[2] & 63 for part in self.frames[index]} if index < len(self.frames) else set()
+
     def base_for(self, index):
         """Texture page base a frame is drawn with."""
         if self.page_base.value() >= 0:
             return self.page_base.value()
+        if index in self.pages:
+            return self.pages[index]
         if self.known:
-            # A character's frames follow one another, so a frame nothing
-            # places goes with the last placed frame before it.
-            before = [frame for frame in self.known if frame <= index]
-            return self.pages[before[-1] if before else self.known[0]]
+            if index not in self.borrowed:
+                # A frame nothing places goes with the nearest placed frame
+                # whose palette is in the same column of VRAM: the art and
+                # the palettes of one thing are loaded side by side. Failing
+                # that, with the last placed frame before it, since a
+                # character's frames follow one another.
+                columns = self.columns(index)
+                same = [frame for frame in self.known if columns & self.columns(frame)]
+                before = [frame for frame in self.known if frame <= index]
+                self.borrowed[index] = self.pages[
+                    min(same, key=lambda frame: abs(frame - index)) if same
+                    else before[-1] if before else self.known[0]]
+            return self.borrowed[index]
         if self.guess is None:
             self.guess = guess_page(self.frames, self.vram)
         return self.guess
@@ -303,18 +330,14 @@ class SpriteView(QWidget):
             draw = ImageDraw.Draw(image)
             right, bottom = image.width - 1, image.height - 1
             draw.rectangle((0, 0, right, bottom), outline=FRAME_COLOUR)
-            # The box is darkened in the column and the row of the sprite's
-            # origin, where they fall inside it: two marks for each.
+            # One pixel of each side is left out where the column or the row
+            # of the sprite's origin crosses the box.
             x = 1 - min(part[13] for part in self.frames[index])
             y = 1 - min(part[14] for part in self.frames[index])
-            for step, shade in reversed(list(enumerate(ORIGIN_SHADES))):
-                colour = (shade, shade, shade, 255)
-                if 0 < x < right:
-                    for edge in (0, bottom):
-                        draw.line((max(0, x - step), edge, min(right, x + step), edge), fill=colour)
-                if 0 < y < bottom:
-                    for edge in (0, right):
-                        draw.line((edge, max(0, y - step), edge, min(bottom, y + step)), fill=colour)
+            if 0 < x < right:
+                draw.point([(x, 0), (x, bottom)], fill=ORIGIN_COLOUR)
+            if 0 < y < bottom:
+                draw.point([(0, y), (right, y)], fill=ORIGIN_COLOUR)
         if not origin or not self.frames[index]:
             return image
         bounds = [part for frame in self.frames for part in frame]
@@ -367,7 +390,9 @@ class SpriteView(QWidget):
         self.refresh()
         frame = self.frames[row]
         if frame and not self.renderer and any(palette_missing(self.vram, part[2]) for part in frame):
-            self.info.setText(self.info.text() + ' | palette row empty in this VRAM'
+            self.info.setText(self.info.text() + (
+                ' | palette set by the game while it runs' if any(palette_runtime(part[2]) for part in frame)
+                else ' | palette row empty in this VRAM')
                               + (', shown in grey' if self.grey.isChecked() else ''))
         self.show_in_vram()
         announce(f'sprite {row:03d} | ' + (f'"{self.label(row)}" | ' if self.label(row) else '')
@@ -467,7 +492,7 @@ class SpriteView(QWidget):
         # origin is only kept where every sprite has an equal cell.
         origin = self.origin.isChecked() and self.spacing.even.isChecked()
         images = [self.frame_image(i, origin) for i in indices]
-        places, size = self.spacing.arrange([im.size for im in images])
+        places, size = self.spacing.arrange([im.size for im in images], self.image.view)
         out = Image.new('RGBA', size)
         records = []
         for index, image, (x, y) in zip(indices, images, places):
@@ -475,6 +500,13 @@ class SpriteView(QWidget):
 
             records.append(dict(sprite=index, x=x, y=y, width=image.width, height=image.height))
         return out, records
+
+    def fit_sheet(self):
+        """Lay the sheet out for the pane as it now is, and fit it."""
+        if self.frames and self.image.zoom.currentIndex() == 0 and (
+                self.whole.isChecked() or len(self.selected_indices()) > 1):
+            self.image.subject = None
+            self.refresh()
 
     def refresh(self):
         if not self.frames:

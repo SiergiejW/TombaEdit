@@ -45,9 +45,23 @@ exe = EXE(
     bootloader_ignore_signals=False,
     strip=False,
     upx=True,
-    console=False,
+    console=True,
     icon=str(app_icon),
 )
+if sys.platform == 'win32':
+    # The level editor runs object code in unicorn, which commits its
+    # translation buffer on demand from an exception handler it generates
+    # at run time. The bootloader is built with Control Flow Guard, under
+    # which Windows ends the process instead of calling a handler that was
+    # not compiled into a module, so the executable is marked as built
+    # without it, the way python.exe is.
+    import struct
+    GUARD_CF = 0x4000
+    with open(exe.name, 'r+b') as stream:
+        header = stream.read(4096)
+        field = struct.unpack_from('<I', header, 0x3C)[0] + 24 + 70    # DllCharacteristics
+        stream.seek(field)
+        stream.write(struct.pack('<H', struct.unpack_from('<H', header, field)[0] & ~GUARD_CF))
 if sys.platform == 'darwin':
     app = BUNDLE(exe, name='TombaEdit.app', icon=str(app_icon),
                  bundle_identifier='club.tomba.tombaedit')

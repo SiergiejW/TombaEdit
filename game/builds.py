@@ -9,7 +9,7 @@ those addresses for one executable, identified by its SHA-1.
 The scratchpad layout (1F800000 to 1F8003FF) is the same in all of them and
 is not repeated here.
 """
-from dataclasses import dataclass
+from dataclasses import dataclass, replace
 import hashlib
 import struct
 
@@ -45,6 +45,9 @@ class Build:
     # Twelve bytes from the Japanese demo on; the sampler's are twenty,
     # with four size words in front.
     page_record: str = '<BBhI4x'
+    # Rows a fixed picture is drawn below its object: the European build
+    # has a taller screen and moves them down.
+    picture_top: int = 0
 
     @property
     def event(self):
@@ -114,6 +117,51 @@ BUILDS = {
 }
 
 
+# The European release has one program for each language, started by a
+# small boot executable. They are one engine built nine times: the text of a
+# language makes its data a little longer or shorter, and everything after
+# the data, the variables and the area overlays, moves by that much. The
+# program of language 5 also has 24 bytes less in the middle of its code,
+# which moves the tables and one routine down.
+EUROPE = Build(
+    name='European', overlay=0x800E8028, area=0x8009C960, variant=(0x8009F838, 0x8009D2C3),
+    tables={2: 0x80077D9C, 3: 0x80079BAC, 4: 0x80079D74, 5: 0x8007B310, 7: 0x80079FE4, 8: 0x80079B88},
+    set_animation=0x8001FE6C,
+    visibility=(0x800202B4, 0x80020078, 0x800201AC, 0x800203DC, 0x80020490, 0x8002052C),
+    get_clut=0x8005E420,
+    draw_queues=(0x80018C2C, 0x80018C68, 0x80018CA4, 0x80018CF0, 0x80018D2C, 0x80018D68, 0x80018DA4),
+    silent=(0x8001E4F0, 0x80020A78, 0x80020B64),
+    slot_tables=0x8007B908, common=0x80078790, pictures=0x80080258, entrances=0x80079474,
+    origins=0x8007B460, wall_origins=0x8007B450, alternate_origin=0x8007B44C,
+    plane_limits=(0x8007B55C, 0, 1), pages=0x8007A14C, picture_top=0x18)
+
+
+def european(language, late, early=0):
+    """The European build of one language: `late` is how far its variables
+    and overlays sit from the first language's, `early` its tables."""
+    e = EUROPE
+    return replace(
+        e, name=f'European, language {language}', overlay=e.overlay + late, area=e.area + late,
+        variant=tuple(v + late for v in e.variant), tables={k: v + early for k, v in e.tables.items()},
+        get_clut=e.get_clut + early, slot_tables=e.slot_tables + early, common=e.common + early,
+        pictures=e.pictures + early, entrances=e.entrances + early, origins=e.origins + early,
+        wall_origins=e.wall_origins + early, alternate_origin=e.alternate_origin + early,
+        plane_limits=(e.plane_limits[0] + early,) + e.plane_limits[1:], pages=e.pages + early)
+
+
+BUILDS.update({
+    'bec8dc5f4116f5e497f2337eef8c523ff6dee8fc': european(0, 0),
+    'c8495badb0598a81eb1da05d325ecf7a1630e5ad': european(1, 0x20),
+    'a200aa54d7fd9a7313ba72b5663b475c142862e8': european(2, 0x40),
+    '5bb7b780f9891a4fa12f057095efde4b50f171c5': european(3, 0x38),
+    '6642d3cd2ec614a55e554aeabe8534cc79804a02': european(4, 0x40),
+    '414ad24c8df853232898265bda62fcbfe708a906': european(5, 0x28, -0x18),
+    '537ae3c3a6017cf90aad9dfa298920661c4d5189': european(6, 0x30),
+    'b39527d5b16a1a0aa2ff94b1032c08f1cc5923c8': european(7, 0x10),
+    '92511b825ea64524390c99edf43b42cf8660d794': european(8, 0x30),
+})
+
+
 class Executable:
     """A known executable's bytes with its build description."""
 
@@ -132,18 +180,25 @@ class Executable:
         return self.unpack('<I', address)[0]
 
 
-def executable(project):
-    """The disc's executable if its addresses are known, else None."""
-    cached = getattr(project, '_executable', False)
-    if cached is not False:
-        return cached
+def executable(project, table=None):
+    """The disc's executable if its addresses are known, else None. `table`
+    is the path of the load table being read: a disc with a program for
+    each language runs the one its tables belong to."""
+    from formats.archive.ldar import table_name
+    language = table_name(table)[0] if table else None
+    cache = project.__dict__.setdefault('_executables', {})
+    if language in cache:
+        return cache[language]
     found = None
     try:
-        data = project.disc.read(project.catalog.executable)
+        entry = project.catalog.executable
+        if language is not None:
+            entry = project.disc.entries.get(f'EXE/MAIN{language}.EXE', entry)
+        data = project.disc.read(entry)
         build = BUILDS.get(hashlib.sha1(data).hexdigest())
         if build is not None:
             found = Executable(data, build)
     except Exception:
         found = None
-    project._executable = found
+    cache[language] = found
     return found

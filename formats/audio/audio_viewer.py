@@ -15,6 +15,7 @@ from PyQt6.QtWidgets import (QWidget, QVBoxLayout, QHBoxLayout, QPushButton, QLa
     QFileDialog, QMessageBox, QSplitter, QTableWidget, QTableWidgetItem, QAbstractItemView,
     QHeaderView, QSlider, QInputDialog, QFrame, QPlainTextEdit, QCheckBox, QSizePolicy)
 from gui.widgets.image_view import file_stem
+from gui.widgets.columns import adjustable
 from gui.widgets.transport_icons import set_glyph
 from gui.widgets.wave_preview import WavePreview
 from gui.widgets.mini_audio import waveform_icon
@@ -113,8 +114,8 @@ class AudioView(QWidget):
 
         # Sources, rows, details.
         self.source_table = table(('Source', 'Contents'))
-        self.source_table.horizontalHeader().setSectionResizeMode(0, QHeaderView.ResizeMode.Stretch)
-        self.source_table.horizontalHeader().setSectionResizeMode(1, QHeaderView.ResizeMode.ResizeToContents)
+        self.source_table.setColumnWidth(0, 220)
+        adjustable(self.source_table)
         self.source_pane = pane('Sources', self.source_table)
         self.row_table = table(())
         self.row_table.setIconSize(ICON)
@@ -265,17 +266,14 @@ class AudioView(QWidget):
                 view.setItem(r, c, item)
         header = view.horizontalHeader()
         name_column = 1 if source.numbered else 0
+        # Columns start as wide as what they hold and can be dragged.
+        adjustable(view, fit=True)
+        if headers:
+            view.setColumnWidth(name_column, max(190, view.columnWidth(name_column)))
         for c, name in enumerate(headers):
             if name == 'Preview':
                 header.setSectionResizeMode(c, QHeaderView.ResizeMode.Fixed)
                 view.setColumnWidth(c, ICON.width() + 12)
-            else:
-                header.setSectionResizeMode(c, QHeaderView.ResizeMode.Stretch if c == name_column
-                                            else QHeaderView.ResizeMode.ResizeToContents)
-        if headers and headers[-1] != 'Preview' and len(headers) - 1 != name_column:
-            header.setSectionResizeMode(len(headers) - 1, QHeaderView.ResizeMode.Stretch)
-            header.setSectionResizeMode(name_column, QHeaderView.ResizeMode.Interactive)
-            view.setColumnWidth(name_column, 190)
         view.blockSignals(False)
         self.preview_column = headers.index('Preview') if 'Preview' in headers else -1
         self.thumbnail_row = 0

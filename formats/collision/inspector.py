@@ -52,8 +52,10 @@ class CollisionInspector(QWidget):
         self.table.setEditTriggers(QAbstractItemView.EditTrigger.NoEditTriggers)
         self.table.setSelectionBehavior(QAbstractItemView.SelectionBehavior.SelectRows)
         self.table.setSelectionMode(QAbstractItemView.SelectionMode.SingleSelection)
-        self.table.horizontalHeader().setSectionResizeMode(QHeaderView.ResizeMode.ResizeToContents)
-        self.table.horizontalHeader().setSectionResizeMode(1, QHeaderView.ResizeMode.Stretch)
+        from gui.widgets.columns import adjustable
+        for column, width in enumerate((64, 150, 96, 72, 84)):
+            self.table.setColumnWidth(column, width)
+        adjustable(self.table)
         layout.addWidget(self.table, 1)
         self.plane.currentIndexChanged.connect(self.filter_rows)
         self.route.currentIndexChanged.connect(self.filter_rows)

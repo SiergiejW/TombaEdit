@@ -2,7 +2,7 @@
 import math
 import numpy as np
 from PIL import Image
-from PyQt6.QtCore import Qt, QPoint
+from PyQt6.QtCore import Qt, QPoint, QTimer
 from PyQt6.QtGui import QImage, QPixmap, QFontDatabase, QSurfaceFormat
 from PyQt6.QtWidgets import (QWidget, QVBoxLayout, QHBoxLayout, QLabel, QComboBox,
     QCheckBox, QPushButton, QSpinBox, QSplitter, QListWidget, QPlainTextEdit,
@@ -83,8 +83,14 @@ class ImageView(QWidget):
     def scale_image(self):
         if self.image is None:
             return
-        scale = fit_zoom(self.image.size, self.view.viewport().size()) if self.zoom.currentIndex() == 0 else [1, 1, 2, 4, 8][self.zoom.currentIndex()]
-        self.canvas.set_zoom(scale)
+        if self.zoom.currentIndex() == 0:
+            # Fit fills the pane: the largest scale at which the whole
+            # picture shows, whatever that comes to.
+            room = self.view.maximumViewportSize()
+            self.canvas.set_zoom(min((room.width() - 4) / max(1, self.image.width),
+                                     (room.height() - 4) / max(1, self.image.height)), exact=True)
+        else:
+            self.canvas.set_zoom([1, 1, 2, 4, 8][self.zoom.currentIndex()])
 
     def show_area(self, left, top, right, bottom):
         """Zoom to at least 200% and scroll so the given pixels are centred."""
@@ -100,7 +106,8 @@ class ImageView(QWidget):
     def resizeEvent(self, event):
         super().resizeEvent(event)
         if self.zoom.currentIndex() == 0:
-            self.scale_image()
+            # Once the pane has its new size, the picture is fitted to it.
+            QTimer.singleShot(0, self.scale_image)
 
     def save(self):
         if self.image is None:

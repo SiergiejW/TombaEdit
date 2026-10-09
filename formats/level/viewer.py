@@ -185,6 +185,7 @@ class LevelView(ModelView):
         self.canvas.lines = scene.collision
         self.canvas.backdrop = scene.backdrop
         self.canvas.panorama_cache = None
+        self.canvas.backdrop_travel = None
         self.canvas.backdrop_turned = scene.collision_context.startswith('Path: Z')
         self.canvas.sky = scene.sky
         self.backdrop_action.setEnabled(bool(scene.backdrop) or scene.sky is not None)

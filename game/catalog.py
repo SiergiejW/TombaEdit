@@ -28,11 +28,17 @@ class Catalog:
     stride: int = 8
 
     @classmethod
-    def discover(cls, disc):
+    def discover(cls, disc, language=None):
+        """The file-link table of the disc's executable. The European disc
+        has a program and a set of load tables for each language, each
+        program with its own links; `language` picks one of them."""
         by_lba = {e.lba: e for e in disc.files}
-        anchor = disc.entries.get("SYS/LDSYS.BIN") or disc.entries.get('SYSTEM/A00000.GAM')
+        system = 'SYS/LDSYS.BIN' if language is None else f'SYS/LD{language}SYS.BIN'
+        anchor = disc.entries.get(system) or disc.entries.get('SYSTEM/A00000.GAM')
         executables = [e for e in disc.files if e.path.startswith(("SCUS_", "SCES_", "SLPS_", 'SLPM_'))
                        or e.path.endswith(".EXE")]
+        if language is not None:
+            executables = [e for e in executables if e.path == f'EXE/MAIN{language}.EXE']
         best = None
         for entry in executables:
             if entry.size > 8 * 1024 * 1024:
@@ -68,7 +74,7 @@ class Catalog:
                 if anchor and (lba, size) == (anchor.lba, anchor.size):
                     candidates.append(pos)
             for start in candidates:
-              for stride in ((8,) if anchor and anchor.path == 'SYS/LDSYS.BIN' else (8, 24)):
+              for stride in ((8,) if anchor and anchor.path == system else (8, 24)):
                 links, matched = {}, 0
                 holes = 0
                 for pos in range(start, len(data) - 7, stride):

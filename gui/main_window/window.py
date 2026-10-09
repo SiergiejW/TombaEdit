@@ -10,7 +10,7 @@ from PyQt6.QtWidgets import (QMainWindow, QWidget, QVBoxLayout, QHBoxLayout, QLa
     QMessageBox, QToolBar, QTableWidget, QTableWidgetItem, QAbstractItemView,
     QHeaderView, QMenu, QApplication, QStyle, QComboBox, QInputDialog)
 from disc.reader import DiscEntry, FormatError
-from formats.archive.ldar import Project, Asset
+from formats.archive.ldar import Project, Asset, area_number, table_name
 from game.areas import AREAS, section_name
 from gui.theme import apply_theme
 from gui.viewers import text_view, ImageView, DialogueView, SpriteView, ModelView, VramView
@@ -23,8 +23,6 @@ from game.builds import executable
 import hashlib
 
 ROLE = Qt.ItemDataRole.UserRole
-# Milliseconds a selection may take to open before the window says so.
-DECODING_DELAY = 150
 DISC_SUFFIXES = (".bin", ".cue", ".iso", ".img", ".ccd")
 
 
@@ -223,7 +221,7 @@ def prepare_preview(project, node, context=None):
             starts = [a.rect[0] // 64 + a.rect[1] // 256 * 16
                       for i in dict.fromkeys((node.group, context)) for a in groups[i].assets
                       if a.rect and a.rect[3] >= 128]
-            default = table_pages(project).get(slot)
+            default = table_pages(project, node.ldar).get(slot)
             result['sprite_default'] = guess_page(frames, result['vram'], starts) if default is None else default
             from formats.level.scene import area_of, loaded_resources
             from formats.level.town import town_graphics
@@ -232,10 +230,10 @@ def prepare_preview(project, node, context=None):
             if town is not None and slot == town.bank:
                 result['sprite_pages'].update(town.pages)
                 result['sprite_cluts'].update(town.cluts)
-            elif not result['sprite_pages'] and executable(project) is not None:
+            elif not result['sprite_pages'] and executable(project, node.ldar) is not None:
                 # A bank nothing places: the characters a town overlay spawns.
                 from formats.level.town import character_pages
-                known = executable(project)
+                known = executable(project, node.ldar)
                 overlay = next((a for a in loaded if a.kind == 'INS'), None)
                 if overlay is not None:
                     result['sprite_pages'] = character_pages(project.asset_data(overlay), known.build.overlay,
@@ -267,15 +265,6 @@ def prepare_preview(project, node, context=None):
                     break
         if node.kind == "WMD":
             result["meshes"] = parse_wmd(data)
-            # A model is named for the objects built from it.
-            from formats.level.scene import model_owners
-            result['model_names'] = {}
-            from formats.level.scene import loaded_resources
-            for group in [g for g in groups if g.index and g.assets
-                          and loaded_resources(project, node.ldar, g.index).get(('WMD', node.slot)) is node]:
-                for model, users in model_owners(project, node.ldar, group.index).get(node.slot, {}).items():
-                    known = result['model_names'].setdefault(model, [])
-                    known += [user for user in users if user not in known]
         if node.kind == 'FOUR':
             from formats.models.four import parse_four
             from formats.level.scene import loaded_resources
@@ -288,7 +277,7 @@ def prepare_preview(project, node, context=None):
                     for i, mesh in enumerate(parse_wmd(project.asset_data(asset))):
                         result['four_candidates'].append((f'WMD {asset.code:04X} model {i:03d}', mesh, (slot, i)))
             result['four_preferred'] = ((1, (node.code >> 8) - 0x40 + 1)
-                if node.ldar == 'SYS/LDAR00.BIN' and 0x40 <= node.code >> 8 <= 0x42 else None)
+                if area_number(node.ldar) == 0 and 0x40 <= node.code >> 8 <= 0x42 else None)
     else:
         if node.directory:
             result["folder"] = node
@@ -327,7 +316,7 @@ def prepare_preview(project, node, context=None):
     from formats.annotate import regions
     name = Path(node.path).name.upper() if isinstance(node, DiscEntry) else ''
     kind = node.kind if isinstance(node, Asset) else 'INS' if name.startswith('X') and name.endswith('.BIN') else ''
-    known = executable(project)
+    known = executable(project, node.ldar if isinstance(node, Asset) else None)
     result['overlay_base'] = known.build.overlay if known else None
     result['regions'] = regions(kind, data, result['overlay_base'])
     # WFM can also be embedded in instruction binaries and standalone GAMs.
@@ -364,7 +353,6 @@ class MainWindow(QMainWindow):
         self.current_node = None
         self.current_data = None
         self.generation = 0
-        self.decoded = 0                # the last selection whose viewers were built
         self.pool = QThreadPool(self)
         self.pool.setMaxThreadCount(1)
         self.asset_items = {}
@@ -592,8 +580,7 @@ class MainWindow(QMainWindow):
         self.disc_tree.clear()
         self.populate_disc(project.disc.root, self.disc_tree.invisibleRootItem())
         for path, groups in project.ldars.items():
-            stem = Path(path).stem
-            area = int(stem[4:]) if stem.startswith("LDAR") else -1
+            area = area_number(path)
             directory = f'AREA{area:02d}' if area >= 0 else 'SYS'
             parent = self.file_items.get(directory)
             if parent is None:
@@ -648,7 +635,8 @@ class MainWindow(QMainWindow):
             kind = node.kind if isinstance(node, Asset) else Path(node.path).suffix[1:].upper()
             if isinstance(node, DiscEntry) and Path(node.path).name.upper().startswith('CLUT'):
                 kind = 'CLUT'
-            if isinstance(node, DiscEntry) and Path(node.path).name.startswith('LDAR'):
+            if isinstance(node, DiscEntry) and Path(node.path).stem.upper().startswith('LD') \
+                    and table_name(node.path) != (None, -1):
                 kind = 'LDAR'
             item.setIcon(0, icon(kind))
         item.setData(0, ROLE + 1, label)
@@ -686,8 +674,7 @@ class MainWindow(QMainWindow):
         has_context = isinstance(node, Asset) and node.kind in ("SPR", "WMD", "GRPX", "WPP")
         self.context.setVisible(has_context)
         if has_context:
-            stem = Path(node.ldar).stem
-            area = int(stem[4:]) if stem.startswith("LDAR") else -1
+            area = area_number(node.ldar)
             for g in self.project.ldars[node.ldar]:
                 name = "Base only" if not g.index else f"Base + section {g.index - 1:02d} - {section_name(area, g.index - 1)}"
                 self.context.addItem("VRAM: " + name)
@@ -726,29 +713,11 @@ class MainWindow(QMainWindow):
         self.statusBar().showMessage(f'Decoding {title}...')
         project = self.project
         context = self.context.currentIndex() if self.context.isVisible() else None
+        # The viewer on screen stays until its replacement is ready.
         self.submit(lambda: prepare_preview(project, node, context), self.preview_ready)
-        # A selection that opens at once replaces the viewer on screen
-        # directly; one that takes longer has the old viewer taken away and
-        # says what is being decoded.
-        generation = self.generation
-        QTimer.singleShot(DECODING_DELAY, lambda: self.show_decoding(generation, title))
-
-    def show_decoding(self, generation, title):
-        if generation != self.generation or self.decoded == generation:
-            return
-        self.clear_tabs()
-        notice = QLabel(f'Decoding...\n\n{title}')
-        notice.setAlignment(Qt.AlignmentFlag.AlignCenter)
-        notice.setWordWrap(True)
-        font = notice.font()
-        font.setPointSize(font.pointSize() + 3)
-        notice.setFont(font)
-        self.tabs.addTab(notice, 'Decoding')
-
     def preview_ready(self, generation, result, error):
         if generation != self.generation:
             return
-        self.decoded = generation
         self.clear_tabs()
         if error:
             self.tabs.addTab(text_view(error + "\n\nThis resource could not be decoded. Its original disc file can still be exported."), "Diagnostic")
@@ -810,15 +779,11 @@ class MainWindow(QMainWindow):
                 keys = [labels.content_key(self.current_data[m.offset:
                     meshes[i + 1].offset if i + 1 < len(meshes) else len(self.current_data)])
                     for i, m in enumerate(meshes)]
-                owners = result.get('model_names', {})
-                # A model is listed by the objects built from it; the label
-                # someone gave it has a column of its own.
-                names = {i: f'Model {i:03d}  ' + ', '.join(owners[i]) for i in owners if owners[i]}
                 def rename_models(rows, name):
                     for row in rows:
                         self.labels.rename(keys[row], name, kind='WMD model', start=meshes[row].offset)
                     self.persist_labels()
-                self.model_view.set_data(meshes, result['vram'], node.code, names, rename_models,
+                self.model_view.set_data(meshes, result['vram'], node.code, None, rename_models,
                                          label_lookup=lambda row: self.labels.label_for(keys[row]))
                 self.tabs.addTab(self.model_view, "Geometry")
             if "sprites" in result:
@@ -936,8 +901,7 @@ class MainWindow(QMainWindow):
         if isinstance(node, DiscEntry):
             return Path(node.path).stem
         path, index = (node.ldar, node.group) if isinstance(node, Asset) else node[1:]
-        stem = Path(path).stem
-        area = int(stem[4:]) if stem.startswith('LDAR') and stem[4:].isdigit() else -1
+        area = area_number(path)
         place = f'AREA{area:02d}' if area >= 0 else 'SYSTEM'
         place += ' base' if not index else f' section {index - 1:02d} {section_name(area, index - 1)}'
         if isinstance(node, Asset):
@@ -974,8 +938,8 @@ class MainWindow(QMainWindow):
         for i, row in enumerate(rows):
             for j, value in enumerate(row):
                 table.setItem(i, j, QTableWidgetItem(value))
-        table.resizeColumnsToContents()
-        table.horizontalHeader().setSectionResizeMode(0, QHeaderView.ResizeMode.Stretch)
+        from gui.widgets.columns import adjustable
+        adjustable(table, fit=True)
         if callback:
             table.cellDoubleClicked.connect(lambda row, col: callback(row))
         self.tabs.addTab(table, title)
