@@ -42,7 +42,8 @@ def bank_readers(project, path, slot):
 
     def reads(code):
         words = np.frombuffer(bytes(code[:len(code) // 4 * 4]), '<u4')
-        for i in np.flatnonzero(((words >> 26) == 35) & ((words & 0xFFFF) == offset)):
+        # read in place (lw), or its address taken to read it through (addiu, ori)
+        for i in np.flatnonzero(np.isin(words >> 26, (35, 9, 13)) & ((words & 0xFFFF) == offset)):
             base = int(words[i]) >> 21 & 31
             # the base register was loaded with the scratchpad's address
             if any(int(words[j]) >> 16 == (0x3C00 | base) and int(words[j]) & 0xFFFF == 0x1F80

@@ -2,6 +2,7 @@
 from dataclasses import dataclass, field
 import hashlib
 import json
+import unicodedata
 from pathlib import Path
 from psx.graphics import rgba
 from formats.text.tombadict import letters
@@ -37,6 +38,23 @@ def glyph_letter(image):
     value = GLYPH_DICTIONARY.get(glyph_key(image))
     return CANONICAL.get(value, value)
 
+# Flags in the top of a glyph word. In WFM1 a kana that is voiced is two
+# words: the kana with MARKED and then the mark (dakuten or handakuten) with
+# MARK, drawn over the same cell. In WFM3 a word with OVER alone is the
+# prompt drawn in the corner of the box.
+OVER, MARKED, MARK = 0x4000, 0x1000, 0x2000
+
+
+def corner(word):
+    """True for a glyph drawn in the corner of the box, not in the text."""
+    return word < 0xFF00 and word & OVER and not word & (MARKED | MARK)
+
+
+def composed(text):
+    """Join each kana to the mark written after it: か and a dakuten read が."""
+    return unicodedata.normalize('NFC', text)
+
+
 CONTROLS = {
     0xFFFF: ("END_CLOSE", 0), 0xFFFE: ("END", 0), 0xFFFD: ("NEWLINE", 0),
     0xFFFC: ("WAIT_INPUT", 0), 0xFFFB: ("CLEAR", 0), 0xFFFA: ("BUBBLE", 2),
@@ -63,12 +81,12 @@ class Dialogue:
                 name = {**EARLY_CONTROLS, **CONTROLS}.get(word, (f"UNKNOWN_{word:04X}", 0))[0]
                 parts.append(f"\n<{name}{''.join(f' {a:04X}' for a in args)}>")
             else:
-                if word & 0x4000:
+                if corner(word):
                     continue
                 gid = word & 0xFFF
                 char = self.characters[gid] if gid < len(self.characters) else None
                 parts.append(char if char is not None else f'[g{gid:03X}]')
-        return "".join(parts).strip() + (f"\n\n{self.warning}" if self.warning else "")
+        return composed("".join(parts)).strip() + (f"\n\n{self.warning}" if self.warning else "")
 
 
 # Where the glyph pointer table starts. WFM1, used by the builds from 1997,
@@ -116,7 +134,11 @@ class Wfm:
             self.glyphs.append(im)
             key = hashlib.sha256(bytes(im.size) + bytes(indices[:width * height])).hexdigest()[:24] if max(im.size) < 256 else ''
             self.exact_keys.append(key)
-            self.keys.append(glyph_key(im))
+            # The 1997 title font is drawn on a solid ground, so every one
+            # of its glyphs has the same lit pixels; those are told apart
+            # by their exact pixels instead.
+            solid = all(a and (r or g or b) for r, g, b, a in im.getdata())
+            self.keys.append(key if solid else glyph_key(im))
             self.characters.append(None)
             self.glyph_headers.append((pal, width, height, unused))
         self.recognise()
@@ -156,6 +178,8 @@ class Wfm:
         for number, (key, exact, image) in enumerate(zip(self.keys, self.exact_keys, self.glyphs)):
             if key in USER_GLYPHS:
                 self.characters[number] = USER_GLYPHS[key] or None
+            elif key == exact:
+                self.characters[number] = EXACT_GLYPHS.get(exact, GLYPH_DICTIONARY.get(exact))
             else:
                 self.characters[number] = EXACT_GLYPHS.get(exact, glyph_letter(image))
 
@@ -183,8 +207,15 @@ class Wfm:
                 elif word < 0xFF00:
                     gid = word & 0xFFF
                     glyph = self.glyphs[gid] if gid < len(self.glyphs) else Image.new('RGBA',(8,16),'red')
-                    if word & 0x4000:
+                    if corner(word):
                         blink = glyph
+                    elif word & MARK and line:
+                        # The mark goes over the kana before it, up in its
+                        # top right corner.
+                        both = line[-1].copy()
+                        both.alpha_composite(glyph.crop((0, glyph.height * 6 // 10, glyph.width, glyph.height)),
+                                             (min(2, both.width - 1), 0))
+                        line[-1] = both
                     else:
                         line.append(glyph)
             lines.append(line)

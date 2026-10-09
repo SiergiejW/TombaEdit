@@ -19,7 +19,7 @@ from dataclasses import dataclass, field
 from pathlib import Path
 from formats.archive.ldar import table_name
 from game.areas import language_name
-from formats.text.wfm import Wfm, MAGICS, CONTROLS, EARLY_CONTROLS
+from formats.text.wfm import Wfm, MAGICS, CONTROLS, EARLY_CONTROLS, corner, composed
 from disc.reader import FormatError
 
 FORMATS = {
@@ -45,11 +45,11 @@ def plain(dialogue, unknown='[g{:03X}]'):
             out.append('\n')
         elif word == 0xFFFB:
             out.append('\n\n')
-        elif word < 0xFF00 and not word & 0x4000:
+        elif word < 0xFF00 and not corner(word):
             number = word & 0xFFF
             character = dialogue.characters[number] if number < len(dialogue.characters) else None
             out.append(character if character is not None else unknown.format(number))
-    return ''.join(out).strip('\n')
+    return composed(''.join(out)).strip('\n')
 
 
 def tokens(dialogue):
@@ -86,7 +86,7 @@ class Bank:
     @property
     def unknown(self):
         """Glyphs the text uses that no character is known for."""
-        used = {word & 0xFFF for d in self.wfm.dialogues for word, _ in d.tokens if word < 0xFF00 and not word & 0x4000}
+        used = {word & 0xFFF for d in self.wfm.dialogues for word, _ in d.tokens if word < 0xFF00 and not corner(word)}
         return sum(1 for number in used if number < len(self.wfm.characters) and self.wfm.characters[number] is None)
 
     @property

@@ -393,6 +393,13 @@ def prepare_preview(project, node, context=None):
     known = executable(project, node.ldar if isinstance(node, Asset) else None)
     result['overlay_base'] = known.build.overlay if known else None
     result['regions'] = regions(kind, data, result['overlay_base'])
+    if bytes(data[:4]) == b'W\x00S\x00':
+        # An event script: listed as the instructions it is made of.
+        from formats.script.wss import Wss
+        try:
+            result['script'] = Wss(data).listing()
+        except FormatError as exc:
+            result['notes'].append(f'WSS script: {exc}')
     # WFM can also be embedded in instruction binaries and standalone GAMs.
     wfms = []
     from formats.text.wfm import MAGICS
@@ -961,6 +968,8 @@ class MainWindow(QMainWindow):
                     and Path(node.path).name.upper().startswith('CLUT')):
                 from formats.images.clut_viewer import ClutView
                 self.tabs.addTab(ClutView(self.current_data), 'CLUT colours')
+            if 'script' in result:
+                self.tabs.addTab(text_view(result['script']), 'Script')
             for offset, wfm in result.get("wfms", []):
                 suffix = f" @{offset:X}" if offset else ""
                 source = node.source.path if isinstance(node, Asset) and node.source else getattr(node, 'path', '')
