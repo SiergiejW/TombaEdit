@@ -589,6 +589,9 @@ def sprite_pages(project, path, index):
         resources = loaded_resources(project, path, index)
         resolver = InitialPoseResolver(project, area_of(path), max(0, index - 1), resources)
         pages, cluts, shown, built = {}, {}, {}, {}
+        later = []      # (slot, frames, page base, CLUT, label) from what an object's code can go on to show
+        kinds = {}      # class -> the (slot, page base) pairs its objects use
+        counts = {}
         from game.classes import class_name
         runtime = getattr(resolver, 'area', area_of(path))
         for (kind, slot), asset in resources.items():
@@ -615,11 +618,50 @@ def sprite_pages(project, path, index):
                             users.append(label)
                         if visual.get('clut') is not None:
                             cluts.setdefault(visual['sprite'], {}).setdefault(frame, visual['clut'] & 0x7FFF)
+                    slot = visual['sprite']
+                    if slot not in counts:
+                        try:
+                            counts[slot] = len(sprite_frames(project.asset_data(resources['SPR', slot])))
+                        except (FormatError, KeyError):
+                            counts[slot] = 0
+                    more = resolver.code_frames(resolver.handler_address(placement),
+                                                visual.get('animation_address', 0), counts[slot])
+                    kinds.setdefault((placement.layer, placement.kind), set()).add((slot, visual['tpage']))
+                    if more:
+                        later.append((slot, more, visual['tpage'], visual.get('clut'), label,
+                                      (placement.layer, placement.kind)))
+        # Frames an object only shows later take its page and palette where
+        # no object starts out showing them. A class whose objects use
+        # different pages by variant is left out: which page goes with
+        # which of its scripts cannot be told from one object.
+        direct = {slot: set(frames) for slot, frames in pages.items()}
+        coded = {}
+        for slot, frames, page, clut, label, kind in later:
+            if len(kinds[kind]) > 1:
+                continue
+            for frame in frames:
+                if frame in direct.get(slot, ()):
+                    continue
+                pages.setdefault(slot, {}).setdefault(frame, page)
+                coded.setdefault(slot, set()).add(frame)
+                users = shown.setdefault(slot, {}).setdefault(frame, [])
+                if label not in users:
+                    users.append(label)
+                if clut is not None:
+                    cluts.setdefault(slot, {}).setdefault(frame, clut & 0x7FFF)
+        project.__dict__.setdefault('sprite_coded_cache', {})[path, index] = coded
         cache[path, index] = pages
         palettes[path, index] = cluts
         owners[path, index] = shown
         project.__dict__.setdefault('model_owner_cache', {})[path, index] = built
     return cache[path, index]
+
+
+def sprite_coded(project, path, index):
+    """Frames whose page comes from what an object's code goes on to show,
+    not from what it starts with: {slot: {frame}}."""
+    sprite_pages(project, path, index)
+    return project.sprite_coded_cache[path, index]
 
 
 def sprite_owners(project, path, index):

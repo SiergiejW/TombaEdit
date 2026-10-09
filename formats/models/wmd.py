@@ -1,9 +1,11 @@
 """WMD mesh decoder. Eight primitive batches per object, verified against OBJ dumps.
 
 Two layouts of a textured primitive exist. The builds from 1997 (the
-Japanese demo and the sampler disc) follow the GPU packet: colours, then one
+Japanese demo and the sampler disc) follow the GPU packet: a colour, then one
 word per corner holding U, V and, for the first two corners, the CLUT and
-the texture page, then eight bytes of position per corner. Later builds put
+the texture page, then eight bytes of position per corner. A Gouraud
+primitive has a colour for each corner there, and each sits in front of its
+corner's word as it does in the packet. Later builds put
 the CLUT and page first and fold U and V into the spare half of each
 position. Untextured primitives are the same in both.
 """
@@ -74,15 +76,21 @@ def parse_wmd(data, layout=None):
                 early = textured and layout == EARLY
                 if early:
                     # Corner words: U, V, then CLUT for the first corner and
-                    # texture page for the second.
-                    words = pos + nc * 4
+                    # texture page for the second. A flat primitive has one
+                    # colour ahead of them all; a shaded one a colour ahead
+                    # of each.
+                    step = 8 if nc > 1 else 4
+                    words = pos + 4
                     clut = struct.unpack_from("<H", data, words + 2)[0]
-                    page = struct.unpack_from("<H", data, words + 6)[0]
+                    page = struct.unpack_from("<H", data, words + step + 2)[0]
                     color_pos = pos
                 else:
                     clut, page = struct.unpack_from("<HH", data, pos) if textured else (0, -1)
                     color_pos = pos + (4 if textured else 0)
-                colors = np.frombuffer(data, dtype=np.uint8, count=nc * 4, offset=color_pos).reshape(nc, 4)
+                if early and nc > 1:
+                    colors = np.frombuffer(data, dtype=np.uint8, count=nc * 8, offset=pos).reshape(nc, 8)[:, :4]
+                else:
+                    colors = np.frombuffer(data, dtype=np.uint8, count=nc * 4, offset=color_pos).reshape(nc, 4)
                 cmd = int(colors[0, 3])
                 if cmd & 0xFC != COMMANDS[kind]:
                     raise FormatError(f"Unexpected WMD GPU command {cmd:02X}")
@@ -91,7 +99,7 @@ def parse_wmd(data, layout=None):
                 for j in range(nv):
                     x, y, z, u, v = struct.unpack_from("<hhhBB", data, vp + j * 8)
                     if early:
-                        u, v = data[words + j * 4], data[words + j * 4 + 1]
+                        u, v = data[words + j * step], data[words + j * step + 1]
                     vertices.append((x, -y, -z))
                     uv.append(((u + 0.5) / 256, (v + 0.5) / 256))
                 # PSX texture modulation uses 128 as neutral. Raw-textured

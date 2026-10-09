@@ -163,10 +163,22 @@ movement are not simulated.
 A sprite frame is a list of parts, each a rectangle of a texture page with an
 offset from the object's origin. Parts store their texture page relative to a
 base that the drawing object supplies, so the same bank can be used with
-different pages. With *Texture page base* on Auto the viewer uses the base of
-a placed object that shows the frame, the game's object table for banks that
-no object in the section uses, and otherwise the base that leaves the fewest
-empty pixels. The value can be set by hand.
+different pages. With *Texture page base* on Auto the viewer works the base
+out for each sprite, and the **Page from** column says how:
+
+| Page from | The page base comes from |
+| --- | --- |
+| object | an object placed in the section chosen for VRAM, which starts out showing the sprite |
+| object code | an animation that such an object's code goes on to play |
+| section NN | an object placed in another section; the sprite is drawn with that section's textures |
+| item table | the item descriptors in the executable |
+| borrowed | the nearest sprite whose page is known and whose palette is in the same column of VRAM |
+| guess | nothing in the area shows the bank: the base that leaves the fewest empty pixels |
+
+A borrowed or guessed page can be wrong. Sprites the game only shows on a
+menu or in an event are drawn from pictures that are not loaded with an
+area, and show whatever the area has on those pages instead. The value can be
+set by hand.
 
 **Sprite bounds** draws a box around every sprite and **Part bounds**
 outlines the parts it is assembled from, one colour per part. Both apply to
@@ -302,6 +314,10 @@ verified details and the remaining gameplay fields.
 
 ## Supported releases
 
+The 3D views have a **Screenshot** button: it saves the view as it is drawn,
+without the lists and panels round it, to a PNG and puts the same picture on
+the clipboard.
+
 Disc browsing and the file viewers work for any release. Load groups need
 the executable's file link table, which is located from the disc itself. The
 level editor additionally needs to know where an executable keeps its object
@@ -314,6 +330,11 @@ routines and tables; `game/builds.py` lists them for these builds:
 | `SLPS_011.44` | Preview dated 3 February 1998 | all |
 | `SLPM_801.65` | Japanese demo, 1997 | 00 |
 | `TOMBA/TOMBA.EXE` | Pure Pure 09 sampler (PCPX-96093), 1997 | 01 and 02 |
+| `EXE/MAIN0.EXE` to `MAIN8.EXE` | European release (SCES-01331), nine languages | all |
+
+The European disc carries a program, a set of load tables (`SYS/LD0AR00.BIN`
+to `SYS/LD8AR19.BIN`) and a set of area overlays for each of its nine
+languages. Each set is listed and opens with the program it belongs to.
 
 On these, placed objects are resolved to their models and sprites, placement
 banks are filtered by section, and collision is put at its world position. An

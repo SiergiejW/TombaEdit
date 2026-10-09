@@ -718,6 +718,9 @@ class ModelView(QWidget):
             'Origin', lambda value: self.toggle('show_origin', value), False)
         add_action(QStyle.StandardPixmap.SP_DialogOpenButton,
             'Export glTF', self.export)
+        shot = add_action(QStyle.StandardPixmap.SP_DialogSaveButton, 'Screenshot', self.screenshot)
+        shot.setToolTip('Save the 3D view as it is drawn now to a PNG, without the lists and panels '
+                        'round it, and put the same picture on the clipboard.')
         layout.addWidget(self.toolbar)
         split = QSplitter()
         # Panes shrink to their minimum and stay; none snaps shut.
@@ -963,6 +966,17 @@ class ModelView(QWidget):
         # Bring the outlined texels into view.
         xs, ys = [t[0] for t in texels], [t[1] for t in texels]
         self.uv.show_area(min(xs), min(ys), max(xs), max(ys))
+
+    def screenshot(self):
+        """Save what the 3D view shows, and copy it to the clipboard."""
+        from gui.widgets.image_view import file_stem
+        from PyQt6.QtWidgets import QApplication
+        image = self.canvas.grabFramebuffer()
+        QApplication.clipboard().setImage(image)
+        path, _ = QFileDialog.getSaveFileName(self, 'Save screenshot',
+                                              file_stem(self.export_name, 'view') + ' view.png', 'PNG (*.png)')
+        if path and not image.save(path, 'PNG'):
+            QMessageBox.warning(self, 'Screenshot not saved', f'Could not write {path}.')
 
     def export(self):
         from gui.widgets.image_view import file_stem

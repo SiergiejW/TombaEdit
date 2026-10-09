@@ -32,6 +32,7 @@ FRAME_COLOUR = (30, 30, 30, 128)       # half transparent
 ORIGIN_COLOUR = (0, 0, 0, 0)    # gaps in a sprite's box in line with its origin
 
 LABEL = 6   # the bank list's column of labels
+ORIGIN = 7  # and the one saying how a sprite's texture page is known
 
 
 class SpriteView(QWidget):
@@ -51,6 +52,9 @@ class SpriteView(QWidget):
         self.cluts = dict(cluts or {})  # CLUTs supplied by a custom drawing object
         self.known = sorted(self.pages)
         self.borrowed = {}              # frame nothing places -> the page base it is drawn with
+        self.lender = {}                # and the placed frame that page was taken from
+        self.origins = {}               # frame -> how its page is known, where that is not "this section"
+        self.frame_vrams = {}           # frame -> the VRAM of the section that shows it
         self.relayout = QTimer(self)
         self.relayout.setSingleShot(True)
         self.relayout.setInterval(120)
@@ -132,8 +136,13 @@ class SpriteView(QWidget):
         left.setMinimumWidth(420)
         ll = QVBoxLayout(left)
         ll.addWidget(QLabel('Sprites'))
-        self.bank = QTableWidget(len(frames), 7)
-        self.bank.setHorizontalHeaderLabels(['Sprite', '#', 'Parts', 'W', 'H', 'Pages', 'Label'])
+        self.bank = QTableWidget(len(frames), 8)
+        self.bank.setHorizontalHeaderLabels(['Sprite', '#', 'Parts', 'W', 'H', 'Pages', 'Label', 'Page from'])
+        self.bank.horizontalHeaderItem(ORIGIN).setToolTip(
+            'How the texture page a sprite is drawn from is known: from an object placed in this section, '
+            'from one placed in another section (the sprite is then drawn with that section\'s textures), '
+            'from an animation an object\'s code goes on to play, from the item table, or borrowed from '
+            'the nearest sprite that is known. A borrowed page is a guess.')
         # The label is listed beside the sprite it names.
         self.bank.horizontalHeader().moveSection(LABEL, 1)
         self.bank.setContextMenuPolicy(Qt.ContextMenuPolicy.CustomContextMenu)
@@ -146,7 +155,7 @@ class SpriteView(QWidget):
         self.bank.setDragEnabled(False)
         # Every column is wide enough for its text and can be dragged; the
         # list scrolls sideways when the pane is narrower.
-        for column, width in enumerate((190, 48, 58, 48, 48, 96, 150)):
+        for column, width in enumerate((190, 48, 58, 48, 48, 96, 150, 120)):
             self.bank.setColumnWidth(column, width)
         self.bank.horizontalHeader().setMinimumSectionSize(44)
         adjustable(self.bank)
@@ -279,6 +288,22 @@ class SpriteView(QWidget):
         super().resizeEvent(event)
         self.relayout.start()
 
+    def origin_of(self, index):
+        """How the page a frame is drawn from is known."""
+        if self.renderer:
+            return 'picture bank'
+        if self.page_base.value() >= 0:
+            return 'set by hand'
+        if index in self.origins:
+            return self.origins[index]
+        return 'object' if index in self.pages else 'borrowed' if self.known else 'guess'
+
+    def set_origins(self, origins, vrams=None):
+        """Say where the pages of frames come from, and give the VRAM of
+        another section to the frames only that section shows."""
+        self.origins, self.frame_vrams = dict(origins), dict(vrams or {})
+        self.rebuild()
+
     def columns(self, index):
         """The columns of VRAM a frame's palettes are in."""
         return {part[2] & 63 for part in self.frames[index]} if index < len(self.frames) else set()
@@ -299,9 +324,9 @@ class SpriteView(QWidget):
                 columns = self.columns(index)
                 same = [frame for frame in self.known if columns & self.columns(frame)]
                 before = [frame for frame in self.known if frame <= index]
-                self.borrowed[index] = self.pages[
-                    min(same, key=lambda frame: abs(frame - index)) if same
-                    else before[-1] if before else self.known[0]]
+                self.lender[index] = (min(same, key=lambda frame: abs(frame - index)) if same
+                                      else before[-1] if before else self.known[0])
+                self.borrowed[index] = self.pages[self.lender[index]]
             return self.borrowed[index]
         if self.guess is None:
             self.guess = guess_page(self.frames, self.vram)
@@ -311,11 +336,21 @@ class SpriteView(QWidget):
         if index not in self.cache:
             try:
                 overrides = {part: clut for (sprite, part), clut in self.clut_overrides.items() if sprite == index}
+                base = None if self.renderer else self.base_for(index)
+                # A frame that borrows its page is drawn with the same
+                # section's textures as the frame it borrows from, and with
+                # that frame's palette if its own is one the game sets.
+                lender = self.lender.get(index) if index not in self.pages else None
+                own = self.cluts.get(index)
+                if own is None and lender is not None and self.frames[index] and all(
+                        palette_runtime(part[2]) for part in self.frames[index]):
+                    own = self.cluts.get(lender)
+                vram = self.frame_vrams.get(index, self.frame_vrams.get(lender, self.vram))
                 parts = [tuple(clut if col == 2 else value for col, value in enumerate(part))
-                         if (clut := overrides.get(n, self.cluts.get(index))) is not None else part
+                         if (clut := overrides.get(n, own)) is not None else part
                          for n, part in enumerate(self.frames[index])]
                 self.cache[index] = self.renderer(index, overrides) if self.renderer else render_sprite(
-                    parts, self.vram, tpage=self.base_for(index),
+                    parts, vram, tpage=base,
                     grey_missing=self.grey.isChecked())
             except FormatError:
                 self.cache[index] = Image.new('RGBA', (1, 1))
@@ -376,7 +411,7 @@ class SpriteView(QWidget):
                 width = height = 0
                 pages = ''
             values = [self.title(i), str(i), str(len(frame)), str(width),
-                      str(height), pages, self.label(i)]
+                      str(height), pages, self.label(i), self.origin_of(i) if frame else '']
             for col, value in enumerate(values):
                 self.bank.setItem(i, col, QTableWidgetItem(value))
         self.bank.blockSignals(False)

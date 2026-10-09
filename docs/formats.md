@@ -123,9 +123,11 @@ each object must end exactly at its next pointer. Quads split into triangles
 modulation treats 128 as neutral; raw texture commands bypass vertex colour.
 
 The 1997 builds lay a textured primitive out as the GPU packet it becomes:
-the RGB/command words, then one word per corner with U and V in its low half,
+the RGB/command word, then one word per corner with U and V in its low half,
 then an eight-byte `<hhh>` position per corner. The high half of the first
-corner's word is the CLUT and of the second's the texture page. That makes
+corner's word is the CLUT and of the second's the texture page. A Gouraud
+primitive has an RGB word for every corner, each in front of its corner's
+word: colour, U V and CLUT, colour, U V and page, and so on. That makes
 FT3 40 bytes, FT4 52, GT3 48 and GT4 64, against 32, 40, 40 and 52 later.
 Untextured primitives are identical in both. A bank is read in the later
 layout first and in this one if its batches do not fit.
@@ -499,6 +501,32 @@ from, keyed by its SHA-1:
 | `SLPS_011.44` | Preview, 3 February 1998 | `800EDAA8` | `800A2440` |
 | `SLPM_801.65` | Japanese demo | `800E7698` | `8009A810` |
 | `TOMBA.EXE` | Pure Pure 09 sampler | `800ED548` | `800A2248` |
+| `MAIN0.EXE` | European release, language 0 | `800E8028` | `8009C960` |
+
+The European release starts from a small boot executable, `SCES_013.31`,
+and runs one of nine programs, `EXE/MAIN0.EXE` to `MAIN8.EXE`, one for each
+language. They are one engine built nine times. The text of a language
+makes the program's data a little longer or shorter, and everything after
+the data moves by that much: the variables, and the area overlays, which
+load at `800E8028` plus 0, 20, 40, 38, 40, 28, 30, 10 and 30 (hexadecimal)
+for languages 0 to 8. The program of language 5 also has 24 bytes less in
+the middle of its code, which moves its tables down by as much. Each
+program has its own file link table, starting at its own system load table
+`SYS/LDnSYS.BIN`, and its own area overlays `AREAaa/Xnaa.BIN`.
+
+Its screen is 256 lines high. The routine that draws a fixed picture puts
+it 24 rows lower than the other builds do and covers the top and bottom 16
+rows of the screen with black bars.
+
+An entry also names the item tables. An item (APD layer 5) is set up from a
+twenty-byte descriptor, found through a table of descriptor numbers by item
+type: draw mode, texture page base, SPR slot, the flags of object byte +0D,
+how the palette is chosen, how the animation is, the palette's position in
+VRAM, a collision box and a pointer to the animations. The palette is the
+one named, the row below it by the item's variant, one of a table by the
+variant, or the row below by two event flags. The sprite viewer reads these
+descriptors for the frames of items, which carry a stand-in palette in the
+sprite bank itself.
 
 An entry holds the six tables of object routines (APD layers 2 to 5, 7 and
 8), the routines the emulator answers itself (the animation setter, the six
@@ -510,7 +538,7 @@ are sixteen bytes, without the blend flag, and its object records are
 twenty, with four size words ahead of the page, the animation, the SPR slot
 and the script pointer.
 
-The engine is the same in all five, which is how the addresses were found.
+The engine is the same in all of them, which is how the addresses were found.
 The three object dispatchers (8001DFD4, 8003438C and 8002DB4C in retail)
 are instruction for instruction identical once jump targets and the
 operands of address loads are masked out, so each build's copy is located by
@@ -541,6 +569,9 @@ and twelve an area in the sampler.
 - [hansbonini/psx_tomba](https://github.com/hansbonini/psx_tomba),
   [game formats](https://github.com/hansbonini/psx_tomba/blob/main/docs/game-formats.md),
   and [regional file analysis](https://github.com/hansbonini/psx_tomba/blob/main/docs/file-analysis.md).
+- [afsenovilla/Tombi-Decomp](https://github.com/afsenovilla/Tombi-Decomp), a matching decompilation
+  of the European release: the sprite, backdrop and item routines described here were read
+  against its source.
   Some reference descriptions conflict; real-disc validation takes precedence.
 
 No game data is included with the application.

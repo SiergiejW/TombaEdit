@@ -12,6 +12,7 @@ by APD layer: layers 2 to 5 share one object pool (routine 8001DFE4), layer
 layer 8 objects are models in a pool of 45 with a third (routine 8002DB4C).
 """
 import struct
+import numpy as np
 from game.builds import executable
 
 # Camera step used to measure how far a backdrop sprite follows the camera.
@@ -25,6 +26,10 @@ OBJECT, SPR_MEMORY, WMD_MEMORY, BANK_SPACING = 0x80300000, 0x80400000, 0x8080000
 # Scripts and tables are looked for from the executable to this far past the
 # start of the overlay.
 REACH = 0x58C78
+# How far from an object's first animation script its others are looked for.
+CLASS_SCRIPTS = 0x800
+# The pointers to one object's scripts lie within this many bytes.
+SCRIPT_RUN = 0x100
 
 
 def runtime_area(area, section, early=False):
@@ -67,6 +72,8 @@ class InitialPoseResolver:
         self.u.mem_map(0x1F800000, 0x1000)
         code = project.asset_data(overlay)
         self.overlay_code = code
+        self.overlay_words = np.frombuffer(bytes(code[:len(code) // 4 * 4]), '<u4')
+        self.reach = {}
         self.limit = max(build.overlay + REACH, build.overlay + len(code))
         self.code = ((self.base, found.end), (build.overlay, self.limit))
         self.write(self.base, self.exe[0x800:])
@@ -282,6 +289,80 @@ class InitialPoseResolver:
             if control & 0xC000 == 0x8000:
                 break
             address = self.read_word(address + 8) if control & 0x4000 else address + 8
+        return frames
+
+    def code_frames(self, pc, near, count):
+        """Frames of the other animations an object's code can start.
+
+        An object is created showing one animation; the rest of what it
+        does (walking, talking, breaking) is set by its routine and the
+        routines that one calls, each loading the address of a script or of
+        one fixed pointer to a script. `pc` is the object's routine, `near`
+        the script it starts with and `count` the number of frames in its
+        bank.
+
+        Only scripts stored close to the first are taken: a class keeps its
+        scripts together, and what its code loads from elsewhere belongs to
+        something it creates. A pointer reached by indexing a table is not
+        followed, since which entry is read depends on the object's
+        variant; pointers that lie between two the code names are, being
+        the same object's states picked by number."""
+        key = (pc, near, count)
+        if key in self.reach:
+            return self.reach[key]
+        low, high = self.build.overlay, self.build.overlay + len(self.overlay_code)
+        words, code = self.overlay_words, self.overlay_code
+        seen, queue, frames, cells = set(), [pc], set(), set()
+
+        def script(address):
+            """Frames of the script at `address`, or None if it is not one."""
+            if not (low <= address < high) or address & 3 or abs(address - near) > CLASS_SCRIPTS:
+                return None
+            found, at = [], address
+            while len(found) < 64 and low <= at < high - 8:
+                frame, a, b, control = struct.unpack_from('<4H', code, at - low)
+                if frame >= count or a or b or (control & 0x3FFF) > 2000:
+                    return None
+                found.append(frame)
+                if control & 0xC000:
+                    return found
+                at += 8
+            return None
+
+        def pointed(cell):
+            return script(struct.unpack_from('<I', code, cell - low)[0]) if low <= cell < high - 4 else None
+
+        while queue and len(seen) < 48:
+            start = queue.pop()
+            if start in seen or not (low <= start < high):
+                continue
+            seen.add(start)
+            index = (start - low) // 4
+            upper = {}
+            for i in range(index, min(len(words), index + 0x600)):
+                word = int(words[i])
+                op, rs, rt, imm = word >> 26, word >> 21 & 31, word >> 16 & 31, word & 0xFFFF
+                if i > index and word >> 16 == 0x27BD and imm & 0x8000:
+                    break               # the next routine's stack frame
+                if op == 3:
+                    queue.append(0x80000000 | (word & 0x3FFFFFF) << 2)
+                elif op == 15:
+                    upper[rt] = (imm << 16, i)
+                elif op == 0 and (word >> 11 & 31) in upper:
+                    upper.pop(word >> 11 & 31)      # indexed: not one fixed address
+                elif op in (9, 13, 35) and rs in upper and i - upper[rs][1] < 8:
+                    address = (upper[rs][0] + (imm if op == 13 else (imm ^ 0x8000) - 0x8000)) & 0xFFFFFFFF
+                    found = script(address)
+                    if found:
+                        frames.update(found)
+                    found = pointed(address)
+                    if found:
+                        frames.update(found)
+                        cells.add(address)
+        if cells and max(cells) - min(cells) <= SCRIPT_RUN:
+            for cell in range(min(cells), max(cells), 4):
+                frames.update(pointed(cell) or ())
+        self.reach[key] = frames
         return frames
 
     def in_exe(self, address, size):
@@ -544,6 +625,61 @@ class InitialPoseResolver:
         except UcError:
             pass
         return result
+
+
+def item_sprites(project, table=None):
+    """{SPR slot: {frame: (texture page base, CLUT word or None)}} for the
+    pictures of items, from the item descriptors in the executable.
+
+    The item routine (8003FDD4 in US retail) looks an item's type up in a
+    table of descriptor numbers and copies a twenty-byte descriptor into
+    the object: draw mode, page base, SPR slot, the flags of +0D, how the
+    palette is chosen, how the animation is, the palette's place in VRAM,
+    a box and a pointer to the animations. The palette is the one named
+    (0), the row below it by the variant (1), one of a table by the variant
+    (2) or the row below by two event flags (3); the animation the first
+    (0) or the variant's (1). Only descriptors whose animations are in the
+    executable are read: the others belong to one area's overlay."""
+    found = executable(project, table)
+    if found is None or not found.build.items:
+        return {}
+    index, pointers, palettes = found.build.items
+    out = {}
+
+    def frames(script):
+        seen = []
+        while found.holds(script, 8) and len(seen) < 64:
+            frame, _, _, control = found.unpack('<4H', script)
+            seen.append(frame)
+            if control & 0xC000:
+                break
+            script += 8
+        return seen
+
+    def clut(x, y):
+        return (y & 511) << 6 | (x >> 4) & 63
+
+    numbers = found.data[index - found.base + 0x800: pointers - found.base + 0x800]
+    for number in sorted(set(numbers)):
+        at = found.word(pointers + number * 4)
+        if not found.holds(at, 20):
+            continue
+        _, _, page, _, slot, flags, palette, varied, x, y, _, anims = found.unpack('<8Bhh4sI', at)
+        for variant in range(16 if varied == 1 else 1):
+            if not found.holds(anims + variant * 4, 4):
+                break
+            script = found.word(anims + variant * 4)
+            if not found.holds(script, 8):
+                break
+            if not flags & 1:
+                word = None
+            elif palette == 2:
+                word = clut(*found.unpack('<hh', palettes + variant * 8))
+            else:
+                word = clut(x, y + (variant if palette == 1 else 0))
+            for frame in frames(script):
+                out.setdefault(slot, {}).setdefault(frame, (page, word))
+    return out
 
 
 def table_pages(project, table=None):

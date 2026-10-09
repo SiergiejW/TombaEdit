@@ -195,6 +195,45 @@ def prepare_preview(project, node, context=None):
                     known = result['sprite_names'].setdefault(frame, [])
                     known += [user for user in users if user not in known]
             result['sprite_cluts'] = dict(sprite_cluts(project, node.ldar, context).get(slot, {}))
+            from formats.level.scene import sprite_coded
+            result['sprite_pages'] = dict(result['sprite_pages'])
+            origins = {frame: 'object code' for frame in sprite_coded(project, node.ldar, context).get(slot, ())}
+            result['sprite_origins'], result['sprite_vrams'] = origins, {}
+            # A bank can be shown by other sections than the one chosen:
+            # their objects say which page a frame is on, and the frame is
+            # drawn with their textures, which this section has not loaded.
+            vrams = {}
+            for group in [g for g in groups[1:] if g.index != context and g.assets
+                          and loaded_resources(project, node.ldar, g.index).get(('SPR', slot)) is node]:
+                theirs = sprite_pages(project, node.ldar, group.index).get(slot, {})
+                coded = sprite_coded(project, node.ldar, group.index).get(slot, ())
+                palettes = sprite_cluts(project, node.ldar, group.index).get(slot, {})
+                for frame, page in theirs.items():
+                    if frame in result['sprite_pages'] and origins.get(frame) != 'object code':
+                        continue
+                    if frame in result['sprite_pages'] and frame in coded:
+                        continue
+                    if group.index not in vrams:
+                        vrams[group.index] = project.vram(node.ldar, group.index)
+                    result['sprite_pages'][frame] = page
+                    result['sprite_vrams'][frame] = vrams[group.index]
+                    origins[frame] = f'section {group.index - 1:02d}' + (' code' if frame in coded else '')
+                    if frame in palettes:
+                        result['sprite_cluts'][frame] = palettes[frame]
+                    else:
+                        result['sprite_cluts'].pop(frame, None)
+            # Items are drawn with the page and the palette their descriptor
+            # in the executable names, wherever they are placed.
+            from formats.level.runtime import item_sprites
+            items = item_sprites(project, node.ldar).get(slot, {})
+            if items:
+                result['sprite_pages'] = dict(result['sprite_pages'])
+            for frame, (page, word) in items.items():
+                if frame not in result['sprite_pages']:
+                    result['sprite_pages'][frame] = page
+                    origins[frame] = 'item table'
+                if word is not None:
+                    result['sprite_cluts'].setdefault(frame, word)
             # A frame this section does not place may be placed, with a
             # palette of its object's own, in another section of the area.
             from psx.graphics import palette_missing
@@ -796,6 +835,7 @@ class MainWindow(QMainWindow):
                                   result.get('sprite_default'), result.get('sprite_cluts'))
                 view.set_names(result.get('sprite_names', {}))
                 view.set_labels(self.labels, self.persist_labels)
+                view.set_origins(result.get('sprite_origins', {}), result.get('sprite_vrams'))
                 key = self.node_key(node)
                 view.restore_state(self.sprite_states.get(key, []))
                 view.selection_changed.connect(lambda state, k=key: self.sprite_states.__setitem__(k, state))
@@ -1195,7 +1235,7 @@ class MainWindow(QMainWindow):
                 QMessageBox.warning(self, 'Cannot export labels', str(exc))
 
     def about(self):
-        QMessageBox.about(self, "TombaEdit 0.1", "Tomba! disc and asset browser\n\nBIN/CUE/ISO/IMG | LDAR | GAM | WMD | FOUR | SPR | WPP | WHM | APD | WFM | SEQ | WVD | STR\nTIM | TMD | VAB | MIDI | XA | archives of other games\n\nFormat research: vervalkon, zerovii, Woolmagician, hansbonini/psx_tomba.\nSee README.md and docs/formats.md for format details and known gaps.")
+        QMessageBox.about(self, "TombaEdit 0.1", "Tomba! disc and asset browser\n\nBIN/CUE/ISO/IMG | LDAR | GAM | WMD | FOUR | SPR | WPP | WHM | APD | WFM | SEQ | WVD | STR\nTIM | TMD | VAB | MIDI | XA | archives of other games\n\nFormat research: vervalkon, zerovii, Woolmagician, hansbonini/psx_tomba, afsenovilla/Tombi-Decomp.\nSee README.md and docs/formats.md for format details and known gaps.")
 
     def dragEnterEvent(self, event):
         if event.mimeData().hasUrls() and any(u.isLocalFile() and Path(u.toLocalFile()).suffix.lower() in DISC_SUFFIXES for u in event.mimeData().urls()):

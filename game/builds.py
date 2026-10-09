@@ -48,6 +48,10 @@ class Build:
     # Rows a fixed picture is drawn below its object: the European build
     # has a taller screen and moves them down.
     picture_top: int = 0
+    # Items: the table of descriptor numbers by item type, the table of
+    # pointers to the descriptors, and the palettes of the items that take
+    # one by variant.
+    items: tuple | None = None
 
     @property
     def event(self):
@@ -68,7 +72,8 @@ BUILDS = {
         silent=(0x8001FFE8, 0x80023608, 0x800236F4),
         slot_tables=0x8007F0C8, common=0x8007B294, pictures=0x8007EBEC, entrances=0x8007BF78,
         origins=0x8007E9F8, wall_origins=0x8007E9E8, alternate_origin=0x8007E9E4,
-        plane_limits=(0x8007EAF4, 0, 1), pages=0x8007D6E4),
+        plane_limits=(0x8007EAF4, 0, 1), pages=0x8007D6E4,
+        items=(0x8007E61C, 0x8007E6E4, 0x8007E86C)),
     '3810c960ec624c19f1fb047df506ee64b65aa77a': Build(
         name='US demo', overlay=0x800DDCA0, area=0x80092640, variant=(0x80095520, 0x80092FA3),
         tables={2: 0x800705EC, 3: 0x800730B0, 4: 0x80073D00, 5: 0x800752A0, 7: 0x80073F74, 8: 0x8007308C},
@@ -79,7 +84,8 @@ BUILDS = {
         silent=(0x8001EF48, 0x80022558, 0x80022644),
         slot_tables=0x80075AB0, common=0x80071C94, pictures=0x800755E4, entrances=0x80072978,
         origins=0x800753F0, wall_origins=0x800753E0, alternate_origin=0x800753DC,
-        plane_limits=(0x800754EC, 0, 1), pages=0x800740DC),
+        plane_limits=(0x800754EC, 0, 1), pages=0x800740DC,
+        items=(0x80075014, 0x800750DC, 0x80075264)),
     '1e69d1414dcca09fe360fe69337fc8e62968fda7': Build(
         name='February 1998 preview', overlay=0x800EDAA8, area=0x800A2440, variant=(0x800A5318, 0x800A2DA3),
         tables={2: 0x800758D0, 3: 0x80079B0C, 4: 0x8007A748, 5: 0x8007BCE8, 7: 0x8007A9BC, 8: 0x80079AE8},
@@ -90,7 +96,8 @@ BUILDS = {
         silent=(0x8001F678, 0x80022F08, 0x80022FF4),
         slot_tables=0x8007C4F8, common=0x800786F0, pictures=0x8007C02C, entrances=0x800793D4,
         origins=0x8007BE38, wall_origins=0x8007BE28, alternate_origin=0x8007BE24,
-        plane_limits=(0x8007BF34, 0, 1), pages=0x8007AB24),
+        plane_limits=(0x8007BF34, 0, 1), pages=0x8007AB24,
+        items=(0x8007BA5C, 0x8007BB24, 0x8007BCAC)),
     '44360f12e7bd9449a7d46deb412d6a9499b6c94c': Build(
         name='Japanese demo', overlay=0x800E7698, area=0x8009A810, variant=None,
         tables={2: 0x8006A230, 3: 0x8006CE80, 4: 0x8006D504, 5: 0x8006E01C, 7: 0x8006D660, 8: 0x8006CE64},
@@ -133,7 +140,8 @@ EUROPE = Build(
     silent=(0x8001E4F0, 0x80020A78, 0x80020B64),
     slot_tables=0x8007B908, common=0x80078790, pictures=0x80080258, entrances=0x80079474,
     origins=0x8007B460, wall_origins=0x8007B450, alternate_origin=0x8007B44C,
-    plane_limits=(0x8007B55C, 0, 1), pages=0x8007A14C, picture_top=0x18)
+    plane_limits=(0x8007B55C, 0, 1), pages=0x8007A14C, picture_top=0x18,
+    items=(0x8007B084, 0x8007B14C, 0x8007B2D4))
 
 
 def european(language, late, early=0):
@@ -146,7 +154,8 @@ def european(language, late, early=0):
         get_clut=e.get_clut + early, slot_tables=e.slot_tables + early, common=e.common + early,
         pictures=e.pictures + early, entrances=e.entrances + early, origins=e.origins + early,
         wall_origins=e.wall_origins + early, alternate_origin=e.alternate_origin + early,
-        plane_limits=(e.plane_limits[0] + early,) + e.plane_limits[1:], pages=e.pages + early)
+        plane_limits=(e.plane_limits[0] + early,) + e.plane_limits[1:], pages=e.pages + early,
+        items=tuple(v + early for v in e.items))
 
 
 BUILDS.update({
