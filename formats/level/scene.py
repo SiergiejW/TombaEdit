@@ -178,17 +178,45 @@ def edge_colour(image):
 
 def fixed_picture(pieces, vram):
     """Assemble the rectangles of a mode 2 backdrop: (image, left, top), or
-    None when the pages they name hold nothing."""
+    None when the pages they name hold nothing.
+
+    The routine (8004E244) adds each rectangle to the front of one draw
+    list, so the last in the table is drawn first and the first ends up on
+    top. A rectangle with the blend flag mixes its marked texels with what
+    is under them by the mode in its texture page word; over nothing, they
+    are left half clear."""
     left, top = min(p[1] for p in pieces), min(p[2] for p in pieces)
     image = Image.new('RGBA', (max(p[1] + p[5] for p in pieces) - left, max(p[2] + p[6] for p in pieces) - top))
     pages = {}
-    for tpage, x, y, u, v, width, height, clut in pieces:
+
+    def page(tpage, clut, flagged=None):
+        if (tpage, clut, flagged) not in pages:
+            pages[tpage, clut, flagged] = texture_page(vram, tpage, clut, flagged=flagged)
+        return pages[tpage, clut, flagged]
+
+    for tpage, x, y, u, v, width, height, clut, blend in reversed(pieces):
+        box, at = (u, v, u + width, v + height), (x - left, y - top)
         try:
-            if (tpage, clut) not in pages:
-                pages[tpage, clut] = texture_page(vram, tpage, clut)
+            if not blend:
+                image.alpha_composite(page(tpage, clut).crop(box), at)
+                continue
+            image.alpha_composite(page(tpage, clut, False).crop(box), at)
+            front = np.asarray(page(tpage, clut, True).crop(box)).astype(np.float32)
         except FormatError:
             continue
-        image.alpha_composite(pages[tpage, clut].crop((u, v, u + width, v + height)), (x - left, y - top))
+        region = (at[0], at[1], at[0] + width, at[1] + height)
+        back = np.asarray(image.crop(region)).astype(np.float32)
+        marked, under = front[..., 3] > 0, back[..., 3] > 0
+        mode = tpage >> 5 & 3
+        mixed = (back[..., :3] / 2 + front[..., :3] / 2 if mode == 0 else back[..., :3] + front[..., :3] if mode == 1
+                 else back[..., :3] - front[..., :3] if mode == 2 else back[..., :3] + front[..., :3] / 4)
+        out = back.copy()
+        both = marked & under
+        out[both, :3] = np.clip(mixed[both], 0, 255)
+        alone = marked & ~under
+        out[alone, :3] = front[alone, :3]
+        out[alone, 3] = 128
+        image.paste(Image.fromarray(out.astype(np.uint8), 'RGBA'), region[:2])
     return (image, left, top) if image.getbbox() else None
 
 
@@ -454,12 +482,16 @@ def build_scene(project, path, index):
                 if 0 < extra < len(bank) and bank[extra]:
                     over = sprite_image(visual['sprite'], extra, visual)
                     if over is not None:
-                        # Both frames hang from the same anchor.
-                        both = parts + bank[extra]
+                        # Both frames hang from the same anchor, the second
+                        # raised by the object's word +20 (draw routine
+                        # 8011E778 of area 4's overlay).
+                        rise = visual.get('overlay_rise', 0)
+                        raised = [part[:14] + (part[14] - rise,) for part in bank[extra]]
+                        both = parts + raised
                         left, top = min(p[13] for p in both), min(p[14] for p in both)
                         joined = Image.new('RGBA', (max(p[13] + p[9] for p in both) - left,
                                                     max(p[14] + p[10] for p in both) - top))
-                        for layer_parts, layer in ((parts, image), (bank[extra], over)):
+                        for layer_parts, layer in ((parts, image), (raised, over)):
                             joined.alpha_composite(layer, (min(p[13] for p in layer_parts) - left,
                                                            min(p[14] for p in layer_parts) - top))
                         parts, image = both, joined

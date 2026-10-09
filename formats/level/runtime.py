@@ -152,7 +152,8 @@ class InitialPoseResolver:
         word, an X and Y offset from the object, U, V, width, height, the
         palette's VRAM position and a blend flag; the sampler's records have
         no flag and are 16 bytes. Returns
-        [(tpage, x, y, u, v, width, height, clut)]."""
+        [(tpage, x, y, u, v, width, height, clut, blend)], in the order
+        of the table."""
         if not self.available or placement.layer != 7 or placement.raw[12] != 2 or not self.build.pictures:
             return []
         try:
@@ -164,8 +165,9 @@ class InitialPoseResolver:
                     return parts
                 if not (0 < width <= 256 and 0 < height <= 256):
                     break
+                blend = self.build.picture_record >= 18 and bool(struct.unpack('<h', self.read(at + 16, 2))[0])
                 parts.append((tpage & 0x1FF, x, y + self.build.picture_top, u, v, width, height,
-                              (clut_y & 511) << 6 | (clut_x >> 4) & 63))
+                              (clut_y & 511) << 6 | (clut_x >> 4) & 63, blend))
                 at += self.build.picture_record
         except Exception:
             pass
@@ -611,6 +613,8 @@ class InitialPoseResolver:
                             # Backdrop strips name a second frame in the word
                             # after the first; both are drawn at the anchor.
                             result['overlay'] = struct.unpack('<H', self.read(anim + 2, 2))[0]
+                            if raw[12] == 4:
+                                result['overlay_rise'] = struct.unpack('<h', self.read(obj + 0x20, 2))[0]
                         if placement.layer == 7:
                             # Drawn from the screen-space list: the parts are
                             # never mirrored there, and the object works out
@@ -627,7 +631,7 @@ class InitialPoseResolver:
         return result
 
 
-def item_sprites(project, table=None):
+def item_sprites(project, table=None, overlay=None, counts=None):
     """{SPR slot: {frame: (texture page base, CLUT word or None)}} for the
     pictures of items, from the item descriptors in the executable.
 
@@ -638,23 +642,46 @@ def item_sprites(project, table=None):
     a box and a pointer to the animations. The palette is the one named
     (0), the row below it by the variant (1), one of a table by the variant
     (2) or the row below by two event flags (3); the animation the first
-    (0) or the variant's (1). Only descriptors whose animations are in the
-    executable are read: the others belong to one area's overlay."""
+    (0) or the variant's (1).
+
+    A descriptor's animations are in the executable or in one area's
+    overlay. `overlay` is the code loaded with the bank being looked at and
+    `counts` the number of frames in each loaded bank by slot: a descriptor
+    pointing into the overlay is taken when its scripts read as scripts of
+    that bank, and otherwise belongs to another area."""
     found = executable(project, table)
     if found is None or not found.build.items:
         return {}
     index, pointers, palettes = found.build.items
     out = {}
 
-    def frames(script):
+    low = found.build.overlay
+    high = low + (len(overlay) if overlay is not None else 0)
+
+    def peek(fmt, address):
+        """Read from the executable or the overlay; None outside both."""
+        size = struct.calcsize(fmt)
+        if found.holds(address, size):
+            return found.unpack(fmt, address)
+        if low <= address and address + size <= high:
+            return struct.unpack_from(fmt, overlay, address - low)
+        return None
+
+    def frames(script, limit):
+        """Frames of a script, or [] when it does not read as one."""
         seen = []
-        while found.holds(script, 8) and len(seen) < 64:
-            frame, _, _, control = found.unpack('<4H', script)
+        while len(seen) < 64:
+            step = peek('<4H', script)
+            if step is None:
+                return []
+            frame, a, b, control = step
+            if not found.holds(script, 8) and (a or b or frame >= limit):
+                return []
             seen.append(frame)
             if control & 0xC000:
-                break
+                return seen
             script += 8
-        return seen
+        return []
 
     def clut(x, y):
         return (y & 511) << 6 | (x >> 4) & 63
@@ -665,19 +692,22 @@ def item_sprites(project, table=None):
         if not found.holds(at, 20):
             continue
         _, _, page, _, slot, flags, palette, varied, x, y, _, anims = found.unpack('<8Bhh4sI', at)
+        limit = (counts or {}).get(slot, 0) if not found.holds(anims, 4) else 1 << 16
         for variant in range(16 if varied == 1 else 1):
-            if not found.holds(anims + variant * 4, 4):
+            pointer = peek('<I', anims + variant * 4)
+            if pointer is None or not limit:
                 break
-            script = found.word(anims + variant * 4)
-            if not found.holds(script, 8):
-                break
+            script = pointer[0]
             if not flags & 1:
                 word = None
             elif palette == 2:
                 word = clut(*found.unpack('<hh', palettes + variant * 8))
             else:
                 word = clut(x, y + (variant if palette == 1 else 0))
-            for frame in frames(script):
+            shown = frames(script, limit)
+            if not shown:
+                break
+            for frame in shown:
                 out.setdefault(slot, {}).setdefault(frame, (page, word))
     return out
 

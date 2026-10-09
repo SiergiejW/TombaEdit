@@ -343,8 +343,11 @@ class SpriteView(QWidget):
                 # that frame's palette if its own is one the game sets.
                 lender = self.lender.get(index) if index not in self.pages else None
                 own = self.cluts.get(index)
-                if own is None and lender is not None and self.frames[index] and all(
-                        palette_runtime(part[2]) for part in self.frames[index]):
+                if own is None and lender is not None and self.frames[index] and (
+                        all(palette_runtime(part[2]) for part in self.frames[index])
+                        or {part[2] for part in self.frames[index]} <= {part[2] for part in self.frames[lender]}):
+                    # ...or one the two frames share: an object that brings a
+                    # palette of its own draws all its frames through it.
                     own = self.cluts.get(lender)
                 vram = self.frame_vrams.get(index, self.frame_vrams.get(lender, self.vram))
                 parts = [tuple(clut if col == 2 else value for col, value in enumerate(part))

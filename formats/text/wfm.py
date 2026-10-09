@@ -17,10 +17,24 @@ GLYPH_DICTIONARY = json.loads(Path(__file__).with_name('glyph_dictionary.json').
 EXACT_GLYPHS = json.loads(Path(__file__).with_name('glyphs_us.json').read_text('utf8'))
 CANONICAL = {value: value for value in letters.values()}
 
-def glyph_letter(image):
+# Characters given to glyphs in the application: shape key -> character.
+# They come before the built-in dictionaries, so a wrong guess can be put
+# right, and they are what names the glyphs of a font nobody has read yet.
+USER_GLYPHS = {}
+
+
+def glyph_key(image):
+    """What a glyph's character is kept under: a hash of its size and of
+    which of its pixels are lit, whatever their colour. The same letter in
+    another colour has the same key."""
+    if max(image.size) >= 256:
+        return ''
     mask = bytes(1 if a and (r or g or b) else 0 for r,g,b,a in image.getdata())
-    key = hashlib.sha256(bytes([image.width, image.height]) + mask).hexdigest()[:24] if max(image.size) < 256 else ''
-    value = GLYPH_DICTIONARY.get(key)
+    return hashlib.sha256(bytes([image.width, image.height]) + mask).hexdigest()[:24]
+
+
+def glyph_letter(image):
+    value = GLYPH_DICTIONARY.get(glyph_key(image))
     return CANONICAL.get(value, value)
 
 CONTROLS = {
@@ -75,6 +89,8 @@ class Wfm:
         if reserved or glyph_table + ng * 2 > len(data) or table + nd * 2 > len(data):
             raise FormatError("Invalid WFM header or pointer tables")
         self.glyphs = []
+        self.keys = []          # shape key of each glyph, what its character is looked up by
+        self.exact_keys = []    # and the key of its exact pixels
         self.characters = []
         self.indices = []
         self.glyph_headers = []
@@ -99,8 +115,11 @@ class Wfm:
             im.putdata([palette[n] for n in indices[:width * height]])
             self.glyphs.append(im)
             key = hashlib.sha256(bytes(im.size) + bytes(indices[:width * height])).hexdigest()[:24] if max(im.size) < 256 else ''
-            self.characters.append(EXACT_GLYPHS.get(key, glyph_letter(im)))
+            self.exact_keys.append(key)
+            self.keys.append(glyph_key(im))
+            self.characters.append(None)
             self.glyph_headers.append((pal, width, height, unused))
+        self.recognise()
         starts = [table + struct.unpack_from("<H", data, table + i * 2)[0] for i in range(nd)]
         if any(p < table + nd * 2 or p >= len(data) for p in starts):
             raise FormatError("Dialogue pointer outside WFM resource")
@@ -129,6 +148,16 @@ class Wfm:
             else:
                 warning = "No end control before the next dialogue boundary."
             self.dialogues.append(Dialogue(start, tokens, warning, self.characters))
+
+    def recognise(self):
+        """Work out each glyph's character again: the one given to its
+        shape in the application, then the built-in dictionaries. The list
+        is changed in place, since every entry reads from it."""
+        for number, (key, exact, image) in enumerate(zip(self.keys, self.exact_keys, self.glyphs)):
+            if key in USER_GLYPHS:
+                self.characters[number] = USER_GLYPHS[key] or None
+            else:
+                self.characters[number] = EXACT_GLYPHS.get(exact, glyph_letter(image))
 
     def pages(self, index):
         pages, tokens = [], []

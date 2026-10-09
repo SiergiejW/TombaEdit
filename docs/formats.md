@@ -367,8 +367,11 @@ quarter of both. The level editor measures the factor by running the update
 with the camera moved a known amount.
 
 A backdrop's animation step can name a second frame in the word after the
-first; the mansion's strips pair a water frame with a strip of trees and sky,
-drawn at the same anchor. The mansion handler wraps its screen X in 512
+first; the mansion's strips pair a water frame with a strip of trees and sky.
+Draw mode 4, which only the mansion's areas use (routine 8011E778 of area
+4's overlay), draws both from the same anchor with the second raised by the
+object's word `+20`, 232 on every strip, so the trees stand above the water.
+The mansion handler wraps its screen X in 512
 pixels, which is what makes eight 64-pixel strips an endless loop.
 
 Editor free-look stitches adjacent strips before repeating each parallax
@@ -384,7 +387,13 @@ Queued backdrop objects are drawn by routine 8004DE40 according to their
 byte `+0A`, APD byte 12. Mode 1 draws the object's sprite. Mode 2 (routine
 8004E244) draws a fixed picture from the table at 8007EBEC, indexed by the
 variant: 18-byte records of texture page, X and Y offset, U, V, width,
-height, palette position and blend flag, ended by 7FFF. Such an object stays
+height, palette position and blend flag, ended by 7FFF. Each rectangle is
+added to the front of one draw list, so the last in the table is drawn first
+and the first ends up on top. A rectangle with the blend flag mixes the
+texels whose colour has bit 15 set with what is under them, by the mode in
+its texture page word: Baccus Lake's two shafts of light are added to the
+picture this way. Mode 1 draws every part of a frame with the first part's
+texture page; no frame drawn that way has parts on two pages. Such an object stays
 with the level: its screen position is its placement less the camera words.
 The Y camera word is the world Y of the bottom of the screen, so the picture
 stands 240 units above where its placement reads.
@@ -517,6 +526,20 @@ program has its own file link table, starting at its own system load table
 Its screen is 256 lines high. The routine that draws a fixed picture puts
 it 24 rows lower than the other builds do and covers the top and bottom 16
 rows of the screen with black bars.
+
+A sprite bank is read through the table of loaded banks at 1F8002C8, four
+bytes a slot. The bank in slot 9 is read by `SYSTEM/DSPSUB.BIN` alone, the
+code of the menu, which the system load table brings in with the menu's
+pictures and palettes: its sprites are the menu's panels, buttons and
+lettering, and an area's own textures never hold their art.
+
+Objects that other objects create while the game runs (splashes, bursts,
+flames) are in no placement list, but each is an entry of the same tables
+of object routines. Running such a routine on a made-up object, for each
+type and variant it might be given, shows which bank, frames, texture page
+and palette it uses. Most of the second half of the item bank belongs to
+three such classes of layer 3 (0F, 4E and 5C), drawn from page 19, the page
+every area loads its own effects on.
 
 An entry also names the item tables. An item (APD layer 5) is set up from a
 twenty-byte descriptor, found through a table of descriptor numbers by item

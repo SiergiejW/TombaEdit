@@ -236,7 +236,12 @@ def prepare_preview(project, node, context=None):
             # Items are drawn with the page and the palette their descriptor
             # in the executable names, wherever they are placed.
             from formats.level.runtime import item_sprites
-            items = item_sprites(project, node.ldar).get(slot, {})
+            code = next((a for a in loaded if a.kind == 'INS'), None)
+            try:
+                code = bytes(project.asset_data(code)) if code is not None else None
+            except FormatError:
+                code = None
+            items = item_sprites(project, node.ldar, code, {slot: len(frames)}).get(slot, {})
             if items:
                 result['sprite_pages'] = dict(result['sprite_pages'])
             for frame, (page, word) in items.items():
