@@ -27,7 +27,9 @@ the same. CloneCD images open from either the `.img` or the `.ccd` beside it. Th
 folder starts with a *Sections* node holding the area's load groups: the base
 group shared by the whole area, then one group per section in the order the
 game loads them. Files that a load group reads from can be expanded to the
-resources inside them.
+resources inside them. On the European disc, which has every area nine times
+over, *Sections* is the English set and the other eight are under *Other
+languages*, one folder each.
 
 The filter box matches names, resource types, section names and offsets.
 `F2` names the selected file or resource. Names are stored against the
@@ -62,7 +64,8 @@ alongside a hex editor or a debugger.
 | WHM | 70, 71 | Collision spans by depth plane |
 | CLM | 8E, 8F | Town pictures and their cell maps |
 | APD | 80–8B | Placement records |
-| WFM | D0, D1 | Dialogue rendered with the game font, and the glyph atlas |
+| WFM | D0, D1 | Dialogue rendered with the game font, and the glyphs with their characters |
+| WSS | | Event scripts, listed as instructions |
 | SEQ, WVD | B0–B3 | Sequenced music and sample banks, with playback |
 | STR | | Movies, with frame, audio and video export |
 | CLUT files | | Palette cells with their PlayStation and RGB values |
@@ -288,6 +291,62 @@ sound in an XA sector lies in the part an ordinary file read leaves out, so
 this needs an image with whole 2352-byte sectors. Channels are cut into
 clips where they skip a turn or mark the end of a record.
 
+### Text
+
+A WFM bank opens on two tabs. **Dialogue** lists its entries, draws the
+selected one in the game's font and shows it as text with every control code
+as a tag. **Glyphs** lists the font: each glyph, how often the text uses it,
+and the character it is read as.
+
+A glyph has no character code of its own; the tool knows a character by the
+glyph's shape. The dictionary that comes with it covers the US font, the nine
+European languages and most of the Japanese one: the kana, and the kanji that
+could be read from the words they appear in. A glyph without a character is
+written `[g0A3]`, by its number. Select one or several glyphs and choose
+**Set character...** to type what they stand for; it is remembered for every
+glyph of that shape, on any disc, and the *Labels* menu imports and exports
+these characters as a file. Japanese voiced kana are stored as a kana and a
+mark laid over it, and are joined into one character.
+
+**Export text...** on the Dialogue tab writes the bank that is open.
+**File → Export text...** writes more: the whole disc, one area, or one
+language of the European disc.
+
+| Format | Holds |
+| --- | --- |
+| JSON | every bank with where it is, and each entry's plain text, script and, if asked, its raw words |
+| Script | each entry as text, with every control code as a tag on its own line |
+| Plain text | what is read on screen: a line break where the game breaks the line, an empty line where it clears the box |
+| CSV | one row an entry: place, file, bank, entry, text and script |
+
+The result is one file, one file for each area, or one for each bank.
+The titles of events, in the large font, are stored without spaces between
+their words and are exported that way.
+
+### Scripts
+
+A `.WSS` file is an event script: the instructions that run a scene. It opens
+as a listing, entry by entry, with jumps labelled and the arguments of each
+game instruction written with it:
+
+```
+  0024  ReadGlobal(7)
+  002C  CMP r0, 0
+  0032  JNE 01A8
+  0035  SetDialogId(1)
+```
+
+Where a section runs a script, the objects the script creates are added to
+the level editor as event previews: each at the position the script gives
+it, with the first animation the script sets. Turn **Event previews** on to
+see them. They also tell the sprite viewer which page and palette those
+frames use.
+
+The machine's own instructions (moves, arithmetic, comparisons, jumps) are
+all named. The game's are named where the decompiled routine makes plain
+what they do; `ObjCommand` and a few flag readers are only described by what
+they touch.
+
 ### Archives
 
 A file that packs other files gets a *Contents* tab: a list of its entries
@@ -377,8 +436,8 @@ What stays as bytes is each game's own: executables and code overlays,
 Abe's animations and backgrounds, Nagano's motion data, PUYO3's graphics,
 MEL2's scripts, and the tables at the head of DSC's archives.
 
-Dialogue is decoded with a glyph table for the US font; other releases show
-the glyph images and unmapped glyph numbers.
+A few dozen Japanese kanji have no character yet and are exported by glyph
+number; they can be given one on the Glyphs tab.
 
 ## Known gaps
 

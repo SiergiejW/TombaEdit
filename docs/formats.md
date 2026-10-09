@@ -97,6 +97,75 @@ later. A glyph's rows each start on a 16-bit word, so a row of ten pixels
 takes six bytes where WFM3 packs the pixels end to end. Control FFF4 appears
 inside running text and takes no arguments.
 
+A WFM1 glyph word carries more in its top bits. A kana that is voiced is
+two words: the kana with 1000 set, then the mark (dakuten or handakuten)
+with 2000 set, drawn over the same cell; both also have 4000. In WFM3 a
+word with 4000 and neither of the others is the prompt drawn in the corner
+of the box.
+
+Glyphs are recognised by shape: a hash of the size and of which pixels are
+lit, whatever their colour. The 1997 title font is drawn on a solid ground,
+which leaves no unlit pixel to tell its glyphs apart, so those are keyed by
+their exact pixels.
+
+## WSS
+
+Event scripts. `W\0S\0`, the file's size as a word, then sixty-four 16-bit
+entry points filling the header to byte 88, and the code. An entry is one
+more than the offset of its first instruction from the start of the code;
+zero is no entry. The game starts an entry by its number and runs until an
+instruction that waits.
+
+An instruction is one byte and its operands. A variable operand is one
+byte, its number; variables 40 and up are the places arguments go in and
+results come out, r0 onward. A number is four bytes.
+
+| Byte | Instruction | Operands |
+| --- | --- | --- |
+| 01 | END | |
+| 02, 03 | MOV | variable, then variable or number |
+| 04 | SWAP | two variables |
+| 05 | ARGS | a count, then for each a kind byte (0 variable, else number) and the operand: loads r0 onward |
+| 06 | RAND | variable |
+| 08 to 10 | JMP, JEQ, JNE, JEQ, JNE, JLT, JGT, JLE, JGE | 16-bit code offset |
+| 11 | LOOP | variable, 16-bit code offset: decrement and jump while above zero |
+| 12 | CALL | entry number |
+| 13, 14, 15 | RET, PUSHVARS, POPVARS | |
+| 16, 17 | CMP | variable, then variable or number |
+| 18 to 1B | INC, DEC, NOT, NEG | variable |
+| 1C to 2B | ADD, SUB, MUL, DIV, MOD, AND, OR, XOR | variable, then variable (even byte) or number (odd) |
+| 2C | WAIT | frames, one byte |
+| 80 to AB | the game's instructions | none: they take r0 onward |
+
+Bytes from 80 are dispatched by routine 8003AFB4 of the European build;
+each is one byte long. They create and remove objects, move them and the
+player, read and write flags and globals, show messages, play sounds, award
+events and give items.
+
+Three areas have scripts. Routine 80039338 picks one by area and section,
+loads the group of area 15's load table that holds it, and starts entry 0.
+The groups follow the file links, which gives each section its file:
+
+| Area | Section | Script |
+| --- | --- | --- |
+| 0 | 0, 1, 2 | `0000.WSS` |
+| 1 and 7 | 0, 1 | `SCR0100.WSS` |
+| 1 and 7 | 2, 3, 4 | `0120.WSS`, `0130.WSS`, `0140.WSS` |
+| 2 and 19 | 0 | `0200.WSS`, or `0201.WSS` once an event flag is set |
+| 2 and 19 | 1 | `0210.WSS` |
+| 2 | 2 | `0220.WSS` |
+
+`CreateObject` (80, routine 800399C4) takes a slot the script will know the
+object by, a class, a subtype and a position in the section's own
+coordinates. Classes 2 and 10 make an object of layer 2, type 18; class 9
+type 19; class 3 one of layer 3, type 2E; class 4 one of layer 4, type 1E;
+the others make nothing. Type 18's routine reads a sixteen-byte record by
+subtype from a table in the area overlay: a collision box, the texture page
+base, the SPR slot and a list of animations. `SetObjAnim` (81) writes the
+animation's number and its first frame to the object's words `+74` and
+`+76`, and the routine takes that entry of the list. Dwarf Village's
+villagers, class 9, are made this way and are in no placement list.
+
 ## WMD
 
 The decoder was checked against OBJ dumps of the same models. A 32-bit

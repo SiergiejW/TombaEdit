@@ -1,8 +1,9 @@
 """Build a read-only level scene from an area's actual LDAR load context."""
 from dataclasses import dataclass, field
+import struct
 import numpy as np
 from PIL import Image, ImageOps
-from formats.level.apd import parse_apd
+from formats.level.apd import parse_apd, Placement
 from formats.level.runtime import InitialPoseResolver
 from formats.models.wmd import parse_wmd
 from formats.models.four import rebuild_mesh
@@ -331,6 +332,32 @@ def town_lines(grid):
     return np.asarray(vertices, np.float32), np.asarray(colours, np.float32)
 
 
+@dataclass
+class ScriptSource:
+    """Stands where a scene entry's resource does, for what a script made."""
+    label: str
+    code: int = 0xC000
+    kind: str = 'WSS'
+
+
+def scripted_placements(project, resolver, area, section):
+    """[(source, [(Placement, ScriptObject)])] for the objects the section's
+    event scripts create. Only builds whose scripts were read are covered."""
+    if not resolver.available or resolver.build.early:
+        return []
+    from formats.script.events import section_scripts, script_objects
+    out = []
+    for name, script in section_scripts(project, area, section):
+        made = []
+        for created in script_objects(name, script):
+            # Object words +74 and +76: the animation and the frame it starts on.
+            extra = ((0x74, struct.pack('<hh', created.animation, created.frame)),)
+            made.append((Placement(created.offset, created.raw, created.position, extra=extra), created))
+        if made:
+            out.append((ScriptSource(name), made))
+    return out
+
+
 def build_scene(project, path, index):
     resources = loaded_resources(project, path, index)
     vram = project.vram(path, index)
@@ -401,17 +428,27 @@ def build_scene(project, path, index):
                 images[key] = None
         return images[key]
 
+    batches = []
     for (kind, slot), asset in resources.items():
         if kind != 'APD':
             continue
         try:
-            placements = parse_apd(project.asset_data(asset))
+            batches.append((slot, asset, parse_apd(project.asset_data(asset)), None))
         except FormatError as exc:
             notes.append(f'{asset.label}: {exc}')
-            continue
+    # What the section's event script creates is put through the same
+    # object routines as what the placement lists hold.
+    scripted = scripted_placements(project, resolver, area, index - 1) if index else []
+    for source, made in scripted:
+        batches.append((None, source, [placement for placement, _ in made], [created for _, created in made]))
+    if scripted:
+        notes.append(f'{sum(len(made) for _, made in scripted)} objects are created by the event script '
+                     + ', '.join(source.label for source, _ in scripted)
+                     + '. They are listed as event previews, at the place and with the animation the script gives them first.')
+    for slot, asset, placements, created in batches:
         for i, placement in enumerate(placements):
-            active = slots is None or slot == slots[0] or (slot == slots[1] and
-                         placement.section in (index-1, ~(index-1)))
+            active = created is not None or slots is None or slot == slots[0] or (
+                slot == slots[1] and placement.section in (index-1, ~(index-1)))
             name = f'Object {placement.layer}:{placement.kind:02X} / {placement.variant:02X}'
             model_frames = []
             mesh, category, note = None, 'Unresolved', 'Visual link is unresolved; position comes from APD.'
@@ -526,7 +563,15 @@ def build_scene(project, path, index):
                     note = f'Fixed picture of {len(pieces)} rectangles, {image.width} x {image.height}, drawn behind the section.'
             if mesh is None:
                 mesh = marker(placement.position, placement.offset, class_color(placement))
-            entry = SceneEntry(f'{name} | {asset.code:04X} #{i:03d}', category, mesh,
+            if created is not None:
+                made = created[i]
+                name = f'Script object {made.slot} | class {made.kind} / {made.subtype:02X}'
+                category = 'Event previews'
+                note = (f'Created by {made.script} at {made.offset:04X}: CreateObject({made.slot}, {made.kind}, '
+                        f'{made.subtype}, {made.position[0]}, {made.position[1]}, {made.position[2]}), then '
+                        f'animation {made.animation} from frame {made.frame}. ' + note)
+            entry = SceneEntry(f'{name} | {asset.label} #{i:03d}' if created is not None
+                               else f'{name} | {asset.code:04X} #{i:03d}', category, mesh,
                                asset, placement, active, note, frames)
             entry.handler = resolver.handler_address(placement)
             entry.class_name = class_name(runtime, placement.layer, placement.kind)
@@ -626,17 +671,22 @@ def sprite_pages(project, path, index):
         counts = {}
         from game.classes import class_name
         runtime = getattr(resolver, 'area', area_of(path))
+        placed = []
         for (kind, slot), asset in resources.items():
             if kind != 'APD' or not resolver.available:
                 continue
             try:
-                placements = parse_apd(project.asset_data(asset))
+                placed.append((parse_apd(project.asset_data(asset)), ''))
             except FormatError:
                 continue
+        # What the section's event script creates shows frames too.
+        for source, made in (scripted_placements(project, resolver, area_of(path), index - 1) if index else []):
+            placed.append(([placement for placement, _ in made], f' ({source.label})'))
+        for placements, origin in placed:
             for placement in placements:
                 visual = resolver.resolve(placement)
                 label = (class_name(runtime, placement.layer, placement.kind)
-                         or f'class {placement.layer}:{placement.kind:02X}')
+                         or f'class {placement.layer}:{placement.kind:02X}') + origin
                 model = visual.get('model', placement.model)
                 if model:
                     users = built.setdefault(model[0], {}).setdefault(model[1], [])

@@ -11,6 +11,9 @@ class Placement:
     position: tuple
     relative: bool = False
     parent: object = field(default=None, repr=False, compare=False)
+    # Object fields set after the record's own, as ((offset, bytes), ...):
+    # a script gives the objects it makes their animation this way.
+    extra: tuple = ()
 
     @property
     def layer(self): return self.raw[1] & 127

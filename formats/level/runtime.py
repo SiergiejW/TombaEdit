@@ -478,7 +478,7 @@ class InitialPoseResolver:
     def resolve(self, placement):
         if not self.available or placement.layer not in (2, 3, 4, 5, 7):
             return {}
-        key = (placement.raw, placement.position)
+        key = (placement.raw, placement.position, placement.extra)
         if key not in self.cache:
             # Most initialisers finish on their own. Some run into parts of
             # the game that are not here; for those, stopping where the
@@ -551,6 +551,8 @@ class InitialPoseResolver:
             self.word(obj + 0xA0, self.model_spans[placement.model][0])
         for j, value in enumerate(placement.position):
             self.word(obj + 0x10 + j * 4, value << 16)
+        for offset, value in placement.extra:
+            self.write(obj + offset, value)
         # APD modes 2/3 link the child at +90 to its parent's live object.
         # Copy each initialized parent into separate memory, with its own
         # coordinate pointers. Attached sprites read these in their updates.
