@@ -141,7 +141,8 @@ class SpriteView(QWidget):
         self.bank.horizontalHeaderItem(ORIGIN).setToolTip(
             'How the texture page a sprite is drawn from is known: from an object placed in this section, '
             'from one placed in another section (the sprite is then drawn with that section\'s textures), '
-            'from an animation an object\'s code goes on to play, from the item table, or borrowed from '
+            'from an animation an object\'s code goes on to play, from the item table, from running the '
+            'routine of an object nothing places, or borrowed from '
             'the nearest sprite that is known. A borrowed page is a guess.')
         # The label is listed beside the sprite it names.
         self.bank.horizontalHeader().moveSection(LABEL, 1)

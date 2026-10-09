@@ -10,7 +10,7 @@ from PyQt6.QtWidgets import (QMainWindow, QWidget, QVBoxLayout, QHBoxLayout, QLa
     QMessageBox, QToolBar, QTableWidget, QTableWidgetItem, QAbstractItemView,
     QHeaderView, QMenu, QApplication, QStyle, QComboBox, QInputDialog)
 from disc.reader import DiscEntry, FormatError
-from formats.archive.ldar import Project, Asset, area_number, table_name
+from formats.archive.ldar import Project, Asset, area_number, table_name, system_table, bank_screens
 from game.areas import AREAS, section_name
 from gui.theme import apply_theme
 from gui.viewers import text_view, ImageView, DialogueView, SpriteView, ModelView, VramView
@@ -169,11 +169,22 @@ def prepare_preview(project, node, context=None):
         result["data"] = data
         result["size"] = len(data)
         if node.kind in ("SPR", "WMD", "GRPX", "WPP"):
-            context = node.group if context is None else context
-            if node.kind in ('SPR', 'WPP') and context == 0 and len(project.ldars[node.ldar]) > 1:
-                context = 1
-            result["vram"] = project.vram(node.ldar, context)
             groups = project.ldars[node.ldar]
+            # Past the area's own groups the choice is a system screen, laid
+            # over the area's base group.
+            screen = None
+            if node.kind == 'SPR':
+                screens, first = bank_screens(project, node.ldar, (node.code >> 8) & 15)
+                if context is not None and context >= len(groups):
+                    screen = screens[context - len(groups)]
+                elif context is None and first is not None:
+                    screen = screens[first]
+                if screen is not None:
+                    context = 0
+            context = node.group if context is None else context
+            if node.kind in ('SPR', 'WPP') and context == 0 and len(project.ldars[node.ldar]) > 1 and screen is None:
+                context = 1
+            result["vram"] = project.vram(node.ldar, context, screen)
             # Resources loaded next to this one: its own group, the base and
             # the section chosen for VRAM.
             loaded = [a for i in dict.fromkeys((node.group, 0, context)) for a in groups[i].assets]
@@ -234,6 +245,16 @@ def prepare_preview(project, node, context=None):
                     origins[frame] = 'item table'
                 if word is not None:
                     result['sprite_cluts'].setdefault(frame, word)
+            # What is left may be shown by objects nothing places: effects
+            # other objects create. Their routines are run to find out.
+            if screen is None and any(frame and i not in result['sprite_pages'] for i, frame in enumerate(frames)):
+                from formats.level.scene import sprite_routines
+                for frame, (page, word) in sprite_routines(project, node.ldar, context).get(slot, {}).items():
+                    if frame not in result['sprite_pages']:
+                        result['sprite_pages'][frame] = page
+                        origins[frame] = 'routine'
+                        if word is not None:
+                            result['sprite_cluts'].setdefault(frame, word)
             # A frame this section does not place may be placed, with a
             # palette of its object's own, in another section of the area.
             from psx.graphics import palette_missing
@@ -261,6 +282,15 @@ def prepare_preview(project, node, context=None):
                       for i in dict.fromkeys((node.group, context)) for a in groups[i].assets
                       if a.rect and a.rect[3] >= 128]
             default = table_pages(project, node.ldar).get(slot)
+            if screen is not None:
+                # A system screen's bank starts where the screen's pictures do.
+                starts = [a.rect[0] // 64 + a.rect[1] // 256 * 16
+                          for a in project.ldars[system_table(node.ldar)][screen].assets
+                          if a.rect and a.rect[3] >= 128]
+                # The bank's art is the first picture the screen loads.
+                default = min(starts) if starts else None
+                result['notes'].append(
+                    f'Drawn with the pictures of system load group {screen}, whose code reads this bank.')
             result['sprite_default'] = guess_page(frames, result['vram'], starts) if default is None else default
             from formats.level.scene import area_of, loaded_resources
             from formats.level.town import town_graphics
@@ -720,6 +750,17 @@ class MainWindow(QMainWindow):
             default = node.group
             if default == 0 and node.kind in ("SPR", "WMD", "WPP") and self.context.count() > 1:
                 default = 1
+            if node.kind == 'SPR':
+                # System screens whose code reads this bank, after the
+                # area's own groups.
+                screens, first = bank_screens(self.project, node.ldar, (node.code >> 8) & 15)
+                system = self.project.ldars.get(system_table(node.ldar), [])
+                for screen in screens:
+                    code = next((Path(a.source.path).name for a in system[screen].assets
+                                 if a.kind == 'INS' and a.source), 'code')
+                    self.context.addItem(f'VRAM: Base + system group {screen:02d} ({code})')
+                if first is not None:
+                    default = len(self.project.ldars[node.ldar]) + first
             self.context.setCurrentIndex(default)
         self.context.blockSignals(False)
         if isinstance(node, Asset):

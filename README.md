@@ -172,13 +172,17 @@ out for each sprite, and the **Page from** column says how:
 | object code | an animation that such an object's code goes on to play |
 | section NN | an object placed in another section; the sprite is drawn with that section's textures |
 | item table | the item descriptors in the executable |
+| routine | the routine of an object nothing places (a splash, a burst), run on a made-up object |
 | borrowed | the nearest sprite whose page is known and whose palette is in the same column of VRAM |
 | guess | nothing in the area shows the bank: the base that leaves the fewest empty pixels |
 
-A borrowed or guessed page can be wrong. Sprites the game only shows on a
-menu or in an event are drawn from pictures that are not loaded with an
-area, and show whatever the area has on those pages instead. The value can be
-set by hand.
+A borrowed or guessed page can be wrong, and so can one from a routine
+run with a type it was never given. The value can be set by hand.
+
+A bank that only a system screen reads, such as the menu's, is drawn from
+that screen's pictures: the VRAM list then ends with the system load groups
+whose code reads the bank, and the bank opens on the one that loads the most
+pictures.
 
 **Sprite bounds** draws a box around every sprite and **Part bounds**
 outlines the parts it is assembled from, one colour per part. Both apply to

@@ -657,6 +657,81 @@ def sprite_pages(project, path, index):
     return cache[path, index]
 
 
+def sprite_routines(project, path, index):
+    """Pages and palettes of the sprites that objects nobody places would
+    show: {slot: {frame: (page base, CLUT word or None)}}.
+
+    Splashes, bursts, sparks and the like are created by other objects
+    while the game runs, so no placement list names them, but each is an
+    entry of the same tables of object routines. Every routine of the load
+    group's code is run on a made-up object, for each type number and
+    variant it might be given, and what it sets the object to show is
+    noted. A type or variant the routine was never meant for can read past
+    its tables, so where two answers differ the lower numbers win, and the
+    result ranks below anything a placed object says."""
+    cache = project.__dict__.setdefault('sprite_routine_cache', {})
+    if (path, index) in cache:
+        return cache[path, index]
+    from formats.level.apd import Placement
+    resources = loaded_resources(project, path, index)
+    resolver = InitialPoseResolver(project, area_of(path), max(0, index - 1), resources)
+    found = {}
+    if resolver.available:
+        counts = {}
+        for (kind, slot), asset in resources.items():
+            if kind == 'SPR':
+                try:
+                    counts[slot] = len(sprite_frames(project.asset_data(asset)))
+                except FormatError:
+                    pass
+        resolver.stop_at_animation = False
+
+        def shown(layer, kind, variant, choice):
+            raw = bytearray(16)
+            raw[1], raw[2], raw[3], raw[4] = layer, kind, choice, variant
+            try:
+                visual = resolver.attempt(Placement(0, bytes(raw), (0, 0, 0)), False)
+            except Exception:
+                return None
+            if 'sprite' not in visual or visual['sprite'] not in counts:
+                return None
+            frames = [frame for frame, _ in visual['frames']]
+            if not frames or max(frames) >= counts[visual['sprite']] or visual['tpage'] >= 32:
+                return None
+            return visual['sprite'], frames, visual['tpage'], visual.get('clut')
+
+        claims = {}
+        for layer, table in resolver.build.tables.items():
+            if layer == 8:
+                continue
+            for kind in range(0x80):
+                routine = resolver.read_word(table + kind * 4)
+                if not any(start <= routine < end for start, end in resolver.code):
+                    continue
+                misses = 0
+                for variant in range(16):
+                    first = shown(layer, kind, variant, 0)
+                    if first is None:
+                        misses += 1
+                        if misses >= 4:
+                            break
+                        continue
+                    misses = 0
+                    for choice in range(4):
+                        result = first if choice == 0 else shown(layer, kind, variant, choice)
+                        if result is None:
+                            break
+                        slot, frames, page, clut = result
+                        for frame in frames:
+                            rank = (variant, choice)
+                            if frame not in claims.setdefault(slot, {}) or rank < claims[slot][frame][0]:
+                                claims[slot][frame] = (rank, page, None if clut is None else clut & 0x7FFF)
+        found = {slot: {frame: (page, clut) for frame, (_, page, clut) in frames.items()}
+                 for slot, frames in claims.items()}
+    cache[path, index] = found
+    return found
+
+
 def sprite_coded(project, path, index):
     """Frames whose page comes from what an object's code goes on to show,
     not from what it starts with: {slot: {frame}}."""

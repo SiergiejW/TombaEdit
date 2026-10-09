@@ -28,6 +28,68 @@ def area_number(path):
     return table_name(path)[1]
 
 
+def bank_readers(project, path, slot):
+    """What reads the SPR bank in a slot by its fixed place in the table of
+    loaded banks (1F8002C8 on): ([system load groups whose code does],
+    whether the area's own code or the executable does). A bank only a
+    system screen reads, such as the menu's, is drawn from that screen's
+    pictures and not from an area's."""
+    cache = project.__dict__.setdefault('bank_reader_cache', {})
+    key = (table_name(path)[0], area_number(path), slot)
+    if key in cache:
+        return cache[key]
+    offset = 0x2C8 + slot * 4
+
+    def reads(code):
+        words = np.frombuffer(bytes(code[:len(code) // 4 * 4]), '<u4')
+        for i in np.flatnonzero(((words >> 26) == 35) & ((words & 0xFFFF) == offset)):
+            base = int(words[i]) >> 21 & 31
+            # the base register was loaded with the scratchpad's address
+            if any(int(words[j]) >> 16 == (0x3C00 | base) and int(words[j]) & 0xFFFF == 0x1F80
+                   for j in range(max(0, int(i) - 6), int(i))):
+                return True
+        return False
+
+    def group_reads(group):
+        for asset in group.assets:
+            if asset.kind == 'INS':
+                try:
+                    if reads(project.asset_data(asset)):
+                        return True
+                except FormatError:
+                    pass
+        return False
+
+    system = project.ldars.get(system_table(path), [])
+    screens = [group.index for group in system if group_reads(group)]
+    own = any(group_reads(group) for group in project.ldars.get(path, []))
+    try:
+        entry = project.catalogs[table_name(path)[0]].executable if hasattr(project, 'catalogs') else None
+        own = own or (entry is not None and reads(project.disc.read(entry)[0x800:]))
+    except (KeyError, FormatError, OSError):
+        pass
+    cache[key] = (screens, own)
+    return cache[key]
+
+
+def bank_screens(project, path, slot):
+    """(system load groups to offer as VRAM for the bank in a slot, the
+    position in that list of the one to open with, or None). Screens are
+    offered while they are few: a slot that dozens of event scenes read is
+    an ordinary area bank. The bank opens on a screen when nothing of the
+    area reads it, and on the screen that loads the most pictures."""
+    screens, own = bank_readers(project, path, slot)
+    if len(screens) > 12:
+        return [], None
+    if not screens or own or len(screens) > 4:
+        return screens, None
+    system = project.ldars[system_table(path)]
+
+    def loaded(index):
+        return sum(a.rect[2] * a.rect[3] for a in system[index].assets if a.rect)
+    return screens, screens.index(max(screens, key=loaded))
+
+
 def system_table(path):
     """Path of the system load table that goes with an area's."""
     language = table_name(path)[0]
@@ -226,10 +288,16 @@ class Project:
             raise FormatError(f"{asset.source.path}: LDAR range ends at {end:X}, payload is {len(data):X}")
         return data[asset.offset:end]
 
-    def vram(self, path, group_index):
+    def vram(self, path, group_index, over=None):
+        """VRAM as an area's load group leaves it. `over` is a group of the
+        system load table to lay on top, as when a menu is opened."""
         vram = np.zeros((512, 1024), dtype=np.uint16)
         groups = self.ldars[path]
         wanted = [(groups[0], 0)] if group_index == 0 else [(groups[0], 0), (groups[group_index], 0)]
+        if over is not None:
+            # A system screen opened inside an area: its pictures replace
+            # the section's and the area's own stay.
+            wanted.append((self.ldars[system_table(path)][over], 0))
         # The first group of the system table is loaded at boot and its
         # lower half of VRAM is never replaced: item and effect sprites on
         # pages 20 and 21, with their palettes.
