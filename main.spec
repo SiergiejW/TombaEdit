@@ -2,6 +2,7 @@
 """Build the TombaEdit desktop executable with its viewer assets."""
 import os
 import sys
+import shutil
 from pathlib import Path
 from PyInstaller.utils.hooks import collect_dynamic_libs
 
@@ -21,7 +22,7 @@ app_icon = ROOT / 'icons' / 'tomba' / ('tomba1.png' if sys.platform == 'darwin' 
 a = Analysis(
     ['main.py'],
     pathex=[str(ROOT)],
-    binaries=collect_dynamic_libs('unicorn'),
+    binaries=collect_dynamic_libs('unicorn') + ([(shutil.which('ffmpeg'), '.')] if shutil.which('ffmpeg') else []),
     datas=icon_files + text_files + multimedia + label_files,
     hiddenimports=['PyQt6.QtMultimedia', 'formats.movie.movie_panel',
                    'formats.audio.audio_viewer', 'formats.images.clut_viewer',

@@ -12,6 +12,7 @@ bank, texture page and list of animations from a table in the area overlay;
 `SetObjAnim` then picks the animation and the frame it starts on. These are
 the people and props of a scene that no placement list holds.
 """
+import struct
 from dataclasses import dataclass
 from pathlib import Path
 from disc.reader import FormatError
@@ -42,10 +43,21 @@ class ScriptObject:
     position: tuple
     animation: int = 0  # from the first SetObjAnim for the slot, if the script has one
     frame: int = 0
+    # Per axis, True where the script places the object relative to Tomba:
+    # the position is then an offset from where he stands.
+    from_player: tuple = (False, False, False)
 
     @property
     def layer(self):
         return CLASSES[self.kind][0]
+
+    @property
+    def extra(self):
+        """Object fields CreateObject and the first SetObjAnim set beyond the
+        record's: the shade +6B (80, or 1 for class 4) and the animation
+        number and first frame at +74 and +76."""
+        return ((0x6B, bytes((1 if self.kind == 4 else 0x80,))),
+                (0x74, struct.pack('<hh', self.animation, self.frame)))
 
     @property
     def raw(self):
@@ -58,6 +70,10 @@ class ScriptObject:
 
 def section_scripts(project, area, section):
     """[(file name, Wss)] for the scripts a section can run."""
+    from game.builds import executable
+    from formats.script.wss import game_ops
+    found = executable(project)
+    ops = game_ops(found.build.script_tail if found else None)
     out = []
     files = {Path(entry.path).name.upper(): entry for entry in project.disc.files
              if entry.path.upper().endswith('.WSS')}
@@ -66,7 +82,7 @@ def section_scripts(project, area, section):
         if entry is None:
             continue
         try:
-            out.append((Path(entry.path).name, Wss(project.disc.read(entry))))
+            out.append((Path(entry.path).name, Wss(project.disc.read(entry), ops)))
         except FormatError:
             continue
     return out
@@ -80,25 +96,91 @@ def numbers(operands):
         return None
 
 
+PLAYER = 'player'
+
+
 def script_objects(name, script):
-    """The objects a script creates with fixed arguments, in the order of
-    its code."""
-    found, last = [], {}
+    """The objects a script creates, in the order of its code.
+
+    Arguments are numbers or variables. A variable is followed through the
+    straight run of code before the call: set from a number, from the
+    position GetPlayerPosition or GetObjPosition left in r0 to r2, and moved
+    by ADD and SUB. Knowledge is dropped wherever a jump can land. A
+    position taken from a script object made earlier is that object's; one
+    taken from Tomba is kept as an offset from him (`from_player`). Entries
+    do not run in the order of the file, so the objects a script makes with
+    fixed arguments are known before the rest is read; an object that moves
+    before another is placed by it is taken where it was made."""
+    found, last, made = [], {}, {}
     code = script.instructions
     for index, instruction in enumerate(code[:-1]):
-        if instruction.name != 'ARGS':
+        values = numbers(instruction.operands) if instruction.name == 'ARGS' else None
+        if values and len(values) >= 6 and code[index + 1].name == 'CreateObject':
+            made.setdefault(values[0], tuple((None, v) for v in values[3:6]))
+    landings = {i.target for i in code if i.target >= 0} | set(script.entries.values())
+    known = {}                  # variable -> (base, value); base None or PLAYER
+
+    def value(text):
+        try:
+            return None, int(text)
+        except ValueError:
+            return known.get(text)
+
+    for index, instruction in enumerate(code):
+        if instruction.offset in landings:
+            known.clear()
+        op, operands = instruction.name, instruction.operands
+        if op in ('MOV', 'ADD', 'SUB') and len(operands) == 2:
+            source = value(operands[1])
+            if op == 'MOV':
+                if source is None:
+                    known.pop(operands[0], None)
+                else:
+                    known[operands[0]] = source
+            else:
+                target = known.get(operands[0])
+                if target is None or source is None or source[0] is not None:
+                    known.pop(operands[0], None)
+                else:
+                    known[operands[0]] = (target[0], target[1] + (source[1] if op == 'ADD' else -source[1]))
             continue
-        call, values = code[index + 1], numbers(instruction.operands)
-        if values is None or call.offset != instruction.offset + instruction.size:
+        if op == 'GetPlayerPosition':
+            for axis in range(3):
+                known[f'r{axis}'] = (PLAYER, 0)
             continue
-        if call.name == 'CreateObject' and len(values) >= 6 and values[1] in CLASSES:
-            slot, kind, subtype, x, y, z = values[:6]
-            if all(-32768 <= v <= 32767 for v in (x, y, z)):
-                created = ScriptObject(name, instruction.offset, slot, kind, subtype, (x, y, z))
-                found.append(created)
-                last[slot] = [created, False]
-        elif call.name == 'SetObjAnim' and len(values) >= 3 and values[0] in last and not last[values[0]][1]:
-            # The first animation given to an object after it is made.
-            last[values[0]][0].animation, last[values[0]][0].frame = values[1], values[2]
-            last[values[0]][1] = True
+        if op not in ('ARGS', 'MOV', 'ADD', 'SUB') and operands:
+            # Anything else that names variables may change them.
+            for text in operands:
+                known.pop(text, None) if text in ('r0', 'r1', 'r2') else None
+        if op != 'ARGS' or index + 1 >= len(code):
+            continue
+        call = code[index + 1]
+        if call.offset != instruction.offset + instruction.size:
+            continue
+        values = [value(text) for text in operands]
+        if call.name == 'GetObjPosition':
+            slot = values[0] if values else None
+            spot = made.get(slot[1]) if slot and slot[0] is None else None
+            for axis in range(3):
+                if spot is None:
+                    known.pop(f'r{axis}', None)
+                else:
+                    known[f'r{axis}'] = spot[axis]
+        elif call.name == 'CreateObject' and len(values) >= 6 and None not in values[:6]:
+            (_, slot), (_, kind), (_, subtype) = values[:3]
+            if values[0][0] is None and values[1][0] is None and values[2][0] is None and kind in CLASSES:
+                axes = values[3:6]
+                position = tuple(v for _, v in axes)
+                if all(-32768 <= v <= 32767 for v in position):
+                    created = ScriptObject(name, instruction.offset, slot, kind, subtype, position,
+                                           from_player=tuple(base == PLAYER for base, _ in axes))
+                    found.append(created)
+                    last[slot] = [created, False]
+        elif call.name == 'SetObjAnim' and len(values) >= 3 and None not in values[:3] \
+                and all(base is None for base, _ in values[:3]):
+            slot = values[0][1]
+            if slot in last and not last[slot][1]:
+                # The first animation given to an object after it is made.
+                last[slot][0].animation, last[slot][0].frame = values[1][1], values[2][1]
+                last[slot][1] = True
     return found

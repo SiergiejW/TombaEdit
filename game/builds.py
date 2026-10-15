@@ -53,6 +53,13 @@ class Build:
     # pointers to the descriptors, and the palettes of the items that take
     # one by variant.
     items: tuple | None = None
+    # Names of the script's game instructions from A6 on, where they differ
+    # from the released game's (formats.script.wss.game_ops).
+    script_tail: tuple | None = None
+    # Section controllers: per area, per section, a list of four-byte
+    # records (type, variant, -, start now) ending in FF, and the table of
+    # their routines by type (routine 8004BFE4 of the European build).
+    controllers: tuple | None = None
 
     @property
     def event(self):
@@ -74,7 +81,7 @@ BUILDS = {
         slot_tables=0x8007F0C8, common=0x8007B294, pictures=0x8007EBEC, entrances=0x8007BF78,
         origins=0x8007E9F8, wall_origins=0x8007E9E8, alternate_origin=0x8007E9E4,
         plane_limits=(0x8007EAF4, 0, 1), pages=0x8007D6E4,
-        items=(0x8007E61C, 0x8007E6E4, 0x8007E86C)),
+        items=(0x8007E61C, 0x8007E6E4, 0x8007E86C), controllers=(0x8007F6A4, 0x8007F6F4)),
     '3810c960ec624c19f1fb047df506ee64b65aa77a': Build(
         name='US demo', overlay=0x800DDCA0, area=0x80092640, variant=(0x80095520, 0x80092FA3),
         tables={2: 0x800705EC, 3: 0x800730B0, 4: 0x80073D00, 5: 0x800752A0, 7: 0x80073F74, 8: 0x8007308C},
@@ -86,7 +93,7 @@ BUILDS = {
         slot_tables=0x80075AB0, common=0x80071C94, pictures=0x800755E4, entrances=0x80072978,
         origins=0x800753F0, wall_origins=0x800753E0, alternate_origin=0x800753DC,
         plane_limits=(0x800754EC, 0, 1), pages=0x800740DC,
-        items=(0x80075014, 0x800750DC, 0x80075264)),
+        items=(0x80075014, 0x800750DC, 0x80075264), controllers=(0x8007608C, 0x800760DC)),
     '1e69d1414dcca09fe360fe69337fc8e62968fda7': Build(
         name='February 1998 preview', overlay=0x800EDAA8, area=0x800A2440, variant=(0x800A5318, 0x800A2DA3),
         tables={2: 0x800758D0, 3: 0x80079B0C, 4: 0x8007A748, 5: 0x8007BCE8, 7: 0x8007A9BC, 8: 0x80079AE8},
@@ -98,7 +105,7 @@ BUILDS = {
         slot_tables=0x8007C4F8, common=0x800786F0, pictures=0x8007C02C, entrances=0x800793D4,
         origins=0x8007BE38, wall_origins=0x8007BE28, alternate_origin=0x8007BE24,
         plane_limits=(0x8007BF34, 0, 1), pages=0x8007AB24,
-        items=(0x8007BA5C, 0x8007BB24, 0x8007BCAC)),
+        items=(0x8007BA5C, 0x8007BB24, 0x8007BCAC), controllers=(0x8007CAD4, 0x8007CB24)),
     '44360f12e7bd9449a7d46deb412d6a9499b6c94c': Build(
         name='Japanese demo', overlay=0x800E7698, area=0x8009A810, variant=None,
         tables={2: 0x8006A230, 3: 0x8006CE80, 4: 0x8006D504, 5: 0x8006E01C, 7: 0x8006D660, 8: 0x8006CE64},
@@ -109,7 +116,8 @@ BUILDS = {
         silent=(0x8001E3D8, 0x80021160, 0x80021204),
         slot_tables=0x8006E66C, common=0x8006C0E4, pictures=0x8006E348, entrances=0x8006C824,
         origins=0x8006E168, wall_origins=0x8006E158, alternate_origin=None,
-        plane_limits=(0x8006E1A8, 16, 1), pages=0x8006D75C, early=True),
+        plane_limits=(0x8006E1A8, 16, 1), pages=0x8006D75C, early=True,
+        script_tail=('MoveCamera', 'Yield'), controllers=(0x8006E864, 0x8006E8A0)),
     '72988193d496a3a9402399d04291997d57b4be45': Build(
         name='Pure Pure 09 sampler', overlay=0x800ED548, area=0x800A2248, variant=None,
         tables={2: 0x8007041C, 3: 0x800725D8, 4: 0x80072D2C, 5: 0x80073850, 7: 0x80072E78, 8: 0x800725BC},
@@ -121,7 +129,7 @@ BUILDS = {
         slot_tables=0x80073F14, common=0x80071BCC, pictures=0x80073CC4, entrances=0x80072110,
         origins=0x80073994, wall_origins=0x80073984, alternate_origin=None,
         plane_limits=(0x800739B4, 24, 2), pages=0x80072F74, early=True, picture_record=16,
-        page_record='<8xHHiI'),
+        page_record='<8xHHiI', script_tail=('Yield',), controllers=(0x8007408C, 0x800740B0)),
 }
 
 
@@ -142,7 +150,7 @@ EUROPE = Build(
     slot_tables=0x8007B908, common=0x80078790, pictures=0x80080258, entrances=0x80079474,
     origins=0x8007B460, wall_origins=0x8007B450, alternate_origin=0x8007B44C,
     plane_limits=(0x8007B55C, 0, 1), pages=0x8007A14C, picture_top=0x18,
-    items=(0x8007B084, 0x8007B14C, 0x8007B2D4))
+    items=(0x8007B084, 0x8007B14C, 0x8007B2D4), controllers=(0x8007BEE4, 0x8007BF34))
 
 
 def european(language, late, early=0):
@@ -156,7 +164,7 @@ def european(language, late, early=0):
         pictures=e.pictures + early, entrances=e.entrances + early, origins=e.origins + early,
         wall_origins=e.wall_origins + early, alternate_origin=e.alternate_origin + early,
         plane_limits=(e.plane_limits[0] + early,) + e.plane_limits[1:], pages=e.pages + early,
-        items=tuple(v + early for v in e.items))
+        items=tuple(v + early for v in e.items), controllers=tuple(v + early for v in e.controllers))
 
 
 BUILDS.update({

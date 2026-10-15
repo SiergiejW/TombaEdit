@@ -12,6 +12,7 @@ by APD layer: layers 2 to 5 share one object pool (routine 8001DFE4), layer
 layer 8 objects are models in a pool of 45 with a third (routine 8002DB4C).
 """
 import struct
+from pathlib import Path
 import numpy as np
 from game.builds import executable
 
@@ -30,6 +31,18 @@ REACH = 0x58C78
 CLASS_SCRIPTS = 0x800
 # The pointers to one object's scripts lie within this many bytes.
 SCRIPT_RUN = 0x100
+# Objects are allocated from free lists kept in scratchpad words, the same
+# in every build: (name, list pointer, count, slots given, slot size). The
+# tracer hands each list spare slots here, so that what an object or a
+# section controller spawns is made as in the game and can be read back.
+SPAWN_AT = 0x80C00000
+POOLS = (('objects', 0x1F800208, 0x1F800238, 48, 0x100), ('player', 0x1F800204, 0x1F800236, 8, 0x100),
+         ('models', 0x1F80020C, 0x1F80023A, 16, 0x100), ('controllers', 0x1F800210, 0x1F80023E, 10, 0x40),
+         ('backdrops', 0x1F800214, 0x1F80023C, 16, 0x100))
+POOL_LISTS = SPAWN_AT + 0x40000
+CONTROLLER = SPAWN_AT + 0x50000
+# Updates a section controller is given to spawn what it spawns.
+CONTROLLER_UPDATES = 90
 
 
 def runtime_area(area, section, early=False):
@@ -52,6 +65,7 @@ class InitialPoseResolver:
         found = executable(project, next((a.ldar for a in resources.values()), None))
         if found is None or area < 0:
             return
+        self.requested = (area, section)
         self.build = build = found.build
         area = runtime_area(area, section, build.early)
         self.area = area
@@ -106,6 +120,11 @@ class InitialPoseResolver:
         self.scratch = self.read(0x1F800000, 0x1000)
         self.u.hook_add(UC_HOOK_CODE, self.hook)
         self.cpu_context = self.u.context_save()
+        # What the game's own draw routines make of a traced object.
+        self.town = Path(overlay.source.path).name.upper() if overlay.source else ''
+        self.drawer = None
+        self.draw_states = {}
+        self.drawn = {}
         self.available = True
         self.reason = f'Initial poses traced from the {build.name} executable and the area overlay.'
 
@@ -199,15 +218,7 @@ class InitialPoseResolver:
             self.write(address, original)
             self.write(CAMERA_X, struct.pack('<h', max(-32768, min(32767, camera[0]))))
             self.write(CAMERA_Y, struct.pack('<h', max(-32768, min(32767, camera[1]))))
-            self.write(obj, bytes(0x200))
-            self.word(obj + 0x40, obj + 0x10)
-            self.word(obj + 0x44, obj + 0x18)
-            self.write(obj, bytes((1, 0, raw[2], raw[4])))
-            for offset, value in ((0xC, raw[3]), (0xA, raw[12]), (0xF, raw[13]), (0x1C, raw[1]), (0x1D, raw[0])):
-                self.write(obj + offset, bytes((value,)))
-            self.write(obj + 0x2E, bytes((raw[5], 0)))
-            for j, value in enumerate(placement.position):
-                self.word(obj + 0x10 + j * 4, value << 16)
+            self.spawn(obj, placement)
             self.word(obj + 0xA0, address)
             self.write(obj + 0xA4, b'\x01')
             runs = []
@@ -478,14 +489,15 @@ class InitialPoseResolver:
     def resolve(self, placement):
         if not self.available or placement.layer not in (2, 3, 4, 5, 7):
             return {}
-        key = (placement.raw, placement.position, placement.extra)
+        key = (placement.raw, placement.position, placement.extra, placement.memory)
         if key not in self.cache:
             # Most initialisers finish on their own. Some run into parts of
             # the game that are not here; for those, stopping where the
             # animation is set is enough to learn what the object shows.
             self.cache[key] = self.attempt(placement, False) or self.attempt(placement, True)
-            if (not self.cache[key] and not self.build.early and placement.layer == 5
-                    and placement.kind == 4 and placement.variant == 3 and placement.raw[3] == 1):
+            pond_fish = self.area == 0 and (placement.layer, placement.kind) == (3, 0x5A)
+            if (not self.cache[key] and not self.build.early and (pond_fish or (placement.layer == 5
+                    and placement.kind == 4 and placement.variant == 3 and placement.raw[3] == 1))):
                 # The collectible's initializer removes it unless the event
                 # byte at C114 is FF (US 80041284). Decode its conditional
                 # pose with that byte set, without changing the initial scene.
@@ -498,7 +510,7 @@ class InitialPoseResolver:
                 finally:
                     self.baseline = baseline
                 if result:
-                    result['condition'] = 'Conditional collectible: the game shows it when its event flag is FF. Enable Event previews to inspect it.'
+                    result['condition'] = ('Pond fish' if pond_fish else 'Conditional collectible') + ': the game shows it when its event flag is FF. Enable Event previews to inspect it.'
                     self.cache[key] = result
             event = self.build.event
             if not self.cache[key] and event and self.area == 0 and placement.layer == 5 and placement.kind == 0x12:
@@ -515,6 +527,52 @@ class InitialPoseResolver:
                     result['condition'] = 'Event effect: only visible when event bytes BCA8/BCA9 select state 7E.'
                     self.cache[key] = result
         return self.cache[key]
+
+    def spawn(self, obj, placement):
+        """Fill a cleared object from a placement record as the record
+        spawner does (routine 8004CB00 of the European build): the record's
+        bytes go to their fields, and +6B gets the record's room number from
+        byte 15, less one for a section's own list (an area-wide record or a
+        script sets it with `extra`). Layer 3 scenery of types 18, 19, 24
+        and 33 also takes its box from byte 14."""
+        raw = placement.raw
+        self.write(obj, bytes(0x200))
+        self.word(obj + 0x40, obj + 0x10)
+        self.word(obj + 0x44, obj + 0x18)
+        self.write(obj, bytes((1, 0, raw[2], raw[4])))
+        for offset, value in ((0xC, raw[3]), (0xA, raw[12]), (0xF, raw[13]), (0x1C, raw[1]), (0x1D, raw[0]),
+                              (0x6B, ((raw[15] >> 2) - 1) & 0xFF)):
+            self.write(obj + offset, bytes((value,)))
+        self.write(obj + 0x2E, bytes((raw[5], 0)))
+        if raw[1] & 0x7F == 3 and raw[2] in (0x18, 0x19, 0x24, 0x33):
+            self.write(obj + 0x6C, struct.pack('<h', raw[14]))
+        for j, value in enumerate(placement.position):
+            self.word(obj + 0x10 + j * 4, value << 16)
+
+    def draw(self, placement, frame=None):
+        """The primitives the game's draw routine makes of a traced sprite
+        object (formats.level.draw), relative to its position, showing SPR
+        frame `frame` or the one it starts on. None when the object was not
+        traced to a sprite or the routine draws nothing."""
+        key = (placement.raw, placement.position, placement.extra, placement.memory)
+        state = self.draw_states.get(key)
+        if state is None:
+            return None
+        if (key, frame) not in self.drawn:
+            if self.drawer is None:
+                from formats.level.draw import DrawCapture, TOWNS
+                self.drawer = DrawCapture(self.exe, self.base, self.read, TOWNS.get(self.town, 0))
+                self.drawer.load([(0x80000000, self.baseline), (SPR_MEMORY, WMD_MEMORY - SPR_MEMORY)])
+            obj, nearby, scratch = state
+            prims = None
+            if self.drawer.available:
+                try:
+                    prims = self.drawer.capture(OBJECT, obj, scratch, frame_entry=frame,
+                                                memory=[(OBJECT + 0x4000, nearby)])
+                except Exception:
+                    prims = None
+            self.drawn[key, frame] = prims or None
+        return self.drawn[key, frame]
 
     def handler_address(self, placement):
         """The actual dispatch entry, for inspection of a placed object."""
@@ -538,19 +596,14 @@ class InitialPoseResolver:
             parent = parent.parent
         self.write(0x80000000, self.baseline)
         self.write(0x1F800000, self.scratch)
-        self.write(obj, bytes(0x200))
-        self.word(obj + 0x40, obj + 0x10)
-        self.word(obj + 0x44, obj + 0x18)
-        self.write(obj, bytes((1, 0, raw[2], raw[4])))
-        for offset, value in ((0xC, raw[3]), (0xA, raw[12]), (0xF, raw[13]),
-                              (0x1C, raw[1]), (0x1D, raw[0])):
-            self.write(obj + offset, bytes((value,)))
-        self.write(obj + 0x2E, bytes((raw[5], 0)))
+        self.prepare_pools()
+        for address, data in placement.memory:
+            self.write(address, data)
+        self.spawn(obj, placement)
         self.write(obj + 0x74, struct.pack('<3h', 4096, 4096, 4096))
         if placement.model in self.model_spans:
             self.word(obj + 0xA0, self.model_spans[placement.model][0])
-        for j, value in enumerate(placement.position):
-            self.word(obj + 0x10 + j * 4, value << 16)
+            self.write(obj + 0xA4, b'\x01')
         for offset, value in placement.extra:
             self.write(obj + offset, value)
         # APD modes 2/3 link the child at +90 to its parent's live object.
@@ -593,6 +646,10 @@ class InitialPoseResolver:
                         frames = self.animation(anim)
                         state = self.read(obj, 0x30)
                         self.object_states[(raw, placement.position)] = self.read(obj, 0x200)
+                        if placement.layer != 7:
+                            self.draw_states[(raw, placement.position, placement.extra, placement.memory)] = (
+                                self.read(obj, 0x200), self.read(OBJECT + 0x4000, 0x400 * max(1, len(parents))),
+                                self.read(0x1F800000, 0x400))
                         if parents:
                             result['position'] = tuple(v / 65536 for v in struct.unpack('<3i', self.read(obj + 0x10, 12)))
                         # Draw routine 800487B0: bit 0 of +2E draws the parts as
@@ -630,7 +687,100 @@ class InitialPoseResolver:
                         break
         except UcError:
             pass
+        if result:
+            children = self.spawned()
+            if children:
+                result['spawned'] = children
         return result
+
+    def prepare_pools(self):
+        """Give every object free list its spare, cleared slots."""
+        for k, (name, items, count, slots, size) in enumerate(POOLS):
+            start = SPAWN_AT + k * 0x8000
+            self.write(start, bytes(slots * size))
+            listed = POOL_LISTS + k * 0x100
+            self.write(listed, struct.pack(f'<{slots}I', *(start + i * size for i in range(slots))))
+            self.word(items, listed)
+            self.write(count, struct.pack('<h', slots))
+
+    def spawned(self):
+        """[(pool name, address, bytes)] of the spare slots now in use."""
+        out = []
+        for k, (name, items, count, slots, size) in enumerate(POOLS):
+            start = SPAWN_AT + k * 0x8000
+            for i in range(slots):
+                state = self.read(start + i * size, size)
+                if state[0]:
+                    out.append((name, start + i * size, state))
+        return out
+
+    def child(self, pool, address, state, parent=None, origin=''):
+        """A Placement for an object found in a spare slot: its fields as the
+        spawner left them, with the spawning object's memory copied to where
+        its pointers point (`parent`: (address, bytes))."""
+        from formats.level.apd import Placement
+        layer = state[0x1C] & 0x7F
+        position = tuple(struct.unpack_from('<h', state, at)[0] for at in (0x12, 0x16, 0x1A))
+        raw = bytearray(16)
+        raw[0], raw[1], raw[2], raw[3], raw[4], raw[5] = state[0x1D], state[0x1C], state[2], state[0xC], state[3], state[0x2E]
+        struct.pack_into('<3h', raw, 6, *position)
+        raw[12], raw[13] = state[0xA], state[0xF]
+        body = bytearray(state[:0x200].ljust(0x200, b'\0'))
+        memory = ()
+        if parent is not None:
+            # Pointers into the spawner are pointed at its copy.
+            at, data = parent
+            copy = OBJECT + 0x4000
+            for offset in range(0, len(body) - 3, 4):
+                pointer = struct.unpack_from('<I', body, offset)[0]
+                if at <= pointer < at + len(data):
+                    struct.pack_into('<I', body, offset, copy + pointer - at)
+            memory = ((copy, bytes(data)),)
+        # The coordinate pointers are set again for the tracer's object.
+        extra = ((0, bytes(body[:0x40])), (0x48, bytes(body[0x48:0xD4])))
+        return Placement(-1, bytes(raw), position, extra=extra, memory=memory, origin=origin)
+
+    def controller_spawns(self):
+        """[(type, variant, [(pool, address, bytes)])]: what each section
+        controller spawns. The controllers are listed by area and section in
+        the executable (build.controllers); each is made in a spare slot,
+        started if its record says so, and updated CONTROLLER_UPDATES times."""
+        if not self.available or not self.build.controllers:
+            return []
+        lists, routines = self.build.controllers
+        area, section = self.requested
+        out = []
+        try:
+            table = self.exe_word(lists + area * 4)
+            if not self.in_exe(table + section * 4, 4):
+                return []
+            at = self.exe_word(table + section * 4)
+            records = []
+            while self.in_exe(at, 4) and self.exe[at - self.base + 0x800] != 0xFF and len(records) < 32:
+                records.append(struct.unpack_from('<4B', self.exe, at - self.base + 0x800))
+                at += 4
+        except struct.error:
+            return []
+        from unicorn import UcError
+        for kind, variant, _, start in records:
+            pc = self.exe_word(routines + kind * 4) if self.in_exe(routines + kind * 4, 4) else None
+            if pc is None:
+                continue
+            self.write(0x80000000, self.baseline)
+            self.write(0x1F800000, self.scratch)
+            self.prepare_pools()
+            self.write(CONTROLLER, bytes(0x40))
+            self.write(CONTROLLER, bytes((1, 0, kind, variant)))
+            try:
+                for _ in range(CONTROLLER_UPDATES + (1 if start else 0)):
+                    self.stop_at_animation = False
+                    self.run_handler(pc, CONTROLLER, 20000)
+                    if not self.read(CONTROLLER, 1)[0]:
+                        break
+            except UcError:
+                pass
+            out.append((kind, variant, self.spawned()))
+        return out
 
 
 def item_sprites(project, table=None, overlay=None, counts=None):

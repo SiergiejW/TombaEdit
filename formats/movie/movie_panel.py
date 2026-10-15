@@ -202,8 +202,14 @@ class MoviePanel(QWidget):
 
     def save_audio(self):
         if not self.movie or not self.movie.has_audio:return
-        path,_=QFileDialog.getSaveFileName(self,'Save soundtrack',Path(self.movie.name).stem+'.wav','Wave audio (*.wav)')
-        if path:self.export_job(lambda:Path(path).write_bytes(self.movie.wav()))
+        path, selected = QFileDialog.getSaveFileName(self, 'Export sound', Path(self.movie.name).stem + '.wav',
+                                                      'WAV audio (*.wav);;OGG Vorbis audio (*.ogg)')
+        if path:
+            from formats.audio.audio_export import encode_audio
+            suffix = '.ogg' if '*.ogg' in selected else '.wav'
+            destination = Path(path).with_suffix(suffix)
+            movie = self.movie
+            self.export_job(lambda: destination.write_bytes(encode_audio(movie.wav(), suffix)))
 
     def save_str(self):
         if not self.movie:return

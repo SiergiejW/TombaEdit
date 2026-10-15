@@ -63,6 +63,7 @@ class SpriteView(QWidget):
         self.label_set = None           # the names people give frames
         self.save_labels = None
         self.guess = default
+        self.unavailable = set()
         self.export_name = 'sprites'    # prefix of default file names, set by the window
         self.cache = {}
         self.clut_overrides = {}  # (sprite, part) -> palette address; preview only
@@ -115,7 +116,7 @@ class SpriteView(QWidget):
         self.page_base.setVisible(renderer is None)
         bar.addWidget(self.page_label)
         bar.addWidget(self.page_base)
-        self.spacing = SpacingControls()
+        self.spacing = SpacingControls(margin=1)
         self.spacing.changed.connect(self.refresh)
         bar.addWidget(self.spacing)
         bar.addStretch()
@@ -169,6 +170,7 @@ class SpriteView(QWidget):
         splitter.addWidget(left)
         right = QSplitter(Qt.Orientation.Vertical)
         self.image = ImageView()
+        self.image.zoom.currentIndexChanged.connect(self.zoom_mode_changed)
         self.image.zoom.setCurrentIndex(0)
         right.addWidget(self.image)
         pieces = QWidget()
@@ -295,6 +297,8 @@ class SpriteView(QWidget):
             return 'picture bank'
         if self.page_base.value() >= 0:
             return 'set by hand'
+        if index in self.unavailable:
+            return 'not initialized by this screen'
         if index in self.origins:
             return self.origins[index]
         return 'object' if index in self.pages else 'borrowed' if self.known else 'guess'
@@ -337,6 +341,8 @@ class SpriteView(QWidget):
         if index not in self.cache:
             try:
                 overrides = {part: clut for (sprite, part), clut in self.clut_overrides.items() if sprite == index}
+                if index in self.unavailable and self.page_base.value() < 0 and not overrides:
+                    return Image.new('RGBA', (1, 1))
                 base = None if self.renderer else self.base_for(index)
                 # A frame that borrows its page is drawn with the same
                 # section's textures as the frame it borrows from, and with
@@ -428,9 +434,13 @@ class SpriteView(QWidget):
         self.whole.setChecked(False)
         self.refresh()
         frame = self.frames[row]
-        if frame and not self.renderer and any(palette_missing(self.vram, part[2]) for part in frame):
+        if row in self.unavailable and self.page_base.value() < 0:
+            self.info.setText(self.info.text() + ' | This screen does not initialize this frame. Choose another screen or set a page and CLUT manually.')
+        palettes = [self.part_clut(row, n) for n in range(len(frame))]
+        vram = self.frame_vrams.get(row, self.vram)
+        if frame and not self.renderer and any(palette_missing(vram, word) for word in palettes):
             self.info.setText(self.info.text() + (
-                ' | palette set by the game while it runs' if any(palette_runtime(part[2]) for part in frame)
+                ' | palette set by the game while it runs' if any(palette_runtime(word) for word in palettes)
                 else ' | palette row empty in this VRAM')
                               + (', shown in grey' if self.grey.isChecked() else ''))
         self.show_in_vram()
@@ -568,7 +578,10 @@ class SpriteView(QWidget):
         else:
             index = min(self.frame_index, len(self.frames)-1)
             subject = ('sprite', index)
-            image = self.frame_image(index, self.origin.isChecked())
+            fit = self.image.zoom.currentIndex() == 0
+            image = self.frame_image(index, self.origin.isChecked() and not fit)
+            if fit and (visible := image.getbbox()) is not None:
+                image = image.crop(visible)
             frame = self.frames[index]
             selected_parts = {item.row() for item in self.parts.selectedItems()}
             self.parts.blockSignals(True)
@@ -591,6 +604,13 @@ class SpriteView(QWidget):
         if self.clut_overrides:
             self.info.setText(self.info.text() + ' | Recoloured from the crosshair; PNG exports include it')
         self.image.set_image(image, subject=subject)
+
+    def zoom_mode_changed(self, index):
+        if not hasattr(self, 'parts'):
+            return
+        self.refresh()
+        if index == 0:
+            self.image.scale_image()
 
     def selected_indices(self):
         return sorted({item.row() for item in self.bank.selectedItems()})

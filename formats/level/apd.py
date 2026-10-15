@@ -14,6 +14,11 @@ class Placement:
     # Object fields set after the record's own, as ((offset, bytes), ...):
     # a script gives the objects it makes their animation this way.
     extra: tuple = ()
+    # Memory put in place before the object is made, ((address, bytes), ...):
+    # the object that spawned this one, where its pointers expect it.
+    memory: tuple = field(default=(), repr=False)
+    # What made it, for objects no record places: a description.
+    origin: str = ''
 
     @property
     def layer(self): return self.raw[1] & 127

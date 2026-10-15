@@ -192,6 +192,7 @@ AREAS = {
         (3, 0x54): 'Jar',
     },
     0: {
+        (3, 0x5A): 'Pond fish',
         (2, 0x06): 'Purple growth',
         (7, 0x00): 'Cloud',
         (7, 0x01): 'Sea',

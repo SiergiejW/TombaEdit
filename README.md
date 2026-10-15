@@ -452,6 +452,22 @@ number; they can be given one on the Glyphs tab.
 - Movie video export needs `ffmpeg` on `PATH`; frames, audio and raw streams
   do not.
 
+Audio viewers offer **Export sound...** with WAV and OGG Vorbis choices for
+samples, rendered sequences, music streams and movie soundtracks. Source OGG
+export requires ffmpeg on PATH. PyInstaller includes it when it is available
+on the build machine.
+
+SPR and WPP sheets start with 1 px spacing. Individual SPR previews in Fit
+mode fill the pane using the visible sprite, without the bank's origin padding.
+Origin padding is retained for PNG exports and fixed zoom modes.
+
+The pond fish in AREA00 section 05 are conditional event sprites. Enable
+**Event previews** in the level viewer to see their decoded poses.
+
+System menu SPR banks use the selected screen's initialization code and palette
+uploads. Frames whose setup is not decoded for that screen remain listed,
+with an explanation and manual page/CLUT controls, instead of guessed textures.
+
 ## Tests
 
 ```powershell

@@ -78,17 +78,14 @@ def bank_screens(project, path, slot):
     position in that list of the one to open with, or None). Screens are
     offered while they are few: a slot that dozens of event scenes read is
     an ordinary area bank. The bank opens on a screen when nothing of the
-    area reads it, and on the screen that loads the most pictures."""
+    area reads it, and on its first system screen."""
     screens, own = bank_readers(project, path, slot)
     if len(screens) > 12:
         return [], None
     if not screens or own or len(screens) > 4:
         return screens, None
-    system = project.ldars[system_table(path)]
-
-    def loaded(index):
-        return sum(a.rect[2] * a.rect[3] for a in system[index].assets if a.rect)
-    return screens, screens.index(max(screens, key=loaded))
+    # Later map screens can replace the primary screen's sprite artwork.
+    return screens, 0
 
 
 def system_table(path):

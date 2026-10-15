@@ -3,7 +3,7 @@ import struct
 import numpy as np
 
 
-def constant_uploads(code, base, load_image):
+def constant_uploads(code, base, load_image, screen=False):
     """Read literal LoadImage calls whose RECT and source are fully known.
 
     This deliberately excludes runtime expressions, non-palette uploads and
@@ -59,12 +59,43 @@ def constant_uploads(code, base, load_image):
         if rect is None or pointer is None or any(rect + i * 2 not in stack for i in range(4)):
             continue
         x, y, width, height = (stack[rect + i * 2] for i in range(4))
-        if width not in (16, 256) or not 0 < height <= 4 or x % 16 or x + width > 1024 or y + height > 512:
+        widths = (16, 32, 48, 256) if screen else (16, 256)
+        if width not in widths or not 0 < height <= (32 if screen else 4) or x % 16 or x + width > 1024 or y + height > 512:
             continue
         offset, size = pointer - base, width * height * 2
         if 0 <= offset <= len(code) - size:
             uploads.append((x, y, width, height, code[offset:offset + size]))
     return uploads
+
+
+def upload_sprite_pages(project, path, index, frames):
+    """Pages paired with literal part palettes by ordered texture uploads.
+
+    Boot art is followed by its palette slabs. Use this association for
+    otherwise unplaced frames, before guesses from synthetic objects.
+    """
+    from formats.archive.ldar import system_table
+    groups = project.ldars[path]
+    ordered = list(project.ldars.get(system_table(path), [])[:1])
+    ordered += [groups[i] for i in dict.fromkeys((0, index))]
+    paired = {}
+    for group in ordered:
+        page = None
+        for asset in group.assets:
+            if not asset.rect:
+                continue
+            x, y, w, h = asset.rect
+            if h >= 128 and y < 448:
+                page = x // 64 + y // 256 * 16
+            elif page is not None and y >= 448 and w == 16:
+                for row in range(y, y + h):
+                    paired[row << 6 | x >> 4] = page
+    result = {}
+    for i, parts in enumerate(frames):
+        choices = {paired.get(part[2] & 0x7FFF) for part in parts}
+        if len(choices) == 1 and None not in choices:
+            result[i] = choices.pop()
+    return result
 
 
 def apply_model_palettes(resolver, vram, models):

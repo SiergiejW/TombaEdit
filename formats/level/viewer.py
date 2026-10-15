@@ -21,7 +21,7 @@ class LevelView(ModelView):
         self.scene = None
         self.animated = []      # [entry index, step, ticks left]
         self.filter = QComboBox()
-        self.filter.addItems(['Whole level', 'Geometry', 'Models', 'Sprites', 'Backgrounds', 'Event previews', 'Unresolved'])
+        self.filter.addItems(['Whole level', 'Geometry', 'Models', 'Sprites', 'Spawned', 'Backgrounds', 'Event previews', 'Unresolved'])
         self.scope = QComboBox()
         self.scope.addItems(['This section', 'All loaded APD banks'])
         self.assets = QComboBox()
@@ -202,7 +202,7 @@ class LevelView(ModelView):
         self.apply_filter()
         self.canvas.camera_controls.stop_glide()
         self.canvas.fit(animate=False)
-        resolved = sum(e.active and e.category in ('Models', 'Sprites') for e in scene.entries)
+        resolved = sum(e.active and e.category in ('Models', 'Sprites', 'Spawned') for e in scene.entries)
         total = sum(e.active and e.placement is not None for e in scene.entries)
         summary = (f'{resolved}/{total} placed visuals resolved | {len(self.animated)} animated'
                    if not town_index else scene.entries[0].name)

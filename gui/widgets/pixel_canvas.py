@@ -89,7 +89,7 @@ class PixelCanvas(QWidget):
     def set_zoom(self, zoom, exact=False):
         """Zoom to the step nearest `zoom`, or to `zoom` itself when `exact`:
         a picture fitted to its pane is scaled to fill it, not to a step."""
-        zoom = max(MIN_ZOOM / 4, min(MAX_ZOOM, zoom)) if exact else snap_zoom(zoom)
+        zoom = max(0.000001, zoom) if exact else snap_zoom(zoom)
         if zoom == self.zoom:
             return
         self.zoom = zoom

@@ -42,7 +42,7 @@ class WppView(QWidget):
         self.bounds.setToolTip('Draw a box round every picture, one pixel outside it. Saved pictures include it while this is ticked.')
         self.bounds.toggled.connect(self.refresh)
         bar.addWidget(self.bounds)
-        self.spacing = SpacingControls()
+        self.spacing = SpacingControls(margin=1)
         self.spacing.changed.connect(self.refresh)
         bar.addWidget(self.spacing)
         bar.addStretch()

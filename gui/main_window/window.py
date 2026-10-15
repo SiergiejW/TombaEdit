@@ -155,6 +155,22 @@ def executable_header(data):
 
 
 def prepare_preview(project, node, context=None):
+    """Reuse expensive sprite context traces while browsing the same disc."""
+    if not isinstance(node, Asset) or node.kind != 'SPR':
+        return _prepare_preview(project, node, context)
+    from collections import OrderedDict
+    cache = project.__dict__.setdefault('sprite_preview_cache', OrderedDict())
+    key = (node.ldar, node.group, node.record_offset, context)
+    if key not in cache:
+        cache[key] = _prepare_preview(project, node, context)
+    cache.move_to_end(key)
+    result = cache[key]
+    while len(cache) > 8:
+        cache.popitem(last=False)
+    return result
+
+
+def _prepare_preview(project, node, context=None):
     result = {"node": node, "notes": [], "data": None}
     if isinstance(node, tuple):
         _, path, index = node
@@ -192,6 +208,18 @@ def prepare_preview(project, node, context=None):
             from formats.level.scene import sprite_pages
             from formats.sprites.wpp import parse_wpp
             frames = result["sprites"] = sprite_frames(data)
+            if screen is not None:
+                from formats.sprites.screens import screen_bank
+                slot = (node.code >> 8) & 15
+                vram, pages, cluts = screen_bank(project, node.ldar, screen, slot, frames)
+                result.update(vram=vram, sprite_pages=pages, sprite_cluts=cluts,
+                              sprite_origins={i: 'system screen code' for i in pages},
+                              sprite_names={}, sprite_vrams={}, sprite_default=next(iter(pages.values()), 1),
+                              sprite_unavailable={i for i, frame in enumerate(frames) if frame and i not in pages})
+                result['notes'].append(f'System screen {screen}: pages and palettes traced from its code. '
+                                      'Frames not initialized by this screen are listed without a guessed image. '
+                                      'Choose another screen, or set a texture page and palette manually to inspect them.')
+                return result
             from formats.level.runtime import table_pages
             slot = (node.code >> 8) & 15
             result['sprite_pages'] = sprite_pages(project, node.ldar, context).get(slot, {})
@@ -250,6 +278,11 @@ def prepare_preview(project, node, context=None):
                     origins[frame] = 'item table'
                 if word is not None:
                     result['sprite_cluts'].setdefault(frame, word)
+            from formats.level.palettes import upload_sprite_pages
+            for frame, page in upload_sprite_pages(project, node.ldar, context, frames).items():
+                if frame not in result['sprite_pages'] or (origins.get(frame) == 'item table' and frame not in result['sprite_cluts']):
+                    result['sprite_pages'][frame] = page
+                    origins[frame] = 'texture and palette uploads'
             # What is left may be shown by objects nothing places: effects
             # other objects create. Their routines are run to find out.
             if screen is None and any(frame and i not in result['sprite_pages'] for i, frame in enumerate(frames)):
@@ -395,9 +428,9 @@ def prepare_preview(project, node, context=None):
     result['regions'] = regions(kind, data, result['overlay_base'])
     if bytes(data[:4]) == b'W\x00S\x00':
         # An event script: listed as the instructions it is made of.
-        from formats.script.wss import Wss
+        from formats.script.wss import Wss, game_ops
         try:
-            result['script'] = Wss(data).listing()
+            result['script'] = Wss(data, game_ops(known.build.script_tail if known else None)).listing()
         except FormatError as exc:
             result['notes'].append(f'WSS script: {exc}')
     # WFM can also be embedded in instruction binaries and standalone GAMs.
@@ -910,6 +943,7 @@ class MainWindow(QMainWindow):
                 view = SpriteView(result['sprites'], result['vram'], result.get('sprite_pages'), renderer,
                                   result.get('sprite_default'), result.get('sprite_cluts'))
                 view.set_names(result.get('sprite_names', {}))
+                view.unavailable = result.get('sprite_unavailable', set())
                 view.set_labels(self.labels, self.persist_labels)
                 view.set_origins(result.get('sprite_origins', {}), result.get('sprite_vrams'))
                 key = self.node_key(node)

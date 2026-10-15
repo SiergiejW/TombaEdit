@@ -190,7 +190,7 @@ class AudioView(QWidget):
         bar.addWidget(self.volume)
         bar.addSpacing(12)
         self.name_button = QPushButton('Name...'); self.name_button.clicked.connect(self.rename_selection)
-        self.export_button = QPushButton('Export WAV...'); self.export_button.clicked.connect(lambda: self.render('export'))
+        self.export_button = QPushButton('Export sound...'); self.export_button.clicked.connect(lambda: self.render('export'))
         self.midi_button = QPushButton('Export MIDI...'); self.midi_button.clicked.connect(self.export_midi)
         for button in (self.name_button, self.export_button, self.midi_button):
             bar.addWidget(button)
@@ -404,16 +404,21 @@ class AudioView(QWidget):
             return
         self.stop()
         destination = None
+        suffix = '.wav'
         if purpose == 'export':
             name = file_stem(f'{self.export_name} {source.title(row)}' if not source.whole else source.title(row), 'sound')
-            destination, _ = QFileDialog.getSaveFileName(self, 'Export audio', name + '.wav', 'Wave audio (*.wav)')
+            destination, selected = QFileDialog.getSaveFileName(
+                self, 'Export sound', name + '.wav', 'WAV audio (*.wav);;OGG Vorbis audio (*.ogg)')
             if not destination:
                 return
+            suffix = '.ogg' if '*.ogg' in selected else '.wav'
+            destination = str(Path(destination).with_suffix(suffix))
         self.status.setText('Rendering...')
         rate = self.rate.value()
         self.pending = destination
         self.rendering = (self.source_table.currentRow(), -1 if source.whole else row, source.title(row))
-        self.pool.start(RenderJob(self.generation, lambda: source.play(row, rate), self.rendered))
+        from formats.audio.audio_export import encode_audio
+        self.pool.start(RenderJob(self.generation, lambda: encode_audio(source.play(row, rate), suffix), self.rendered))
 
     def rendered(self, generation, data, error):
         if generation != self.generation:

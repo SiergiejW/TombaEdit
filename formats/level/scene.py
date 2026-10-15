@@ -1,10 +1,13 @@
 """Build a read-only level scene from an area's actual LDAR load context."""
-from dataclasses import dataclass, field
+from dataclasses import dataclass, field, replace
 import struct
 import numpy as np
 from PIL import Image, ImageOps
 from formats.level.apd import parse_apd, Placement
-from formats.level.runtime import InitialPoseResolver
+from formats.level.runtime import InitialPoseResolver, OBJECT
+# At most this many spawned objects are added to a section.
+SPAWN_LIMIT = 160
+from formats.level.draw import render as render_primitives
 from formats.models.wmd import parse_wmd
 from formats.models.four import rebuild_mesh
 from psx.graphics import sprite_frames, render_sprite, texture_page
@@ -157,6 +160,12 @@ def sprite_mesh(image, parts, position, flip, offset):
     if flip:
         image = ImageOps.mirror(image)
         left = -left - image.width
+    return placed_sprite(image, left, top, position, offset)
+
+
+def placed_sprite(image, left, top, position, offset):
+    """A sprite picture whose top left corner is (left, top) from the
+    object's position, in screen pixels."""
     x, y, z = np.asarray(position) * (1, -1, -1)
     mesh = quad([(x+left,y-top,z),(x+left+image.width,y-top,z),
                  (x+left,y-top-image.height,z),(x+left+image.width,y-top-image.height,z)], image, offset=offset)
@@ -342,17 +351,22 @@ class ScriptSource:
 
 def scripted_placements(project, resolver, area, section):
     """[(source, [(Placement, ScriptObject)])] for the objects the section's
-    event scripts create. Only builds whose scripts were read are covered."""
-    if not resolver.available or resolver.build.early:
+    event scripts create."""
+    if not resolver.available:
         return []
     from formats.script.events import section_scripts, script_objects
     out = []
+    entrance = None
     for name, script in section_scripts(project, area, section):
         made = []
         for created in script_objects(name, script):
-            # Object words +74 and +76: the animation and the frame it starts on.
-            extra = ((0x74, struct.pack('<hh', created.animation, created.frame)),)
-            made.append((Placement(created.offset, created.raw, created.position, extra=extra), created))
+            position = created.position
+            if any(created.from_player):
+                # Placed next to Tomba: shown from where he enters.
+                entrance = entrance or resolver.entrance(area, section) or (0, 0, 0)
+                position = tuple(v + (entrance[axis] if created.from_player[axis] else 0)
+                                 for axis, v in enumerate(position))
+            made.append((Placement(created.offset, created.raw, position, extra=created.extra), created))
         if made:
             out.append((ScriptSource(name), made))
     return out
@@ -402,6 +416,19 @@ def build_scene(project, path, index):
                 if len(frames) == len(bank):
                     pictures[sprite_slot] = bank
 
+    drawn_pictures = {}
+
+    def drawn_picture(placement, frame):
+        """(image, left, top) of a frame as the game's draw routine
+        assembles it for this object, or None."""
+        prims = resolver.draw(placement, frame)
+        if not prims:
+            return None
+        key = tuple(prim.key() for prim in prims)
+        if key not in drawn_pictures:
+            drawn_pictures[key] = render_primitives(prims, vram)
+        return drawn_pictures[key]
+
     def sprite_image(bank, frame, visual):
         key = (bank, frame, visual.get('tpage'), visual.get('clut'))
         if key not in images:
@@ -445,14 +472,51 @@ def build_scene(project, path, index):
         notes.append(f'{sum(len(made) for _, made in scripted)} objects are created by the event script '
                      + ', '.join(source.label for source, _ in scripted)
                      + '. They are listed as event previews, at the place and with the animation the script gives them first.')
+    # Objects no list places: what the section's controllers spawn when it
+    # starts, and (below, as they are traced) what objects spawn.
+    seen_spawns = set()
+
+    def spawns(made, parent=None, origin=''):
+        found = []
+        for pool, address, state in made:
+            if pool not in ('objects', 'models', 'backdrops') or len(seen_spawns) >= SPAWN_LIMIT:
+                continue
+            child = resolver.child(pool, address, state, parent, origin)
+            key = (child.raw, child.position)
+            if key not in seen_spawns:
+                seen_spawns.add(key)
+                found.append(child)
+        return found
+
+    controlled = 0
+    for kind, variant, made in (resolver.controller_spawns() if resolver.available and index else ()):
+        children = spawns(made, origin=f'section controller {kind:02X} / {variant:02X}')
+        if children:
+            controlled += len(children)
+            batches.append((None, ScriptSource(f'Controller {kind:02X}/{variant:02X}', kind='CTRL'), children, None))
+    if controlled:
+        notes.append(f'{controlled} objects are spawned by the section\'s controllers when it starts; '
+                     'they are listed as spawned objects.')
     for slot, asset, placements, created in batches:
         for i, placement in enumerate(placements):
-            active = created is not None or slots is None or slot == slots[0] or (
-                slot == slots[1] and placement.section in (index-1, ~(index-1)))
+            active = (created is not None or bool(placement.origin) or slots is None or slot == slots[0] or (
+                slot == slots[1] and placement.section in (index-1, ~(index-1))))
             name = f'Object {placement.layer}:{placement.kind:02X} / {placement.variant:02X}'
             model_frames = []
             mesh, category, note = None, 'Unresolved', 'Visual link is unresolved; position comes from APD.'
+            if slots and slot == slots[1] != slots[0] and created is None:
+                # Records of the area-wide list carry their room number in
+                # +6B without the one the section's own list subtracts.
+                placement = replace(placement, extra=placement.extra + ((0x6B, bytes((placement.raw[15] >> 2,))),))
             visual = resolver.resolve(placement) if active else {}
+            if visual.get('spawned') and placement.origin.count('spawned by') < 2:
+                state = resolver.object_states.get((placement.raw, placement.position))
+                label = class_name(runtime, placement.layer, placement.kind) or f'{placement.layer}:{placement.kind:02X}'
+                children = spawns(visual['spawned'], (OBJECT, state) if state else None,
+                                  f'spawned by {label} at {placement.position}'
+                                  + (f', {placement.origin}' if placement.origin else ''))
+                if children:
+                    batches.append((None, ScriptSource(f'Spawned by {label}', kind='SPAWN'), children, None))
             model_ref = visual.get('model', placement.model)
             if model_ref:
                 bank, model = model_ref
@@ -487,8 +551,18 @@ def build_scene(project, path, index):
                     # the level's own objects would put it. They belong to the
                     # picture behind them and sit just in front of it.
                     where = (where[0], where[1] - 240, where[2] + 1)
+                # Most sprites are drawn here by the game's own draw routine
+                # (formats.level.draw); the rest from their SPR parts.
+                assembled = placement.layer != 7 and not visual.get('anchored')
+                drawn = 0
                 for frame, ticks in visual['frames']:
                     parts = sprites[bank][frame] if frame < len(sprites[bank]) else None
+                    picture = drawn_picture(placement, frame) if assembled and parts else None
+                    if picture is not None:
+                        image, left, top = picture
+                        frames.append((placed_sprite(image, left, top, where, placement.offset), ticks))
+                        drawn += 1
+                        continue
                     image = sprite_image(bank, frame, visual) if parts else None
                     if image is not None:
                         frames_first = frames_first or (parts, image)
@@ -500,6 +574,8 @@ def build_scene(project, path, index):
                             f'0x{visual.get("tpage", 0):X}. '
                             + (f'{len(frames)} animation steps, {sum(t for _, t in frames)} ticks per pass.'
                                if len(frames) > 1 else 'Single-frame pose.'))
+                    if drawn:
+                        note += ' Assembled by the game\'s own draw routine.'
                     if bank in pictures:
                         note += ' Pixels decoded from the matching WPP animation bank.'
                     if 'position' in visual:
@@ -563,13 +639,20 @@ def build_scene(project, path, index):
                     note = f'Fixed picture of {len(pieces)} rectangles, {image.width} x {image.height}, drawn behind the section.'
             if mesh is None:
                 mesh = marker(placement.position, placement.offset, class_color(placement))
+            if placement.origin:
+                name = f'Spawned {placement.layer}:{placement.kind:02X} / {placement.variant:02X}'
+                category = 'Spawned' if category in ('Sprites', 'Models', 'Unresolved') else category
+                note = f'Not placed by a list: {placement.origin}. ' + note
             if created is not None:
                 made = created[i]
                 name = f'Script object {made.slot} | class {made.kind} / {made.subtype:02X}'
                 category = 'Event previews'
+                where = ', '.join(f'Tomba {v:+d}' if made.from_player[axis] else str(v)
+                                  for axis, v in enumerate(made.position))
                 note = (f'Created by {made.script} at {made.offset:04X}: CreateObject({made.slot}, {made.kind}, '
-                        f'{made.subtype}, {made.position[0]}, {made.position[1]}, {made.position[2]}), then '
-                        f'animation {made.animation} from frame {made.frame}. ' + note)
+                        f'{made.subtype}, {where}), then animation {made.animation} from frame {made.frame}. '
+                        + ('Placed next to Tomba; shown from where he enters the section. ' if any(made.from_player) else '')
+                        + note)
             entry = SceneEntry(f'{name} | {asset.label} #{i:03d}' if created is not None
                                else f'{name} | {asset.code:04X} #{i:03d}', category, mesh,
                                asset, placement, active, note, frames)
@@ -872,21 +955,36 @@ def lend_palettes(project, path, index, frames, vram, cluts=None, data=None):
     in the base group is shared and each section loads the palettes for
     what it shows of it, then the sections of any area that carries the
     same bank (`data`)."""
-    from psx.graphics import palette_missing
+    from psx.graphics import palette_missing, palette_runtime
     wanted = {part[2] & 0x7FFF for frame in frames for part in frame} | set((cluts or {}).values())
-    missing = sorted(word for word in wanted if palette_missing(vram, word))
+    missing = sorted(word for word in wanted if not palette_runtime(word) and palette_missing(vram, word))
     lent = []
     if missing:
         vram = vram.copy()
-        donors = [path] + [other for other in (same_banks(project, data) if data is not None else []) if other != path]
-        for word in missing:
-            x, y = (word & 63) * 16, (word >> 6) & 511
+        vrams = {}
+        # Search this area's sections first. Only build the cross-area bank
+        # index when a palette is still missing after that search.
+        remaining = set(missing)
+        for donors in ([path], None):
+            if not remaining:
+                break
+            if donors is None:
+                donors = [other for other in (same_banks(project, data) if data is not None else []) if other != path]
             for donor in donors:
-                group = next((g.index for g in project.ldars[donor][1:] if g.assets
-                              and (donor, g.index) != (path, index)
-                              and not palette_missing(project.vram(donor, g.index), word)), None)
-                if group is not None:
-                    vram[y, x:x + 16] = project.vram(donor, group)[y, x:x + 16]
-                    lent.append((word, donor, group))
+                for group in project.ldars[donor][1:]:
+                    if not group.assets or (donor, group.index) == (path, index):
+                        continue
+                    donor_vram = vrams.setdefault((donor, group.index), None)
+                    if donor_vram is None:
+                        donor_vram = vrams[donor, group.index] = project.vram(donor, group.index)
+                    for word in list(remaining):
+                        if not palette_missing(donor_vram, word):
+                            x, y = (word & 63) * 16, (word >> 6) & 511
+                            vram[y, x:x + 16] = donor_vram[y, x:x + 16]
+                            lent.append((word, donor, group.index))
+                            remaining.remove(word)
+                    if not remaining:
+                        break
+                if not remaining:
                     break
     return vram, lent

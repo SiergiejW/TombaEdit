@@ -650,6 +650,32 @@ plane limits in place rather than behind per-area pointers, one byte a
 section and sixteen an area in the Japanese demo, one 16-bit word a section
 and twelve an area in the sampler.
 
+## Sprite preview and audio export validation
+
+The two unplaced AREA00 SPR 34FF frames 152/153 were being assigned page 21
+by an item descriptor. Their own palettes are in the slab following the
+boot texture upload on page 20. Ordered texture/palette associations now take
+precedence over item-table guesses without a palette override. Placed objects
+retain their runtime page and palette assignments.
+
+SPR 39FF is used by system menu code. Choosing the load group with the most
+pixels selected the map screen and borrowing area palettes colored unrelated
+texels. Its default is now the first system reader. Literal menu LoadImage
+uploads and bounded initializer traces supply verified per-frame pages and
+CLUTs. This is partial screen setup coverage: frames not decoded in the selected
+screen are explicitly unavailable in Auto mode. Manual page and palette
+selection remains available. It does not emulate the complete menu loop.
+
+AREA00 class 3:5A checks the same event byte as the conditional collectible
+(US retail 8009C114). Its handler at 8011AB40 assigns SPR slot 3, page base 8
+and frames 227 through 231 only when that byte is FF. Seven placements in
+Ol' Pond now have conditional fish sprite poses under Event previews.
+
+Audio export keeps the playback WAV buffer and encodes OGG Vorbis in the
+background worker. Validation includes actual disc SFX and SEQ B3FF output,
+an OGG decode check, the GUI format chooser and filename extension, sprite
+Fit/resize checks, the clock-room GUI regression and multi-build presentation.
+
 ## Sources
 
 - vervalkon's research and tools: `TOMBAdoc.md`, `wfm3spec.txt`, `WFM3tool.py`,

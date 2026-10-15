@@ -43,6 +43,19 @@ GAME = {
     0xA4: 'SetObjTouchFlag', 0xA5: 'SetObjParam', 0xA6: 'MoveCamera', 0xA7: 'GetAreaId',
     0xA8: 'GetPlayerFieldE2', 0xA9: 'AddVitality', 0xAA: 'GetCounter', 0xAB: 'Yield',
 }
+# The 1997 builds have the same instructions up to A5 and fewer after it.
+TAIL = 0xA6
+
+
+def game_ops(tail=None):
+    """Names of the game instructions of a build: those of the released
+    game, or, with `tail`, the names of a build's own instructions from A6
+    on (game.builds.Build.script_tail)."""
+    if tail is None:
+        return GAME
+    ops = {op: name for op, name in GAME.items() if op < TAIL}
+    ops.update({TAIL + i: name for i, name in enumerate(tail)})
+    return ops
 
 
 @dataclass
@@ -63,7 +76,10 @@ def variable(number):
 
 
 class Wss:
-    def __init__(self, data):
+    def __init__(self, data, ops=None):
+        """`ops` names the game instructions (game_ops); the released
+        game's by default."""
+        self.ops = ops or GAME
         data = bytes(data)
         if data[:4] != MAGIC or len(data) < CODE:
             raise FormatError('Not a WSS script')
@@ -91,7 +107,7 @@ class Wss:
 
         try:
             if op >= 0x80:
-                return Instruction(at, 1, GAME.get(op, f'GAME_{op:02X}'), ())
+                return Instruction(at, 1, self.ops.get(op, f'GAME_{op:02X}'), ())
             if op == 0x01:
                 return Instruction(at, 1, 'END', ())
             if op in (0x02, 0x04, 0x16):
