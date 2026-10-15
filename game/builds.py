@@ -117,7 +117,7 @@ BUILDS = {
         slot_tables=0x8006E66C, common=0x8006C0E4, pictures=0x8006E348, entrances=0x8006C824,
         origins=0x8006E168, wall_origins=0x8006E158, alternate_origin=None,
         plane_limits=(0x8006E1A8, 16, 1), pages=0x8006D75C, early=True,
-        script_tail=('MoveCamera', 'Yield'), controllers=(0x8006E864, 0x8006E8A0)),
+        script_tail=('SetPlayerAnim', 'Yield'), controllers=(0x8006E864, 0x8006E8A0)),
     '72988193d496a3a9402399d04291997d57b4be45': Build(
         name='Pure Pure 09 sampler', overlay=0x800ED548, area=0x800A2248, variant=None,
         tables={2: 0x8007041C, 3: 0x800725D8, 4: 0x80072D2C, 5: 0x80073850, 7: 0x80072E78, 8: 0x800725BC},

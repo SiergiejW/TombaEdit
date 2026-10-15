@@ -88,6 +88,40 @@ def section_scripts(project, area, section):
     return out
 
 
+def script_messages(project, name):
+    """A lookup (group, line) -> text for the message boxes a script opens:
+    the dialogue bank loaded with the area the script is named for (0200
+    is area 2's), the first that is not the title font. None when there is
+    none."""
+    from formats.archive.ldar import table_name
+    from formats.text.wfm import Wfm
+    from formats.text.titles import is_title_font
+    from formats.text.export import plain
+    digits = Path(name).stem[-4:]
+    if not digits.isdigit():
+        return None
+    area = int(digits[:2])
+    for path, groups in sorted(project.ldars.items()):
+        language, number = table_name(path)
+        if number != area or language not in (None, 0) or not groups:
+            continue
+        for asset in groups[0].assets:
+            if asset.kind != 'WFM':
+                continue
+            try:
+                wfm = Wfm(project.asset_data(asset))
+            except (FormatError, ValueError):
+                continue
+            if is_title_font(wfm) or not wfm.groups:
+                continue
+
+            def lookup(group, line, wfm=wfm):
+                dialogue = wfm.message(group, line)
+                return plain(dialogue) if dialogue is not None else None
+            return lookup
+    return None
+
+
 def numbers(operands):
     """An instruction's arguments as numbers, or None where one is a variable."""
     try:

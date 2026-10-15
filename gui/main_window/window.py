@@ -20,7 +20,7 @@ from psx.graphics import sprite_frames
 from icons.icons import icon
 from game import labels
 from game.builds import executable
-from version import version
+from main import version
 import hashlib
 
 ROLE = Qt.ItemDataRole.UserRole

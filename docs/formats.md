@@ -185,7 +185,7 @@ The 1997 builds pick and start scripts with the same routines and the same
 group numbers (0 `SCR0100`, 1 `0200`, 2 `0210`, 3 to 5 `0140` to `0120`, 6
 `0000`, 7 `0220`, 8 `0201`); their discs have no `0201` or `0220`. Their
 game instructions match the released game's up to `A5`. After it the sampler
-has only `Yield` (A6), and the Japanese demo `MoveCamera` (A6) and `Yield`
+has only `Yield` (A6), and the Japanese demo `SetPlayerAnim` (A6) and `Yield`
 (A7). `CreateObject` takes the same arguments and makes the same classes.
 
 ## WMD

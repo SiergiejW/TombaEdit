@@ -312,4 +312,24 @@ class Project:
                 pixels = np.frombuffer(self.asset_data(asset), dtype="<u2").reshape(h, w)
                 # Section data overwrites the base, including zero/transparent pixels.
                 vram[y:y + h, x:x + w] = pixels
+        self.town_palette(vram, [group for group, _ in wanted])
         return vram
+
+    def town_palette(self, vram, groups):
+        """The palette a town overlay loads when it starts: INFO and INFO2
+        call LoadClut with the 256 colours of the section's CLM 8F picture
+        (a TIM; its colours start at byte 14 hex) for VRAM (128, 510)."""
+        code = next((a for g in groups for a in g.assets if a.kind == 'INS' and a.source is not None
+                     and re.fullmatch(r'I\d?NFO2?\.BIN', a.source.path.rsplit('/', 1)[-1].upper())), None)
+        if code is None:
+            return
+        picture = next((a for g in groups for a in g.assets
+                        if a.code >> 8 == 0x8F or getattr(a, 'actual', None) == ('CLM', 15)), None)
+        if picture is None:
+            return
+        try:
+            data = self.asset_data(picture)
+        except FormatError:
+            return
+        if len(data) >= 0x14 + 512 and data[:4] == b'\x10\0\0\0':
+            vram[510, 128:384] = np.frombuffer(bytes(data[0x14:0x14 + 512]), '<u2')

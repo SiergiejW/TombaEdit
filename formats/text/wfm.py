@@ -117,6 +117,10 @@ class Wfm:
         reserved, table, nd, ng = struct.unpack_from("<IIHH", data, 4)
         if reserved or glyph_table + ng * 2 > len(data) or table + nd * 2 > len(data):
             raise FormatError("Invalid WFM header or pointer tables")
+        # WFM3: the 128 bytes after the header are 64 group bases. A message
+        # box (group, line) shows dialogue base[group] + line (routine
+        # openMessageBox of Tombi-Decomp); group 0 is the system text.
+        self.groups = list(struct.unpack_from("<64H", data, 16)) if glyph_table == 144 else []
         self.glyphs = []
         self.keys = []          # shape key of each glyph, what its character is looked up by
         self.exact_keys = []    # and the key of its exact pixels
@@ -181,6 +185,13 @@ class Wfm:
             else:
                 warning = "No end control before the next dialogue boundary."
             self.dialogues.append(Dialogue(start, tokens, warning, self.characters))
+
+    def message(self, group, line):
+        """The dialogue a message box (group, line) shows, or None."""
+        if not 0 <= group < len(self.groups):
+            return None
+        index = self.groups[group] + line
+        return self.dialogues[index] if 0 <= index < len(self.dialogues) else None
 
     def recognise(self):
         """Work out each glyph's character again: the one given to its

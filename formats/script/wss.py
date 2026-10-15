@@ -33,18 +33,56 @@ UNARY = {0x18: 'INC', 0x19: 'DEC', 0x1A: 'NOT', 0x1B: 'NEG'}
 BINARY = ('ADD', 'SUB', 'MUL', 'DIV', 'MOD', 'AND', 'OR', 'XOR')
 GAME = {
     0x80: 'CreateObject', 0x81: 'SetObjAnim', 0x82: 'RemoveObj', 0x83: 'SetPlayerPosition',
-    0x84: 'GetPlayerPosition', 0x85: 'ObjCommand', 0x86: 'GetObjField6A', 0x87: 'SetObjPosition', 0x88: 'GetObjPosition',
+    0x84: 'GetPlayerPosition', 0x85: 'ObjAction', 0x86: 'GetObjField6A', 0x87: 'SetObjPosition', 0x88: 'GetObjPosition',
     0x89: 'SetObjFrame', 0x8A: 'GetObjFrame', 0x8B: 'IsObjInState2', 0x8C: 'SetObjEnabled',
     0x8D: 'GetObjVisible', 0x8E: 'ReadFlag', 0x8F: 'WriteFlag', 0x90: 'GetObjField68', 0x91: 'ReadGlobal',
-    0x92: 'WriteGlobal', 0x93: 'GetPlayerFlagA0', 0x94: 'SetObjField6B', 0x95: 'SetObjDrawOrder',
+    0x92: 'WriteGlobal', 0x93: 'GetPlayerFlagA0', 0x94: 'SetObjShade', 0x95: 'SetObjDrawOrder',
     0x96: 'SetPlayerControl', 0x97: 'SetPlayerState', 0x98: 'GetPlayerFlagD6',
-    0x99: 'SetPlayerFacing', 0x9A: 'AwardEvent', 0x9B: 'GetPlayerFlagA1', 0x9C: 'SetDialogId', 0x9D: 'PlaySound',
-    0x9E: 'ShowMessage', 0x9F: 'SetObjHeld', 0xA0: 'SetFadeEffect', 0xA1: 'PlaySound', 0xA2: 'GiveItem', 0xA3: 'GetObjTouchFlag',
-    0xA4: 'SetObjTouchFlag', 0xA5: 'SetObjParam', 0xA6: 'MoveCamera', 0xA7: 'GetAreaId',
+    0x99: 'SetPlayerFacing', 0x9A: 'AwardEvent', 0x9B: 'GetPlayerFlagA1', 0x9C: 'SetDialogId', 0x9D: 'ShowInfo',
+    0x9E: 'PlaySound', 0x9F: 'ReleaseObjLink', 0xA0: 'SetFadeEffect', 0xA1: 'ShowInfo', 0xA2: 'GiveItem', 0xA3: 'GetObjTouchFlag',
+    0xA4: 'SetObjTouchFlag', 0xA5: 'SetObjParam', 0xA6: 'SetPlayerAnim', 0xA7: 'GetAreaId',
     0xA8: 'GetPlayerFieldE2', 0xA9: 'AddVitality', 0xAA: 'GetCounter', 0xAB: 'Yield',
 }
 # The 1997 builds have the same instructions up to A5 and fewer after it.
 TAIL = 0xA6
+
+# What ObjAction (85) has a script object do, by its second argument
+# (routine 80039E54 of the European build, scriptOpShowMessageBox in
+# Tombi-Decomp). It sets the object's step; the object's routine does the
+# rest. {n} are the instruction's arguments.
+ACTIONS = {
+    0: 'stand', 9: 'stand',
+    1: 'wait {2} updates',
+    2: 'walk at speed {3} for {2} updates',
+    3: 'go towards ({3}, {4}) in {2} updates ({5}, {6})',
+    4: 'talk: message {2}/{3}, animation {4}',
+    5: 'set its speed to ({2}, {3})',
+    6: 'stop',
+    7: 'set its speed to ({2}, {3}), {4}',
+    8: 'talk at ({5}, {6}, {7}): message {2}/{3}, animation {4}',
+}
+
+
+def action_note(operands, messages=None):
+    """What an ObjAction does, from its arguments; None when the action is
+    a variable. `messages(group, line)` gives a talk action's text."""
+    try:
+        action = int(operands[1])
+    except (IndexError, ValueError):
+        return None
+    form = ACTIONS.get(action)
+    if form is None:
+        return f'action {action}'
+    padded = list(operands) + ['?'] * 8
+    note = form.format(*padded)
+    if action in (4, 8) and messages is not None:
+        try:
+            line = messages(int(operands[2]), int(operands[3]))
+        except (ValueError, IndexError):
+            line = None
+        if line:
+            note += ': "' + ' / '.join(part for part in line.split('\n') if part)[:120] + '"'
+    return note
 
 
 def game_ops(tail=None):
@@ -184,8 +222,10 @@ class Wss:
                 at += ins.size
         return [found[at] for at in sorted(found)]
 
-    def listing(self):
-        """The script as text: entries, then the code with labels."""
+    def listing(self, messages=None):
+        """The script as text: entries, then the code with labels.
+        `messages(group, line)` gives the text of a message box, to show
+        with the actions that open one."""
         labels = {}
         for entry, at in sorted(self.entries.items()):
             labels.setdefault(at, []).append(f'entry {entry}')
@@ -213,6 +253,10 @@ class Wss:
                     text = f'{ins.name}({", ".join(held.operands)})'
                     raw = self.code[held.offset:ins.offset + ins.size].hex(' ').upper()
                     lines.append(f'  {held.offset:04X}  {text:<44} ; {raw[:47]}')
+                    if ins.name == 'ObjAction':
+                        note = action_note(held.operands, messages)
+                        if note:
+                            lines.append(f'{"":8}; {note}')
                     held, end = None, ins.offset + ins.size
                     continue
                 lines.append(last)
