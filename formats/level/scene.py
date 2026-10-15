@@ -553,7 +553,7 @@ def build_scene(project, path, index):
                 if bank in models and model < len(models[bank]):
                     source_mesh, neutral = model_preview(models[bank][model], visual)
                     mesh = placed_model(source_mesh, placement.position, visual)
-                    category, note = 'Models', (f'WMD bank {bank}, model {model}. '
+                    category, note = 'Geometry' if bank == 0 else 'Models', (f'WMD bank {bank}, model {model}. '
                         f'Initial scale {visual.get("scale", (4096, 4096, 4096))}, '
                         f'rotation {visual.get("rotation", (0, 0, 0))} (4096 units per turn).')
                     if neutral:

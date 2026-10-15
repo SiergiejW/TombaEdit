@@ -11,8 +11,9 @@ from formats.sprites.animations import Memory, read_script, code_constants, rout
 
 
 class Ownership:
-    def __init__(self, regions):
+    def __init__(self, regions, sprite_slots=SPR_SLOTS):
         self.memory = Memory(regions)
+        self.sprite_slots = sprite_slots
         self.starts, self.references = set(), set()
         self.scans = {}
         self.resolved = {}
@@ -62,8 +63,8 @@ class Ownership:
                 if a and a[0] == 'address':
                     cell = (a[1] + imm) & 0xFFFFFFFF
                     regs[rt] = ('load', cell, a[2])
-                    if SPR_SLOTS <= cell < SPR_SLOTS + 64 and not cell & 3:
-                        slots.add((cell - SPR_SLOTS) // 4)
+                    if self.sprite_slots <= cell < self.sprite_slots + 64 and not cell & 3:
+                        slots.add((cell - self.sprite_slots) // 4)
                 else:
                     regs.pop(rt, None)
             elif op == 43 and imm == 0x24 and b:

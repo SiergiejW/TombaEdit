@@ -38,7 +38,9 @@ def bank_readers(project, path, slot):
     key = (table_name(path)[0], area_number(path), slot)
     if key in cache:
         return cache[key]
-    offset = 0x2C8 + slot * 4
+    from game.builds import executable
+    program = executable(project, path)
+    offset = (0x150 if program and program.build.legacy8 else 0x2C8) + slot * 4
 
     def reads(code):
         words = np.frombuffer(bytes(code[:len(code) // 4 * 4]), '<u4')

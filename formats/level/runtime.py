@@ -260,7 +260,7 @@ class InitialPoseResolver:
         if not hasattr(self, 'animation_ownership'):
             self.animation_ownership = Ownership([
                 ('overlay', self.build.overlay, self.overlay_code),
-                ('executable', self.base, self.exe[0x800:])])
+                ('executable', self.base, self.exe[0x800:])], 0x1F800150 if self.build.legacy8 else SPR_TABLE)
         pc = self.handler_address(placement)
         calls, pending = set(), [(pc, 0)]
         while pending and len(calls) < 64:
@@ -320,8 +320,8 @@ class InitialPoseResolver:
         def update(camera_x, camera_y):
             self.write(obj, ready)
             self.write(0x1F800000, scratch)
-            self.write(CAMERA_X, struct.pack('<h', camera_x))
-            self.write(CAMERA_Y, struct.pack('<h', camera_y))
+            self.write(0x1F80028A if self.build.legacy8 else CAMERA_X, struct.pack('<h', camera_x))
+            self.write(0x1F80028E if self.build.legacy8 else CAMERA_Y, struct.pack('<h', camera_y))
             try:
                 self.run_handler(pc, obj, 4000)
             except Exception:
@@ -376,7 +376,7 @@ class InitialPoseResolver:
             from formats.sprites.ownership import Ownership
             self.animation_ownership = Ownership([
                 ('overlay', self.build.overlay, self.overlay_code),
-                ('executable', self.base, self.exe[0x800:])])
+                ('executable', self.base, self.exe[0x800:])], 0x1F800150 if self.build.legacy8 else SPR_TABLE)
         return self.animation_ownership.scripts(pc, slot, count)
 
     def animation_preview(self, placement, visual):
@@ -390,7 +390,7 @@ class InitialPoseResolver:
         slot = visual.get('sprite')
         if slot is None:
             return visual
-        bank = self.read_word(SPR_TABLE + slot * 4)
+        bank = self.read_word((0x1F800150 if self.build.legacy8 else SPR_TABLE) + slot * 4)
         count = struct.unpack('<H', self.read(bank + 2, 2))[0] // 4
         frame = visual['frames'][0][0]
         choices = [s for s in self.code_animations(self.handler_address(placement), slot, count).values()
