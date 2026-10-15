@@ -461,10 +461,14 @@ def _prepare_preview(project, node, context=None):
         name = Path(source).name or 'Sound'
         if data[:4] == b'pQES':
             from formats.archive.containers import sequence
+            sound_build = executable(project, node.ldar if isinstance(node, Asset) else None)
+            resident = sound.resident_banks(project, node.ldar, node.group) if isinstance(node, Asset) else None
+            music_bank = (2 if resident and any(a.kind == 'VH' for a in project.ldars[node.ldar][0].assets)
+                          else 2 if sound_build and sound_build.build.early else 1)
             result['audio'] = ('Music', name, sound.sequence_sources(
                 sequence(data)[0] or data, Path(source).stem or 'Sequence', sound.disc_banks(project), near=source,
                 embedded_area=area_number(node.ldar) if isinstance(node, Asset) and node.kind == 'SEQ' else None,
-                resident=sound.resident_banks(project, node.ldar, node.group) if isinstance(node, Asset) else None))
+                resident=resident, embedded_bank=music_bank))
         else:
             result['audio'] = ('Sounds', name, sound.wvd_sources(data))
     from formats.annotate import regions

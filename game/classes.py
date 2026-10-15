@@ -163,7 +163,7 @@ AREAS = {
         (2, 0x0B): 'Pink puffball',
         (4, 0x05): 'White puffball',
         (2, 0x0F): 'Campfire',
-        (4, 0x16): 'Plank',
+        (4, 0x16): 'Rope',
         (2, 0x10): 'Tree stump',
         (3, 0x18): 'Leafy bush',
         (3, 0x19): 'Flower cluster',

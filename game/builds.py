@@ -39,6 +39,7 @@ class Build:
     # `stride` bytes an area and `width` bytes a section.
     plane_limits: tuple
     pages: int | None       # object records naming a texture page per SPR slot
+    legacy8: bool = False   # PrePre 8 embeds level code and uses earlier object/scratchpad layouts
     early: bool = False     # a 1997 build: no area variants
     picture_record: int = 18    # bytes a rectangle of a fixed picture takes
     # Layout of a `pages` record, ending in the SPR slot and a pointer to

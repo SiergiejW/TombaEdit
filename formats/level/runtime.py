@@ -73,7 +73,7 @@ class InitialPoseResolver:
         self.area = area
         self.exe, self.base = found.data, found.base
         overlay = next((a for a in resources.values() if a.kind == 'INS'), None)
-        if overlay is None:
+        if overlay is None and not build.legacy8:
             self.reason = 'The load group has no code overlay to run its objects from.'
             return
         try:
@@ -86,7 +86,7 @@ class InitialPoseResolver:
         self.u = Uc(UC_ARCH_MIPS, UC_MODE_MIPS32 | UC_MODE_LITTLE_ENDIAN)
         self.u.mem_map(0, 0x1000000)
         self.u.mem_map(0x1F800000, 0x1000)
-        code = project.asset_data(overlay)
+        code = project.asset_data(overlay) if overlay else self.exe[0x800:]
         self.overlay_code = code
         self.overlay_words = np.frombuffer(bytes(code[:len(code) // 4 * 4]), '<u4')
         self.reach = {}
@@ -110,7 +110,8 @@ class InitialPoseResolver:
             if len(data) >= BANK_SPACING:
                 continue
             self.write(address, data)
-            self.word((SPR_TABLE if family == 'SPR' else WMD_TABLE) + slot * 4, address)
+            table = (0x1F800150 if family == 'SPR' else 0x1F8001B8) if build.legacy8 else (SPR_TABLE if family == 'SPR' else WMD_TABLE)
+            self.word(table + slot * 4, address)
             if family == 'WMD':
                 count = struct.unpack_from('<I', data)[0]
                 if count <= 4096 and 4 + 4 * count <= len(data):
@@ -123,12 +124,12 @@ class InitialPoseResolver:
         self.u.hook_add(UC_HOOK_CODE, self.hook)
         self.cpu_context = self.u.context_save()
         # What the game's own draw routines make of a traced object.
-        self.town = Path(overlay.source.path).name.upper() if overlay.source else ''
+        self.town = Path(overlay.source.path).name.upper() if overlay and overlay.source else ''
         self.drawer = None
         self.draw_states = {}
         self.drawn = {}
         self.available = True
-        self.reason = f'Initial poses traced from the {build.name} executable and the area overlay.'
+        self.reason = f'Initial poses traced from the {build.name} executable' + ('.' if build.legacy8 else ' and the area overlay.')
 
     def read(self, address, count):
         return bytes(self.u.mem_read(address & 0x1FFFFFFF, count))
@@ -160,7 +161,7 @@ class InitialPoseResolver:
         area = runtime_area(area, section, self.build.early)
         table = self.exe_word(self.build.slot_tables + area * 4)
         common = min(15, struct.unpack_from('<H', self.exe, self.build.common + area * 2 - self.base + 0x800)[0])
-        return tuple((self.exe_word(table + i * 4) - APD_TABLE) // 4
+        return tuple((self.exe_word(table + i * 4) - (0x1F8001D8 if self.build.legacy8 else APD_TABLE)) // 4
                      for i in (section & 7, common))
 
     def picture_parts(self, placement):
@@ -513,6 +514,10 @@ class InitialPoseResolver:
         if not self.available:
             return along0, depth0, turned, slot
         build = self.build
+        if build.legacy8:
+            along0, depth0 = struct.unpack_from('<hh', self.exe,
+                build.origins + area * 24 + section * 4 - self.base + 0x800)
+            return along0, depth0, False, 0
         area = runtime_area(area, section, build.early)
         if not 0 <= area < 20 or not 0 <= section < 32:
             return along0, depth0, turned, slot
@@ -650,6 +655,8 @@ class InitialPoseResolver:
         object (formats.level.draw), relative to its position, showing SPR
         frame `frame` or the one it starts on. None when the object was not
         traced to a sprite or the routine draws nothing."""
+        if self.available and self.build.legacy8:
+            return None
         key = (placement.raw, placement.position, placement.extra, placement.memory)
         state = self.draw_states.get(key)
         if state is None:
@@ -680,6 +687,9 @@ class InitialPoseResolver:
         return self.read_word(table + placement.kind * 4) if table is not None else None
 
     def attempt(self, placement, stop_at_animation):
+        if self.build.legacy8:
+            from formats.level.prepre8 import attempt
+            return attempt(self, placement, stop_at_animation)
         from unicorn import UcError
         self.stop_at_animation = stop_at_animation
         r, raw, obj = self.reg, placement.raw, OBJECT

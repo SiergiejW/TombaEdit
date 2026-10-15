@@ -19,6 +19,7 @@ class Placement:
     memory: tuple = field(default=(), repr=False)
     # What made it, for objects no record places: a description.
     origin: str = ''
+    native_layer: int = 0
 
     @property
     def layer(self): return self.raw[1] & 127
@@ -34,6 +35,8 @@ class Placement:
 
     @property
     def model(self):
+        if self.native_layer in (7, 9):
+            return (0 if self.native_layer == 7 else 2), self.raw[14]
         if self.layer == 8:
             return 2, self.raw[14]
         if self.layer in (2, 4) and self.raw[12] & 16 and self.raw[14] != 255:
@@ -41,7 +44,7 @@ class Placement:
         return None
 
 
-def parse_apd(data):
+def parse_apd(data, legacy8=False):
     if len(data) % 16:
         raise FormatError('APD size is not a multiple of 16 bytes')
     placements, parent = [], None
@@ -49,13 +52,18 @@ def parse_apd(data):
         raw = data[at:at + 16]
         if raw[2] == 255:
             break
+        native = raw[1] & 127 if legacy8 else 0
+        if legacy8:
+            normalized = bytearray(raw)
+            normalized[1] = (raw[1] & 128) | {4: 3, 5: 4, 6: 5, 7: 8, 8: 7, 9: 8}.get(native, native)
+            raw = bytes(normalized)
         position = struct.unpack_from('<3h', raw, 6)
         mode = raw[15] & 3
         relative = mode in (2, 3) and raw[1] & 127 not in (6, 7)
         linked = parent if relative else None
         if linked is not None:
             position = tuple(a + b for a, b in zip(position, linked.position))
-        placement = Placement(at, raw, position, relative, linked)
+        placement = Placement(at, raw, position, relative, linked, native_layer=native)
         if mode in (1, 2) and raw[1] & 127 not in (6, 7):
             parent = placement
         placements.append(placement)

@@ -413,7 +413,7 @@ def build_scene(project, path, index):
         try:
             if kind == 'WMD':
                 models[slot] = parse_wmd(project.asset_data(asset))
-                if slot == 0:
+                if slot == 0 and not (resolver.available and resolver.build.legacy8):
                     for i, mesh in enumerate(models[slot]):
                         geometry.append(SceneEntry(f'Geometry {i:03d}', 'Geometry', mesh, asset))
             elif kind == 'SPR':
@@ -483,7 +483,7 @@ def build_scene(project, path, index):
         if kind != 'APD':
             continue
         try:
-            batches.append((slot, asset, parse_apd(project.asset_data(asset)), None))
+            batches.append((slot, asset, parse_apd(project.asset_data(asset), resolver.available and resolver.build.legacy8), None))
         except FormatError as exc:
             notes.append(f'{asset.label}: {exc}')
     # What the section's event script creates is put through the same
@@ -722,7 +722,7 @@ def build_scene(project, path, index):
         try:
             # Area 0 keeps the near planes in slot 1 and continues 270 units
             # deeper in slot 0 (US routine 80042654); elsewhere slot 0 is used.
-            deeper = 3 * PLANE_DEPTH if area == 0 and index < 4 and slot == 0 and ('WHM', 1) in resources else 0
+            deeper = 3 * PLANE_DEPTH if area == 0 and index < 4 and slot == 0 and ('WHM', 1) in resources and not resolver.build.legacy8 else 0
             whm = parse_whm(project.asset_data(asset))
             collision_records.extend(records(whm, x0, z0 + deeper, turned, asset))
         except FormatError as exc:
@@ -808,7 +808,7 @@ def sprite_pages(project, path, index):
             if kind != 'APD' or not resolver.available:
                 continue
             try:
-                placed.append((parse_apd(project.asset_data(asset)), ''))
+                placed.append((parse_apd(project.asset_data(asset), resolver.available and resolver.build.legacy8), ''))
             except FormatError:
                 continue
         # What the section's event script creates shows frames too, and so

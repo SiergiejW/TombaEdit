@@ -212,8 +212,13 @@ def disc_banks(project):
     if cached is not None:
         return cached
     found, entries = [], project.disc.entries
+    prefix = project.catalog.executable.rpartition('/')[0].split('/')[0] + '/' if project.catalog and '/' in project.catalog.executable else ''
+    if prefix.upper() not in ('TOMBA/', 'TOMBI/'):
+        prefix = ''
     for entry in project.disc.files:
         upper = entry.path.upper()
+        if prefix and not upper.startswith(prefix.upper()):
+            continue
         try:
             if upper.endswith('.WVD'):
                 banks = wvd.banks(project.payload(entry))
@@ -239,6 +244,14 @@ def resident_banks(project, path, group):
     from formats.level.scene import loaded_resources
     found = {}
     for (kind, slot), asset in loaded_resources(project, path, group).items():
+        if kind == 'VH' and asset.source:
+            body = project.disc.entries.get(asset.source.path.rsplit('.', 1)[0] + '.VB')
+            if body:
+                try:
+                    found[slot] = (asset.source.path, vab.canonical(project.asset_data(asset), project.payload(body)))
+                except (ValueError, FormatError, struct.error):
+                    pass
+            continue
         if kind != 'WVD':
             continue
         try:
@@ -249,7 +262,7 @@ def resident_banks(project, path, group):
     return found
 
 
-def sequence_sources(data, title, banks, near='', labels=None, limit=64, embedded_area=None, resident=None):
+def sequence_sources(data, title, banks, near='', labels=None, limit=64, embedded_area=None, resident=None, embedded_bank=1):
     """A source per bank that can play the sequence, best first.
 
     Banks are ranked by how many of the music's notes they have a tone for,
@@ -257,10 +270,10 @@ def sequence_sources(data, title, banks, near='', labels=None, limit=64, embedde
     the names Tomba gives its files (S_AR010.SEQ goes with SND0010.WVD)."""
     folder, stem = str(Path(near).parent).replace('\\', '/'), Path(near).stem.upper()
     if embedded_area is not None:
-        if resident and 1 in resident:
-            name, bank = resident[1]
+        if resident and embedded_bank in resident:
+            name, bank = resident[embedded_bank]
             source = SequenceSource(title, data, name, bank, labels)
-            source.bank_reason = 'Jingle player: VAB slot 1 from this section\'s sound load records.'
+            source.bank_reason = f'Game music player: VAB slot {embedded_bank} from this section\'s sound load records.'
             return [source]
         # playJingle opens embedded SEQ slots on VAB_IDS[1] (1F8003AC).
         # In areas that load a two-bank WVD this is its second bank.
