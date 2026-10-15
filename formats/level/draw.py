@@ -120,7 +120,8 @@ class Primitive:
     sprite: bool = False        # a GPU sprite rectangle, which cannot be mirrored
 
     def key(self):
-        return (self.corners, self.uv, self.clut, self.tpage, self.blend, self.colour)
+        return (self.corners, self.uv, self.clut, self.tpage, self.blend, self.mode,
+                self.raw, self.colour, self.textured, self.sprite)
 
 
 def _sxy(word):
@@ -349,11 +350,6 @@ def _texels(vram, tpage, clut, cache):
     return cache[key]
 
 
-# How strongly a blended texel covers what is under it, by blend mode
-# (B/2 + F/2, B + F, B - F, B + F/4); the last three only approximate.
-BLEND_ALPHA = (0.5, 0.6, 0.5, 0.25)
-
-
 def render(prims, vram):
     """(RGBA image, left, top) of primitives over nothing; left and top are
     the image's offset from the object's position. None when nothing is
@@ -371,14 +367,15 @@ def render(prims, vram):
     cache = {}
     for prim in prims:
         corners = [(x - left, y - top) for x, y in prim.corners]
+        covered = np.zeros((height, width), bool)
         for tri in ((0, 1, 2), (1, 2, 3)):
             _triangle(canvas, prim, [corners[k] for k in tri],
-                      [prim.uv[k] for k in tri] if prim.textured else None, vram, cache)
+                      [prim.uv[k] for k in tri] if prim.textured else None, vram, cache, covered)
     image = Image.fromarray(np.clip(canvas, 0, 255).astype(np.uint8), 'RGBA')
     return image, left, top
 
 
-def _triangle(canvas, prim, xy, uv, vram, cache):
+def _triangle(canvas, prim, xy, uv, vram, cache, covered=None):
     (x0, y0), (x1, y1), (x2, y2) = xy
     area = (x1 - x0) * (y2 - y0) - (x2 - x0) * (y1 - y0)
     if area == 0:
@@ -396,6 +393,10 @@ def _triangle(canvas, prim, xy, uv, vram, cache):
     w1 = ((x2 - px) * (y0 - py) - (x0 - px) * (y2 - py)) / area
     w2 = 1 - w0 - w1
     inside = (w0 >= 0) & (w1 >= 0) & (w2 >= 0)
+    if covered is not None:
+        region_covered = covered[lo_y:hi_y, lo_x:hi_x]
+        inside &= ~region_covered
+        region_covered |= inside
     if not inside.any():
         return
     if uv is None:
@@ -415,9 +416,18 @@ def _triangle(canvas, prim, xy, uv, vram, cache):
         if not prim.raw:
             rgb = np.clip(rgb * (np.array(prim.colour, np.float32) / 128), 0, 255)
         blended = solid & bool(prim.blend) & (words >> 15 == 1)
-    alpha = np.where(blended, BLEND_ALPHA[prim.mode] * 255, 255).astype(np.float32)
     region = canvas[lo_y:hi_y, lo_x:hi_x]
-    a = (alpha / 255)[..., None] * solid[..., None]
-    region[..., :3] = rgb * a + region[..., :3] * (1 - a)
-    region[..., 3] = np.maximum(region[..., 3] * (1 - a[..., 0]), 0) + alpha * solid
-    np.clip(region[..., 3], 0, 255, out=region[..., 3])
+    back = region[..., :3].astype(np.int16) >> 3
+    front = rgb.astype(np.int16) >> 3
+    if prim.mode == 0:
+        mixed = (back >> 1) + (front >> 1)
+    elif prim.mode == 1:
+        mixed = back + front
+    elif prim.mode == 2:
+        mixed = back - front
+    else:
+        mixed = back + (front >> 2)
+    mixed = np.clip(mixed, 0, 31).astype(np.uint8)
+    region[..., :3][solid] = rgb[solid]
+    region[..., :3][blended] = ((mixed << 3) | (mixed >> 2))[blended]
+    region[..., 3][solid] = 255

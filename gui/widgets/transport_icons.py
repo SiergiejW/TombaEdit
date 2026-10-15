@@ -62,9 +62,11 @@ def _shape(name):
         _triangle(path, 6.5, 3, 5.5, 10)
         path.addRoundedRect(QRectF(12.5, 3, 2, 10), 0.8, 0.8)
     elif name == "step_back":
-        _triangle(path, 4.5, 3, 7, 10, pointing_right=False)
+        _triangle(path, 2.5, 3, 7.5, 10, pointing_right=False)
+        path.addRoundedRect(QRectF(11, 3, 2.2, 10), 0.5, 0.5)
     elif name == "step_forward":
-        _triangle(path, 4.5, 3, 7, 10)
+        path.addRoundedRect(QRectF(2.8, 3, 2.2, 10), 0.5, 0.5)
+        _triangle(path, 6, 3, 7.5, 10)
     elif name in ("undo", "redo"):
         # An arrow curling back on itself: a stroked arc for the curl,
         # a filled head on the end it points at. Mirrored for redo, so

@@ -471,7 +471,7 @@ def build_scene(project, path, index):
                     image = frame_image(pictures[bank][frame], parts, fallback, rows)
                 else:
                     image = render_sprite(parts, vram, tpage=visual.get('tpage', 0),
-                                          clut=visual.get('clut'))
+                                          clut=visual.get('clut'), blend=visual.get('blend', False))
                 # Blank frames are timed steps too, for instance a blink.
                 images[key] = image
             except FormatError:

@@ -361,7 +361,7 @@ class InitialPoseResolver:
         while address not in seen and len(frames) < 512 and self.base <= address < self.limit:
             seen.add(address)
             frame, _, _, control = struct.unpack('<4H', self.read(address, 8))
-            frames.append((frame, control & 0x3FFF or 1))
+            frames.append((frame, control & 0x3FFF or 65536))
             if control & 0xC000 == 0x8000:
                 break
             address = self.read_word(address + 8) if control & 0x4000 else address + 8
