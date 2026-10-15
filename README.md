@@ -8,6 +8,36 @@ anything first.
 
 TombaEdit is read-only: it exports assets but does not rebuild discs.
 
+## Version 0.0.2
+
+Change `version = "0.0.2"` in `version.py` to update the title, About dialog,
+welcome page and application version. `python main.py --version` prints it.
+
+- SPR banks shared by towns use verified artwork and animation context from
+  an identical bank, including the bank retained by Baccus Pier.
+- FOUR deformations and the Animations tab play automatically. The Sprites
+  tab remains static for inspecting individual frames. WPP
+  banks paired with SPR have an Animations tab, including Tomba's validated
+  retail 90-entry or early demo 56-entry animation table. Animation entries can be named.
+- Label is the second displayed column in named lists and the disc tree.
+  Verified animations follow handler assignments to the object's animation
+  pointer; unrelated scripts with plausible frame numbers are advanced diagnostics.
+- Hidden town interiors are optional event previews until selected through
+  the interior selector. An unresolved APD model pointer no longer creates
+  duplicate portal models. Zero-colour lit meshes have explicitly marked
+  neutral inspection shading while their runtime material remains unresolved.
+- F2 names the last clicked viewer entry; clicking the disc tree selects a
+  file or folder for naming.
+- Music uses its load-list sound bank when known. **View sequence...** opens
+  a read-only piano roll synchronized with the player. Embedded jingles use
+  VAB slot 1 where the area's initial sound set is known; other unresolved
+  bank choices are explicitly described as compatibility estimates.
+- INS has read-only MIPS function/address and string navigation. APD has a
+  **Placements in level** tab with the selected section's scene and background.
+- A centered pink busy bar and **LOADING...** leave the current GUI visible,
+  without dimming it. The bar is indeterminate because tracing does not
+  provide a reliable percentage.
+
 ## Running
 
 Python 3.10 or newer.
@@ -121,11 +151,27 @@ object's graphics are not known. Positions come from the APD records. What an
 object looks like is found by running that object's own initialisation code
 from the game executable in an isolated emulator, which yields its model or
 its sprite bank, animation script, texture page and palette. This is done for
-the US release; other releases show geometry, directly linked models and
-markers.
+every release listed under [Supported releases](#supported-releases).
+
+A sprite is then drawn by the game's own draw routine: the object is handed,
+alone, to the routine that draws its category of objects, and the GPU
+primitives it produces are read back. Page, palette, mirroring, rotation,
+scaling, shading and blending are therefore the game's own, including the
+towns' separate renderers (Dwarf Village, Baccus Village and the others draw
+their sprites with code of their own). The routines run on an R3000A and
+GTE interpreter taken from Tombi-Decomp. Blended pixels are shown
+half transparent; additive and subtractive blending can only be approached
+that way.
+
+Objects that no list places are traced too. Each section has a short list
+of controllers in the executable that set it up when it starts; they are
+run, and what they and the placed objects spawn while being traced is added
+to the scene as **Spawned** objects (Baccus Village's townsfolk, for
+instance, come from a controller).
 
 - **Animate** plays the animation scripts of placed sprites at the game's
-  30 steps a second. Models that the game animates by rewriting
+  rate, one step per update: 60 a second, 50 on the European disc. Models
+  that the game animates by rewriting
   their texture coordinates, such as water surfaces, play the same way.
   **Save GIF** writes one cycle of the selected object: a sprite's frames, or
   for such a model its texture, either cropped to the moving UVs or as the
@@ -153,13 +199,15 @@ markers.
   town's map of 8 × 8 pixel cells, one colour per cell value, with the values
   that have bit 7 set in blue. **Collision** outlines the same map: green
   around the walkable ground, magenta between cells of different values.
-  Town characters are created by the town's own code rather than by placement
-  records, so only the few placed objects appear.
-- *Show* limits the scene to geometry, models, sprites or unresolved objects,
-  and *Open asset* jumps to any resource the group loads.
+  Town characters are created by the towns' controllers and scripts rather
+  than by placement records; they are listed as spawned objects and event
+  previews.
+- *Show* limits the scene to geometry, models, sprites, spawned objects,
+  event previews or unresolved objects, and *Open asset* jumps to any
+  resource the group loads.
 
-The scene is the state right after loading. Conditions, scripted spawns and
-movement are not simulated.
+The scene is the state right after loading, with a new game's flags.
+Conditions and movement are not simulated.
 
 ### Sprites
 
@@ -323,6 +371,24 @@ The result is one file, one file for each area, or one for each bank.
 The titles of events, in the large font, are stored without spaces between
 their words and are exported that way.
 
+#### Animations
+
+The **Animations** tab of a sprite bank lists the animation scripts that can
+play it: the eight-byte steps (frame, hit box, argument, duration) an
+object's routine walks through, found in the area overlay and the
+executable loaded with the bank. A script is found through a table of
+pointers, an address built in the code, or any other pointer to a run of
+steps whose frames all exist in the bank. Scripts that objects of the
+section start on are listed first with the classes that use them, followed
+by the other scripts of the same tables; *Show* widens the list to every
+script that fits the bank. A script only names frame numbers, so one found
+without an object may belong to another bank of the same size.
+
+Any address can be typed in and read as a script. Selecting one plays it
+at the game's rate, which can be changed, or step by step; each step shows
+its frame, duration, hit box and argument. **GIF** and **Strip** save one
+pass.
+
 ### Scripts
 
 A `.WSS` file is an event script: the instructions that run a scene. It opens
@@ -340,7 +406,12 @@ Where a section runs a script, the objects the script creates are added to
 the level editor as event previews: each at the position the script gives
 it, with the first animation the script sets. Turn **Event previews** on to
 see them. They also tell the sprite viewer which page and palette those
-frames use.
+frames use. A position the script works out, from where another object
+stands or where Tomba is, is followed through the code before the call;
+an object placed next to Tomba is shown next to where he enters the section.
+
+The two 1997 builds run the same scripts with the same instructions up to
+`A5`; the listing names their last few after their own routines.
 
 The machine's own instructions (moves, arithmetic, comparisons, jumps) are
 all named. The game's are named where the decompiled routine makes plain
@@ -441,10 +512,11 @@ number; they can be given one on the Glyphs tab.
 
 ## Known gaps
 
-- Semi-transparency, and textures the game uploads while running other than
-  Tomba's frames. Objects that depend on them keep their markers.
-- Object rotation and scaling in the level view. Sprites are drawn one texel
-  to one world unit.
+- Textures and palettes the game uploads while running, other than Tomba's
+  frames. Objects that depend on them keep their markers.
+- Additive and subtractive blending, shown as partial transparency.
+- Objects spawned by Tomba himself, by objects later in play, or under event
+  conditions other than a new game's.
 - The meaning of most collision attribute bits, of town cell values, and of
   the two unused words in an animation step.
 - Event titles in the 24-pixel font are stored without spaces; no spacing is
@@ -467,6 +539,14 @@ The pond fish in AREA00 section 05 are conditional event sprites. Enable
 System menu SPR banks use the selected screen's initialization code and palette
 uploads. Frames whose setup is not decoded for that screen remain listed,
 with an explanation and manual page/CLUT controls, instead of guessed textures.
+
+## Credits
+
+[Tombi-Decomp](https://github.com/afsenovilla/Tombi-Decomp) by afsenovilla
+and its contributors (MIT licence) supplied the understanding of the object
+lists, allocators, draw routines, town renderers and animation steps used
+here, and its R3000A and GTE interpreter, which `psx/mips` carries with its
+licence.
 
 ## Tests
 

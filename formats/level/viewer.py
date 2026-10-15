@@ -8,8 +8,10 @@ from formats.collision.inspector import CollisionInspector
 from formats.level.flat import paint_order
 from gui.widgets.camera_controls import CONTROLS_HINT
 
-# The game steps animation scripts once per frame at 30 frames a second.
-TICK_MS = 33
+# The game steps animation scripts once per update; it waits for one field
+# between updates (the word at 1F8001EA), so 60 a second on NTSC discs and
+# 50 on the European one. LevelScene.rate says which.
+TICK_MS = 17
 
 
 class LevelView(ModelView):
@@ -266,7 +268,7 @@ class LevelView(ModelView):
             QMessageBox.information(self, 'Save GIF', 'The texture coordinates of this model do not change.')
             return
         images[0].save(path, save_all=True, append_images=images[1:], loop=0, disposal=2,
-                       duration=[ticks * TICK_MS for _, ticks in entry.frames[:len(images)]])
+                       duration=[max(20, round(ticks * 1000 / self.scene.rate)) for _, ticks in entry.frames[:len(images)]])
         print(f'wrote {path}: {len(images)} steps')
 
     @staticmethod
@@ -341,7 +343,7 @@ class LevelView(ModelView):
 
     def toggle_animation(self, value):
         if value and self.animated and self.isVisible():
-            self.timer.start()
+            self.timer.start(max(1, round(1000 / self.scene.rate)))
         else:
             self.timer.stop()
 

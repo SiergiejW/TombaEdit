@@ -36,6 +36,11 @@ class Step:
     flags: int          # 0, HOLD, JUMP or both
     address: int = 0
 
+    @property
+    def duration(self):
+        # AnimAdvance decrements a u16 timer before comparing it with zero.
+        return self.ticks or 65536
+
 
 @dataclass
 class Script:
@@ -51,7 +56,7 @@ class Script:
 
     @property
     def ticks(self):
-        return sum(max(1, step.ticks) for step in self.steps)
+        return sum(step.duration for step in self.steps)
 
     @property
     def frames(self):
@@ -96,6 +101,30 @@ class Memory:
             if base <= address < base + len(data):
                 return name
         return ''
+
+
+def player_scripts(regions, frame_count):
+    """The player's retail (90) or early demo (56) animation pointer table.
+
+    ObjSetAnimFromTable indexes this table; its scripts live in the engine.
+    Find it by validated pointers, rather than a regional absolute address.
+    """
+    memory = Memory(regions)
+    for name, base, data in memory.regions:
+        if name != 'overlay':
+            continue
+        for count in (90, 56):
+            for at in range(0, min(0x1000, len(data) - count * 4 + 1), 4):
+                pointers = struct.unpack_from(f'<{count}I', data, at)
+                if not all(memory.region(p) == 'executable' for p in pointers):
+                    continue
+                decoded = [read_script(memory, p, frame_count) for p in pointers]
+                if all(decoded):
+                    found = {}
+                    for index, pointer in enumerate(pointers):
+                        found.setdefault(pointer, []).append(f'Tomba animation {index:02d}')
+                    return found
+    return {}
 
 
 def read_script(memory, address, frame_count=None):

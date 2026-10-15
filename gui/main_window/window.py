@@ -3,7 +3,7 @@ from pathlib import Path
 import struct
 import sys
 import traceback
-from PyQt6.QtCore import Qt, QSize, QSettings, QTimer, QObject, QRunnable, QThreadPool, pyqtSignal
+from PyQt6.QtCore import Qt, QSize, QSettings, QTimer, QObject, QRunnable, QThreadPool, pyqtSignal, QEvent
 from PyQt6.QtGui import QAction, QActionGroup, QKeySequence
 from PyQt6.QtWidgets import (QMainWindow, QWidget, QVBoxLayout, QHBoxLayout, QLabel,
     QLineEdit, QSplitter, QTreeWidget, QTreeWidgetItem, QTabWidget, QFileDialog,
@@ -20,6 +20,7 @@ from psx.graphics import sprite_frames
 from icons.icons import icon
 from game import labels
 from game.builds import executable
+from version import version
 import hashlib
 
 ROLE = Qt.ItemDataRole.UserRole
@@ -208,6 +209,13 @@ def _prepare_preview(project, node, context=None):
             from formats.level.scene import sprite_pages
             from formats.sprites.wpp import parse_wpp
             frames = result["sprites"] = sprite_frames(data)
+            if screen is None:
+                from formats.level.town import shared_bank_preview
+                town_bank = shared_bank_preview(project, node, context, frames)
+                if town_bank is not None:
+                    result.update(town_bank)
+                    result['notes'].append(town_bank['context_note'])
+                    return result
             if screen is not None:
                 from formats.sprites.screens import screen_bank
                 slot = (node.code >> 8) & 15
@@ -270,6 +278,16 @@ def _prepare_preview(project, node, context=None):
             except FormatError:
                 code = None
             items = item_sprites(project, node.ldar, code, {slot: len(frames)}).get(slot, {})
+            # The code loaded with the bank holds its animation scripts.
+            runs = executable(project, node.ldar)
+            if runs is not None:
+                result['animation_code'] = ([('overlay', runs.build.overlay, code)] if code else []) + [
+                    ('executable', runs.base, runs.data[0x800:])]
+                # The game steps animations once per update, one update per
+                # field: 50 a second on the European disc, 60 on the others.
+                result['update_rate'] = 50 if runs.build.name.startswith('European') else 60
+                from formats.level.scene import sprite_animations
+                result['animation_users'] = sprite_animations(project, node.ldar, context).get(slot, {})
             if items:
                 result['sprite_pages'] = dict(result['sprite_pages'])
             for frame, (page, word) in items.items():
@@ -293,6 +311,8 @@ def _prepare_preview(project, node, context=None):
                         origins[frame] = 'routine'
                         if word is not None:
                             result['sprite_cluts'].setdefault(frame, word)
+                result['sprite_styles'] = project.__dict__.get('sprite_style_cache', {}).get((node.ldar, context), {}).get(slot, {})
+                result['animation_users'] = project.__dict__.get('sprite_animation_cache', {}).get((node.ldar, context), {}).get(slot, {})
             # A frame this section does not place may be placed, with a
             # palette of its object's own, in another section of the area.
             from psx.graphics import palette_missing
@@ -305,6 +325,7 @@ def _prepare_preview(project, node, context=None):
                     result['sprite_cluts'].setdefault(frame, word)
             result['vram'], lent = lend_palettes(project, node.ldar, context, frames, result['vram'],
                                                  result['sprite_cluts'], data)
+            result['sprite_styles'] = project.__dict__.get('sprite_style_cache', {}).get((node.ldar, context), {}).get(slot, {})
             if lent:
                 here = sorted({group - 1 for _, donor, group in lent if donor == node.ldar})
                 away = sorted({Path(donor).stem for _, donor, group in lent if donor != node.ldar})
@@ -355,6 +376,9 @@ def _prepare_preview(project, node, context=None):
                         continue
                     if kind == 'frames' and len(pictures) == len(frames):
                         result['pictures'] = pictures
+                        if slot == 0 and 'animation_code' in result:
+                            from formats.sprites.animations import player_scripts
+                            result['animation_users'] = player_scripts(result['animation_code'], len(frames)) or result['animation_users']
                         break
         if node.kind == 'WPP':
             from formats.sprites.wpp import parse_wpp
@@ -369,7 +393,28 @@ def _prepare_preview(project, node, context=None):
                 if len(frames) == len(pictures):
                     result['paired_sprites'] = frames
                     result['paired_tomba'] = (candidate.code >> 8) & 15 == 0
+                    known = executable(project, node.ldar)
+                    overlay = next((a for a in reversed(loaded) if a.kind == 'INS'), None)
+                    if known is not None:
+                        regions = ([('overlay', known.build.overlay, project.asset_data(overlay))] if overlay else [])
+                        regions += [('executable', known.base, known.data[0x800:])]
+                        result['animation_code'] = regions
+                        result['update_rate'] = 50 if known.build.name.startswith('European') else 60
+                        from formats.sprites.animations import player_scripts
+                        if result['paired_tomba']:
+                            result['animation_users'] = player_scripts(regions, len(frames))
+                        else:
+                            from formats.level.scene import sprite_animations
+                            result['animation_users'] = sprite_animations(project, node.ldar, context).get(candidate.slot, {})
+                    result['paired_key'] = labels.content_key(project.asset_data(candidate))
                     break
+        if node.kind == 'APD':
+            from formats.level.scene import build_scene
+            section = context if context is not None else node.group
+            if not section and len(project.ldars[node.ldar]) > 1:
+                section = 1
+            if section:
+                result['placement_scene'] = build_scene(project, node.ldar, section)
         if node.kind == "WMD":
             result["meshes"] = parse_wmd(data)
         if node.kind == 'FOUR':
@@ -417,7 +462,8 @@ def _prepare_preview(project, node, context=None):
         if data[:4] == b'pQES':
             from formats.archive.containers import sequence
             result['audio'] = ('Music', name, sound.sequence_sources(
-                sequence(data)[0] or data, Path(source).stem or 'Sequence', sound.disc_banks(project), near=source))
+                sequence(data)[0] or data, Path(source).stem or 'Sequence', sound.disc_banks(project), near=source,
+                embedded_area=area_number(node.ldar) if isinstance(node, Asset) and node.kind == 'SEQ' else None))
         else:
             result['audio'] = ('Sounds', name, sound.wvd_sources(data))
     from formats.annotate import regions
@@ -437,11 +483,22 @@ def _prepare_preview(project, node, context=None):
     wfms = []
     from formats.text.wfm import MAGICS
     starts = sorted(at for magic in MAGICS for at in find_all(data, magic))
+    from formats.text.titles import attach, language_of
     for start in starts[:16]:
         try:
-            wfms.append((start, Wfm(data[start:])))
+            wfm = Wfm(data[start:])
         except FormatError as exc:
             result["notes"].append(f"WFM candidate at {start:X}: {exc}")
+            continue
+        # Event titles take their spaces and line breaks from the overlays.
+        if isinstance(node, Asset):
+            laid = attach(wfm, project, table_name(node.ldar)[0])
+        else:
+            laid = attach(wfm, project, language_of(getattr(node, 'path', '')))
+        if laid:
+            result["notes"].append(f"{laid} event titles are spaced and broken into lines as the "
+                                   "game lays them out; the bank itself holds only their letters.")
+        wfms.append((start, wfm))
     result["wfms"] = wfms
     return result
 
@@ -459,6 +516,30 @@ def tolerant_console():
 
 
 class MainWindow(QMainWindow):
+    def eventFilter(self, watched, event):
+        if (event.type() in (QEvent.Type.ShortcutOverride, QEvent.Type.KeyPress)
+                and event.key() == Qt.Key.Key_F2 and QApplication.activeModalWidget() is None
+                and isinstance(watched, QWidget) and watched.window() is self):
+            if event.type() == QEvent.Type.KeyPress and not self.loading.isVisible():
+                self.rename_selected()
+            event.accept()
+            return True
+        if event.type() == QEvent.Type.MouseButtonPress:
+            widget = watched
+            clicked_list = False
+            while isinstance(widget, QWidget):
+                if widget is getattr(self, 'disc_tree', None):
+                    self.rename_target = None
+                    break
+                if hasattr(widget, 'rename_selection'):
+                    self.rename_target = widget
+                    break
+                clicked_list = clicked_list or isinstance(widget, QAbstractItemView)
+                if widget is self and clicked_list:
+                    self.rename_target = False
+                widget = widget.parentWidget()
+        return super().eventFilter(watched, event)
+
     def __init__(self):
         super().__init__()
         tolerant_console()
@@ -479,7 +560,11 @@ class MainWindow(QMainWindow):
         self.persistent = set()
         self.sprite_states = {}
         self.restore_tab = None
-        self.setWindowTitle("TombaEdit")
+        self.setWindowTitle(f"TombaEdit {version}")
+        from gui.widgets.loading import LoadingOverlay
+        self.loading = LoadingOverlay(self)
+        self.rename_target = None
+        QApplication.instance().installEventFilter(self)
         self.setWindowIcon(icon("app"))
         self.resize(1380, 880)
         self.setAcceptDrops(True)
@@ -596,8 +681,9 @@ class MainWindow(QMainWindow):
 
     def make_tree(self):
         tree = QTreeWidget()
-        tree.setHeaderLabels(["Name / resource", "Bytes"])
+        tree.setHeaderLabels(["Name / resource", "Label", "Bytes"])
         tree.setColumnWidth(0, 370)
+        tree.setColumnWidth(1, 160)
         tree.setUniformRowHeights(True)
         tree.setAlternatingRowColors(False)
         tree.setStyleSheet("QTreeWidget::item:selected {background-color: #555555; color: white;} QTreeWidget::item:selected:!active {background-color: #494949; color: white;}")
@@ -627,7 +713,7 @@ class MainWindow(QMainWindow):
     def welcome(self):
         self.clear_tabs()
         self.tabs.addTab(text_view(
-            "TombaEdit 0.1\n\nOpen a BIN / CUE / ISO from File > Open or drop it here.\n\n"
+            f"TombaEdit {version}\n\nOpen a BIN / CUE / ISO from File > Open or drop it here.\n\n"
             "Disc folders\n  The original ISO9660 directory and files. Expand a file to inspect its LDAR resources.\n\n"
             "Areas / sections\n  Base resources and section-specific load groups, named from the area reference.\n"
             "  Select a group to inspect its load records and reconstructed VRAM.\n\n"
@@ -647,7 +733,15 @@ class MainWindow(QMainWindow):
     def submit(self, callback, receiver):
         self.generation += 1
         self.pool.clear()
-        self.pool.start(Job(self.generation, callback, receiver))
+        self.loading.begin(self.statusBar().currentMessage())
+        def finished(generation, result, error):
+            if generation != self.generation:
+                return
+            try:
+                receiver(generation, result, error)
+            finally:
+                self.loading.hide()
+        self.pool.start(Job(self.generation, callback, finished))
 
     def open_path(self, path):
         self.statusBar().showMessage("Reading disc folders and resolving LDAR file links...")
@@ -738,7 +832,7 @@ class MainWindow(QMainWindow):
                     self.asset_items[(path, asset.record_offset)] = item
         self.disc_tree.blockSignals(False)
         self.disc_tree.setUpdatesEnabled(True)
-        self.setWindowTitle(f"TombaEdit - {project.disc.source.name}")
+        self.setWindowTitle(f"TombaEdit {version} - {project.disc.source.name}")
         self.settings.setValue("last_dir", str(project.disc.source.parent))
         assets = sum(len(g.assets) for gs in project.ldars.values() for g in gs)
         self.count_label.setText(f"{len(project.disc.files):,} files | {len(project.ldars)} LDARs | {assets:,} resources")
@@ -758,7 +852,7 @@ class MainWindow(QMainWindow):
         self.statusBar().showMessage("Disc ready" + (f" | {len(project.warnings)} diagnostic(s); see overview" if project.warnings else ""))
 
     def item(self, parent, label, node, size=None):
-        item = QTreeWidgetItem(parent, [label, f"{size:,}" if size is not None else ""])
+        item = QTreeWidgetItem(parent, [label, '', f"{size:,}" if size is not None else ""])
         item.setData(0, ROLE, node)
         folder = isinstance(node, tuple) or isinstance(node, DiscEntry) and node.directory
         standard = QStyle.StandardPixmap.SP_DirIcon
@@ -808,7 +902,7 @@ class MainWindow(QMainWindow):
         self.current_node = node
         self.context.blockSignals(True)
         self.context.clear()
-        has_context = isinstance(node, Asset) and node.kind in ("SPR", "WMD", "GRPX", "WPP")
+        has_context = isinstance(node, Asset) and node.kind in ("SPR", "WMD", "GRPX", "WPP", "APD")
         self.context.setVisible(has_context)
         if has_context:
             area = area_number(node.ldar)
@@ -882,9 +976,9 @@ class MainWindow(QMainWindow):
         try:
             if "folder" in result:
                 folder = result["folder"]
-                self.add_table([(e.path.split("/")[-1], "Folder" if e.directory else Path(e.path).suffix,
+                self.add_table([(e.path.split("/")[-1], self.node_label(e), "Folder" if e.directory else Path(e.path).suffix,
                                  str(e.size), str(e.lba)) for e in folder.children],
-                               ["Name", "Type", "Bytes", "LBA"], "Contents",
+                               ["Name", "Label", "Type", "Bytes", "LBA"], "Contents",
                                lambda row: self.jump_file(folder.children[row].path))
             if "group" in result:
                 group = result["group"]
@@ -942,6 +1036,8 @@ class MainWindow(QMainWindow):
                                                 (node.code >> 8) & 15 == 0)
                 view = SpriteView(result['sprites'], result['vram'], result.get('sprite_pages'), renderer,
                                   result.get('sprite_default'), result.get('sprite_cluts'))
+                view.styles = result.get('sprite_styles', {})
+                view.cache.clear()
                 view.set_names(result.get('sprite_names', {}))
                 view.unavailable = result.get('sprite_unavailable', set())
                 view.set_labels(self.labels, self.persist_labels)
@@ -950,9 +1046,41 @@ class MainWindow(QMainWindow):
                 view.restore_state(self.sprite_states.get(key, []))
                 view.selection_changed.connect(lambda state, k=key: self.sprite_states.__setitem__(k, state))
                 self.tabs.addTab(view, 'Sprites')
+                if 'animation_code' in result:
+                    from formats.sprites.anim_viewer import AnimationView
+                    frames = result['sprites']
+
+                    def picture(frame, view=view, frames=frames):
+                        """A frame as the Sprites tab draws it, with its offset."""
+                        if not 0 <= frame < len(frames) or not frames[frame]:
+                            return None
+                        view.frame_image(frame)
+                        image = view.cache.get(frame)
+                        if image is None or image.width <= 1:
+                            return None
+                        return image, min(p[13] for p in frames[frame]), min(p[14] for p in frames[frame])
+                    animations = AnimationView(result['animation_code'], len(frames), picture,
+                                               result.get('animation_users'), result.get('update_rate', 60),
+                                               node.label.split('|')[0].strip())
+                    animations.set_labels(self.labels, self.persist_labels, labels.content_key(result['data']))
+                    self.tabs.addTab(animations, 'Animations')
+                    view.set_animations(animations)
             if isinstance(node, Asset) and node.kind == 'APD':
                 from formats.collision.structured_viewer import StructuredView
-                self.tabs.addTab(StructuredView(self.current_data, node.kind), 'Placements')
+                placements = StructuredView(self.current_data, node.kind)
+                self.tabs.addTab(placements, 'Placements')
+                if 'placement_scene' in result:
+                    scene = result['placement_scene']
+                    self.level_view.set_scene(scene)
+                    self.tabs.addTab(self.level_view, 'Placements in level')
+                    by_offset = {e.placement.offset: i for i, e in enumerate(scene.entries)
+                                 if e.source is node and e.placement is not None}
+                    def select_placement(row, *_, view=self.level_view, offsets=by_offset, table=placements):
+                        if 0 <= row < len(table.placements):
+                            i = offsets.get(table.placements[row].offset)
+                            if i is not None:
+                                view.objects.setCurrentCell(i, 1)
+                    placements.table.currentCellChanged.connect(select_placement)
             if isinstance(node, Asset) and node.kind == 'WHM':
                 from formats.collision.whm_viewer import WhmView
                 from formats.collision.structured_viewer import StructuredView
@@ -970,6 +1098,7 @@ class MainWindow(QMainWindow):
                     result['vram'], result.get('paired_sprites'), result.get('paired_tomba', True))
                     if kind == 'frames' else (), result['vram'])
                 self.tabs.addTab(pictures_view, 'Pictures')
+                pictures_view.set_labels(self.labels, self.persist_labels)
                 if 'paired_sprites' in result:
                     view = SpriteView(result['paired_sprites'], result['vram'], renderer=picture_renderer(
                         result['paired_sprites'], pictures, result['vram'], result['paired_tomba']))
@@ -978,6 +1107,19 @@ class MainWindow(QMainWindow):
                             sprite.bank.setCurrentCell(row, 0) if 0 <= row < sprite.bank.rowCount() else None)
                     view.set_labels(self.labels, self.persist_labels)
                     self.tabs.addTab(view, 'Assembled frames')
+                    if 'animation_code' in result:
+                        from formats.sprites.anim_viewer import AnimationView
+                        frames = result['paired_sprites']
+                        def wpp_picture(frame, view=view, frames=frames):
+                            if not 0 <= frame < len(frames) or not frames[frame]:
+                                return None
+                            view.frame_image(frame)
+                            return view.cache[frame], min(p[13] for p in frames[frame]), min(p[14] for p in frames[frame])
+                        animations = AnimationView(result['animation_code'], len(frames), wpp_picture,
+                                                   result.get('animation_users'), result.get('update_rate', 60), self.export_stem(node))
+                        animations.set_labels(self.labels, self.persist_labels, result['paired_key'])
+                        self.tabs.addTab(animations, 'Animations')
+                        view.set_animations(animations)
                     pictures_view.clut_selected.connect(
                         lambda word, sprite=view: sprite.override_palette(word, scope=2))
                     view.vram_view.clut_picked.connect(
@@ -992,6 +1134,8 @@ class MainWindow(QMainWindow):
                 # bytes are the view.
                 from formats.annotate import OVERLAY_BASE
                 base = result.get('overlay_base') or OVERLAY_BASE
+                from formats.script.ins_viewer import InsView
+                self.tabs.addTab(InsView(self.current_data, base), 'Code')
                 self.tabs.addTab(HexView(self.current_data, result.get('regions', ()),
                                          note=f'addresses assume the overlay base 0x{base:08X}'), 'Structure')
             if isinstance(node, Asset) and node.kind in ('WPP', 'FOUR', 'SPC', 'SAP', 'Unknown'):
@@ -1104,11 +1248,16 @@ class MainWindow(QMainWindow):
         self.tabs.addTab(table, title)
 
     def asset_table(self, assets):
-        self.add_table([(a.source.path if a.source else "Unresolved", f"{a.kind} {a.code:04X}",
+        self.add_table([(a.source.path if a.source else "Unresolved", self.node_label(a), f"{a.kind} {a.code:04X}",
                          f"{a.offset:06X}", f"{a.size:,}", "base" if not a.group else f"{a.group - 1:02d}",
                          str(a.rect) if a.rect else f"{a.ram:08X}") for a in assets],
-                       ["Source file (double-click to open)", "Type", "Offset", "Bytes", "Section", "VRAM / RAM"],
+                       ["Source file (double-click to open)", "Label", "Type", "Offset", "Bytes", "Section", "VRAM / RAM"],
                        "Resources", lambda row: self.jump_asset(assets[row]))
+
+    def node_label(self, node):
+        key = self.node_key(node)
+        return (self.labels.label_for(self.label_hashes.get(key, ''))
+                or self.labels.bins.get(repr(key).upper(), ''))
 
     def jump_file(self, path):
         self.search.clear()
@@ -1141,7 +1290,7 @@ class MainWindow(QMainWindow):
     def filter_tree(self, text):
         needle = text.casefold().strip()
         def visit(item, parent_match=False):
-            own = parent_match or not needle or needle in (item.text(0) + " " + item.toolTip(0)).casefold()
+            own = parent_match or not needle or needle in (' '.join((item.text(0), item.text(1), item.toolTip(0)))).casefold()
             child_match = False
             for i in range(item.childCount()):
                 child_match = visit(item.child(i), own) or child_match
@@ -1247,6 +1396,19 @@ class MainWindow(QMainWindow):
         self.statusBar().showMessage(f'{self.labels.named} names written to {path}')
 
     def rename_selected(self):
+        target = self.rename_target
+        if target is not None:
+            if target is False:
+                self.statusBar().showMessage('This view has no nameable entry.')
+                return
+            try:
+                if target.isVisible() and hasattr(target, 'rename_selection'):
+                    target.rename_selection()
+                    return
+            except RuntimeError:
+                self.rename_target = None
+            self.statusBar().showMessage('Select an entry in the visible viewer, or click a disc tree item to name that file.')
+            return
         node = self.current_node
         if node is None or self.project is None:
             return
@@ -1283,11 +1445,12 @@ class MainWindow(QMainWindow):
                 name = self.labels.label_for(self.label_hashes.get(key, ''))
                 if not name:
                     name = self.labels.bins.get(repr(key).upper(), '')
-                text = f'{name} | {original}' if name else original
+                text = original
                 folder = isinstance(node, tuple) or isinstance(node, DiscEntry) and node.directory
                 if item.childCount() or folder:
                     text += f' ({item.childCount()})'
                 item.setText(0, text)
+                item.setText(1, name or '')
             for i in range(item.childCount()):
                 visit(item.child(i))
         for i in range(self.disc_tree.topLevelItemCount()):
@@ -1460,7 +1623,7 @@ class MainWindow(QMainWindow):
                 QMessageBox.warning(self, 'Cannot export labels', str(exc))
 
     def about(self):
-        QMessageBox.about(self, "TombaEdit 0.1", "Tomba! disc and asset browser\n\nBIN/CUE/ISO/IMG | LDAR | GAM | WMD | FOUR | SPR | WPP | WHM | APD | WFM | SEQ | WVD | STR\nTIM | TMD | VAB | MIDI | XA | archives of other games\n\nFormat research: vervalkon, zerovii, Woolmagician, hansbonini/psx_tomba, afsenovilla/Tombi-Decomp.\nSee README.md and docs/formats.md for format details and known gaps.")
+        QMessageBox.about(self, f"TombaEdit {version}", "Tomba! disc and asset browser\n\nBIN/CUE/ISO/IMG | LDAR | GAM | WMD | FOUR | SPR | WPP | WHM | APD | WFM | SEQ | WVD | STR\nTIM | TMD | VAB | MIDI | XA | archives of other games\n\nFormat research: vervalkon, zerovii, Woolmagician, hansbonini/psx_tomba, afsenovilla/Tombi-Decomp.\nSee README.md and docs/formats.md for format details and known gaps.")
 
     def dragEnterEvent(self, event):
         if event.mimeData().hasUrls() and any(u.isLocalFile() and Path(u.toLocalFile()).suffix.lower() in DISC_SUFFIXES for u in event.mimeData().urls()):

@@ -128,7 +128,7 @@ def guess_page(frames, vram, preferred=()):
     return 0
 
 
-def render_sprite(parts, vram, page_base=0, shard=None, tpage=None, clut=None, grey_missing=False):
+def render_sprite(parts, vram, page_base=0, shard=None, tpage=None, clut=None, grey_missing=False, blend=False):
     """Composite one frame. With `tpage` the parts are read from VRAM the way
     the game draws them: the value is added to each part's page word and
     `clut` replaces the part palette. Without it the older page guesses
@@ -156,8 +156,39 @@ def render_sprite(parts, vram, page_base=0, shard=None, tpage=None, clut=None, g
             else:
                 pages[key] = texture_page(vram, (page & ~31) | (((page & 31) + page_base) & 31), palette)
         tile = sprite_part_image(pages[key], p)
-        image.alpha_composite(tile, (x - left, y - top))
+        if blend and tpage is not None:
+            marked = sprite_part_image(texture_page(vram, part_page(p, tpage), palette, flagged=True), p)
+            composite_psx(image, tile, (x - left, y - top),
+                          np.asarray(marked)[..., 3] != 0, part_page(p, tpage) >> 5 & 3)
+        else:
+            image.alpha_composite(tile, (x - left, y - top))
     return image
+
+
+def composite_psx(image, tile, position, marked, mode):
+    """GPU STP blending in five-bit channels against the current picture.
+
+    Empty pixels of a transparent export use a black framebuffer. Additive
+    and subtractive effects depend on the background in the running game.
+    """
+    x, y = position
+    source = np.asarray(tile).copy()
+    target = np.asarray(image.crop((x, y, x + tile.width, y + tile.height))).copy()
+    back, front = target[..., :3].astype(np.int16) >> 3, source[..., :3].astype(np.int16) >> 3
+    if mode == 0:
+        rgb = (back >> 1) + (front >> 1)
+    elif mode == 1:
+        rgb = back + front
+    elif mode == 2:
+        rgb = back - front
+    else:
+        rgb = back + (front >> 2)
+    rgb = np.clip(rgb, 0, 31).astype(np.uint8)
+    rgb = (rgb << 3) | (rgb >> 2)
+    visible = source[..., 3] != 0
+    target[visible] = source[visible]
+    target[..., :3][marked & visible] = rgb[marked & visible]
+    image.paste(Image.fromarray(target), (x, y))
 
 
 def sprite_part_image(page, part):

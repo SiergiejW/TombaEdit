@@ -165,6 +165,28 @@ base, the SPR slot and a list of animations. `SetObjAnim` (81) writes the
 animation's number and its first frame to the object's words `+74` and
 `+76`, and the routine takes that entry of the list. Dwarf Village's
 villagers, class 9, are made this way and are in no placement list.
+`CreateObject` also sets `+6B`, the shade a town draws the object with, to
+80 (to 1 for class 4).
+
+Class 3's type 2E has no routine in the area overlays: its table entry
+points at data there. Its routine is in the town overlays (`INFO.BIN`, at
+the same address), and Dwarf Village loads `INFO.BIN` in place of `X02.BIN`.
+It reads a twelve-byte record by subtype: texture page base, palette word,
+SPR slot and a list of animations. The houses and the well are subtype 0,
+drawn through the palette at (128, 511); subtype 1 are their shadows.
+
+A few arguments are worked out by the script: a position copied from
+`GetObjPosition` or `GetPlayerPosition` (both leave X, Y and Z in r0 to r2)
+and moved by `ADD`. They are followed through the straight code before the
+call. Two villagers of Dwarf Village appear next to Tomba, and one object
+of the Elder's hut is placed 16 units right of script object 1.
+
+The 1997 builds pick and start scripts with the same routines and the same
+group numbers (0 `SCR0100`, 1 `0200`, 2 `0210`, 3 to 5 `0140` to `0120`, 6
+`0000`, 7 `0220`, 8 `0201`); their discs have no `0201` or `0220`. Their
+game instructions match the released game's up to `A5`. After it the sampler
+has only `Yield` (A6), and the Japanese demo `MoveCamera` (A6) and `Yield`
+(A7). `CreateObject` takes the same arguments and makes the same classes.
 
 ## WMD
 
@@ -232,11 +254,97 @@ part's CLUT with the word at `+08`, and bit 7 enables semi-transparency.
 ## Animation scripts
 
 An object's `+24` points at its current animation step (routines 800229FC to
-80022C04). A step is eight bytes: frame number, two words not used by the
-stepping code, and a control word. The low fourteen bits of the control word
-are the step's duration in game frames. The top two bits say what follows:
-`0000` the next step, `8000` nothing, the frame holds, and `4000` or `C000` a
-jump through the pointer stored after the step, which is how loops are made.
+80022C04). A step is eight bytes: frame number, hit box number, a signed
+argument some routines read, and a control word. The low fourteen bits of
+the control word are the step's duration in updates. The top two bits say
+what follows: `0000` the next step, `8000` nothing, the frame holds, and
+`4000` or `C000` a jump through the pointer stored after the step, which is
+how loops are made; `C000` also tells the object's routine the animation
+ended. The hit box number indexes a table of four-byte boxes the stepping
+routine copies to `+6C` (Tombi-Decomp's `include/tomba/anim.h`).
+
+The game updates its objects once per field: the main loop waits until the
+field counter at `1F8001E8` reaches the word at `1F8001EA`, which is 1 in
+every room of the European disc. Steps therefore last 1/60 s on the NTSC
+discs and 1/50 s on the European one.
+
+Scripts are found where code reaches them: tables of script pointers,
+addresses built with `lui` and an offset, and other pointers to a run of
+valid steps. The routine that names a script or its table usually also
+loads its SPR bank from `1F8002C8 + 4 × slot`, but town and script objects
+take the slot from a record, so the bank of a script is only certain when
+an object traced in the section starts on it.
+
+## Drawing
+
+Each frame the game sorts its objects into lists by category (`+1C`) and
+draws each list with its own routine (European build: category 1 at
+80050EA4, 2 at 80054F54, 3 at 80055174, 4 at 80057288, 5 at 800571A8, 7 at
+80057EDC, 8 at 80057DFC). Every routine keeps its list's length and address
+in two scratchpad words; on the first pass of a frame (`1F8001C6` clear) it
+reads them from 1F800244/218, 246/21C, 24A/220, 24C/224, 248/228, 240/22C
+and 242/230 for categories 1, 2, 3, 4, 5, 7 and 8, and notes them in
+1F80024E/25C up to 25A/270 for a second pass. The words are the same in
+every build, so the routines are found in any executable by them.
+
+The routine picks a draw routine by the object's draw mode `+0A`, through
+`getObjectRenderKind`, which turns some modes into scaled variants by the
+object's depth from the camera. Draw mode 0D goes to one of three town
+renderers by the byte at 800A603A (European build), which routine 800310D0
+sets every frame from the area and section: 1 in Dwarf Village and the
+Hidden Village's first section (`INFO.BIN`), 2 in Baccus Village, Baccus
+Pier and the Hidden Village (`INFO2.BIN`), 3 in Dwarf Village's
+underground (`INFO3.BIN`), 0 elsewhere. The town renderers project the
+object with the GTE and draw each part as a textured quad: category 3 with
+the object's palette `+08`, blended, and darkened to 30 for odd subtypes;
+categories 2 and 9 with the part's own palette, mirrored unless `+2E` is 2.
+Objects with `+6B` 0 are not drawn.
+
+The level editor draws a traced object by running its category's routine,
+first pass, on a list holding only that object, in an R3000A and GTE
+interpreter holding the tracer's memory. The camera matrix at `1F8000C0` is
+set to put the object's position on a point of the screen at unit scale,
+and the camera words `1F8000EE` and `1F8000F6` to the object's own, so no
+depth scaling applies. The primitives linked into the ordering table at
+`1F8001E0` are read back, relative to that point. The routines leave out
+parts that lie wholly off the screen, so an object that reaches an edge is
+drawn again from four more points and the parts are joined.
+
+Some routines link the full address of a packet into an ordering table
+slot, so the slot's own word has 80 in its size byte: the GPU then reads
+128 words of the table as no-operation commands before the packet. A
+packet is therefore read as a run of commands.
+
+## Spawned objects
+
+Objects come from four places: the placement lists, the event scripts, the
+section's controllers, and other objects. All are made by allocators that
+take a slot from a free list: the pointer and count are scratchpad words,
+the same in every build (main pool 1F800208/238 for layers 2 to 5, Tomba's
+1F800204/236, models 1F80020C/23A, controllers 1F800210/23E, backdrops
+1F800214/23C). The tracer gives each list spare cleared slots; whatever an
+object takes while it is traced is spawned by it, and is traced in turn
+from the state its spawner left, with the spawner's memory where its
+pointers point.
+
+The record spawner (routine 8004CB00) also sets `+6B` from byte 15 of the
+record, the room number (one less for a section's own list), `+1D` from
+byte 0, the box `+6C` of layer 3 types 18, 19, 24 and 33 from byte 14, and
+`+A4` with the model link.
+
+A section's controllers are listed in the executable by area and section,
+four bytes each (type, variant, unused, start now) up to FF (routine
+8004BFE4; tables at 8007BEE4 and 8007BF34 in the European build, 8007F6A4
+and 8007F6F4 in US retail). Each is a 3C-byte object updated every field by
+the routine its type names. The tracer runs each for 90 updates: Baccus
+Village's townsfolk, the launchers of the windy mountain and many
+sections' talking objects come from them.
+
+Compared with the object pools of every room of the European disc after
+one second of play (in Tombi-Decomp's own interpreter, through the game's
+debug area select), the editor now has every kind of object in 70 of the
+106 rooms that load; 98 of 3336 objects are missing, most spawned by Tomba
+or under conditions a new game does not meet.
 
 ## WPP
 
@@ -688,8 +796,10 @@ Fit/resize checks, the clock-room GUI regression and multi-build presentation.
   [game formats](https://github.com/hansbonini/psx_tomba/blob/main/docs/game-formats.md),
   and [regional file analysis](https://github.com/hansbonini/psx_tomba/blob/main/docs/file-analysis.md).
 - [afsenovilla/Tombi-Decomp](https://github.com/afsenovilla/Tombi-Decomp), a matching decompilation
-  of the European release: the sprite, backdrop and item routines described here were read
-  against its source.
+  of the European release: the sprite, backdrop, item, draw, allocator, controller and
+  animation routines described here were read against its source and notes. Its R3000A and
+  GTE interpreter (`tools/psxemu`, MIT licence) runs the draw routines in `psx/mips`, and its
+  emulator's room captures were used to check the objects of every room.
   Some reference descriptions conflict; real-disc validation takes precedence.
 
 No game data is included with the application.

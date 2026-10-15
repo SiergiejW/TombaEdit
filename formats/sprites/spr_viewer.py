@@ -50,6 +50,7 @@ class SpriteView(QWidget):
         self.frames, self.vram, self.renderer = frames, vram, renderer
         self.pages = dict(pages or {})
         self.cluts = dict(cluts or {})  # CLUTs supplied by a custom drawing object
+        self.styles = {}
         self.known = sorted(self.pages)
         self.borrowed = {}              # frame nothing places -> the page base it is drawn with
         self.lender = {}                # and the placed frame that page was taken from
@@ -264,6 +265,11 @@ class SpriteView(QWidget):
         if accepted:
             self.label_frames(rows, name.strip())
 
+    def rename_selection(self):
+        rows = self.selected_indices()
+        if rows and self.label_set is not None:
+            self.rename_frames(rows)
+
     def label_frames(self, rows, name):
         for row in rows:
             key = self.frame_key(row)
@@ -361,7 +367,7 @@ class SpriteView(QWidget):
                          for n, part in enumerate(self.frames[index])]
                 self.cache[index] = self.renderer(index, overrides) if self.renderer else render_sprite(
                     parts, vram, tpage=base,
-                    grey_missing=self.grey.isChecked())
+                    grey_missing=self.grey.isChecked(), blend=self.styles.get(index, {}).get('blend', False))
             except FormatError:
                 self.cache[index] = Image.new('RGBA', (1, 1))
         image, border = self.cache[index], 0
@@ -447,6 +453,10 @@ class SpriteView(QWidget):
         announce(f'sprite {row:03d} | ' + (f'"{self.label(row)}" | ' if self.label(row) else '')
               + f'{", ".join(self.names.get(row, ())) or "not placed"} | {len(frame)} pieces'
               + ('' if self.renderer or not frame else f' | texture page base 0x{self.base_for(row):X}'))
+
+    def set_animations(self, player):
+        # Sprite inspection remains static. Playback belongs to AnimationView.
+        self.animation_player = player
 
     def frame_sprite(self, row, column):
         if row < 0:

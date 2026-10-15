@@ -734,9 +734,9 @@ class ModelView(QWidget):
         self.objects.setHorizontalHeaderLabels(['Show', 'Model', 'Tris', 'Quads', 'Offset', 'Label'])
         # The label is listed beside the model it names, and only where
         # models can be named.
-        self.objects.horizontalHeader().moveSection(LABEL, 2)
+        self.objects.horizontalHeader().moveSection(LABEL, 1)
         self.objects.setColumnWidth(LABEL, 150)
-        self.objects.setColumnHidden(LABEL, True)
+        self.objects.setColumnHidden(LABEL, False)
         self.objects.setContextMenuPolicy(Qt.ContextMenuPolicy.CustomContextMenu)
         self.objects.customContextMenuRequested.connect(self.objects_menu)
         self.objects.verticalHeader().hide()
@@ -787,7 +787,7 @@ class ModelView(QWidget):
         self.rename_callback = rename_callback
         self.label_lookup = label_lookup
         self.model_names = names or {}
-        self.objects.setColumnHidden(LABEL, rename_callback is None)
+        self.objects.setColumnHidden(LABEL, False)
         # A list with labels needs the room for them.
         sizes = self.split.sizes()
         if rename_callback is not None and sum(sizes) and sizes[0] < 480:
@@ -879,6 +879,9 @@ class ModelView(QWidget):
         if accepted:
             self.rename_callback(rows, name.strip())
             self.reload_labels()
+
+    def rename_selection(self):
+        self.rename_model()
 
     def model_selected(self, row, column, old_row, old_column):
         self.canvas.selected = None

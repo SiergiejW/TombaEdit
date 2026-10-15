@@ -31,6 +31,12 @@ LIST_READY = 0x1F8001C6         # nonzero: the category lists were built this fr
 LISTS = {1: (0x1F80024E, 0x1F80025C), 2: (0x1F800250, 0x1F800260), 3: (0x1F800252, 0x1F800264),
          4: (0x1F800254, 0x1F800268), 5: (0x1F800256, 0x1F80026C), 8: (0x1F800258, 0x1F800274),
          7: (0x1F80025A, 0x1F800270)}
+# The words each routine takes its list from on the first pass of a frame,
+# when 1F8001C6 is clear and it also notes the list for a second pass. The
+# second pass draws some modes differently, so the capture takes the first.
+BUILDING = {1: (0x1F800244, 0x1F800218), 2: (0x1F800246, 0x1F80021C), 3: (0x1F80024A, 0x1F800220),
+            4: (0x1F80024C, 0x1F800224), 5: (0x1F800248, 0x1F800228), 7: (0x1F800240, 0x1F80022C),
+            8: (0x1F800242, 0x1F800230)}
 PACKETS, ORDERING = 0x1F800164, 0x1F8001E0      # next free primitive, ordering table
 MATRIX = 0x1F8000C0                              # camera rotation and translation
 CAMERA_ALONG, CAMERA_DEPTH = 0x1F8000EE, 0x1F8000F6
@@ -43,10 +49,14 @@ ORIGINS = ((160, 120), (-96, 120), (416, 120), (160, -88), (160, 328))
 SCREEN_DEPTH = 512
 STACK = 0x803F0000
 STEPS = 400000
-# The town renderer the category routines pick for draw mode 0D: the
-# routine at 800310D0 of the European build sets it from the area and
-# section each frame, which comes to the overlay the section loads.
-TOWNS = {'INFO.BIN': 1, 'INFO2.BIN': 2, 'INFO3.BIN': 3}
+def town_of(name):
+    """The town renderer the category routines pick for draw mode 0D. The
+    routine at 800310D0 of the European build sets it from the area and
+    section each frame, which comes to the overlay the section loads: INFO,
+    INFO2 or INFO3 (I0NFO to I8NFO3 by language on the European disc)."""
+    import re
+    match = re.fullmatch(r'I(?:\d)?NFO(\d?)\.BIN', name.upper())
+    return int(match.group(1) or 1) if match else 0
 
 _LOOPS = {}
 
@@ -252,8 +262,8 @@ class DrawCapture:
                 cpu.w32(obj + 0x24, LIST_AT + 0x10)
             if self.town_byte:
                 cpu.w8(self.town_byte, self.town)
-            count, items = LISTS[category]
-            cpu.w16(LIST_READY, 1)
+            count, items = BUILDING[category]
+            cpu.w16(LIST_READY, 0)
             cpu.w16(count, 1)
             cpu.w32(items, LIST_AT)
             cpu.w32(LIST_AT, obj)

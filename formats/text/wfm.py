@@ -71,8 +71,14 @@ class Dialogue:
     warning: str = ""
 
     characters: list = field(default_factory=list)
+    # An event title's (column, row, flags) per letter, from the overlays
+    # (formats.text.titles); None for other text.
+    layout: list = None
 
     def script(self):
+        if self.layout:
+            from formats.text.titles import text
+            return composed(text(self, self.layout, self.letter))
         parts = []
         for word, args in self.tokens:
             if word >= 0xFF00:
@@ -87,6 +93,11 @@ class Dialogue:
                 char = self.characters[gid] if gid < len(self.characters) else None
                 parts.append(char if char is not None else f'[g{gid:03X}]')
         return composed("".join(parts)).strip() + (f"\n\n{self.warning}" if self.warning else "")
+
+    def letter(self, word, unknown='[g{:03X}]'):
+        gid = word & 0xFFF
+        char = self.characters[gid] if gid < len(self.characters) else None
+        return char if char is not None else unknown.format(gid)
 
 
 # Where the glyph pointer table starts. WFM1, used by the builds from 1997,

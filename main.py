@@ -2,9 +2,13 @@
 import sys
 import traceback
 from pathlib import Path
+from version import version
 
 
 def main():
+    if '--version' in sys.argv:
+        print(version)
+        return 0
     from PyQt6.QtCore import Qt
     from PyQt6.QtWidgets import QApplication
     # Set before QApplication: inserting a GL viewer must not recreate the
@@ -15,6 +19,7 @@ def main():
     from icons.icons import icon
     app.setWindowIcon(icon("app"))
     app.setApplicationName("TombaEdit")
+    app.setApplicationVersion(version)
     app.setOrganizationName("TombaEdit")
     def report_error(kind, value, tb):
         from PyQt6.QtWidgets import QMessageBox

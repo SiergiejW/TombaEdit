@@ -242,6 +242,59 @@ class InitialPoseResolver:
         self.cache[placement.raw] = found
         return found
 
+    def model_colour_animation(self, placement, model):
+        """Run the model writer called by an object's update states.
+
+        A model can be a zero-colour template until a later state fills it.
+        Execute actual callees in isolation and accept only colour changes
+        to the same validated mesh; no material is guessed or copied in.
+        """
+        state = self.object_states.get((placement.raw, placement.position))
+        if state is None or model not in self.model_spans:
+            return [], None
+        from formats.sprites.ownership import Ownership
+        from formats.models.wmd import parse_wmd
+        if not hasattr(self, 'animation_ownership'):
+            self.animation_ownership = Ownership([
+                ('overlay', self.build.overlay, self.overlay_code),
+                ('executable', self.base, self.exe[0x800:])])
+        pc = self.handler_address(placement)
+        calls = self.animation_ownership.scan(pc)[1]
+        address, size = self.model_spans[model]
+        original = self.read(address, size)
+        envelope = struct.pack('<2I', 1, 8)
+        reference = parse_wmd(envelope + original)[0]
+        positions = [p['vertices'] for p in reference.polygons]
+        for call in sorted(calls):
+            if self.animation_ownership.memory.region(call) != 'overlay':
+                continue
+            self.write(0x80000000, self.baseline)
+            self.write(0x1F800000, self.scratch)
+            self.write(OBJECT, state)
+            self.write(address, original)
+            self.write(OBJECT + 6, b'\0')
+            seen, frames = set(), []
+            try:
+                for _ in range(32):
+                    self.run_handler(call, OBJECT, 30000)
+                    now = self.read(address, size)
+                    if now == original:
+                        break
+                    mesh = parse_wmd(envelope + now)[0]
+                    if ([p['vertices'] for p in mesh.polygons] != positions or
+                            not any(np.any(p['colors']) for p in mesh.polygons)):
+                        break
+                    if now in seen:
+                        self.write(address, original)
+                        return frames, call
+                    seen.add(now)
+                    frames.append((now, 1))
+            except Exception:
+                pass
+            finally:
+                self.write(address, original)
+        return [], None
+
     def backdrop_motion(self, obj, pc, placement):
         """How a layer 7 object reaches the screen.
 
@@ -303,6 +356,39 @@ class InitialPoseResolver:
                 break
             address = self.read_word(address + 8) if control & 0x4000 else address + 8
         return frames
+
+    def code_animations(self, pc, slot, count):
+        """Scripts assigned to anim +24 by this object's reachable code."""
+        if not pc or not count:
+            return {}
+        if not hasattr(self, 'animation_ownership'):
+            from formats.sprites.ownership import Ownership
+            self.animation_ownership = Ownership([
+                ('overlay', self.build.overlay, self.overlay_code),
+                ('executable', self.base, self.exe[0x800:])])
+        return self.animation_ownership.scripts(pc, slot, count)
+
+    def animation_preview(self, placement, visual):
+        """An assigned motion containing the held initialization pose.
+
+        Initializers often select a one-frame wait. Use its handler's motion
+        containing that pose for inspection; this is not a simulation of AI.
+        """
+        if len(visual.get('frames', ())) != 1 or placement.layer == 7:
+            return visual
+        slot = visual.get('sprite')
+        if slot is None:
+            return visual
+        bank = self.read_word(SPR_TABLE + slot * 4)
+        count = struct.unpack('<H', self.read(bank + 2, 2))[0] // 4
+        frame = visual['frames'][0][0]
+        choices = [s for s in self.code_animations(self.handler_address(placement), slot, count).values()
+                   if frame in s.frames and len(set(s.frames)) > 1 and s.loop is not None]
+        if not choices:
+            return visual
+        script = min(choices, key=lambda s: (len(s.steps), s.address))
+        return dict(visual, frames=[(s.frame, s.ticks or 65536) for s in script.steps],
+                    animation_preview=script.address, animation_initial=visual['animation_address'])
 
     def code_frames(self, pc, near, count):
         """Frames of the other animations an object's code can start.
@@ -560,14 +646,16 @@ class InitialPoseResolver:
             return None
         if (key, frame) not in self.drawn:
             if self.drawer is None:
-                from formats.level.draw import DrawCapture, TOWNS
-                self.drawer = DrawCapture(self.exe, self.base, self.read, TOWNS.get(self.town, 0))
+                from formats.level.draw import DrawCapture, town_of
+                self.drawer = DrawCapture(self.exe, self.base, self.read, town_of(self.town))
                 self.drawer.load([(0x80000000, self.baseline), (SPR_MEMORY, WMD_MEMORY - SPR_MEMORY)])
             obj, nearby, scratch = state
             prims = None
             if self.drawer.available:
                 try:
-                    prims = self.drawer.capture(OBJECT, obj, scratch, frame_entry=frame,
+                    # The category byte is cleared when an object frees
+                    # itself; its layer is the list it was drawn from.
+                    prims = self.drawer.capture(OBJECT, obj, scratch, category=placement.layer, frame_entry=frame,
                                                 memory=[(OBJECT + 0x4000, nearby)])
                 except Exception:
                     prims = None
@@ -633,6 +721,7 @@ class InitialPoseResolver:
                 model = self.read_word(obj + 0xA0)
                 if model in self.model_pointers:
                     result['model'] = self.model_pointers[model]
+                    result['lit'] = bool(self.read(obj + 0xA4, 1)[0])
                     result['scale'] = struct.unpack('<3h', self.read(obj + 0x74, 6))
                     result['rotation'] = struct.unpack('<3i', self.read(obj + 0x84, 12))
                     self.object_states[(raw, placement.position)] = self.read(obj, 0x200)
@@ -663,6 +752,7 @@ class InitialPoseResolver:
                                       tpage=struct.unpack_from('<H', state, 0x1E)[0],
                                       clut=struct.unpack_from('<H', state, 8)[0] if state[0xD] & 1 else None,
                                       blend=bool(state[0xD] & 0x80))
+                        result['shade'] = self.read(obj + 0x6B, 1)[0]
                         result['sort_bias'] = struct.unpack_from('<b', state, 0xF)[0]
                         result['sort_fixed'] = bool(state[0xB])
                         result['sort_depth'] = struct.unpack_from('<h', state, 0x1A)[0]

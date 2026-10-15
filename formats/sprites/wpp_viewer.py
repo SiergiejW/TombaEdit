@@ -7,7 +7,7 @@ from PIL import Image, ImageDraw
 from PyQt6.QtCore import Qt, pyqtSignal, QTimer
 from PyQt6.QtWidgets import (QWidget, QVBoxLayout, QHBoxLayout, QLabel, QComboBox, QCheckBox,
     QPushButton, QSplitter, QTableWidget, QTableWidgetItem, QAbstractItemView,
-    QHeaderView, QFileDialog, QMessageBox)
+    QHeaderView, QFileDialog, QMessageBox, QInputDialog)
 from gui.widgets.image_view import ImageView, file_stem
 from gui.widgets.sheet_layout import SpacingControls
 from gui.widgets.columns import adjustable
@@ -22,6 +22,7 @@ class WppView(QWidget):
         super().__init__()
         self.kind, self.pictures, self.palettes = kind, pictures, list(palettes)
         self.vram, self.custom_clut = vram, None
+        self.label_set, self.save_labels = None, None
         self.export_name = 'pictures'   # prefix of default file names, set by the window
         self.relayout = QTimer(self)
         self.relayout.setSingleShot(True)
@@ -56,8 +57,8 @@ class WppView(QWidget):
         saves.addStretch()
         layout.addLayout(saves)
         split = QSplitter()
-        self.table = QTableWidget(len(pictures), 5)
-        self.table.setHorizontalHeaderLabels(['Picture', 'Width', 'Height', 'Packed', 'Offset'])
+        self.table = QTableWidget(len(pictures), 6)
+        self.table.setHorizontalHeaderLabels(['Picture', 'Label', 'Width', 'Height', 'Packed', 'Offset'])
         self.table.verticalHeader().hide()
         self.table.setEditTriggers(QAbstractItemView.EditTrigger.NoEditTriggers)
         self.table.setSelectionBehavior(QAbstractItemView.SelectionBehavior.SelectRows)
@@ -65,7 +66,7 @@ class WppView(QWidget):
         self.table.setColumnWidth(0, 150)
         adjustable(self.table)
         for row, picture in enumerate(pictures):
-            values = (f'Picture {picture.index:03d}', str(picture.width), str(picture.height),
+            values = (f'Picture {picture.index:03d}', '', str(picture.width), str(picture.height),
                       f'{picture.packed:,}', f'0x{picture.offset:06X}')
             for column, value in enumerate(values):
                 self.table.setItem(row, column, QTableWidgetItem(value))
@@ -94,6 +95,31 @@ class WppView(QWidget):
         layout.addWidget(self.info)
         self.fill_palettes(0)
         self.refresh()
+
+    def set_labels(self, labels, save):
+        self.label_set, self.save_labels = labels, save
+        for row, picture in enumerate(self.pictures):
+            name = labels.label_for(self.picture_key(picture))
+            self.table.item(row, 1).setText(name or '')
+
+    def picture_key(self, picture):
+        from game.labels import content_key
+        return content_key(picture.indices.tobytes() + str(picture.indices.shape).encode())
+
+    def rename_selection(self):
+        rows = self.selected_rows()
+        if not rows or self.label_set is None:
+            return
+        first = self.pictures[rows[0]]
+        old = self.label_set.label_for(self.picture_key(first)) or ''
+        name, ok = QInputDialog.getText(self, 'Name picture', 'Label (empty removes it):', text=old)
+        if ok:
+            for row in rows:
+                picture = self.pictures[row]
+                self.label_set.rename(self.picture_key(picture), name.strip(), kind='WPP picture')
+                self.table.item(row, 1).setText(name.strip())
+            if self.save_labels:
+                self.save_labels()
 
     def fill_palettes(self, row):
         picture = self.pictures[row] if self.pictures else None

@@ -92,6 +92,9 @@ class LevelScene:
     # Where the build loads the area's code overlay; 0 when not known.
     overlay: int = 0
     view_2d: bool = False
+    # Updates a second, each stepping every animation once: one a field,
+    # 50 on the European disc and 60 on the others.
+    rate: int = 60
 
 
 def area_of(path):
@@ -124,6 +127,26 @@ def placed_model(mesh, position, visual):
                          for p in mesh.polygons], mesh.offset, mesh.image)
     placed.front_clockwise = getattr(mesh, 'front_clockwise', True)
     return placed
+
+
+def model_preview(mesh, visual):
+    """Keep an uninitialized lit model inspectable without inventing a material."""
+    if (not visual.get('lit') or not mesh.polygons or
+            any(p['page'] >= 0 or np.any(p['colors']) for p in mesh.polygons)):
+        return mesh, False
+    # Some reusable meshes contain only positions until runtime setup fills
+    # their colour/normal fields. Grey is an explicit inspection fallback.
+    faces = []
+    for p in mesh.polygons:
+        points = np.asarray(p['vertices'], np.float64)
+        normal = np.cross(points[1] - points[0], points[2] - points[0])
+        length = np.linalg.norm(normal)
+        amount = abs(np.dot(normal / length, (0.3, 0.8, 0.52))) if length else 0
+        grey = 0.35 + 0.3 * amount
+        faces.append(dict(p, colors=np.full((len(points), 3), grey, np.float32)))
+    shown = rebuild_mesh(faces, mesh.offset, mesh.image)
+    shown.front_clockwise = getattr(mesh, 'front_clockwise', True)
+    return shown, True
 
 
 def quad(vertices, image=None, color=(1, 1, 1), offset=0):
@@ -517,15 +540,24 @@ def build_scene(project, path, index):
                                   + (f', {placement.origin}' if placement.origin else ''))
                 if children:
                     batches.append((None, ScriptSource(f'Spawned by {label}', kind='SPAWN'), children, None))
-            model_ref = visual.get('model', placement.model)
+            # A prefilled APD model pointer is not a draw instruction. Town
+            # controllers reuse these records for invisible triggers too.
+            model_ref = visual.get('model') if resolver.available and active and placement.layer != 8 else placement.model
             if model_ref:
                 bank, model = model_ref
                 if bank in models and model < len(models[bank]):
-                    mesh = placed_model(models[bank][model], placement.position, visual)
+                    source_mesh, neutral = model_preview(models[bank][model], visual)
+                    mesh = placed_model(source_mesh, placement.position, visual)
                     category, note = 'Models', (f'WMD bank {bank}, model {model}. '
                         f'Initial scale {visual.get("scale", (4096, 4096, 4096))}, '
                         f'rotation {visual.get("rotation", (0, 0, 0))} (4096 units per turn).')
+                    if neutral:
+                        note += (' Stored colour fields are zero before runtime setup. Neutral inspection shading; '
+                                 'the game material is not yet reconstructed.')
                     versions = resolver.model_animation(placement) if active else []
+                    writer = None
+                    if active and neutral and not versions:
+                        versions, writer = resolver.model_colour_animation(placement, (bank, model))
                     if versions:
                         # The handler rewrites the model as it runs; each
                         # version is decoded in place of the stored one.
@@ -539,10 +571,14 @@ def build_scene(project, path, index):
                                 break
                             model_frames.append((placed_model(edited, placement.position, visual), ticks))
                         if len(model_frames) > 1:
+                            mesh = model_frames[0][0]
                             note = (f'WMD bank {bank}, model {model}, rewritten by its handler: '
                                     f'{len(model_frames)} versions, {sum(t for _, t in model_frames)} ticks per cycle.')
+                            if writer:
+                                note += f' Runtime colour writer 0x{writer:08X}; stored mesh colours are initially empty.'
             frames, frames_first = [], None
             if mesh is None and 'sprite' in visual and visual['sprite'] in sprites:
+                visual = resolver.animation_preview(placement, visual) if active else visual
                 bank, flip = visual['sprite'], visual.get('flip', False)
                 where = visual.get('position', placement.position)
                 if visual.get('anchored'):
@@ -576,6 +612,13 @@ def build_scene(project, path, index):
                                if len(frames) > 1 else 'Single-frame pose.'))
                     if drawn:
                         note += ' Assembled by the game\'s own draw routine.'
+                    if visual.get('animation_preview'):
+                        note += (f' Handler animation preview 0x{visual["animation_preview"]:08X}; '
+                                 'initialization holds a pose. AI transitions and movement are not simulated.')
+                    elif assembled and resolver.town and visual.get('shade') == 0:
+                        category = 'Event previews'
+                        note += (' Its shade +6B is 0, so the town does not draw it yet; shown from its'
+                                 ' SPR parts only with Event previews enabled.')
                     if bank in pictures:
                         note += ' Pixels decoded from the matching WPP animation bank.'
                     if 'position' in visual:
@@ -718,6 +761,7 @@ def build_scene(project, path, index):
     scene = LevelScene(entries, list(resources.values()), vram, notes, collision, backdrops, sky,
                        collision_records, context, locations, index)
     scene.overlay = resolver.build.overlay if resolver.available else 0
+    scene.rate = 50 if resolver.available and resolver.build.name.startswith('European') else 60
     from formats.level.flat import is_flat
     scene.view_2d = is_flat(entries)
     if town is not None:
@@ -762,14 +806,38 @@ def sprite_pages(project, path, index):
                 placed.append((parse_apd(project.asset_data(asset)), ''))
             except FormatError:
                 continue
-        # What the section's event script creates shows frames too.
+        # What the section's event script creates shows frames too, and so
+        # does what its controllers and its objects spawn.
         for source, made in (scripted_placements(project, resolver, area_of(path), index - 1) if index else []):
             placed.append(([placement for placement, _ in made], f' ({source.label})'))
+        spawned = set()
+
+        def children(made, parent=None):
+            out = []
+            for pool, address, state in made:
+                if pool in ('objects', 'models', 'backdrops') and len(spawned) < SPAWN_LIMIT:
+                    child = resolver.child(pool, address, state, parent)
+                    if (child.raw, child.position) not in spawned:
+                        spawned.add((child.raw, child.position))
+                        out.append(child)
+            return out
+        for _, _, made in (resolver.controller_spawns() if resolver.available and index else ()):
+            placed.append((children(made), ' (spawned)'))
+        animations = {}
+        styles = project.__dict__.setdefault('sprite_style_cache', {}).setdefault((path, index), {})
         for placements, origin in placed:
             for placement in placements:
                 visual = resolver.resolve(placement)
                 label = (class_name(runtime, placement.layer, placement.kind)
                          or f'class {placement.layer}:{placement.kind:02X}') + origin
+                if visual.get('spawned') and origin.count('spawned') < 2:
+                    state = resolver.object_states.get((placement.raw, placement.position))
+                    placed.append((children(visual['spawned'], (OBJECT, state) if state else None),
+                                   origin + ' (spawned)'))
+                if 'sprite' in visual and visual.get('animation_address'):
+                    users = animations.setdefault(visual['sprite'], {}).setdefault(visual['animation_address'], [])
+                    if label not in users:
+                        users.append(label)
                 model = visual.get('model', placement.model)
                 if model:
                     users = built.setdefault(model[0], {}).setdefault(model[1], [])
@@ -777,6 +845,7 @@ def sprite_pages(project, path, index):
                         users.append(label)
                 if 'sprite' in visual:
                     for frame, _ in visual['frames']:
+                        styles.setdefault(visual['sprite'], {}).setdefault(frame, visual)
                         pages.setdefault(visual['sprite'], {}).setdefault(frame, visual['tpage'])
                         users = shown.setdefault(visual['sprite'], {}).setdefault(frame, [])
                         if label not in users:
@@ -789,8 +858,14 @@ def sprite_pages(project, path, index):
                             counts[slot] = len(sprite_frames(project.asset_data(resources['SPR', slot])))
                         except (FormatError, KeyError):
                             counts[slot] = 0
+                    assigned = resolver.code_animations(resolver.handler_address(placement), slot, counts[slot])
+                    for address, script in assigned.items():
+                        users = animations.setdefault(slot, {}).setdefault(address, [])
+                        if label not in users:
+                            users.append(label)
                     more = resolver.code_frames(resolver.handler_address(placement),
                                                 visual.get('animation_address', 0), counts[slot])
+                    more = set(more) | {f for script in assigned.values() for f in script.frames}
                     kinds.setdefault((placement.layer, placement.kind), set()).add((slot, visual['tpage']))
                     if more:
                         later.append((slot, more, visual['tpage'], visual.get('clut'), label,
@@ -819,7 +894,15 @@ def sprite_pages(project, path, index):
         palettes[path, index] = cluts
         owners[path, index] = shown
         project.__dict__.setdefault('model_owner_cache', {})[path, index] = built
+        project.__dict__.setdefault('sprite_animation_cache', {})[path, index] = animations
     return cache[path, index]
+
+
+def sprite_animations(project, path, index):
+    """The animation scripts objects of a load group start on, {SPR slot:
+    {script address: [class name]}}."""
+    sprite_pages(project, path, index)
+    return project.sprite_animation_cache[path, index]
 
 
 def sprite_routines(project, path, index):
@@ -863,7 +946,7 @@ def sprite_routines(project, path, index):
             frames = [frame for frame, _ in visual['frames']]
             if not frames or max(frames) >= counts[visual['sprite']] or visual['tpage'] >= 32:
                 return None
-            return visual['sprite'], frames, visual['tpage'], visual.get('clut')
+            return visual['sprite'], frames, visual['tpage'], visual.get('clut'), visual
 
         claims = {}
         for layer, table in resolver.build.tables.items():
@@ -886,13 +969,33 @@ def sprite_routines(project, path, index):
                         result = first if choice == 0 else shown(layer, kind, variant, choice)
                         if result is None:
                             break
-                        slot, frames, page, clut = result
+                        slot, frames, page, clut, visual = result
                         for frame in frames:
                             rank = (variant, choice)
                             if frame not in claims.setdefault(slot, {}) or rank < claims[slot][frame][0]:
-                                claims[slot][frame] = (rank, page, None if clut is None else clut & 0x7FFF)
-        found = {slot: {frame: (page, clut) for frame, (_, page, clut) in frames.items()}
+                                claims[slot][frame] = (rank, page, None if clut is None else clut & 0x7FFF,
+                                                     dict(visual, handler=routine, layer=layer, kind=kind))
+        found = {slot: {frame: (page, clut) for frame, (_, page, clut, _) in frames.items()}
                  for slot, frames in claims.items()}
+        styles = project.__dict__.setdefault('sprite_style_cache', {}).setdefault((path, index), {})
+        for slot, entries in claims.items():
+            for frame, (_, _, _, visual) in entries.items():
+                styles.setdefault(slot, {}).setdefault(frame, visual)
+        animations = project.__dict__.setdefault('sprite_animation_cache', {}).setdefault((path, index), {})
+        visited = set()
+        for slot, entries in claims.items():
+            for _, _, _, visual in entries.values():
+                root = visual['handler']
+                if (slot, root) in visited:
+                    continue
+                visited.add((slot, root))
+                label = f'Handler 0x{root:08X} ({visual["layer"]}:{visual["kind"]:02X})'
+                addresses = set(resolver.code_animations(root, slot, counts[slot]))
+                addresses.add(visual['animation_address'])
+                for address in addresses:
+                    users = animations.setdefault(slot, {}).setdefault(address, [])
+                    if label not in users:
+                        users.append(label)
     cache[path, index] = found
     return found
 

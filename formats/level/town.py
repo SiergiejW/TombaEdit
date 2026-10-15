@@ -19,6 +19,7 @@ class TownGraphics:
     houses: list = field(default_factory=list)
     bank: int = 11
     name: str = 'Dwarf Village'
+    animations: dict = field(default_factory=dict)
 
 
 def town_graphics(project, resources, area, section):
@@ -91,7 +92,9 @@ def town_graphics(project, resources, area, section):
         page, _, bank, _, animation = unpack('<4HI', table)
         profile = TownGraphics(bank=bank, name='Baccus Village' if baccus else 'Hidden Village')
         for index in range(count):
-            frame, _, _, control = unpack('<4H', unpack('<I', scripts + index * 4)[0])
+            script = unpack('<I', scripts + index * 4)[0]
+            profile.animations[script] = [f'{profile.name} scenery {index:02d}']
+            frame, _, _, control = unpack('<4H', script)
             if frame != index or control != 0x803C:
                 return None
             profile.pages[frame] = page
@@ -224,10 +227,14 @@ def dwarf_graphics(project, resources, area, section):
         # frame ranges or a sequential script scan would misclassify them.
         npc_scripts = unpack('<I', scenery + 0x78)[0]
         for n in range(216):
-            for frame, _ in steps(unpack('<I', npc_scripts + n * 4)[0]):
+            script = unpack('<I', npc_scripts + n * 4)[0]
+            profile.animations[script] = [f'Town character animation {n:03d}']
+            for frame, _ in steps(script):
                 profile.pages[frame] = npc_page
         for n in range(24):
-            for frame, style in steps(unpack('<I', styles[0][4] + n * 4)[0]):
+            script = unpack('<I', styles[0][4] + n * 4)[0]
+            profile.animations[script] = [f'Town scenery animation {n:03d}']
+            for frame, style in steps(script):
                 if style >= len(styles):
                     return None
                 page, clut, bank, _, _ = styles[style]
@@ -242,3 +249,39 @@ def dwarf_graphics(project, resources, area, section):
         return profile
     except (struct.error, IndexError):
         return None
+
+
+def shared_bank_preview(project, asset, context, frames):
+    """Resolve identical town banks using the context that actually draws them."""
+    from formats.level.scene import loaded_resources, area_of
+    from formats.archive.ldar import table_name
+    from game.labels import content_key
+    data = bytes(project.asset_data(asset))
+    language = table_name(asset.ldar)[0]
+    candidates = [(asset.ldar, context)]
+    candidates += [(path, g.index) for path, groups in project.ldars.items()
+                   if table_name(path)[0] == language and area_of(path) in (2, 5, 19)
+                   for g in groups[1:] if g.index in (1, 3)]
+    for path, group in dict.fromkeys(candidates):
+        resources = loaded_resources(project, path, group)
+        match = resources.get(('SPR', asset.slot))
+        if match is None or bytes(project.asset_data(match)) != data:
+            continue
+        profile = town_graphics(project, resources, area_of(path), group - 1)
+        if profile is None or profile.bank != asset.slot or not profile.pages:
+            continue
+        found = executable(project, path)
+        code = project.asset_data(resources['INS', 0])
+        vram = project.vram(path, group)
+        origins = {frame: f'{path} group {group}: town code' for frame in profile.pages}
+        from collections import Counter
+        default = Counter(profile.pages.values()).most_common(1)[0][0]
+        return dict(sprite_pages=profile.pages, sprite_cluts=profile.cluts, sprite_names={},
+                    sprite_origins=origins, sprite_vrams={}, sprite_default=default,
+                    vram=vram, animation_users=profile.animations,
+                    animation_code=[('overlay', found.build.overlay, code),
+                                    ('executable', found.base, found.data[0x800:])],
+                    update_rate=50 if found.build.name.startswith('European') else 60,
+                    bank_key=content_key(data),
+                    context_note=f'Artwork and animation setup from the identical bank in {path}, group {group}.')
+    return None

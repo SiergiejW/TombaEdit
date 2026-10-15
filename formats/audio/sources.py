@@ -218,13 +218,41 @@ def disc_banks(project):
     return found
 
 
-def sequence_sources(data, title, banks, near='', labels=None, limit=64):
+def sequence_sources(data, title, banks, near='', labels=None, limit=64, embedded_area=None):
     """A source per bank that can play the sequence, best first.
 
     Banks are ranked by how many of the music's notes they have a tone for,
     then by being in the sequence's own folder, then by the area number in
     the names Tomba gives its files (S_AR010.SEQ goes with SND0010.WVD)."""
     folder, stem = str(Path(near).parent).replace('\\', '/'), Path(near).stem.upper()
+    if embedded_area is not None:
+        # playJingle opens embedded SEQ slots on VAB_IDS[1] (1F8003AC).
+        # In areas that load a two-bank WVD this is its second bank.
+        resident = f'SND0{embedded_area:02d}0'
+        match = next(((name, bank) for name, bank in banks
+                      if Path(name.split(' | ')[0]).stem.upper() == resident
+                      and name.endswith(' | Bank 1')), None)
+        if match:
+            source = SequenceSource(title, data, match[0], match[1], labels)
+            source.bank_reason = 'Jingle player: VAB slot 1 from the area sound set (initial area variant).'
+            return [source]
+    # The retail load lists pair each standalone song with bank 0 of its
+    # WVD. A second bank is SFX, not an alternative music instrument set.
+    special = {'S_TITLE': 'SND_TTL', 'S_SYS00': 'SND_SYS', 'S_END': 'SND_END',
+               'S_AR010': 'SND001_', 'S_AR010X': 'SND001_X',
+               'S_AR100': 'SND010_', 'S_AR100X': 'SND010_X',
+               'S_AR040X': 'SND004_X', 'S_AR1802': 'SND0182'}
+    expected = special.get(stem)
+    if expected is None and stem.startswith('S_AR'):
+        expected = 'SND0' + stem[4:]
+    if expected:
+        matched = [(name, bank) for name, bank in banks
+                   if Path(name.split(' | ')[0]).stem.upper() == expected
+                   and (' | Bank ' not in name or name.endswith(' | Bank 0'))]
+        if matched:
+            source = SequenceSource(title, data, matched[0][0], matched[0][1], labels)
+            source.bank_reason = 'Game load-list pairing: music bank 0.'
+            return [source]
     area = ''.join(c for c in stem if c.isdigit())[:3]
     ranked = []
     for order, (name, bank) in enumerate(banks):
@@ -234,6 +262,8 @@ def sequence_sources(data, title, banks, near='', labels=None, limit=64):
         ranked.append(((-source.covered, not same_folder, not same_area, order), source))
     ranked.sort(key=lambda pair: pair[0])
     sources = [source for _, source in ranked if source.covered][:limit]
+    for source in sources:
+        source.bank_reason = 'Instrument compatibility estimate; the game bank has not been resolved for this embedded sequence.'
     return sources or [SequenceSource(title, data, '', b'', labels)]
 
 

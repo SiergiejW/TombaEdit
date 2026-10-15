@@ -6,6 +6,11 @@ def adjustable(table, fit=False, padding=14):
     """Let every column of `table` be resized by hand, the last one taking
     the room that is left. `fit` first sizes the columns to what they hold."""
     header = table.horizontalHeader()
+    for column in range(table.columnCount()):
+        item = table.horizontalHeaderItem(column)
+        if item is not None and item.text().casefold() == 'label':
+            header.moveSection(header.visualIndex(column), 1)
+            break
     if fit:
         table.resizeColumnsToContents()
         for column in range(table.columnCount() - 1):

@@ -51,10 +51,10 @@ class MoviePanel(QWidget):
         self.screen.double_clicked.connect(self.toggle)
         layout.addWidget(self.screen, 1)
         self.timeline = QSlider(Qt.Orientation.Horizontal)
-        self.timeline.valueChanged.connect(self.show_frame)
+        self.timeline.valueChanged.connect(self.seek)
         layout.addWidget(self.timeline)
         transport = QHBoxLayout()
-        for name, callback in [('first', lambda: self.show_frame(0)),
+        for name, callback in [('first', lambda: self.seek(0)),
                                ('step_back', lambda: self.step(-1)),
                                ('play', self.toggle), ('stop', self.stop),
                                ('step_forward', lambda: self.step(1)), ('last', self.last)]:
@@ -92,7 +92,7 @@ class MoviePanel(QWidget):
 
     def choose(self,row):
         if row<0 or row>=len(self.entries):return
-        self.stop();self.generation+=1;self.movie=None;self.frames.clear();self.last_frame=-1
+        self.stop();self.generation+=1;self.movie=None;self.frames.clear();self.last_frame=-1;self.frame_busy=False
         self.screen.show_message('Indexing movie...');self.status.setText('Reading MDEC frame and XA sound sector indexes...')
         e=self.entries[row];disc=self.project.disc
         self.title.setText(e.path)
@@ -133,9 +133,17 @@ class MoviePanel(QWidget):
             self.screen.show_frame(rgb);self.last_frame=index
         else:self.show_frame(self.timeline.value())
 
-    def step(self,diff):self.show_frame(self.timeline.value()+diff)
+    def seek(self, index):
+        if not self.movie or not self.movie.frames:
+            return
+        index = max(0, min(index, len(self.movie.frames) - 1))
+        if self.movie.has_audio and self.buffer is not None:
+            self.player.setPosition(round(index * 1000 / self.movie.fps))
+        self.show_frame(index)
+
+    def step(self,diff):self.seek(self.timeline.value()+diff)
     def last(self):
-        if self.movie:self.show_frame(len(self.movie.frames)-1)
+        if self.movie:self.seek(len(self.movie.frames)-1)
 
     def toggle(self):
         if self.timer.isActive():
@@ -164,6 +172,7 @@ class MoviePanel(QWidget):
 
     def tick(self):
         if not self.movie:return
+        if self.timeline.isSliderDown():return
         if not self.movie.frames:
             # Sound alone: let it play out.
             if not self.movie.has_audio or self.player.playbackState()!=QMediaPlayer.PlaybackState.PlayingState:self.stop()

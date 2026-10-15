@@ -192,7 +192,8 @@ class AudioView(QWidget):
         self.name_button = QPushButton('Name...'); self.name_button.clicked.connect(self.rename_selection)
         self.export_button = QPushButton('Export sound...'); self.export_button.clicked.connect(lambda: self.render('export'))
         self.midi_button = QPushButton('Export MIDI...'); self.midi_button.clicked.connect(self.export_midi)
-        for button in (self.name_button, self.export_button, self.midi_button):
+        self.sequence_button = QPushButton('View sequence...'); self.sequence_button.clicked.connect(self.view_sequence)
+        for button in (self.name_button, self.export_button, self.midi_button, self.sequence_button):
             bar.addWidget(button)
         dock_layout.addLayout(bar)
         outer.addWidget(dock)
@@ -249,7 +250,8 @@ class AudioView(QWidget):
         self.row_pane.caption.setText(source.caption.upper())
         self.summary.setText(source.summary if len(self.sources) == 1 else
                              f'{len(self.sources)} {"banks to play it on" if whole else "sources"}   |   {source.summary}')
-        headers = (('#',) if source.numbered else ()) + tuple(source.headers)
+        headers = list((('#',) if source.numbered else ()) + tuple(source.headers))
+        headers.insert(1, 'Label')
         self.rows = source.rows()
         view = self.row_table
         view.blockSignals(True)
@@ -258,14 +260,18 @@ class AudioView(QWidget):
         view.setHorizontalHeaderLabels(list(headers))
         view.setRowCount(len(self.rows))
         for r, row in enumerate(self.rows):
-            cells = ((str(r + 1),) if source.numbered else ()) + tuple(row.cells)
+            cells = list(((str(r + 1),) if source.numbered else ()) + tuple(row.cells))
+            name_index = 1 if source.numbered else 0
+            if row.key and hasattr(source, 'default_name'):
+                cells[name_index] = source.default_name(r)
+            cells.insert(1, (self.label_set.label_for(row.key) or '') if self.label_set and row.key else '')
             for c, value in enumerate(cells):
                 item = QTableWidgetItem(value)
                 if headers[c] in ('#', 'Samples', 'Bytes', 'Sectors', 'Notes', 'Length'):
                     item.setTextAlignment(Qt.AlignmentFlag.AlignRight | Qt.AlignmentFlag.AlignVCenter)
                 view.setItem(r, c, item)
         header = view.horizontalHeader()
-        name_column = 1 if source.numbered else 0
+        name_column = 2 if source.numbered else 0
         # Columns start as wide as what they hold and can be dragged.
         adjustable(view, fit=True)
         if headers:
@@ -285,6 +291,7 @@ class AudioView(QWidget):
         self.rate.setVisible(source.rate_adjustable); self.rate_label.setVisible(source.rate_adjustable)
         self.auto.setVisible(source.autoplay)
         self.midi_button.setVisible(source.whole)
+        self.sequence_button.setVisible(source.whole)
         self.name_button.setVisible(self.label_set is not None and any(row.key for row in self.rows))
         self.now.setText('Nothing loaded')
         self.wave.envelope = None; self.wave.update()
@@ -320,6 +327,8 @@ class AudioView(QWidget):
     def show_details(self, row):
         source = self.source
         pairs = source.details(row) if source is not None else []
+        if source is not None and getattr(source, 'bank_reason', ''):
+            pairs.append(('Bank selection', source.bank_reason))
         self.detail_table.setRowCount(len(pairs))
         for i, (name, value) in enumerate(pairs):
             key = QTableWidgetItem(name)
@@ -355,9 +364,7 @@ class AudioView(QWidget):
         if accepted:
             self.label_set.rename(entry.key, name.strip(), kind=entry.kind or 'SFX')
             self.save_labels()
-            column = 1 if self.source.numbered else 0
-            fallback = self.source.default_name(row) if hasattr(self.source, 'default_name') else entry.cells[0]
-            self.row_table.item(row, column).setText(name.strip() or fallback)
+            self.row_table.item(row, 1).setText(name.strip())
 
     # --- playing ------------------------------------------------------------
 
@@ -458,6 +465,13 @@ class AudioView(QWidget):
                 Path(path).write_bytes(source.midi())
             except (OSError, ValueError) as exc:
                 QMessageBox.warning(self, 'Export failed', str(exc))
+
+    def view_sequence(self):
+        if self.source is not None and self.source.whole:
+            from formats.audio.piano_roll import PianoRoll
+            dialog = PianoRoll(self.source, self)
+            dialog.setAttribute(Qt.WidgetAttribute.WA_DeleteOnClose)
+            dialog.show()
 
     def hideEvent(self, event):
         self.stop()

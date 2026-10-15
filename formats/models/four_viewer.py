@@ -52,6 +52,9 @@ class FourView(ModelView):
         self.weight.setValue(0)
         self.weight.blockSignals(False)
         self.populate_sources()
+        if self.play.isEnabled():
+            self.timer.start()
+            self.play.setText('Stop')
 
     def populate_sources(self):
         index = self.pose.currentIndex()
@@ -113,3 +116,9 @@ class FourView(ModelView):
         self.timer.stop()
         self.play.setText('Play')
         super().hideEvent(event)
+
+    def showEvent(self, event):
+        super().showEvent(event)
+        if self.morphs and self.play.isEnabled():
+            self.timer.start()
+            self.play.setText('Stop')

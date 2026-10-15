@@ -39,6 +39,10 @@ NAMES = {**EARLY_CONTROLS, **CONTROLS}
 def plain(dialogue, unknown='[g{:03X}]'):
     """What an entry reads as on screen. `unknown` formats the number of a
     glyph no character is known for."""
+    if getattr(dialogue, 'layout', None):
+        # An event title: its spaces and line breaks are in the overlays.
+        from formats.text.titles import text
+        return composed(text(dialogue, dialogue.layout, lambda word: dialogue.letter(word, unknown)))
     out = []
     for word, _ in dialogue.tokens:
         if word == 0xFFFD:
@@ -124,6 +128,8 @@ def collect(project, area=None, language=None, progress=None):
             wfm = Wfm(project.asset_data(asset))
         except (FormatError, ValueError):
             continue
+        from formats.text.titles import attach
+        attach(wfm, project, tongue)
         banks.append(Bank(f'WFM {asset.code:04X}', asset.source.path, asset.offset, path, group, number, tongue,
                           wfm.version.decode('ascii', 'replace'), wfm))
     if area is None:
@@ -139,6 +145,8 @@ def collect(project, area=None, language=None, progress=None):
                 wfm = Wfm(data)
             except (FormatError, ValueError, OSError):
                 continue
+            from formats.text.titles import attach, language_of
+            attach(wfm, project, language_of(entry.path))
             banks.append(Bank(Path(entry.path).name, entry.path, 0, version=wfm.version.decode('ascii', 'replace'),
                               wfm=wfm))
     return banks
