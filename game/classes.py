@@ -16,7 +16,7 @@ SHARED = {
     (2, 0x44): 'Treasure chest',
     (4, 0x3F): 'Stone slab',
     (4, 0x39): 'Evil Pig door',
-    (4, 0x13): 'Stone block',
+    (4, 0x13): 'Stone slab',
     (2, 0x55): 'Troubled Thief',
     (4, 0x45): 'Orange boulder',
     (5, 0x00): 'Blue orb',
