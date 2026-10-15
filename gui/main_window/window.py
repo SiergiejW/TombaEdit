@@ -185,6 +185,8 @@ def _prepare_preview(project, node, context=None):
         data = project.asset_data(node)
         result["data"] = data
         result["size"] = len(data)
+        if node.kind in ('VH', 'WVD') and node.source and node.source.path.endswith(('.VH', '.VA', '.VB')):
+            stock_preview(project, node.source, data, result)
         if node.kind in ("SPR", "WMD", "GRPX", "WPP"):
             groups = project.ldars[node.ldar]
             # Past the area's own groups the choice is a system screen, laid
@@ -285,7 +287,7 @@ def _prepare_preview(project, node, context=None):
                     ('executable', runs.base, runs.data[0x800:])]
                 # The game steps animations once per update, one update per
                 # field: 50 a second on the European disc, 60 on the others.
-                result['update_rate'] = 50 if runs.build.name.startswith('European') else 60
+                result['update_rate'] = 50 if 'European' in runs.build.name else 60
                 from formats.level.scene import sprite_animations
                 result['animation_users'] = sprite_animations(project, node.ldar, context).get(slot, {})
             if items:
@@ -399,7 +401,7 @@ def _prepare_preview(project, node, context=None):
                         regions = ([('overlay', known.build.overlay, project.asset_data(overlay))] if overlay else [])
                         regions += [('executable', known.base, known.data[0x800:])]
                         result['animation_code'] = regions
-                        result['update_rate'] = 50 if known.build.name.startswith('European') else 60
+                        result['update_rate'] = 50 if 'European' in known.build.name else 60
                         from formats.sprites.animations import player_scripts
                         if result['paired_tomba']:
                             result['animation_users'] = player_scripts(regions, len(frames))
@@ -766,23 +768,26 @@ class MainWindow(QMainWindow):
         self.project = project
         self.label_hashes.clear()
         serial = Path(project.catalog.executable).name if project.catalog else project.disc.volume
-        self.labels = labels.LabelSet(name=project.disc.source.stem, build=serial, serial=serial)
+        from game.label_store import local_identity
+        self.labels = labels.LabelSet(name=project.disc.source.stem, build=local_identity(project), serial=serial)
         # The names that come with the tool for this build, from its labels
         # folder; names given on this machine are laid over them.
         self.builtin_labels = {}
         try:
             from game.label_store import builtin_library
-            shipped = builtin_library(serial)
+            shipped = builtin_library(serial, build=self.labels.build)
             self.labels.entries.update(shipped.entries)
             self.labels.bins.update(shipped.bins)
             self.labels.areas.update(shipped.areas)
             self.builtin_labels = {key: entry.name for key, entry in shipped.entries.items()}
         except ValueError:
             pass
-        from game.label_store import shared_content
+        from game.label_store import shared_content, local_identity
         shared = shared_content(self.settings, serial)
         self.labels.entries.update(shared.entries)
-        saved = self.settings.value('labels/' + serial, '')
+        saved = self.settings.value('labels/' + local_identity(project), '')
+        if not saved and serial not in ('TOMBA.EXE', 'MAIN0.EXE'):
+            saved = self.settings.value('labels/' + serial, '')
         if saved:
             try:
                 # Load through the same validated parser as an imported file.
@@ -1375,7 +1380,7 @@ class MainWindow(QMainWindow):
 
     def persist_labels(self):
         import json
-        from game.label_store import document, SHARED_KEY, content_identity
+        from game.label_store import document, SHARED_KEY, content_identity, local_identity
         serial = Path(self.project.catalog.executable).name if self.project.catalog else self.project.disc.volume
         # Only what differs from the names that come with the tool is kept
         # here, so a later release's names are not hidden by old copies.
@@ -1386,7 +1391,7 @@ class MainWindow(QMainWindow):
         local = labels.LabelSet(name=self.labels.name, build=self.labels.build, serial=self.labels.serial,
                                 bins=self.labels.bins, areas=self.labels.areas,
                                 entries={k: v for k, v in self.labels.entries.items() if not content_identity(k)})
-        self.settings.setValue('labels/' + serial, json.dumps(document(local), ensure_ascii=False))
+        self.settings.setValue('labels/' + local_identity(self.project), json.dumps(document(local), ensure_ascii=False))
 
     def builtin_path(self, serial):
         return str(Path(labels.labels_dir()) / (serial + '.json'))
@@ -1406,7 +1411,8 @@ class MainWindow(QMainWindow):
             local = labels.LabelSet(name=self.labels.name, serial=self.labels.serial, build=self.labels.build,
                                     bins=self.labels.bins, areas=self.labels.areas,
                                     entries={k: v for k, v in self.labels.entries.items() if not content_identity(k)})
-            labels.save(local, self.builtin_path(self.labels.serial), keep_existing=False)
+            filename = self.labels.build.replace(':', '-') if self.labels.serial in ('TOMBA.EXE', 'MAIN0.EXE') else self.labels.serial
+            labels.save(local, self.builtin_path(filename), keep_existing=False)
         except OSError as exc:
             QMessageBox.warning(self, 'Cannot save labels', str(exc))
             return
@@ -1589,9 +1595,12 @@ class MainWindow(QMainWindow):
             return
         try:
             incoming = labels.load(path)
-            self.labels.entries.update(incoming.entries)
+            from game.label_store import content_identity
+            positional = (incoming.build == self.labels.build or (incoming.serial == self.labels.serial
+                          and self.labels.serial not in ('TOMBA.EXE', 'MAIN0.EXE') and incoming.build == self.labels.serial))
+            self.labels.entries.update({k: v for k, v in incoming.entries.items() if content_identity(k) or positional})
             # Named folders/sections are positional and restricted to their build.
-            if incoming.serial == self.labels.serial:
+            if positional:
                 self.labels.bins.update(incoming.bins)
                 self.labels.areas.update(incoming.areas)
             self.persist_labels()

@@ -540,6 +540,36 @@ System menu SPR banks use the selected screen's initialization code and palette
 uploads. Frames whose setup is not decoded for that screen remain listed,
 with an explanation and manual page/CLUT controls, instead of guessed textures.
 
+## Sampler builds, labels and sound
+
+Compilation discs are read inside their TOMBA or TOMBI directory. The file
+link array is relocated only when its sizes and extents agree with the ISO
+files. Sections are available for the European sampler languages, Toys R Us,
+Jampack, Yoi Ko Vol. 2, Dengeki D5, Hyper PlayStation Re-mix 12, PrePre 8
+and PrePre 9. PrePre 8 uses its embedded code, earlier APD layer numbers and
+scratchpad resource slots; its collision origins are inline six-section tables.
+
+File, model, animation and sample labels share one content-hash library.
+Existing per-disc content labels migrate into it. Folder and section names
+remain scoped to the executable hash, including demos sharing TOMBA.EXE.
+Saving built-in labels writes content names to labels/shared.json.
+
+Sequence previews show notes and a seekable playback timeline. The expanded
+piano roll shares the same transport. Early sampler music uses VAB slot 2,
+while retail embedded jingles use slot 1. PrePre 8's VH/VB pairs are read
+from its actual load records; banks from other games are excluded.
+
+Pitch uses Psy-Q's quantized VAB fine tuning and SPU pitch steps. Fixed-key
+SFX tones default to their mapped note. Ranged instruments expose audition
+choices: their waveform has no single game pitch, and scripted note overrides
+and pitch slides are not reconstructed by a raw sample preview.
+
+The default animation list contains code-referenced scripts. Diagnostic
+candidates are separate. Initial-state previews do not simulate every AI or
+event transition. Structural sprite-bank audits do not establish pixel-perfect
+rendering for every frame; uninitialized runtime palettes still require their
+screen or object initialization to be decoded.
+
 ## Credits
 
 [Tombi-Decomp](https://github.com/afsenovilla/Tombi-Decomp) by afsenovilla

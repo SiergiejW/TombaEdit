@@ -805,6 +805,9 @@ class InitialPoseResolver:
 
     def prepare_pools(self):
         """Give every object free list its spare, cleared slots."""
+        if self.build.legacy8:
+            from formats.level.prepre8 import prepare_pools
+            return prepare_pools(self)
         for k, (name, items, count, slots, size) in enumerate(POOLS):
             start = SPAWN_AT + k * 0x8000
             self.write(start, bytes(slots * size))
@@ -815,6 +818,9 @@ class InitialPoseResolver:
 
     def spawned(self):
         """[(pool name, address, bytes)] of the spare slots now in use."""
+        if self.build.legacy8:
+            from formats.level.prepre8 import spawned
+            return spawned(self)
         out = []
         for k, (name, items, count, slots, size) in enumerate(POOLS):
             start = SPAWN_AT + k * 0x8000
@@ -848,7 +854,11 @@ class InitialPoseResolver:
             memory = ((copy, bytes(data)),)
         # The coordinate pointers are set again for the tracer's object.
         extra = ((0, bytes(body[:0x40])), (0x48, bytes(body[0x48:0xD4])))
-        return Placement(-1, bytes(raw), position, extra=extra, memory=memory, origin=origin)
+        native = 0
+        if self.build.legacy8:
+            native = raw[1] & 127
+            raw[1] = (raw[1] & 128) | {4: 3, 5: 4, 6: 5, 7: 8, 8: 7, 9: 8}.get(native, native)
+        return Placement(-1, bytes(raw), position, extra=extra, memory=memory, origin=origin, native_layer=native)
 
     def entry_hook(self):
         """The routine Tomba's start (playerInitMode, 800F0490 in the

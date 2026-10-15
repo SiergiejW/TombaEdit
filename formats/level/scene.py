@@ -705,8 +705,13 @@ def build_scene(project, path, index):
                                else f'{name} | {asset.code:04X} #{i:03d}', category, mesh,
                                asset, placement, active, note, frames)
             entry.handler = resolver.handler_address(placement)
-            entry.class_name = class_name(runtime, placement.layer, placement.kind)
-            entry.class_note = class_note(runtime, placement.layer, placement.kind)
+            if resolver.available and resolver.build.legacy8:
+                entry.class_name = ('Level geometry' if placement.native_layer == 7 else
+                                    'Backdrop' if placement.native_layer == 8 else '')
+                entry.class_note = f'PrePre 8 native class {placement.native_layer or placement.layer}:{placement.kind:02X}.'
+            else:
+                entry.class_name = class_name(runtime, placement.layer, placement.kind)
+                entry.class_note = class_note(runtime, placement.layer, placement.kind)
             entry.animation_address = visual.get('animation_address')
             from formats.level.flat import ordering_bucket
             entry.draw_bucket = ordering_bucket(placement, visual, fixed_picture=bool(pieces))
@@ -766,7 +771,7 @@ def build_scene(project, path, index):
     scene = LevelScene(entries, list(resources.values()), vram, notes, collision, backdrops, sky,
                        collision_records, context, locations, index)
     scene.overlay = resolver.build.overlay if resolver.available else 0
-    scene.rate = 50 if resolver.available and resolver.build.name.startswith('European') else 60
+    scene.rate = 50 if resolver.available and 'European' in resolver.build.name else 60
     from formats.level.flat import is_flat
     scene.view_2d = is_flat(entries)
     if town is not None:

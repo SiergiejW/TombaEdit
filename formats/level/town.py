@@ -281,7 +281,7 @@ def shared_bank_preview(project, asset, context, frames):
                     vram=vram, animation_users=profile.animations,
                     animation_code=[('overlay', found.build.overlay, code),
                                     ('executable', found.base, found.data[0x800:])],
-                    update_rate=50 if found.build.name.startswith('European') else 60,
+                    update_rate=50 if 'European' in found.build.name else 60,
                     bank_key=content_key(data),
                     context_note=f'Artwork and animation setup from the identical bank in {path}, group {group}.')
     return None

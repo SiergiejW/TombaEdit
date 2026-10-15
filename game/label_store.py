@@ -11,6 +11,15 @@ def content_identity(key):
     return re.fullmatch(r'[0-9a-f]{16}(?:[0-9a-f]{48})?', key) is not None
 
 
+def local_identity(project):
+    """Keep positional names separate even when demos share TOMBA.EXE."""
+    from game.labels import content_key
+    if '_label_identity' not in project.__dict__:
+        project._label_identity = (Path(project.catalog.executable).name + ':' + content_key(project.disc.read(project.catalog.executable))
+                                   if project.catalog else project.disc.volume)
+    return project._label_identity
+
+
 def document(labels):
     return dict(name=labels.name, build=labels.build, serial=labels.serial,
                 bins=labels.bins, areas={f'{k:02X}': v for k, v in labels.areas.items()},
@@ -59,7 +68,7 @@ def shared_content(settings, preferred=''):
     return shared
 
 
-def builtin_library(serial, directory=None):
+def builtin_library(serial, directory=None, build=None):
     """Content names from every shipped set; positional names only locally."""
     result = LabelSet(serial=serial, build=serial)
     paths = sorted(Path(directory or labels_dir()).glob('*.json'))
@@ -69,9 +78,11 @@ def builtin_library(serial, directory=None):
             incoming = load(path)
         except ValueError:
             continue
-        result.entries.update({k: v for k, v in incoming.entries.items()
-                               if content_identity(k) or incoming.serial == serial or path.stem == serial})
-        if incoming.serial == serial or path.stem == serial:
+        positional = incoming.build == build if build else incoming.serial == serial or path.stem == serial
+        if build and serial not in ('TOMBA.EXE', 'MAIN0.EXE') and incoming.build == serial:
+            positional = True
+        result.entries.update({k: v for k, v in incoming.entries.items() if content_identity(k) or positional})
+        if positional:
             result.bins.update(incoming.bins)
             result.areas.update(incoming.areas)
     return result

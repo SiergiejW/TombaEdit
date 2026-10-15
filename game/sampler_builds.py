@@ -2,7 +2,7 @@
 SAMPLERS = {'032d6f371b31085098b86aebbce465d30599293a': {'alternate_origin': None,
                                               'area': 2148393176,
                                               'common': 2148143388,
-                                              'controllers': None,
+                                              'controllers': (0x800AF144, 0x800AF14C),
                                               'draw_queues': (2147592888,
                                                               2147592948,
                                                               2147593008,

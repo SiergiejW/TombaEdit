@@ -784,6 +784,35 @@ background worker. Validation includes actual disc SFX and SEQ B3FF output,
 an OGG decode check, the GUI format chooser and filename extension, sprite
 Fit/resize checks, the clock-room GUI regression and multi-build presentation.
 
+## PrePre 8 executable ABI
+
+The executable is loaded at 80010000 and includes its level handlers. No X
+or INS overlay is needed. The resource loader at 800240BC installs SPR at
+1F800150, WMD at 1F8001B8, WPP at 1F8001C8 and APD at 1F8001D8.
+Native APD layers 4/5/6/7/8/9 correspond to later sprite/model/effect/level
+geometry/backdrop/secondary model roles. Layer 7 names WMD slot 0; layer 9
+names slot 2. Layer 2 retains its enemy role.
+
+800834D0 copies APD fields. Object state is at +04, animation +24, SPR +3C,
+model +9C and model lighting +A0. The early model scale vector starts at +70; its three signed rotation angles are at +7C.
+The pointer lists at 800AF0AC and common indices at 800A111C select section
+APD banks. 8001B480 uses inline collision origins at 800A1940 (24 bytes per
+area), plane limits at 800A1A60 (12 bytes per area) and WHM slot 0.
+
+The background routine 800406F4 reads camera X/Y at 1F80028A/1F80028E. Its quarter-speed X
+and half-speed Y motion are measured by running its update with camera nudges.
+Object pools use the free counts at 1F8002C6 and pointers at 1F8002E8.
+The section controller lists and dispatch are 800AF144 and 800AF14C.
+
+PrePre 8's VH/VB records assign ME/area effects/music to slots 0/1/2.
+PrePre 9's three-bank WVD also puts the area music in slot 2. Treating all
+embedded SEQs as retail jingles selects an SFX bank and produces silence.
+
+Psy-Q note2pitch indexes a 192-entry table using shift/8, clamped to 15,
+then applies the note octave. The computed table was compared with every
+entry of the US executable table. A zero animation timer wraps to 65536
+updates; it is not a one-update frame.
+
 ## Sources
 
 - vervalkon's research and tools: `TOMBAdoc.md`, `wfm3spec.txt`, `WFM3tool.py`,
