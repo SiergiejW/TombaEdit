@@ -41,3 +41,19 @@ def notes_icon(events, width=112, height=24):
             painter.drawLine(x, y, min(width - 1, x + 3), y)
     painter.end()
     return QIcon(pixmap)
+
+
+def performed_icon(notes, length, width=112, height=24):
+    pixmap = QPixmap(width, height)
+    pixmap.fill(QColor('#202020'))
+    painter = QPainter(pixmap)
+    painter.setPen(QPen(QColor('#a7c653'), 2))
+    low = min((n[2] for n in notes), default=0)
+    high = max((n[2] for n in notes), default=127)
+    for start, end, key, *_rest in notes:
+        x = min(width - 1, round(start / max(.001, length) * (width - 1)))
+        right = min(width - 1, max(x + 1, round(end / max(.001, length) * (width - 1))))
+        y = height - 3 - round((key - low) / max(1, high - low) * (height - 6))
+        painter.drawLine(x, y, right, y)
+    painter.end()
+    return QIcon(pixmap)

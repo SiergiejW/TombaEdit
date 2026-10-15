@@ -512,14 +512,19 @@ def build_scene(project, path, index):
         return found
 
     controlled = 0
+    entered = spawns(resolver.entry_spawns() if resolver.available and index else (),
+                     origin='spawned when Tomba enters the section')
+    if entered:
+        controlled += len(entered)
+        batches.append((None, ScriptSource('Tomba\'s entry', kind='ENTRY'), entered, None))
     for kind, variant, made in (resolver.controller_spawns() if resolver.available and index else ()):
         children = spawns(made, origin=f'section controller {kind:02X} / {variant:02X}')
         if children:
             controlled += len(children)
             batches.append((None, ScriptSource(f'Controller {kind:02X}/{variant:02X}', kind='CTRL'), children, None))
     if controlled:
-        notes.append(f'{controlled} objects are spawned by the section\'s controllers when it starts; '
-                     'they are listed as spawned objects.')
+        notes.append(f'{controlled} objects are spawned by the section\'s controllers and by Tomba\'s entry '
+                     'when it starts; they are listed as spawned objects.')
     for slot, asset, placements, created in batches:
         for i, placement in enumerate(placements):
             active = (created is not None or bool(placement.origin) or slots is None or slot == slots[0] or (
@@ -823,6 +828,8 @@ def sprite_pages(project, path, index):
             return out
         for _, _, made in (resolver.controller_spawns() if resolver.available and index else ()):
             placed.append((children(made), ' (spawned)'))
+        if resolver.available and index:
+            placed.append((children(resolver.entry_spawns()), ' (spawned)'))
         animations = {}
         styles = project.__dict__.setdefault('sprite_style_cache', {}).setdefault((path, index), {})
         for placements, origin in placed:

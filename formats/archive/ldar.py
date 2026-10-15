@@ -91,7 +91,8 @@ def bank_screens(project, path, slot):
 def system_table(path):
     """Path of the system load table that goes with an area's."""
     language = table_name(path)[0]
-    return SYSTEM_LDAR if language is None else f'SYS/LD{language}SYS.BIN'
+    folder = path.rsplit('/', 1)[0] if '/' in path else 'SYS'
+    return f'{folder}/LDSYS.BIN' if language is None else f'{folder}/LD{language}SYS.BIN'
 
 
 def type_name(code):
@@ -102,7 +103,7 @@ def type_name(code):
     # Family 9 is a sound bank. Retail loads those by name; earlier builds
     # list them in their load groups.
     return {1: "GRPX", 3: "SPR", 4: "FOUR", 5: "WMD", 6: "WPP", 7: "WHM", 8: "APD",
-            9: "WVD", 11: "SEQ", 13: "WFM", 15: "INS"}.get(hi >> 4, "Unknown")
+            9: "WVD", 10: "VH", 11: "SEQ", 13: "WFM", 15: "INS"}.get(hi >> 4, "Unknown")
 
 
 @dataclass
@@ -201,7 +202,7 @@ class Project:
         self.warnings = []
         self.cache = OrderedDict()
         self.cache_bytes = 0
-        tables = [e for e in self.disc.files if e.path.startswith("SYS/LD") and e.path.endswith(".BIN")]
+        tables = [e for e in self.disc.files if re.search(r'(?:^|/)SYS/LD\d?(?:AR\d+|SYS)\.BIN$', e.path)]
         # A disc with a set of load tables for each language has a program
         # for each too, and every program links its own files.
         self.catalogs = {}

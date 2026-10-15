@@ -43,6 +43,8 @@ POOL_LISTS = SPAWN_AT + 0x40000
 CONTROLLER = SPAWN_AT + 0x50000
 # Updates a section controller is given to spawn what it spawns.
 CONTROLLER_UPDATES = 90
+# Where the tracer keeps a stand-in for Tomba when his entry is run.
+PLAYER_STANDIN = SPAWN_AT + 0x60000
 
 
 def runtime_area(area, section, early=False):
@@ -259,7 +261,15 @@ class InitialPoseResolver:
                 ('overlay', self.build.overlay, self.overlay_code),
                 ('executable', self.base, self.exe[0x800:])])
         pc = self.handler_address(placement)
-        calls = self.animation_ownership.scan(pc)[1]
+        calls, pending = set(), [(pc, 0)]
+        while pending and len(calls) < 64:
+            routine, depth = pending.pop()
+            if depth >= 3:
+                continue
+            for call in self.animation_ownership.scan(routine)[1]:
+                if call not in calls and self.animation_ownership.memory.region(call) == 'overlay':
+                    calls.add(call)
+                    pending.append((call, depth + 1))
         address, size = self.model_spans[model]
         original = self.read(address, size)
         envelope = struct.pack('<2I', 1, 8)
@@ -829,6 +839,71 @@ class InitialPoseResolver:
         # The coordinate pointers are set again for the tracer's object.
         extra = ((0, bytes(body[:0x40])), (0x48, bytes(body[0x48:0xD4])))
         return Placement(-1, bytes(raw), position, extra=extra, memory=memory, origin=origin)
+
+    def entry_hook(self):
+        """The routine Tomba's start (playerInitMode, 800F0490 in the
+        European overlays) runs for the area when he enters a section, or
+        None. It is reached through a jump table on the area word; every
+        case that has a routine is `jal routine; move a0, s0`."""
+        if not self.available:
+            return None
+        if hasattr(self, '_entry_hook'):
+            return self._entry_hook
+        self._entry_hook = None
+        words = self.overlay_words
+        base = self.build.overlay
+        low = self.build.area & 0xFFFF
+        high = (self.build.area + 0x8000) >> 16 & 0xFFFF
+        for i in range(len(words) - 12):
+            w = int(words[i])
+            # lhu reg, low(area) after a lui of its upper half
+            if w >> 26 != 0x25 or w & 0xFFFF != low or int(words[i - 1]) != (0x3C000000 | (w >> 21 & 31) << 16 | high):
+                continue
+            reg = w >> 16 & 31
+            follow = [int(x) for x in words[i + 1:i + 10]]
+            limit = next((x & 0xFFFF for x in follow if x >> 26 == 0x0B and (x >> 21 & 31) == reg), None)
+            lui_at = next((k for k, x in enumerate(follow) if x >> 16 == 0x3C01), None)
+            if limit is None or lui_at is None:
+                continue
+            loads = [x for x in follow[lui_at + 1:] if x >> 26 == 0x23 and (x >> 21 & 31) == 1]
+            if not loads:
+                continue
+            table = ((follow[lui_at] & 0xFFFF) << 16) + ((loads[0] & 0xFFFF ^ 0x8000) - 0x8000) & 0xFFFFFFFF
+            cases = []
+            for k in range(limit):
+                try:
+                    case = self.read_word(table + 4 * k)
+                    first, second = struct.unpack('<II', self.read(case, 8))
+                except Exception:
+                    cases = []
+                    break
+                cases.append(0x80000000 | (first & 0x3FFFFFF) << 2 if first >> 26 == 3 and second == 0x02002021 else None)
+            if sum(c is not None for c in cases) >= 3:
+                if self.area < len(cases):
+                    self._entry_hook = cases[self.area]
+                break
+        return self._entry_hook
+
+    def entry_spawns(self):
+        """What Tomba's entry into the section spawns: the area's entry
+        routine (entry_hook) run once on a stand-in for him, with a new
+        game's flags. [(pool, address, bytes)]."""
+        hook = self.entry_hook()
+        if hook is None:
+            return []
+        from unicorn import UcError
+        self.write(0x80000000, self.baseline)
+        self.write(0x1F800000, self.scratch)
+        self.prepare_pools()
+        self.write(PLAYER_STANDIN, bytes(0x200))
+        self.word(PLAYER_STANDIN + 0x40, PLAYER_STANDIN + 0x10)
+        self.word(PLAYER_STANDIN + 0x44, PLAYER_STANDIN + 0x18)
+        try:
+            self.stop_at_animation = False
+            self.run_handler(hook, PLAYER_STANDIN, 200000)
+        except UcError:
+            pass
+        return self.spawned()
 
     def controller_spawns(self):
         """[(type, variant, [(pool, address, bytes)])]: what each section

@@ -2,23 +2,35 @@
 from PyQt6.QtCore import Qt
 from PyQt6.QtGui import QColor, QPen
 from PyQt6.QtWidgets import (QDialog, QVBoxLayout, QHBoxLayout, QLabel, QPushButton,
-                             QComboBox, QGraphicsScene, QGraphicsView, QSlider)
+                             QComboBox, QGraphicsScene, QGraphicsView, QSlider, QWidget)
 
 COLOURS = ('#4f8dd6', '#d65f4f', '#57b36b', '#c9a227', '#8e6fd0', '#3fb0b0', '#d67fb0', '#7f8c8d')
 
 
-class PianoRoll(QDialog):
+class RollView(QGraphicsView):
+    def mousePressEvent(self, event):
+        point = self.mapToScene(event.pos())
+        if event.button() == Qt.MouseButton.LeftButton and point.y() < 24:
+            self.owner.seek(point.x())
+            event.accept()
+        else:
+            super().mousePressEvent(event)
+
+    def mouseMoveEvent(self, event):
+        if event.buttons() & Qt.MouseButton.LeftButton and self.mapToScene(event.pos()).y() < 24:
+            self.owner.seek(self.mapToScene(event.pos()).x())
+            event.accept()
+        else:
+            super().mouseMoveEvent(event)
+
+
+class SequenceRoll(QWidget):
     def __init__(self, source, player):
         super().__init__(player)
         self.source, self.player = source, player
-        self.setWindowTitle('Sequence: ' + source.title(-1))
-        self.resize(1120, 620)
         layout = QVBoxLayout(self)
         row = QHBoxLayout()
         self.program = QComboBox()
-        self.program.addItem('All programs', None)
-        for program in sorted(source.used):
-            self.program.addItem(f'Program {program}', program)
         row.addWidget(self.program)
         row.addWidget(QLabel('Horizontal zoom'))
         self.zoom = QSlider(Qt.Orientation.Horizontal)
@@ -28,27 +40,35 @@ class PianoRoll(QDialog):
         row.addStretch()
         layout.addLayout(row)
         self.scene = QGraphicsScene(self)
-        self.view = QGraphicsView(self.scene)
+        self.view = RollView(self.scene)
+        self.view.owner = self
         self.view.setDragMode(QGraphicsView.DragMode.ScrollHandDrag)
         self.view.setBackgroundBrush(QColor('#202020'))
         layout.addWidget(self.view)
-        controls = QHBoxLayout()
-        for name, callback in (('Play / pause', player.toggle_play), ('Stop', player.stop),
-                               ('Export MIDI...', player.export_midi)):
-            button = QPushButton(name)
-            button.clicked.connect(callback)
-            controls.addWidget(button)
-        controls.addStretch()
-        layout.addLayout(controls)
-        layout.addWidget(QLabel('Time runs left to right, pitch runs bottom to top. Drag to pan. '
-                                'Notes show program, pitch and velocity on hover.'))
         self.program.currentIndexChanged.connect(self.redraw)
         self.zoom.valueChanged.connect(self.redraw)
         player.player.positionChanged.connect(self.position)
+        self.set_source(source)
+
+    def set_source(self, source):
+        self.source = source
+        self.program.blockSignals(True)
+        self.program.clear()
+        self.program.addItem('All programs', None)
+        if source:
+            for program in sorted(source.used):
+                self.program.addItem(f'Program {program}', program)
+        self.program.blockSignals(False)
         self.redraw()
+
+    def seek(self, x):
+        self.player.player.setPosition(round(max(0, min(self.source.length, (x - 52) / self.zoom.value())) * 1000))
 
     def redraw(self):
         self.scene.clear()
+        if self.source is None:
+            self.cursor = None
+            return
         notes = self.source.notes
         pitches = [n[2] for n in notes] or [60]
         low, high = max(0, min(pitches) - 2), min(127, max(pitches) + 2)
@@ -83,5 +103,38 @@ class PianoRoll(QDialog):
         self.position(self.player.player.position())
 
     def position(self, milliseconds):
+        if self.cursor is None:
+            return
         x = 52 + milliseconds / 1000 * self.zoom.value()
         self.cursor.setLine(x, 24, x, self.roll_height + 24)
+
+
+class PianoRoll(QDialog):
+    def __init__(self, source, player):
+        super().__init__(player)
+        self.setWindowTitle('Sequence: ' + source.title(-1))
+        self.resize(1120, 620)
+        layout = QVBoxLayout(self)
+        self.roll = SequenceRoll(source, player)
+        layout.addWidget(self.roll)
+        row = QHBoxLayout()
+        from gui.widgets.transport_icons import set_glyph
+        for glyph, callback in (('play', player.toggle_play), ('stop', player.stop)):
+            button = QPushButton()
+            set_glyph(button, glyph)
+            button.clicked.connect(callback)
+            row.addWidget(button)
+        self.timeline = QSlider(Qt.Orientation.Horizontal)
+        self.timeline.setRange(0, round(source.length * 1000))
+        self.timeline.sliderMoved.connect(player.player.setPosition)
+        player.player.positionChanged.connect(self.position)
+        row.addWidget(self.timeline, 1)
+        export = QPushButton('Export MIDI...')
+        export.clicked.connect(player.export_midi)
+        row.addWidget(export)
+        layout.addLayout(row)
+        layout.addWidget(QLabel('Click or drag the time ruler to seek. Drag the note area to pan.'))
+
+    def position(self, milliseconds):
+        if not self.timeline.isSliderDown():
+            self.timeline.setValue(milliseconds)

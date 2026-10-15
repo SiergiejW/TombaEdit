@@ -13,7 +13,7 @@ from PyQt6.QtGui import QFont, QFontDatabase, QKeySequence, QShortcut
 from PyQt6.QtMultimedia import QMediaPlayer, QAudioOutput
 from PyQt6.QtWidgets import (QWidget, QVBoxLayout, QHBoxLayout, QPushButton, QLabel, QSpinBox,
     QFileDialog, QMessageBox, QSplitter, QTableWidget, QTableWidgetItem, QAbstractItemView,
-    QHeaderView, QSlider, QInputDialog, QFrame, QPlainTextEdit, QCheckBox, QSizePolicy)
+    QHeaderView, QSlider, QInputDialog, QFrame, QPlainTextEdit, QCheckBox, QSizePolicy, QComboBox)
 from gui.widgets.image_view import file_stem
 from gui.widgets.columns import adjustable
 from gui.widgets.transport_icons import set_glyph
@@ -162,6 +162,12 @@ class AudioView(QWidget):
         self.wave.placeholder = 'The waveform of what is playing appears here; click it to seek.'
         self.wave.scrubbed.connect(lambda fraction: self.player.setPosition(round(self.player.duration() * fraction)))
         dock_layout.addWidget(self.wave)
+        self.sequence_layout = dock_layout
+        self.timeline = QSlider(Qt.Orientation.Horizontal)
+        self.timeline.setRange(0, 0)
+        self.timeline.setToolTip('Playback position')
+        self.timeline.sliderMoved.connect(lambda value: self.player.setPosition(value))
+        dock_layout.addWidget(self.timeline)
         bar = QHBoxLayout()
         bar.setSpacing(6)
         previous = QPushButton(); set_glyph(previous, 'previous'); previous.clicked.connect(lambda: self.step(-1))
@@ -180,8 +186,13 @@ class AudioView(QWidget):
         self.auto.setChecked(True)
         bar.addWidget(self.auto)
         self.rate_label = QLabel('Preview rate')
-        self.rate = QSpinBox(); self.rate.setRange(4000, 176400); self.rate.setSingleStep(1050)
-        self.rate.setValue(22050); self.rate.setSuffix(' Hz')
+        self.pitch = QComboBox()
+        self.pitch.setMaximumWidth(290)
+        self.pitch.setToolTip('VAB tone mappings from this disc. Ranged instruments can be played at several notes.')
+        self.pitch.currentIndexChanged.connect(self.choose_pitch)
+        bar.addWidget(self.pitch)
+        self.rate = QSpinBox(); self.rate.setRange(1, 176400); self.rate.setSingleStep(1050)
+        self.rate.setValue(44100); self.rate.setSuffix(' Hz')
         self.rate.setToolTip('A waveform has no rate of its own: the game plays it at whatever pitch the note asks for.')
         bar.addSpacing(8); bar.addWidget(self.rate_label); bar.addWidget(self.rate)
         bar.addSpacing(8); bar.addWidget(QLabel('Volume'))
@@ -201,6 +212,11 @@ class AudioView(QWidget):
         self.player = QMediaPlayer(self)
         self.output = QAudioOutput(self); self.output.setVolume(.75)
         self.player.setAudioOutput(self.output)
+        from formats.audio.piano_roll import SequenceRoll
+        self.roll = SequenceRoll(None, self)
+        self.roll.setFixedHeight(230)
+        self.roll.hide()
+        self.sequence_layout.insertWidget(2, self.roll)
         self.volume.valueChanged.connect(lambda value: self.output.setVolume(value / 100))
         self.player.positionChanged.connect(self.position_changed)
         self.player.durationChanged.connect(lambda value: self.position_changed(self.player.position()))
@@ -289,9 +305,14 @@ class AudioView(QWidget):
         self.text.setPlainText(text)
         self.text.setVisible(bool(text)); self.text_caption.setVisible(bool(text))
         self.rate.setVisible(source.rate_adjustable); self.rate_label.setVisible(source.rate_adjustable)
+        self.pitch.setVisible(hasattr(source, 'pitch_choices'))
         self.auto.setVisible(source.autoplay)
         self.midi_button.setVisible(source.whole)
         self.sequence_button.setVisible(source.whole)
+        self.wave.setVisible(not source.whole)
+        self.roll.setVisible(source.whole)
+        self.roll.set_source(source if source.whole else None)
+        self.timeline.setRange(0, round(source.length * 1000) if source.whole else 0)
         self.name_button.setVisible(self.label_set is not None and any(row.key for row in self.rows))
         self.now.setText('Nothing loaded')
         self.wave.envelope = None; self.wave.update()
@@ -300,6 +321,8 @@ class AudioView(QWidget):
                             'Select an entry to listen.' if source.autoplay else 'Double-click an entry, or press play.')
         if self.rows:
             view.setCurrentCell(0, 0)
+            if source.whole:
+                self.roll.program.setCurrentIndex(0)
         else:
             self.show_details(None)
 
@@ -311,7 +334,12 @@ class AudioView(QWidget):
                 return
             row = self.rows[self.thumbnail_row]
             item = self.row_table.item(self.thumbnail_row, self.preview_column)
-            if row.preview is not None and item is not None:
+            if source.whole and item is not None:
+                from gui.widgets.mini_audio import performed_icon
+                program = sorted(source.used)[self.thumbnail_row]
+                notes = [n for n in source.notes if n[4]['program'] == program]
+                item.setIcon(performed_icon(notes, source.length, ICON.width(), ICON.height()))
+            elif row.preview is not None and item is not None:
                 try:
                     item.setIcon(waveform_icon(row.preview(), ICON.width(), ICON.height()))
                 except Exception:
@@ -321,8 +349,24 @@ class AudioView(QWidget):
     def choose_row(self, row):
         self.show_details(row if 0 <= row < len(self.rows) else None)
         source = self.source
+        if source and source.whole and row >= 0:
+            self.roll.program.setCurrentIndex(row + 1)
+        self.pitch.blockSignals(True)
+        self.pitch.clear()
+        if source and hasattr(source, 'pitch_choices') and 0 <= row < len(self.rows):
+            for name, rate in source.pitch_choices(row):
+                self.pitch.addItem(name, rate)
+            self.rate.setValue(self.pitch.currentData() or 44100)
+        self.pitch.blockSignals(False)
         if self.ready and source is not None and source.autoplay and self.auto.isChecked() and row >= 0:
             self.render('play')
+
+    def choose_pitch(self):
+        rate = self.pitch.currentData()
+        if rate is not None:
+            self.rate.setValue(rate)
+            if self.ready and self.auto.isChecked():
+                self.render('play')
 
     def show_details(self, row):
         source = self.source
@@ -390,6 +434,9 @@ class AudioView(QWidget):
     def position_changed(self, value):
         duration = self.player.duration()
         self.clock.setText(f'{self.clock_text(value)} / {self.clock_text(duration)}')
+        self.timeline.setMaximum(duration or (round(self.source.length * 1000) if self.source and self.source.whole else 0))
+        if not self.timeline.isSliderDown():
+            self.timeline.setValue(value)
         self.wave.set_position(value / max(1, duration))
 
     def playback_changed(self, state):

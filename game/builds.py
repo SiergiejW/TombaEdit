@@ -180,6 +180,10 @@ BUILDS.update({
 })
 
 
+from game.sampler_builds import SAMPLERS
+BUILDS.update({digest: Build(**fields) for digest, fields in SAMPLERS.items()})
+
+
 class Executable:
     """A known executable's bytes with its build description."""
 
@@ -211,9 +215,19 @@ def executable(project, table=None):
     try:
         entry = project.catalog.executable
         if language is not None:
-            entry = project.disc.entries.get(f'EXE/MAIN{language}.EXE', entry)
+            prefix = table.rsplit('SYS/', 1)[0] if table and 'SYS/' in table else ''
+            entry = project.disc.entries.get(f'{prefix}EXE/MAIN{language}.EXE',
+                    project.disc.entries.get(f'{prefix}MAIN{language}.EXE', entry))
         data = project.disc.read(entry)
         build = BUILDS.get(hashlib.sha1(data).hexdigest())
+        if build is None:
+            from game.build_signatures import SIGNATURES
+            base = struct.unpack_from('<I', data, 0x18)[0]
+            for digest, (addresses, signature) in SIGNATURES.items():
+                chunks = [data[a - base + 0x800:a - base + 0x810] for a in addresses]
+                if all(len(chunk) == 16 for chunk in chunks) and hashlib.sha256(b''.join(chunks)).hexdigest() == signature:
+                    build = BUILDS[digest]
+                    break
         if build is not None:
             found = Executable(data, build)
     except Exception:

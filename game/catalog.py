@@ -2,6 +2,7 @@
 from dataclasses import dataclass
 import struct
 import hashlib
+import re
 from disc.reader import DiscEntry, FormatError
 
 
@@ -26,6 +27,7 @@ class Catalog:
     links: dict
     matched: int
     stride: int = 8
+    lba_bias: int = 0
 
     @classmethod
     def discover(cls, disc, language=None):
@@ -34,11 +36,15 @@ class Catalog:
         program with its own links; `language` picks one of them."""
         by_lba = {e.lba: e for e in disc.files}
         system = 'SYS/LDSYS.BIN' if language is None else f'SYS/LD{language}SYS.BIN'
-        anchor = disc.entries.get(system) or disc.entries.get('SYSTEM/A00000.GAM')
+        anchor = (disc.entries.get(system) or next((e for e in disc.files if e.path.endswith('/' + system)), None)
+                  or disc.entries.get('SYSTEM/A00000.GAM')
+                  or next((e for e in disc.files if e.path.endswith('/SYSTEM/A00000.GAM')), None)
+                  or next((e for e in disc.files if e.path.endswith('/A00000.GAM')), None))
         executables = [e for e in disc.files if e.path.startswith(("SCUS_", "SCES_", "SLPS_", 'SLPM_'))
-                       or e.path.endswith(".EXE")]
+                       or e.path.endswith((".EXE", '/TOMBA', '/TOMBI'))]
         if language is not None:
-            executables = [e for e in executables if e.path == f'EXE/MAIN{language}.EXE']
+            executables = [e for e in executables if e.path == f'EXE/MAIN{language}.EXE'
+                           or e.path.endswith(f'/MAIN{language}.EXE')]
         best = None
         for entry in executables:
             if entry.size > 8 * 1024 * 1024:
@@ -71,10 +77,10 @@ class Catalog:
                     lba, size = link_record(data, pos)
                 except (ValueError, struct.error):
                     continue
-                if anchor and (lba, size) == (anchor.lba, anchor.size):
-                    candidates.append(pos)
-            for start in candidates:
-              for stride in ((8,) if anchor and anchor.path == system else (8, 24)):
+                if anchor and size == anchor.size:
+                    candidates.append((pos, anchor.lba - lba))
+            for start, bias in candidates:
+              for stride in ((8,) if anchor and anchor.path.endswith(system) else (8, 24)):
                 links, matched = {}, 0
                 holes = 0
                 for pos in range(start, len(data) - 7, stride):
@@ -86,11 +92,12 @@ class Catalog:
                             continue
                         break
                     holes = 0
+                    lba += bias
                     if lba < 0 or (lba + disc.start) * disc.stride >= disc.byte_size:
                         break
                     actual = by_lba.get(lba)
                     index = (pos - start) // stride
-                    if actual is not None:
+                    if actual is not None and (actual.size == size or not bias):
                         links[index] = DiscEntry(actual.path, lba, size)
                         matched += 1
                     else:
@@ -100,11 +107,11 @@ class Catalog:
                 while links and links[max(links)].path.startswith("[unlisted"):
                     links.pop(max(links))
                 if matched >= 8 and (best is None or matched > best.matched):
-                        best = cls(entry.path, start, links, matched, stride)
+                        best = cls(entry.path, start, links, matched, stride, bias)
             # The Pure Pure sampler stores 64-byte records with ISO names;
             # CdSearchFile fills their extent fields at runtime.
-            needle = b'\\TOMBA\\A00000.GAM;1'
-            start = data.find(needle)
+            match = re.search(rb'\\(?:TOMBA|TOMBI)\\(?:SYSTEM\\)?(?:A00000|SYS000)\.GAM;1\x00', data)
+            start = match.start() if match else -1
             if start >= 0:
                 links = {}
                 for index, pos in enumerate(range(start, len(data), 64)):

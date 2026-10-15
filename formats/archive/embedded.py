@@ -83,7 +83,13 @@ def embedded_groups(disc, catalog):
         choices = areas.setdefault(area, {})
         if index not in choices or len(rows) > len(choices[index][1]):
             choices[index] = address, rows
-    out = {key: value for key, value in out.items() if key == 'SYS/LDSYS.BIN'}
+    # DATA000-era builds use one base plus six section pointers. Several
+    # sections share DATA001 but upload different textures, so preserve the
+    # native pointer run rather than collapsing it by source filename.
+    out = {key: value for key, value in out.items()
+           if key == 'SYS/LDSYS.BIN' or any(
+               re.search(r'/DATA\d+\.GAM$', a.source.path)
+               for group in value for a in group.assets if a.source)}
     for area, choices in areas.items():
         if 0 not in choices:
             continue

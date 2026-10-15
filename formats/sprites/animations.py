@@ -103,6 +103,21 @@ class Memory:
         return ''
 
 
+# Names of Tomba's animations by their number in the 90-entry table, from
+# Tombi-Decomp (tools/anim.py): read from the state code that picks them
+# and checked against the frames; those marked ? were named from the frames
+# alone.
+PLAYER_ANIMATIONS = {
+    0: 'idle', 1: 'walk', 2: 'jog', 3: 'run', 4: 'fall', 5: 'crouch', 6: 'climb back', 7: 'climb back, still?',
+    9: 'hurt, knocked back', 10: 'climb side, idle', 11: 'climb side, up', 12: 'climb side, down', 13: 'jump start',
+    14: 'jump', 15: 'jump (other)', 16: 'flung through the air?', 30: 'balance on an edge?', 33: 'crouch walk',
+    35: 'grab, climbing back?', 36: 'turn round', 45: 'climb side, up (other)?', 47: 'knocked down?', 48: 'get up',
+    49: 'roll on landing', 53: 'dive?', 55: 'get up slowly?', 57: 'knocked down hard?', 61: 'recovery flip?',
+    67: 'swim stroke', 68: 'swim, float', 69: 'swim, turn?', 71: 'swim stroke, slow?', 78: 'victory pose?',
+    80: 'shocked', 81: 'shiver with cold?', 83: 'burnt, falling?',
+}
+
+
 def player_scripts(regions, frame_count):
     """The player's retail (90) or early demo (56) animation pointer table.
 
@@ -122,7 +137,8 @@ def player_scripts(regions, frame_count):
                 if all(decoded):
                     found = {}
                     for index, pointer in enumerate(pointers):
-                        found.setdefault(pointer, []).append(f'Tomba animation {index:02d}')
+                        name = PLAYER_ANIMATIONS.get(index) if count == 90 else None
+                        found.setdefault(pointer, []).append(f'Tomba animation {index:02d}' + (f' ({name})' if name else ''))
                     return found
     return {}
 

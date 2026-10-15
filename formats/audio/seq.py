@@ -358,9 +358,10 @@ def render(data, at, snd, bank):
             samples, loop = cache[tone.vag]
             bend = (state["bend"] - 8192) / 8192.0
             bend *= tone.bend_up if bend > 0 else tone.bend_down
-            semitones = key - tone.center + tone.shift / 100.0 + bend
+            from formats.audio.pitch import spu_pitch
+            pitch = spu_pitch(key, tone.center, tone.shift, bend)
             level = envelope(tone.adsr1, tone.adsr2, int((end - start) * RATE))
-            sound = _voice(samples, loop, 2.0 ** (semitones / 12.0), len(level))
+            sound = _voice(samples, loop, pitch / 4096.0, len(level))
             if not len(sound):
                 continue
             sound = sound * level[:len(sound)] * (

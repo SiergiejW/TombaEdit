@@ -463,7 +463,8 @@ def _prepare_preview(project, node, context=None):
             from formats.archive.containers import sequence
             result['audio'] = ('Music', name, sound.sequence_sources(
                 sequence(data)[0] or data, Path(source).stem or 'Sequence', sound.disc_banks(project), near=source,
-                embedded_area=area_number(node.ldar) if isinstance(node, Asset) and node.kind == 'SEQ' else None))
+                embedded_area=area_number(node.ldar) if isinstance(node, Asset) and node.kind == 'SEQ' else None,
+                resident=sound.resident_banks(project, node.ldar, node.group) if isinstance(node, Asset) else None))
         else:
             result['audio'] = ('Sounds', name, sound.wvd_sources(data))
     from formats.annotate import regions
@@ -766,13 +767,17 @@ class MainWindow(QMainWindow):
         # folder; names given on this machine are laid over them.
         self.builtin_labels = {}
         try:
-            shipped = labels.load(self.builtin_path(serial))
+            from game.label_store import builtin_library
+            shipped = builtin_library(serial)
             self.labels.entries.update(shipped.entries)
             self.labels.bins.update(shipped.bins)
             self.labels.areas.update(shipped.areas)
             self.builtin_labels = {key: entry.name for key, entry in shipped.entries.items()}
         except ValueError:
             pass
+        from game.label_store import shared_content
+        shared = shared_content(self.settings, serial)
+        self.labels.entries.update(shared.entries)
         saved = self.settings.value('labels/' + serial, '')
         if saved:
             try:
@@ -1366,15 +1371,18 @@ class MainWindow(QMainWindow):
 
     def persist_labels(self):
         import json
-        from game.label_store import document
+        from game.label_store import document, SHARED_KEY, content_identity
         serial = Path(self.project.catalog.executable).name if self.project.catalog else self.project.disc.volume
         # Only what differs from the names that come with the tool is kept
         # here, so a later release's names are not hidden by old copies.
-        own = labels.LabelSet(name=self.labels.name, build=self.labels.build, serial=self.labels.serial,
-                              bins=self.labels.bins, areas=self.labels.areas,
-                              entries={key: entry for key, entry in self.labels.entries.items()
-                                       if entry.name != self.builtin_labels.get(key, '')})
-        self.settings.setValue('labels/' + serial, json.dumps(document(own)))
+        own = labels.LabelSet(name='Shared content labels', build='shared',
+            entries={key: entry for key, entry in self.labels.entries.items()
+                     if content_identity(key) and entry.name != self.builtin_labels.get(key, '')})
+        self.settings.setValue(SHARED_KEY, json.dumps(document(own), ensure_ascii=False))
+        local = labels.LabelSet(name=self.labels.name, build=self.labels.build, serial=self.labels.serial,
+                                bins=self.labels.bins, areas=self.labels.areas,
+                                entries={k: v for k, v in self.labels.entries.items() if not content_identity(k)})
+        self.settings.setValue('labels/' + serial, json.dumps(document(local), ensure_ascii=False))
 
     def builtin_path(self, serial):
         return str(Path(labels.labels_dir()) / (serial + '.json'))
@@ -1384,10 +1392,17 @@ class MainWindow(QMainWindow):
         packaged with the tool for this build of the game."""
         if self.project is None:
             return
-        path = self.builtin_path(self.labels.serial)
+        from game.label_store import content_identity
+        path = self.builtin_path('shared')
         try:
             Path(path).parent.mkdir(exist_ok=True)
-            labels.save(self.labels, path, keep_existing=False)
+            shared = labels.LabelSet(name='Shared content labels', build='shared',
+                                    entries={k: v for k, v in self.labels.entries.items() if content_identity(k)})
+            labels.save(shared, path, keep_existing=False)
+            local = labels.LabelSet(name=self.labels.name, serial=self.labels.serial, build=self.labels.build,
+                                    bins=self.labels.bins, areas=self.labels.areas,
+                                    entries={k: v for k, v in self.labels.entries.items() if not content_identity(k)})
+            labels.save(local, self.builtin_path(self.labels.serial), keep_existing=False)
         except OSError as exc:
             QMessageBox.warning(self, 'Cannot save labels', str(exc))
             return

@@ -88,6 +88,22 @@ class BankSource(Source):
     def default_name(self, row):
         return f'Waveform {self.samples[row][1]:03d}'
 
+    def pitch_choices(self, row):
+        """Audition the VAB's own tone mappings, preserving alternate uses.
+
+        A single-key tone supplies a definite key. A ranged instrument has
+        no single game pitch, so audition its centre within its key range.
+        """
+        from formats.audio.pitch import sample_rate
+        number = self.samples[row][1]
+        choices = []
+        for program, tone in self.users.get(number, ()):
+            note = tone.low if tone.low == tone.high else max(tone.low, min(tone.high, tone.center))
+            rate = sample_rate(note, tone.center, tone.shift)
+            use = 'fixed key' if tone.low == tone.high else f'audition, keys {tone.low}-{tone.high}'
+            choices.append((f'P{program}, key {note} ({use})', rate))
+        return choices + [('SPU unity (unpitched sample)', 44100)]
+
     def rows(self):
         out = []
         for row, (_bank, number, offset, size) in enumerate(self.samples):
@@ -132,7 +148,7 @@ class SequenceSource(Source):
     """A SEQ played on one candidate bank; its rows are the programs the
     music asks for, with what the bank has for each."""
     caption = 'Programs the music uses'
-    headers = ('Program', 'Notes', 'Keys', 'In this bank')
+    headers = ('Program', 'Preview', 'Notes', 'Keys', 'In this bank')
     numbered = False
     whole = True
 
@@ -157,7 +173,7 @@ class SequenceSource(Source):
             reach = sum(any(t.low <= key <= t.high for t in tones) for key in keys)
             have = 'not in this bank' if not tones else f'{len(tones)} tone{"s" if len(tones) != 1 else ""}' + (
                 '' if reach == len(keys) else f', {reach} of {len(keys)} notes in range')
-            out.append(Row((f'Program {program}', str(len(keys)), f'{min(keys)} to {max(keys)}', have)))
+            out.append(Row((f'Program {program}', '', str(len(keys)), f'{min(keys)} to {max(keys)}', have)))
         return out
 
     def details(self, row):
@@ -218,7 +234,22 @@ def disc_banks(project):
     return found
 
 
-def sequence_sources(data, title, banks, near='', labels=None, limit=64, embedded_area=None):
+def resident_banks(project, path, group):
+    """Banks assigned by this section's actual sound load records."""
+    from formats.level.scene import loaded_resources
+    found = {}
+    for (kind, slot), asset in loaded_resources(project, path, group).items():
+        if kind != 'WVD':
+            continue
+        try:
+            for index, bank in enumerate(wvd.banks(project.asset_data(asset))):
+                found[slot + index] = (f'{asset.source.path} | Bank {index}', bank)
+        except (ValueError, FormatError, struct.error, IndexError):
+            continue
+    return found
+
+
+def sequence_sources(data, title, banks, near='', labels=None, limit=64, embedded_area=None, resident=None):
     """A source per bank that can play the sequence, best first.
 
     Banks are ranked by how many of the music's notes they have a tone for,
@@ -226,6 +257,11 @@ def sequence_sources(data, title, banks, near='', labels=None, limit=64, embedde
     the names Tomba gives its files (S_AR010.SEQ goes with SND0010.WVD)."""
     folder, stem = str(Path(near).parent).replace('\\', '/'), Path(near).stem.upper()
     if embedded_area is not None:
+        if resident and 1 in resident:
+            name, bank = resident[1]
+            source = SequenceSource(title, data, name, bank, labels)
+            source.bank_reason = 'Jingle player: VAB slot 1 from this section\'s sound load records.'
+            return [source]
         # playJingle opens embedded SEQ slots on VAB_IDS[1] (1F8003AC).
         # In areas that load a two-bank WVD this is its second bank.
         resident = f'SND0{embedded_area:02d}0'
