@@ -386,7 +386,7 @@ class SpriteView(QWidget):
                          for n, part in enumerate(self.frames[index])]
                 self.cache[index] = self.renderer(index, overrides) if self.renderer else render_sprite(
                     parts, vram, tpage=base,
-                    grey_missing=self.grey.isChecked(), blend=self.styles.get(index, {}).get('blend', False),
+                    grey_missing=self.grey.isChecked(),
                     texture_cache=self.texture_cache)
             except FormatError:
                 self.cache[index] = Image.new('RGBA', (1, 1))

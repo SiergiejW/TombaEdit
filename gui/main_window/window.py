@@ -556,6 +556,7 @@ def tolerant_console():
 
 
 class MainWindow(QMainWindow):
+    labels_indexed = pyqtSignal(int, object, object)
     def eventFilter(self, watched, event):
         if (event.type() in (QEvent.Type.ShortcutOverride, QEvent.Type.KeyPress)
                 and event.key() == Qt.Key.Key_F2 and QApplication.activeModalWidget() is None
@@ -607,6 +608,11 @@ class MainWindow(QMainWindow):
         self.generation = 0
         self.pool = QThreadPool(self)
         self.pool.setMaxThreadCount(1)
+        self.label_pool = QThreadPool(self)
+        self.label_pool.setMaxThreadCount(1)
+        self.label_index_epoch = 0
+        self.label_index_running = False
+        self.labels_indexed.connect(self.apply_label_index)
         self.asset_items = {}
         self.file_items = {}
         self.tree_icons = {}
@@ -829,8 +835,12 @@ class MainWindow(QMainWindow):
             QMessageBox.warning(self, "Cannot open disc", error)
             return
         self.project = project
+        self.label_index_epoch += 1
+        self.label_pool.clear()
+        self.label_index_running = False
         self.review_items.clear()
         self.label_hashes.clear()
+        self.label_hashes.update(project.__dict__.get('label_content_hashes', {}))
         serial = Path(project.catalog.executable).name if project.catalog else project.disc.volume
         from game.label_store import local_identity
         self.labels = labels.LabelSet(name=project.disc.source.stem, build=local_identity(project), serial=serial)
@@ -1043,7 +1053,7 @@ class MainWindow(QMainWindow):
         node = result["node"]
         self.current_data = result.get("data")
         if self.current_data is not None:
-            self.label_hashes[self.node_key(node)] = labels.content_key(self.current_data)
+            self.remember_label_hash(node, labels.content_key(self.current_data))
             self.refresh_labels()
         self.export_action.setEnabled(self.current_data is not None)
         self.raw_action.setEnabled(self.source_entry() is not None)
@@ -1457,6 +1467,22 @@ class MainWindow(QMainWindow):
             return ('file', node.path)
         return node
 
+    def remember_label_hash(self, node, digest):
+        """All LDAR links to one byte range are identical without another read."""
+        self.label_hashes[self.node_key(node)] = digest
+        if isinstance(node, Asset) and node.source is not None:
+            identity = (node.source.lba, node.source.size, node.offset, node.size)
+            for groups in self.project.ldars.values():
+                for group in groups:
+                    for other in group.assets:
+                        if other.source is not None and (other.source.lba, other.source.size, other.offset, other.size) == identity:
+                            self.label_hashes[self.node_key(other)] = digest
+        elif isinstance(node, DiscEntry):
+            for other in self.project.disc.files:
+                if (other.lba, other.size) == (node.lba, node.size):
+                    self.label_hashes[self.node_key(other)] = digest
+        self.project.__dict__.setdefault('label_content_hashes', {}).update(self.label_hashes)
+
     def persist_labels(self):
         if self.project is None:
             return False
@@ -1467,6 +1493,13 @@ class MainWindow(QMainWindow):
                                 f'{self.label_autosave.path}\n\n{exc}\nKeep this window open and export your labels.')
             return False
         print(f'Labels autosaved: {self.label_autosave.path}', flush=True)
+        self.refresh_labels()
+        for index in range(self.tabs.count()):
+            widget = self.tabs.widget(index)
+            if hasattr(widget, 'reload_labels'):
+                widget.reload_labels()
+        if not self.project.__dict__.get('label_index_complete') and not self.label_index_running:
+            self.index_labels()
         return True
 
     def builtin_path(self, serial):
@@ -1520,7 +1553,7 @@ class MainWindow(QMainWindow):
             old = self.labels.bins.get(identity, '')
         elif self.current_data is not None:
             content = labels.content_key(self.current_data)
-            self.label_hashes[key] = content
+            self.remember_label_hash(node, content)
             old = self.labels.label_for(content)
         else:
             self.statusBar().showMessage('Wait for the file to finish loading before naming it.')
@@ -1723,30 +1756,60 @@ class MainWindow(QMainWindow):
         # Hash all small logical files/resources off the UI thread. Exact content
         # matches can safely carry names between regional releases.
         project = self.project
+        if self.label_index_running:
+            return
+        if project.__dict__.get('label_index_complete'):
+            self.label_hashes.update(project.__dict__.get('label_content_hashes', {}))
+            self.refresh_labels()
+            return
+        from copy import copy
+        from collections import OrderedDict
+        reader = copy(project)
+        reader.cache, reader.cache_bytes = OrderedDict(), 0
+        epoch = self.label_index_epoch
+        known = dict(self.label_hashes)
+        self.label_index_running = True
         def collect():
-            out = {}
-            for groups in project.ldars.values():
-                for group in groups:
-                    for asset in group.assets:
-                        try:
-                            out[self.node_key(asset)] = labels.content_key(project.asset_data(asset))
-                        except ValueError:
-                            continue
-            for entry in project.disc.files:
-                if entry.size <= 4 * 1024 * 1024:
+            out, seen = known, {}
+            nodes = [a for groups in project.ldars.values() for group in groups for a in group.assets if a.source]
+            nodes += [e for e in project.disc.files if e.size <= 4 * 1024 * 1024]
+            nodes.sort(key=lambda n: n.source.lba if isinstance(n, Asset) else n.lba)
+            for number, node in enumerate(nodes):
+                if epoch != self.label_index_epoch or project is not self.project:
+                    return None
+                key = self.node_key(node)
+                if key not in out:
+                    source = node.source if isinstance(node, Asset) else node
+                    identity = ((source.lba, source.size, node.offset, node.size) if isinstance(node, Asset)
+                                else (source.lba, source.size, 'file'))
                     try:
-                        out[self.node_key(entry)] = labels.content_key(project.payload(entry))
+                        if identity not in seen:
+                            data = reader.asset_data(node) if isinstance(node, Asset) else reader.payload(node)
+                            seen[identity] = labels.content_key(data)
+                        out[key] = seen[identity]
                     except ValueError:
                         continue
+                if number % 64 == 0:
+                    self.labels_indexed.emit(epoch, project, dict(out))
             return out
         def ready(generation, result, error):
-            if generation == self.generation and result is not None:
-                self.label_hashes.update(result)
-                self.refresh_labels()
-                self.refresh_review_status()
-                matched = len(set(result.values()) & set(self.labels.entries))
-                self.statusBar().showMessage(f'{matched} labels matched by file contents.')
-        self.submit(collect, ready)
+            if epoch == self.label_index_epoch and project is self.project:
+                self.label_index_running = False
+                if result is not None:
+                    project.label_index_complete = True
+                    self.apply_label_index(epoch, project, result)
+                elif error:
+                    print(f'Label content scan: {error}', flush=True)
+        # Selection changes cancel preview jobs, but must not discard this scan.
+        self.label_pool.start(Job(epoch, collect, ready))
+
+    def apply_label_index(self, epoch, project, result):
+        if epoch != self.label_index_epoch or project is not self.project:
+            return
+        self.label_hashes.update(result)
+        project.__dict__.setdefault('label_content_hashes', {}).update(result)
+        self.refresh_labels()
+        self.refresh_review_status()
 
     def export_labels(self):
         if self.project is None:
@@ -1776,6 +1839,8 @@ class MainWindow(QMainWindow):
             event.ignore()
             return
         self.generation += 1
+        self.label_index_epoch += 1
+        self.label_pool.clear()
         self.pool.clear()
         self.settings.setValue("geometry", self.saveGeometry())
         self.clear_tabs()

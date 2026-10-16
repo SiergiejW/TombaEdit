@@ -241,6 +241,13 @@ class AnimationView(QWidget):
     def animation_label(self, script):
         return (self.label_set.label_for(self.animation_key(script)) or '') if self.label_set is not None else ''
 
+    def reload_labels(self):
+        self.table.blockSignals(True)
+        for row, address in enumerate(self.shown):
+            if self.table.item(row, 8) is not None:
+                self.table.item(row, 8).setText(self.animation_label(self.scripts[address]))
+        self.table.blockSignals(False)
+
     def rename_selection(self):
         if self.script is None or self.label_set is None:
             return

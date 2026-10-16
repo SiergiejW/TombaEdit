@@ -98,8 +98,13 @@ class WppView(QWidget):
 
     def set_labels(self, labels, save):
         self.label_set, self.save_labels = labels, save
+        self.reload_labels()
+
+    def reload_labels(self):
+        if self.label_set is None:
+            return
         for row, picture in enumerate(self.pictures):
-            name = labels.label_for(self.picture_key(picture))
+            name = self.label_set.label_for(self.picture_key(picture))
             self.table.item(row, 1).setText(name or '')
 
     def picture_key(self, picture):
