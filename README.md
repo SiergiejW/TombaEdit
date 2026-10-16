@@ -46,6 +46,20 @@ or **Other**. Choosing a status immediately
 creates or updates `sprite_checks.json`, replacing the previous status for that
 SPR entry in the same ROM and VRAM context. There are no notes or export steps.
 Hover over the dropdown for the JSON file's location. Send that file when finished.
+The Animations tab has its own review dropdown, saved independently for that bank.
+The narrow **SPR** and **ANIM** columns at the far left of the tree show a warning
+for a reported problem, a check mark for OK, and nothing for unchecked entries.
+Drag either column's edge to expand it. List columns fit their contents by default,
+remain resizable, and use right-side ellipses when text must be clipped.
+
+Labels save immediately after every rename to **tombaedit_labels.json beside
+TombaEdit.exe**, with the previous save kept as **tombaedit_labels.json.bak**.
+Running from Python uses the project folder instead. Old Windows settings are
+migrated once without deleting them. Content-based names are shared across ROMs;
+folder and section names stay specific to their build. Keep this JSON beside the
+executable when moving the app. Sprite and animation reviews likewise live in
+**sprite_checks.json beside the executable**, with existing AppData reviews copied
+there on first use. Neither file is stored inside PyInstaller's temporary folder.
 
 SPR previews reuse decoded texture pages and retain their resolved load context
 in a bounded disk cache between runs. Changing the ROM or rebuilding the decoder

@@ -1,5 +1,19 @@
 # Viewer validation for 0.0.2
 
+Portable label recovery found 21 custom content names in the existing Windows
+settings and 218 names in the source label files, producing 239 named entries
+in the external tombaedit_labels.json. Original registry values and source files
+were copied into work/label-recovery before migration. Existing 36 sprite reviews
+were also preserved. This inventory does not prove that every unsaved past edit
+was recoverable.
+
+Thirty-one unit checks now include immediate label-save restart persistence,
+previous-save backups, corrupt-file protection, one-time registry migration,
+cross-build isolation, preservation of other windows' changes, packaged paths,
+and independent SPR/ANIM review identities. A real-disc GUI check exercised F2
+autosave, a fresh MainWindow reading the saved name, independent warning/check
+markers in both tree columns, clearing a review, and fitting a long label column.
+
 SPR loading was profiled and optimized on US retail AREA00 banks 34FF and
 39FF. Without the profiler, bank 34FF preparation fell from 15.29 s to
 4.21 s on the first uncached visit, then 0.11 s from the persistent cache.

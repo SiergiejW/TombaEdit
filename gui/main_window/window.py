@@ -27,6 +27,28 @@ ROLE = Qt.ItemDataRole.UserRole
 DISC_SUFFIXES = (".bin", ".cue", ".iso", ".img", ".ccd")
 
 
+class ResourceTree(QTreeWidget):
+    def __init__(self):
+        super().__init__()
+        self.user_horizontal = 0
+        self.restore_horizontal = QTimer(self)
+        self.restore_horizontal.setSingleShot(True)
+        self.restore_horizontal.timeout.connect(lambda: self.horizontalScrollBar().setValue(self.user_horizontal))
+        bar = self.horizontalScrollBar()
+        bar.sliderMoved.connect(self.remember_horizontal)
+        bar.actionTriggered.connect(lambda action: self.remember_horizontal(bar.sliderPosition()))
+
+    def remember_horizontal(self, position):
+        self.user_horizontal = position
+
+    def scrollContentsBy(self, dx, dy):
+        super().scrollContentsBy(dx, dy)
+        # Qt otherwise hides the review columns when ensuring a deep name
+        # cell is visible. Deliberate horizontal scrolling still works.
+        if dx and hasattr(self, 'restore_horizontal'):
+            self.restore_horizontal.start(0)
+
+
 class Signals(QObject):
     result = pyqtSignal(int, object, str)
 
@@ -404,6 +426,7 @@ def _prepare_preview(project, node, context=None):
                     continue
                 if len(frames) == len(pictures):
                     result['paired_sprites'] = frames
+                    result['paired_asset'] = candidate
                     result['paired_tomba'] = (candidate.code >> 8) & 15 == 0
                     known = executable(project, node.ldar)
                     overlay = next((a for a in reversed(loaded) if a.kind == 'INS'), None)
@@ -557,10 +580,26 @@ class MainWindow(QMainWindow):
                 widget = widget.parentWidget()
         return super().eventFilter(watched, event)
 
-    def __init__(self):
+    def __init__(self, label_path=None):
         super().__init__()
         tolerant_console()
         self.settings = QSettings()
+        from game.label_autosave import LabelAutosave
+        self.label_autosave = LabelAutosave(label_path)
+        self.saved_label_snapshot = None
+        from game.sprite_checks import default_store, SpriteChecks
+        try:
+            self.sprite_checks = (SpriteChecks(self.label_autosave.path.with_name('sprite_checks.json'))
+                                  if label_path else default_store())
+        except (OSError, ValueError, TypeError) as exc:
+            self.sprite_checks = SpriteChecks(self.label_autosave.path.with_name('sprite_checks.json'))
+            print(f'Could not migrate old sprite reviews: {exc}', flush=True)
+        self.review_items = {}
+        try:
+            self.label_autosave.migrate(self.settings)
+        except (OSError, ValueError, TypeError) as exc:
+            QMessageBox.warning(self, 'Cannot autosave labels',
+                                f'{self.label_autosave.path}\n\n{exc}\nExisting label files have not been overwritten.')
         self.load_glyphs()
         self.project = None
         self.current_node = None
@@ -697,8 +736,22 @@ class MainWindow(QMainWindow):
         self.statusBar().showMessage("Open a Tomba! data-track BIN, CUE or ISO.")
 
     def make_tree(self):
-        tree = QTreeWidget()
-        tree.setHeaderLabels(["Name / resource", "Label", "Bytes"])
+        tree = ResourceTree()
+        tree.setHeaderLabels(["Name / resource", "Label", "Bytes", "SPR", "ANIM"])
+        tree.headerItem().setToolTip(3, 'Sprite review. Drag the column edge to expand.')
+        tree.headerItem().setToolTip(4, 'Animation review. Drag the column edge to expand.')
+        tree.header().moveSection(3, 0)
+        tree.header().moveSection(tree.header().visualIndex(4), 1)
+        tree.header().setMinimumSectionSize(24)
+        for column in (3, 4):
+            tree.header().setSectionResizeMode(column, QHeaderView.ResizeMode.Interactive)
+            tree.setColumnWidth(column, 30)
+            item_font = tree.headerItem().font(column)
+            item_font.setPointSize(7)
+            tree.headerItem().setFont(column, item_font)
+        tree.setTreePosition(0)
+        from gui.widgets.columns import elide_at_view_edge
+        elide_at_view_edge(tree)
         tree.setColumnWidth(0, 370)
         tree.setColumnWidth(1, 160)
         tree.setUniformRowHeights(True)
@@ -776,6 +829,7 @@ class MainWindow(QMainWindow):
             QMessageBox.warning(self, "Cannot open disc", error)
             return
         self.project = project
+        self.review_items.clear()
         self.label_hashes.clear()
         serial = Path(project.catalog.executable).name if project.catalog else project.disc.volume
         from game.label_store import local_identity
@@ -792,22 +846,15 @@ class MainWindow(QMainWindow):
             self.builtin_labels = {key: entry.name for key, entry in shipped.entries.items()}
         except ValueError:
             pass
-        from game.label_store import shared_content, local_identity
-        shared = shared_content(self.settings, serial)
-        self.labels.entries.update(shared.entries)
-        saved = self.settings.value('labels/' + local_identity(project), '')
-        if not saved and serial not in ('TOMBA.EXE', 'MAIN0.EXE'):
-            saved = self.settings.value('labels/' + serial, '')
-        if saved:
-            try:
-                # Load through the same validated parser as an imported file.
-                from game.label_store import from_json
-                own = from_json(saved)
-                self.labels.entries.update(own.entries)
-                self.labels.bins.update(own.bins)
-                self.labels.areas.update(own.areas)
-            except (ValueError, TypeError):
-                pass
+        from game.label_autosave import snapshot
+        try:
+            own = self.label_autosave.load(self.labels.build, serial)
+            self.labels.entries.update(own.entries)
+            self.labels.bins.update(own.bins)
+            self.labels.areas.update(own.areas)
+        except (OSError, ValueError, TypeError) as exc:
+            QMessageBox.warning(self, 'Cannot load saved labels', f'{self.label_autosave.path}\n\n{exc}')
+        self.saved_label_snapshot = snapshot(self.labels)
         self.context.hide()
         self.current_node = None
         self.current_data = None
@@ -871,6 +918,7 @@ class MainWindow(QMainWindow):
         summary += "\nSelect a file or expand an area/section to open its resources."
         self.tabs.addTab(text_view(summary), "Disc overview")
         self.refresh_labels()
+        self.refresh_review_status()
         if self.labels.entries:
             self.index_labels()
         self.statusBar().showMessage("Disc ready" + (f" | {len(project.warnings)} diagnostic(s); see overview" if project.warnings else ""))
@@ -878,6 +926,8 @@ class MainWindow(QMainWindow):
     def item(self, parent, label, node, size=None):
         item = QTreeWidgetItem(parent, [label, '', f"{size:,}" if size is not None else ""])
         item.setData(0, ROLE, node)
+        if isinstance(node, Asset) and node.kind == 'SPR':
+            self.review_items.setdefault((node.ldar, node.group, node.record_offset), []).append(item)
         folder = isinstance(node, tuple) or isinstance(node, DiscEntry) and node.directory
         standard = QStyle.StandardPixmap.SP_DirIcon
         if isinstance(node, tuple) and node[0] == 'group':
@@ -1067,7 +1117,9 @@ class MainWindow(QMainWindow):
                 if node.kind == 'SPR':
                     from game.sprite_checks import review_target
                     view.set_check_target(review_target(self.project, node, self.current_data,
-                                                       result.get('preview_context'), len(result['sprites'])))
+                                                       result.get('preview_context'), len(result['sprites'])),
+                                          store=self.sprite_checks)
+                    view.check_bar.review_changed.connect(self.refresh_review_status)
                 key = self.node_key(node)
                 view.restore_state(self.sprite_states.get(key, []))
                 view.selection_changed.connect(lambda state, k=key: self.sprite_states.__setitem__(k, state))
@@ -1089,6 +1141,10 @@ class MainWindow(QMainWindow):
                                                result.get('animation_users'), result.get('update_rate', 60),
                                                node.label.split('|')[0].strip())
                     animations.set_labels(self.labels, self.persist_labels, labels.content_key(result['data']))
+                    animations.set_check_target(review_target(self.project, node, self.current_data,
+                                                             result.get('preview_context'), len(frames), 'anim'),
+                                                self.sprite_checks)
+                    animations.check_bar.review_changed.connect(self.refresh_review_status)
                     self.tabs.addTab(animations, 'Animations')
                     view.set_animations(animations)
             if isinstance(node, Asset) and node.kind == 'APD':
@@ -1132,6 +1188,13 @@ class MainWindow(QMainWindow):
                         lambda row, col, old_row, old_col, sprite=view:
                             sprite.bank.setCurrentCell(row, 0) if 0 <= row < sprite.bank.rowCount() else None)
                     view.set_labels(self.labels, self.persist_labels)
+                    paired = result['paired_asset']
+                    from game.sprite_checks import review_target
+                    paired_data = self.project.asset_data(paired)
+                    view.set_check_target(review_target(self.project, paired, paired_data,
+                                                       result.get('preview_context'), len(result['paired_sprites'])),
+                                          self.sprite_checks)
+                    view.check_bar.review_changed.connect(self.refresh_review_status)
                     self.tabs.addTab(view, 'Assembled frames')
                     if 'animation_code' in result:
                         from formats.sprites.anim_viewer import AnimationView
@@ -1144,6 +1207,10 @@ class MainWindow(QMainWindow):
                         animations = AnimationView(result['animation_code'], len(frames), wpp_picture,
                                                    result.get('animation_users'), result.get('update_rate', 60), self.export_stem(node))
                         animations.set_labels(self.labels, self.persist_labels, result['paired_key'])
+                        animations.set_check_target(review_target(self.project, paired, paired_data,
+                                                                 result.get('preview_context'), len(frames), 'anim'),
+                                                    self.sprite_checks)
+                        animations.check_bar.review_changed.connect(self.refresh_review_status)
                         self.tabs.addTab(animations, 'Animations')
                         view.set_animations(animations)
                     pictures_view.clut_selected.connect(
@@ -1391,19 +1458,16 @@ class MainWindow(QMainWindow):
         return node
 
     def persist_labels(self):
-        import json
-        from game.label_store import document, SHARED_KEY, content_identity, local_identity
-        serial = Path(self.project.catalog.executable).name if self.project.catalog else self.project.disc.volume
-        # Only what differs from the names that come with the tool is kept
-        # here, so a later release's names are not hidden by old copies.
-        own = labels.LabelSet(name='Shared content labels', build='shared',
-            entries={key: entry for key, entry in self.labels.entries.items()
-                     if content_identity(key) and entry.name != self.builtin_labels.get(key, '')})
-        self.settings.setValue(SHARED_KEY, json.dumps(document(own), ensure_ascii=False))
-        local = labels.LabelSet(name=self.labels.name, build=self.labels.build, serial=self.labels.serial,
-                                bins=self.labels.bins, areas=self.labels.areas,
-                                entries={k: v for k, v in self.labels.entries.items() if not content_identity(k)})
-        self.settings.setValue('labels/' + local_identity(self.project), json.dumps(document(local), ensure_ascii=False))
+        if self.project is None:
+            return False
+        try:
+            self.saved_label_snapshot = self.label_autosave.save(self.labels, self.saved_label_snapshot)
+        except (OSError, ValueError, TypeError) as exc:
+            QMessageBox.warning(self, 'Cannot autosave labels',
+                                f'{self.label_autosave.path}\n\n{exc}\nKeep this window open and export your labels.')
+            return False
+        print(f'Labels autosaved: {self.label_autosave.path}', flush=True)
+        return True
 
     def builtin_path(self, serial):
         return str(Path(labels.labels_dir()) / (serial + '.json'))
@@ -1492,6 +1556,35 @@ class MainWindow(QMainWindow):
                 visit(item.child(i))
         for i in range(self.disc_tree.topLevelItemCount()):
             visit(self.disc_tree.topLevelItem(i))
+
+    def refresh_review_status(self):
+        if self.project is None:
+            return
+        from game.label_store import local_identity
+        from game.sprite_checks import review_badge, review_statuses
+        try:
+            entries = self.sprite_checks.document()['entries']
+        except (OSError, ValueError, TypeError) as exc:
+            self.statusBar().showMessage(f'Cannot read sprite checks: {exc}')
+            return
+        by_asset = {}
+        build = local_identity(self.project)
+        for entry in entries:
+            if entry.get('build') == build:
+                key = (entry.get('ldar'), entry.get('group'), entry.get('record_offset'))
+                by_asset.setdefault(key, []).append(entry)
+        for key, items in self.review_items.items():
+            for item in items:
+                asset = item.data(0, ROLE)
+                digest = self.label_hashes.get(self.node_key(asset))
+                matches = [e for e in by_asset.get(key, []) if not digest or e.get('spr_sha256', '').startswith(digest)]
+                for column, kind in ((3, 'spr'), (4, 'anim')):
+                    reviews = [e for e in matches if e.get('review_kind', 'spr') == kind]
+                    item.setText(column, review_badge(reviews))
+                    item.setTextAlignment(column, Qt.AlignmentFlag.AlignCenter)
+                    names = review_statuses(kind)
+                    item.setToolTip(column, '\n'.join(f"{names.get(e.get('status'), 'Other')} | VRAM context {e.get('vram_context')}"
+                                                     for e in reviews))
 
     def load_glyphs(self):
         """Characters typed for glyphs on this machine, kept between sessions."""
@@ -1648,6 +1741,7 @@ class MainWindow(QMainWindow):
             if generation == self.generation and result is not None:
                 self.label_hashes.update(result)
                 self.refresh_labels()
+                self.refresh_review_status()
                 matched = len(set(result.values()) & set(self.labels.entries))
                 self.statusBar().showMessage(f'{matched} labels matched by file contents.')
         self.submit(collect, ready)
@@ -1676,6 +1770,9 @@ class MainWindow(QMainWindow):
                 break
 
     def closeEvent(self, event):
+        if self.project is not None and not self.persist_labels():
+            event.ignore()
+            return
         self.generation += 1
         self.pool.clear()
         self.settings.setValue("geometry", self.saveGeometry())

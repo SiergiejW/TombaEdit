@@ -17,7 +17,7 @@ from PyQt6.QtWidgets import (QWidget, QVBoxLayout, QHBoxLayout, QLabel, QSpinBox
     QHeaderView, QFileDialog, QMessageBox, QCheckBox, QComboBox, QMenu, QInputDialog)
 from gui.widgets.image_view import ImageView, file_stem
 from gui.widgets.sheet_layout import SpacingControls
-from gui.widgets.columns import adjustable
+from gui.widgets.columns import adjustable, elide_at_view_edge
 from game.labels import content_key
 from formats.images.vram_viewer import VramView
 from disc.reader import FormatError
@@ -180,6 +180,7 @@ class SpriteView(QWidget):
         pl = QVBoxLayout(pieces)
         pl.addWidget(QLabel('Pieces'))
         self.parts = QTableWidget(0, 12)
+        elide_at_view_edge(self.parts)
         self.parts.setHorizontalHeaderLabels(['#', 'U', 'V', 'W', 'H', 'Page', 'CLUT', 'Drawn page', 'X', 'Y', 'UV 1', 'UV 2'])
         self.parts.verticalHeader().hide()
         self.parts.setEditTriggers(QAbstractItemView.EditTrigger.NoEditTriggers)
@@ -222,14 +223,14 @@ class SpriteView(QWidget):
         layout.addWidget(self.info)
         self.rebuild()
 
-    def set_check_target(self, target):
+    def set_check_target(self, target, store=None):
         from formats.sprites.check_view import SpriteCheckBar
         def preview():
             return dict(texture_page_base=self.page_base.value(),
                         grey_without_palette=self.grey.isChecked(),
                         clut_overrides=[dict(sprite=sprite, part=part, clut=f'0x{clut:04X}')
                                         for (sprite, part), clut in sorted(self.clut_overrides.items())])
-        self.check_bar = SpriteCheckBar(target, preview, self)
+        self.check_bar = SpriteCheckBar(target, preview, self, store=store)
         self.layout().insertWidget(2, self.check_bar)
 
     def frame_key(self, index):

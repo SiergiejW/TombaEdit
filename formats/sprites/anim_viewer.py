@@ -113,7 +113,7 @@ class AnimationView(QWidget):
         side.addWidget(name_button)
         split.addWidget(right)
         split.setSizes([620, 520])
-        layout.addWidget(split)
+        layout.addWidget(split, 1)
         self.note = QLabel()
         self.note.setWordWrap(True)
         layout.addWidget(self.note)
@@ -219,6 +219,12 @@ class AnimationView(QWidget):
 
     def set_labels(self, label_set, save, bank_key):
         self.label_set, self.save_labels, self.bank_key = label_set, save, bank_key
+
+    def set_check_target(self, target, store):
+        from formats.sprites.check_view import SpriteCheckBar
+        self.check_bar = SpriteCheckBar(target, lambda: dict(
+            animation_address=f'0x{self.script.address:08X}' if self.script else None), self, store)
+        self.layout().insertWidget(1, self.check_bar)
 
     def animation_key(self, script):
         from game.labels import content_key

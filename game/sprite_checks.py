@@ -11,17 +11,45 @@ STATUSES = {
     'wrong_clut': 'Wrong CLUT',
     'ok': 'Everything OK',
     'wrong_sprites': 'Wrong sprites',
+    'wrong_animation': 'Wrong animation',
     'partially_correct': 'Partially correct, remaining sprites look wrong',
     'other': 'Other',
 }
 
 
-def review_target(project, asset, data, context, frame_count):
+def default_store():
+    from game.label_autosave import labels_path
+    from PyQt6.QtCore import QStandardPaths
+    store = SpriteChecks(labels_path().with_name('sprite_checks.json'))
+    previous = Path(QStandardPaths.writableLocation(
+        QStandardPaths.StandardLocation.AppDataLocation)) / 'sprite_checks.json'
+    if not store.path.exists() and previous.is_file() and previous != store.path:
+        store.write(store.path, SpriteChecks(previous).document())
+    return store
+
+
+def review_badge(entries):
+    if not entries:
+        return ''
+    return '\u2705' if all(e.get('status') == 'ok' for e in entries) else '\u2757'
+
+
+def review_statuses(kind='spr'):
+    values = {key: value for key, value in STATUSES.items()
+              if key != ('wrong_sprites' if kind == 'anim' else 'wrong_animation')}
+    if kind == 'anim':
+        values['partially_correct'] = 'Partially correct, remaining animations look wrong'
+    return values
+
+
+def review_target(project, asset, data, context, frame_count, review_kind='spr'):
     from game.label_store import local_identity
     identity = dict(build=local_identity(project),
                     spr_sha256=hashlib.sha256(data).hexdigest(),
                     ldar=asset.ldar, group=asset.group,
                     record_offset=asset.record_offset, vram_context=context)
+    if review_kind != 'spr':
+        identity['review_kind'] = review_kind
     key = hashlib.sha256(json.dumps(identity, sort_keys=True).encode()).hexdigest()
     return dict(id=key, **identity, rom=project.disc.source.name,
                 source=asset.source.path if asset.source else None,
