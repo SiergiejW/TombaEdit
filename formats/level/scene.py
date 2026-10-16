@@ -802,6 +802,9 @@ def sprite_pages(project, path, index):
     if (path, index) not in cache:
         resources = loaded_resources(project, path, index)
         resolver = InitialPoseResolver(project, area_of(path), max(0, index - 1), resources)
+        # Bank inspection needs pages, palettes and animation links, not
+        # repeated camera-motion measurements of every placed sprite.
+        resolver.measure_backdrops = False
         pages, cluts, shown, built = {}, {}, {}, {}
         later = []      # (slot, frames, page base, CLUT, label) from what an object's code can go on to show
         kinds = {}      # class -> the (slot, page base) pairs its objects use
@@ -936,6 +939,7 @@ def sprite_routines(project, path, index):
     resources = loaded_resources(project, path, index)
     resolver = InitialPoseResolver(project, area_of(path), max(0, index - 1), resources)
     found = {}
+    resolver.measure_backdrops = False
     if resolver.available:
         counts = {}
         for (kind, slot), asset in resources.items():
@@ -1046,13 +1050,14 @@ def same_banks(project, data):
     """Load tables of other areas that hold this very sprite bank. Areas
     share enemies and items by carrying a copy of the bank each."""
     import hashlib
-    index = project.__dict__.get('sprite_bank_index')
-    if index is None:
-        index = project.__dict__['sprite_bank_index'] = {}
+    sizes = project.__dict__.setdefault('sprite_bank_size_index', {})
+    size = len(data)
+    if size not in sizes:
+        index = sizes[size] = {}
         for path, groups in project.ldars.items():
             for group in groups:
                 for asset in group.assets:
-                    if asset.kind == 'SPR' and asset.source is not None:
+                    if asset.kind == 'SPR' and asset.source is not None and asset.size == size:
                         try:
                             digest = hashlib.sha1(project.asset_data(asset)).digest()
                         except FormatError:
@@ -1060,7 +1065,7 @@ def same_banks(project, data):
                         index.setdefault(digest, [])
                         if path not in index[digest]:
                             index[digest].append(path)
-    return index.get(hashlib.sha1(data).digest(), [])
+    return sizes[size].get(hashlib.sha1(data).digest(), [])
 
 
 def lend_palettes(project, path, index, frames, vram, cluts=None, data=None):

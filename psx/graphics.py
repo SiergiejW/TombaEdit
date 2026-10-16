@@ -128,7 +128,8 @@ def guess_page(frames, vram, preferred=()):
     return 0
 
 
-def render_sprite(parts, vram, page_base=0, shard=None, tpage=None, clut=None, grey_missing=False, blend=False):
+def render_sprite(parts, vram, page_base=0, shard=None, tpage=None, clut=None, grey_missing=False, blend=False,
+                  texture_cache=None):
     """Composite one frame. With `tpage` the parts are read from VRAM the way
     the game draws them: the value is added to each part's page word and
     `clut` replaces the part palette. Without it the older page guesses
@@ -141,6 +142,16 @@ def render_sprite(parts, vram, page_base=0, shard=None, tpage=None, clut=None, g
     bottom = max(p[14] + p[10] for p in parts)
     image = Image.new("RGBA", (max(1, right - left), max(1, bottom - top)))
     pages = {}
+    def decoded(page, palette, stand_in=None, flagged=None):
+        key = (id(vram), page, palette, stand_in is not None, flagged)
+        if texture_cache is not None and key in texture_cache:
+            return texture_cache[key]
+        image = texture_page(vram, page, palette, stand_in, flagged)
+        if texture_cache is not None:
+            if len(texture_cache) >= 128:
+                del texture_cache[next(iter(texture_cache))]
+            texture_cache[key] = image
+        return image
     for p in reversed(parts):
         sx, sy, part_clut, _, _, page, _, _, _, w, h, _, _, x, y = p
         palette = part_clut if clut is None else clut
@@ -150,14 +161,14 @@ def render_sprite(parts, vram, page_base=0, shard=None, tpage=None, clut=None, g
                 # Art whose palette the game only supplies while running can
                 # still be shown, in grey.
                 stand_in = GREY_RAMP if grey_missing and palette_missing(vram, palette) else None
-                pages[key] = texture_page(vram, part_page(p, tpage), palette, stand_in)
+                pages[key] = decoded(part_page(p, tpage), palette, stand_in)
             elif shard:
                 pages[key] = sprite_texture_page(shard, page, vram, palette)
             else:
-                pages[key] = texture_page(vram, (page & ~31) | (((page & 31) + page_base) & 31), palette)
+                pages[key] = decoded((page & ~31) | (((page & 31) + page_base) & 31), palette)
         tile = sprite_part_image(pages[key], p)
         if blend and tpage is not None:
-            marked = sprite_part_image(texture_page(vram, part_page(p, tpage), palette, flagged=True), p)
+            marked = sprite_part_image(decoded(part_page(p, tpage), palette, flagged=True), p)
             composite_psx(image, tile, (x - left, y - top),
                           np.asarray(marked)[..., 3] != 0, part_page(p, tpage) >> 5 & 3)
         else:

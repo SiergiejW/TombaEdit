@@ -163,7 +163,17 @@ def prepare_preview(project, node, context=None):
     cache = project.__dict__.setdefault('sprite_preview_cache', OrderedDict())
     key = (node.ldar, node.group, node.record_offset, context)
     if key not in cache:
-        cache[key] = _prepare_preview(project, node, context)
+        from formats.sprites import preview_cache
+        try:
+            saved = preview_cache.cache_path(project, node, context)
+        except OSError:
+            saved = None
+        result = preview_cache.load(saved, node) if saved else None
+        if result is None:
+            result = _prepare_preview(project, node, context)
+            if saved:
+                preview_cache.save(saved, result)
+        cache[key] = result
     cache.move_to_end(key)
     result = cache[key]
     while len(cache) > 8:
@@ -172,7 +182,7 @@ def prepare_preview(project, node, context=None):
 
 
 def _prepare_preview(project, node, context=None):
-    result = {"node": node, "notes": [], "data": None}
+    result = {"node": node, "notes": [], "data": None, "preview_context": context}
     if isinstance(node, tuple):
         _, path, index = node
         result["group"] = project.ldars[path][index]
@@ -1049,13 +1059,15 @@ class MainWindow(QMainWindow):
                     renderer = picture_renderer(result['sprites'], result['pictures'], result['vram'],
                                                 (node.code >> 8) & 15 == 0)
                 view = SpriteView(result['sprites'], result['vram'], result.get('sprite_pages'), renderer,
-                                  result.get('sprite_default'), result.get('sprite_cluts'))
-                view.styles = result.get('sprite_styles', {})
-                view.cache.clear()
+                                  result.get('sprite_default'), result.get('sprite_cluts'),
+                                  styles=result.get('sprite_styles'), origins=result.get('sprite_origins'),
+                                  frame_vrams=result.get('sprite_vrams'), unavailable=result.get('sprite_unavailable'))
                 view.set_names(result.get('sprite_names', {}))
-                view.unavailable = result.get('sprite_unavailable', set())
                 view.set_labels(self.labels, self.persist_labels)
-                view.set_origins(result.get('sprite_origins', {}), result.get('sprite_vrams'))
+                if node.kind == 'SPR':
+                    from game.sprite_checks import review_target
+                    view.set_check_target(review_target(self.project, node, self.current_data,
+                                                       result.get('preview_context'), len(result['sprites'])))
                 key = self.node_key(node)
                 view.restore_state(self.sprite_states.get(key, []))
                 view.selection_changed.connect(lambda state, k=key: self.sprite_states.__setitem__(k, state))

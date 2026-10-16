@@ -41,7 +41,8 @@ class SpriteView(QWidget):
     # splitter name -> sizes.
     pane_sizes = {}
 
-    def __init__(self, frames, vram, pages=None, renderer=None, default=None, cluts=None):
+    def __init__(self, frames, vram, pages=None, renderer=None, default=None, cluts=None, *,
+                 styles=None, origins=None, frame_vrams=None, unavailable=None):
         """`pages` maps frame numbers to the texture page base of an object
         that shows them; frames nobody places borrow the nearest known one,
         or `default` when the bank is not placed at all. `renderer` draws
@@ -50,12 +51,12 @@ class SpriteView(QWidget):
         self.frames, self.vram, self.renderer = frames, vram, renderer
         self.pages = dict(pages or {})
         self.cluts = dict(cluts or {})  # CLUTs supplied by a custom drawing object
-        self.styles = {}
+        self.styles = dict(styles or {})
         self.known = sorted(self.pages)
         self.borrowed = {}              # frame nothing places -> the page base it is drawn with
         self.lender = {}                # and the placed frame that page was taken from
-        self.origins = {}               # frame -> how its page is known, where that is not "this section"
-        self.frame_vrams = {}           # frame -> the VRAM of the section that shows it
+        self.origins = dict(origins or {})
+        self.frame_vrams = dict(frame_vrams or {})
         self.relayout = QTimer(self)
         self.relayout.setSingleShot(True)
         self.relayout.setInterval(120)
@@ -64,9 +65,10 @@ class SpriteView(QWidget):
         self.label_set = None           # the names people give frames
         self.save_labels = None
         self.guess = default
-        self.unavailable = set()
+        self.unavailable = set(unavailable or ())
         self.export_name = 'sprites'    # prefix of default file names, set by the window
         self.cache = {}
+        self.texture_cache = {}
         self.clut_overrides = {}  # (sprite, part) -> palette address; preview only
         self.frame_index = 0
         layout = QVBoxLayout(self)
@@ -220,6 +222,16 @@ class SpriteView(QWidget):
         layout.addWidget(self.info)
         self.rebuild()
 
+    def set_check_target(self, target):
+        from formats.sprites.check_view import SpriteCheckBar
+        def preview():
+            return dict(texture_page_base=self.page_base.value(),
+                        grey_without_palette=self.grey.isChecked(),
+                        clut_overrides=[dict(sprite=sprite, part=part, clut=f'0x{clut:04X}')
+                                        for (sprite, part), clut in sorted(self.clut_overrides.items())])
+        self.check_bar = SpriteCheckBar(target, preview, self)
+        self.layout().insertWidget(2, self.check_bar)
+
     def frame_key(self, index):
         """What a frame's label is kept under: a hash of its part records,
         so the same frame in another bank carries the same name. A frame
@@ -367,7 +379,8 @@ class SpriteView(QWidget):
                          for n, part in enumerate(self.frames[index])]
                 self.cache[index] = self.renderer(index, overrides) if self.renderer else render_sprite(
                     parts, vram, tpage=base,
-                    grey_missing=self.grey.isChecked(), blend=self.styles.get(index, {}).get('blend', False))
+                    grey_missing=self.grey.isChecked(), blend=self.styles.get(index, {}).get('blend', False),
+                    texture_cache=self.texture_cache)
             except FormatError:
                 self.cache[index] = Image.new('RGBA', (1, 1))
         image, border = self.cache[index], 0
@@ -414,6 +427,7 @@ class SpriteView(QWidget):
 
     def rebuild(self):
         self.cache.clear()
+        self.texture_cache.clear()
         self.bank.blockSignals(True)
         for i, frame in enumerate(self.frames):
             if frame:

@@ -83,8 +83,8 @@ def spawned(resolver):
     out = []
     for k, (name, _native, slots, size) in enumerate(POOLS):
         start = SPAWN_AT + k * 0x8000
+        pool = resolver.read(start, slots * size)
         for i in range(slots):
-            state = resolver.read(start + i * size, size)
-            if state[0]:
-                out.append((name, start + i * size, state))
+            if pool[i * size]:
+                out.append((name, start + i * size, pool[i * size:(i + 1) * size]))
     return out

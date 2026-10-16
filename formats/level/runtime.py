@@ -64,6 +64,7 @@ class InitialPoseResolver:
         self.object_states = {}
         self.queued = set()
         self.stop_at_animation = False
+        self.measure_backdrops = True
         found = executable(project, next((a.ldar for a in resources.values()), None))
         if found is None or area < 0:
             return
@@ -121,7 +122,23 @@ class InitialPoseResolver:
                         self.model_spans[slot, i] = (address + off, offsets[i + 1] - off)
         self.baseline = self.read(0x80000000, 0x200000)
         self.scratch = self.read(0x1F800000, 0x1000)
-        self.u.hook_add(UC_HOOK_CODE, self.hook)
+        # Most instructions need no Python callback. Intercept only engine
+        # services and execution outside the two permitted code regions.
+        regions = []
+        for start, end in sorted(self.code):
+            if regions and start <= regions[-1][1]:
+                regions[-1] = (regions[-1][0], max(end, regions[-1][1]))
+            else:
+                regions.append((start, end))
+        cursor = 0
+        for start, end in regions + [(0x100000000, 0x100000000)]:
+            if cursor < start:
+                self.u.hook_add(UC_HOOK_CODE, self.hook, begin=cursor, end=start - 1)
+            cursor = end
+        services = {build.set_animation, build.get_clut, *build.visibility, *build.draw_queues, *build.silent}
+        for address in services:
+            if any(start <= address < end for start, end in regions):
+                self.u.hook_add(UC_HOOK_CODE, self.hook, begin=address, end=address)
         self.cpu_context = self.u.context_save()
         # What the game's own draw routines make of a traced object.
         self.town = Path(overlay.source.path).name.upper() if overlay and overlay.source else ''
@@ -315,6 +332,8 @@ class InitialPoseResolver:
         each axis gives the screen position and the fraction of camera
         movement the sprite follows. Objects that stay at their placement are
         ordinary world sprites and return nothing."""
+        if not self.measure_backdrops:
+            return {}
         r, ready, scratch = self.reg, self.read(obj, 0x200), self.read(0x1F800000, 0x1000)
 
         def update(camera_x, camera_y):
@@ -824,10 +843,10 @@ class InitialPoseResolver:
         out = []
         for k, (name, items, count, slots, size) in enumerate(POOLS):
             start = SPAWN_AT + k * 0x8000
+            pool = self.read(start, slots * size)
             for i in range(slots):
-                state = self.read(start + i * size, size)
-                if state[0]:
-                    out.append((name, start + i * size, state))
+                if pool[i * size]:
+                    out.append((name, start + i * size, pool[i * size:(i + 1) * size]))
         return out
 
     def child(self, pool, address, state, parent=None, origin=''):

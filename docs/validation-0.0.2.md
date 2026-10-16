@@ -1,5 +1,22 @@
 # Viewer validation for 0.0.2
 
+SPR loading was profiled and optimized on US retail AREA00 banks 34FF and
+39FF. Without the profiler, bank 34FF preparation fell from 15.29 s to
+4.21 s on the first uncached visit, then 0.11 s from the persistent cache.
+Bank 39FF preparation fell from 5.00 s to 3.91 s uncached and 0.05 s cached.
+The bank-rendering benchmark fell from 2.31 s to 0.70 s and from 0.95 s to
+0.23 s respectively. These are local measurements, not timing guarantees.
+The GUI now initializes the bank once instead of rendering it before and
+after supplying its final page/palette context.
+
+Every rendered frame in those two banks had the same SHA-256 pixel digest
+before and after the optimization, with matching page, CLUT, origin and
+animation-link maps. Native tracing with targeted engine hooks matched the
+previous instruction-by-instruction hooks for 104 distinct placements in
+retail and PrePre 8. All six PrePre 8 sections still built with collision.
+Twenty-six unit checks passed, including overlapping GAM references, safe
+cache round trips, ROM/context invalidation and shared texture/STP caching.
+
 The sampler sweep built 169 section scenes across seven distinct sampler
 executables, including all languages present in the two European sampler
 families. No scene-building exceptions occurred. PrePre 8 was then checked

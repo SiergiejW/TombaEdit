@@ -28,8 +28,14 @@ def decompress(data, max_size=64 * 1024 * 1024):
                 pos += 2
                 if not distance or distance > len(out) or not count:
                     raise FormatError(f"Invalid GAM back-reference at 0x{pos - 2:X}")
-                for _ in range(min(count, size - len(out))):
-                    out.append(out[-distance])
+                count = min(count, size - len(out))
+                start = len(out) - distance
+                if count <= distance:
+                    out.extend(out[start:start + count])
+                else:
+                    # An overlapping match repeats the preceding window.
+                    window = out[start:]
+                    out.extend((window * ((count + distance - 1) // distance))[:count])
             else:
                 if pos >= len(data):
                     raise FormatError("Truncated GAM literal")
