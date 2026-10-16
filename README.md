@@ -68,10 +68,17 @@ executable when moving the app. Sprite and animation reviews likewise live in
 **sprite_checks.json beside the executable**, with existing AppData reviews copied
 there on first use. Neither file is stored inside PyInstaller's temporary folder.
 
+Renaming updates matching content labels throughout the tree and open lists
+immediately. Content indexing runs separately from preview loading, so changing
+the selection does not interrupt it.
+
 SPR previews reuse decoded texture pages and retain their resolved load context
 in a bounded disk cache between runs. Changing the ROM or rebuilding the decoder
 invalidates that cache. The first visit to an uncached bank still resolves its
 native pages, palettes and animation links.
+
+Standalone sprite and animation previews show raw palette colours without game
+blending against the preview background.
 
 Python 3.10 or newer.
 
