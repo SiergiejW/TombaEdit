@@ -68,6 +68,12 @@ executable when moving the app. Sprite and animation reviews likewise live in
 **sprite_checks.json beside the executable**, with existing AppData reviews copied
 there on first use. Neither file is stored inside PyInstaller's temporary folder.
 
+`python -m PyInstaller main.spec --noconfirm --clean` creates one release file:
+**dist/TombaEdit.exe**. The build embeds the source folder's current labels and
+reviews as defaults. On first use, the executable creates its external JSON
+saves from those defaults. Later edits update those external saves, never the
+executable. Keep them when replacing the executable with a newer build.
+
 Renaming updates matching content labels throughout the tree and open lists
 immediately. Content indexing runs separately from preview loading, so changing
 the selection does not interrupt it.
@@ -565,9 +571,9 @@ number; they can be given one on the Glyphs tab.
   do not.
 
 Audio viewers offer **Export sound...** with WAV and OGG Vorbis choices for
-samples, rendered sequences, music streams and movie soundtracks. Source OGG
-export requires ffmpeg on PATH. PyInstaller includes it when it is available
-on the build machine.
+samples, rendered sequences, music streams and movie soundtracks. OGG encoding
+uses SoundFile/libsndfile, included by PyInstaller, without bundling FFmpeg
+in the executable. Movie video export still uses FFmpeg installed on PATH.
 
 SPR and WPP sheets start with 1 px spacing. Individual SPR previews in Fit
 mode fill the pane using the visible sprite, without the bank's origin padding.

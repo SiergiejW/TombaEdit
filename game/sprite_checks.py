@@ -18,13 +18,20 @@ STATUSES = {
 
 
 def default_store():
-    from game.label_autosave import labels_path
+    from game.label_autosave import labels_path, bundled_defaults
     from PyQt6.QtCore import QStandardPaths
     store = SpriteChecks(labels_path().with_name('sprite_checks.json'))
     previous = Path(QStandardPaths.writableLocation(
         QStandardPaths.StandardLocation.AppDataLocation)) / 'sprite_checks.json'
-    if not store.path.exists() and previous.is_file() and previous != store.path:
-        store.write(store.path, SpriteChecks(previous).document())
+    if not store.path.exists():
+        seed = bundled_defaults('sprite_checks.json')
+        entries = {}
+        for source in (seed, previous):
+            if source is not None and source.is_file() and source != store.path:
+                entries.update({entry['id']: entry for entry in SpriteChecks(source).document()['entries']})
+        if entries:
+            store.write(store.path, dict(schema='tombaedit.sprite-checks', version=1,
+                                         entries=list(entries.values())))
     return store
 
 

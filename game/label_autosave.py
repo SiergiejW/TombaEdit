@@ -14,6 +14,13 @@ def labels_path():
     return directory / 'tombaedit_labels.json'
 
 
+def bundled_defaults(name):
+    """Read-only release seeds; user saves always stay beside the executable."""
+    if getattr(sys, 'frozen', False):
+        return Path(sys._MEIPASS) / 'defaults' / name
+    return None
+
+
 def snapshot(labels):
     return deepcopy(document(labels))
 
@@ -41,6 +48,9 @@ class LabelAutosave:
 
     def read(self):
         if not self.path.exists():
+            seed = bundled_defaults('tombaedit_labels.json')
+            if seed is not None and seed.is_file():
+                return self.validate(json.loads(seed.read_text(encoding='utf-8-sig')))
             return self.empty()
         return self.validate(json.loads(self.path.read_text(encoding='utf-8-sig')))
 

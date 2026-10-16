@@ -2,7 +2,6 @@
 """Build the TombaEdit desktop executable with its viewer assets."""
 import os
 import sys
-import shutil
 from pathlib import Path
 from PyInstaller.utils.hooks import collect_dynamic_libs
 
@@ -13,19 +12,25 @@ icon_files = [(str(path), str(path.parent.relative_to(ROOT)))
 text_files = [(str(ROOT / 'formats' / 'text' / name), 'formats/text')
               for name in ('glyph_dictionary.json', 'glyphs_us.json')]
 import PyQt6
+import _soundfile_data
 plugins = Path(PyQt6.__file__).parent / 'Qt6' / 'plugins' / 'multimedia'
 multimedia = [(str(path), 'PyQt6/Qt6/plugins/multimedia')
               for path in plugins.iterdir() if path.is_file()] if plugins.is_dir() else []
 label_files = [(str(path), 'labels') for path in (ROOT / 'labels').glob('*.json')]
+# Source-side work is included in releases; runtime edits use external JSONs.
+default_files = [(str(ROOT / name), 'defaults')
+                 for name in ('tombaedit_labels.json', 'sprite_checks.json')
+                 if (ROOT / name).is_file()]
 # The licence of the interpreter carried in psx/mips.
 notices = [(str(ROOT / 'psx' / 'mips' / 'LICENSE'), 'psx/mips')]
+notices.append((str(Path(_soundfile_data.__file__).parent / 'COPYING'), '_soundfile_data'))
 app_icon = ROOT / 'icons' / 'tomba' / ('tomba1.png' if sys.platform == 'darwin' else 'tomba1.ico')
 
 a = Analysis(
     ['main.py'],
     pathex=[str(ROOT)],
-    binaries=collect_dynamic_libs('unicorn') + ([(shutil.which('ffmpeg'), '.')] if shutil.which('ffmpeg') else []),
-    datas=icon_files + text_files + multimedia + label_files + notices,
+    binaries=collect_dynamic_libs('unicorn'),
+    datas=icon_files + text_files + multimedia + label_files + notices + default_files,
     hiddenimports=['PyQt6.QtMultimedia', 'formats.movie.movie_panel',
                    'formats.audio.audio_viewer', 'formats.images.clut_viewer',
                    'formats.collision.structured_viewer',
@@ -40,6 +45,9 @@ a = Analysis(
               'PyQt6.QtQuick', 'PyQt6.QtPdf', 'PyQt6.QtWebEngineWidgets'],
     noarchive=False,
 )
+# Qt's image hook collects PDF support even though no viewer reads PDFs.
+a.binaries = [item for item in a.binaries
+              if Path(item[0]).name.lower() not in ('qt6pdf.dll', 'qpdf.dll')]
 pyz = PYZ(a.pure)
 exe = EXE(
     pyz, a.scripts, a.binaries, a.datas, [],
