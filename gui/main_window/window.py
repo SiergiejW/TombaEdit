@@ -1582,8 +1582,10 @@ class MainWindow(QMainWindow):
                     reviews = [e for e in matches if e.get('review_kind', 'spr') == kind]
                     item.setText(column, review_badge(reviews))
                     item.setTextAlignment(column, Qt.AlignmentFlag.AlignCenter)
-                    names = review_statuses(kind)
-                    item.setToolTip(column, '\n'.join(f"{names.get(e.get('status'), 'Other')} | VRAM context {e.get('vram_context')}"
+                    names = dict(review_statuses(kind), looks_off='Looks off')
+                    item.setToolTip(column, '\n'.join(f"{names.get(e.get('status'), 'Other')}"
+                                                     + (f" | {e['entry_kind']} {e.get('entry_id')}" if e.get('entry_kind') else '')
+                                                     + f" | VRAM context {e.get('vram_context')}"
                                                      for e in reviews))
 
     def load_glyphs(self):

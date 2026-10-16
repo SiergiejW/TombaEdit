@@ -47,6 +47,13 @@ creates or updates `sprite_checks.json`, replacing the previous status for that
 SPR entry in the same ROM and VRAM context. There are no notes or export steps.
 Hover over the dropdown for the JSON file's location. Send that file when finished.
 The Animations tab has its own review dropdown, saved independently for that bank.
+Individual sprite and animation rows have a **Looks off** checkbox. It saves
+immediately in the same review JSON, survives reopening and list changes, and
+marks the bank with a warning without replacing its whole-bank review choice.
+The checkbox column comes first. With multiple rows selected, toggling one
+checkbox checks or clears the entire selection in one save. Sprite IDs use
+uppercase hexadecimal (`00`, `0A`, `F2`), including animation frame references
+and sprite PNG filenames. Sprite and animation labels have a wider default column.
 The narrow **SPR** and **ANIM** columns at the far left of the tree show a warning
 for a reported problem, a check mark for OK, and nothing for unchecked entries.
 Drag either column's edge to expand it. List columns fit their contents by default,

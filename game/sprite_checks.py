@@ -57,6 +57,12 @@ def review_target(project, asset, data, context, frame_count, review_kind='spr')
                 bytes=len(data), sprites=frame_count)
 
 
+def entry_target(bank, kind, entry):
+    identity = (bank['id'], kind, entry)
+    return dict(bank, id=hashlib.sha256(json.dumps(identity).encode()).hexdigest(),
+                parent_review_id=bank['id'], entry_kind=kind, entry_id=entry)
+
+
 class SpriteChecks:
     def __init__(self, path):
         self.path = Path(path)
@@ -93,13 +99,19 @@ class SpriteChecks:
                 os.unlink(name)
 
     def set(self, target, status, preview=None):
-        if status is not None and status not in STATUSES:
+        self.set_many([target], status, preview)
+
+    def set_many(self, targets, status, preview=None):
+        if status is not None and status not in STATUSES and status != 'looks_off':
             raise ValueError('Unknown sprite check status')
+        targets = {target['id']: target for target in targets}
+        if not targets:
+            return
         doc = self.document()
-        doc['entries'] = [entry for entry in doc['entries'] if entry['id'] != target['id']]
+        doc['entries'] = [entry for entry in doc['entries'] if entry['id'] not in targets]
         if status is not None:
-            doc['entries'].append(dict(target, status=status,
-                                       preview=preview or {},
-                                       updated_at=datetime.now(timezone.utc).isoformat()))
+            updated = datetime.now(timezone.utc).isoformat()
+            doc['entries'].extend(dict(target, status=status, preview=preview or {}, updated_at=updated)
+                                  for target in targets.values())
         self.write(self.path, doc)
 

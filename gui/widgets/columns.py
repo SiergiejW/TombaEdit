@@ -18,10 +18,11 @@ def elide_at_view_edge(view):
     view.setItemDelegate(ViewportElideDelegate(view))
 
 
-def adjustable(table, fit=False, padding=14):
+def adjustable(table, fit=False, padding=14, min_widths=None):
     """Let every column of `table` be resized by hand, the last one taking
     the room that is left. `fit` first sizes the columns to what they hold."""
     header = table.horizontalHeader()
+    table._minimum_text_widths = dict(min_widths or {})
     elide_at_view_edge(table)
     for column in range(table.columnCount()):
         item = table.horizontalHeaderItem(column)
@@ -43,8 +44,15 @@ def adjustable(table, fit=False, padding=14):
         def fit_text():
             table.resizeColumnsToContents()
             for column in range(table.columnCount()):
-                table.setColumnWidth(column, table.columnWidth(column) + padding)
+                table.setColumnWidth(column, max(table.columnWidth(column) + padding,
+                                                table._minimum_text_widths.get(column, 0)))
         timer.timeout.connect(fit_text)
-        for signal in (table.model().dataChanged, table.model().rowsInserted, table.model().modelReset):
+        def text_changed(top_left, bottom_right, roles):
+            # Checkbox flags must not resize columns the user already adjusted.
+            if not roles or any(role in (Qt.ItemDataRole.DisplayRole, Qt.ItemDataRole.EditRole,
+                                         Qt.ItemDataRole.FontRole) for role in roles):
+                timer.start()
+        table.model().dataChanged.connect(text_changed)
+        for signal in (table.model().rowsInserted, table.model().modelReset):
             signal.connect(lambda *args: timer.start())
         timer.start()

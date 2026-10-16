@@ -33,6 +33,7 @@ ORIGIN_COLOUR = (0, 0, 0, 0)    # gaps in a sprite's box in line with its origin
 
 LABEL = 6   # the bank list's column of labels
 ORIGIN = 7  # and the one saying how a sprite's texture page is known
+LOOKS_OFF = 8
 
 
 class SpriteView(QWidget):
@@ -71,6 +72,7 @@ class SpriteView(QWidget):
         self.texture_cache = {}
         self.clut_overrides = {}  # (sprite, part) -> palette address; preview only
         self.frame_index = 0
+        self.entry_flags = None
         layout = QVBoxLayout(self)
         bar = QHBoxLayout()
         self.whole = QPushButton('Whole bank')
@@ -140,8 +142,8 @@ class SpriteView(QWidget):
         left.setMinimumWidth(420)
         ll = QVBoxLayout(left)
         ll.addWidget(QLabel('Sprites'))
-        self.bank = QTableWidget(len(frames), 8)
-        self.bank.setHorizontalHeaderLabels(['Sprite', '#', 'Parts', 'W', 'H', 'Pages', 'Label', 'Page from'])
+        self.bank = QTableWidget(len(frames), 9)
+        self.bank.setHorizontalHeaderLabels(['Sprite', '#', 'Parts', 'W', 'H', 'Pages', 'Label', 'Page from', 'Looks off'])
         self.bank.horizontalHeaderItem(ORIGIN).setToolTip(
             'How the texture page a sprite is drawn from is known: from an object placed in this section, '
             'from one placed in another section (the sprite is then drawn with that section\'s textures), '
@@ -163,7 +165,8 @@ class SpriteView(QWidget):
         for column, width in enumerate((190, 48, 58, 48, 48, 96, 150, 120)):
             self.bank.setColumnWidth(column, width)
         self.bank.horizontalHeader().setMinimumSectionSize(44)
-        adjustable(self.bank)
+        adjustable(self.bank, min_widths={LABEL: 180})
+        self.bank.horizontalHeader().moveSection(self.bank.horizontalHeader().visualIndex(LOOKS_OFF), 0)
         self.bank.horizontalHeader().setMinimumSectionSize(44)
         self.bank.setHorizontalScrollMode(QAbstractItemView.ScrollMode.ScrollPerPixel)
         self.bank.currentCellChanged.connect(self.row_changed)
@@ -232,6 +235,9 @@ class SpriteView(QWidget):
                                         for (sprite, part), clut in sorted(self.clut_overrides.items())])
         self.check_bar = SpriteCheckBar(target, preview, self, store=store)
         self.layout().insertWidget(2, self.check_bar)
+        from formats.sprites.entry_flags import EntryFlags
+        self.entry_flags = EntryFlags(self.bank, LOOKS_OFF, self.check_bar, 'sprite')
+        self.entry_flags.fill(range(len(self.frames)))
 
     def frame_key(self, index):
         """What a frame's label is kept under: a hash of its part records,
@@ -294,7 +300,7 @@ class SpriteView(QWidget):
 
     def title(self, index):
         """A frame's row: its number. What it is called is its label."""
-        return f'Sprite {index:03d}'
+        return f'{index:02X}'
 
     def set_names(self, names):
         """Take the classes of object each frame is drawn by, for the line
@@ -441,11 +447,13 @@ class SpriteView(QWidget):
             else:
                 width = height = 0
                 pages = ''
-            values = [self.title(i), str(i), str(len(frame)), str(width),
+            values = [self.title(i), f'{i:02X}', str(len(frame)), str(width),
                       str(height), pages, self.label(i), self.origin_of(i) if frame else '']
             for col, value in enumerate(values):
                 self.bank.setItem(i, col, QTableWidgetItem(value))
         self.bank.blockSignals(False)
+        if self.entry_flags is not None:
+            self.entry_flags.fill(range(len(self.frames)))
         self.refresh()
 
     def row_changed(self, row, column, old_row, old_column):
@@ -465,7 +473,7 @@ class SpriteView(QWidget):
                 else ' | palette row empty in this VRAM')
                               + (', shown in grey' if self.grey.isChecked() else ''))
         self.show_in_vram()
-        announce(f'sprite {row:03d} | ' + (f'"{self.label(row)}" | ' if self.label(row) else '')
+        announce(f'sprite {row:02X} | ' + (f'"{self.label(row)}" | ' if self.label(row) else '')
               + f'{", ".join(self.names.get(row, ())) or "not placed"} | {len(frame)} pieces'
               + ('' if self.renderer or not frame else f' | texture page base 0x{self.base_for(row):X}'))
 
@@ -625,7 +633,7 @@ class SpriteView(QWidget):
                     self.parts.selectionModel().select(self.parts.model().index(row, 0),
                         QItemSelectionModel.SelectionFlag.Select | QItemSelectionModel.SelectionFlag.Rows)
             self.parts.blockSignals(False)
-            self.info.setText(f'Sprite {index:03d} | {len(frame)} pieces | {image.width} x {image.height}')
+            self.info.setText(f'{index:02X} | {len(frame)} pieces | {image.width} x {image.height}')
         if self.clut_overrides:
             self.info.setText(self.info.text() + ' | Recoloured from the crosshair; PNG exports include it')
         self.image.set_image(image, subject=subject)
@@ -643,7 +651,7 @@ class SpriteView(QWidget):
     def save_current(self):
         if not self.frames:
             return
-        path, _ = QFileDialog.getSaveFileName(self, 'Save sprite', f'{file_stem(self.export_name)} sprite {self.frame_index:04d}.png', 'PNG (*.png)')
+        path, _ = QFileDialog.getSaveFileName(self, 'Save sprite', f'{file_stem(self.export_name)} sprite {self.frame_index:02X}.png', 'PNG (*.png)')
         if path:
             self.frame_image(self.frame_index, self.origin.isChecked()).save(path)
 
@@ -670,4 +678,4 @@ class SpriteView(QWidget):
         folder = QFileDialog.getExistingDirectory(self, 'Save PNG sprites')
         if folder:
             for index in indices:
-                self.frame_image(index, self.origin.isChecked()).save(Path(folder)/f'{file_stem(self.export_name)} sprite {index:04d}.png')
+                self.frame_image(index, self.origin.isChecked()).save(Path(folder)/f'{file_stem(self.export_name)} sprite {index:02X}.png')

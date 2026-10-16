@@ -16,7 +16,7 @@ ORIGIN = (255, 80, 80, 255)
 
 
 def frames_text(frames):
-    """'3-6, 9, 4' for a list of frame numbers: runs of consecutive ones joined."""
+    """Hex sprite IDs, with consecutive frames joined as ranges."""
     runs, out = [], []
     for frame in frames:
         if runs and frame == runs[-1][1] + 1:
@@ -24,9 +24,9 @@ def frames_text(frames):
         else:
             runs.append([frame, frame])
     for low, high in runs:
-        out.append(str(low) if low == high else f'{low}-{high}')
+        out.append(f'{low:02X}' if low == high else f'{low:02X}-{high:02X}')
     text = ', '.join(out)
-    return text if len(text) < 60 else text[:57] + '...'
+    return text
 
 
 class AnimationView(QWidget):
@@ -43,6 +43,7 @@ class AnimationView(QWidget):
         self.scripts, self.shown = None, []
         self.script, self.step, self.left = None, 0, 0
         self.pictures = {}
+        self.entry_flags = None
         self.label_set, self.save_labels, self.bank_key = None, None, ''
         layout = QVBoxLayout(self)
         tools = QHBoxLayout()
@@ -65,15 +66,16 @@ class AnimationView(QWidget):
         tools.addStretch()
         layout.addLayout(tools)
         split = QSplitter(Qt.Orientation.Horizontal)
-        self.table = QTableWidget(0, 9)
-        self.table.setHorizontalHeaderLabels(['Address', 'In', 'Found by', 'Steps', 'Updates', 'Ends', 'Frames', 'Used by', 'Label'])
+        self.table = QTableWidget(0, 10)
+        self.table.setHorizontalHeaderLabels(['Address', 'In', 'Found by', 'Steps', 'Updates', 'Ends', 'Frames', 'Used by', 'Label', 'Looks off'])
         self.table.setSelectionBehavior(QAbstractItemView.SelectionBehavior.SelectRows)
-        self.table.setSelectionMode(QAbstractItemView.SelectionMode.SingleSelection)
+        self.table.setSelectionMode(QAbstractItemView.SelectionMode.ExtendedSelection)
         self.table.setEditTriggers(QAbstractItemView.EditTrigger.NoEditTriggers)
         self.table.verticalHeader().hide()
         self.table.currentCellChanged.connect(lambda row, *_: self.choose(row))
         self.table.cellDoubleClicked.connect(lambda *_: self.play.setChecked(True))
-        adjustable(self.table)
+        adjustable(self.table, min_widths={8: 180})
+        self.table.horizontalHeader().moveSection(self.table.horizontalHeader().visualIndex(9), 0)
         split.addWidget(self.table)
         right = QWidget()
         side = QVBoxLayout(right)
@@ -179,6 +181,8 @@ class AnimationView(QWidget):
                 item = QTableWidgetItem(text)
                 item.setToolTip(text)
                 self.table.setItem(row, column, item)
+        if self.entry_flags is not None:
+            self.entry_flags.fill([f'0x{address:08X}' for address in self.shown])
         if self.shown:
             self.table.setCurrentCell(0, 0)
         else:
@@ -225,6 +229,9 @@ class AnimationView(QWidget):
         self.check_bar = SpriteCheckBar(target, lambda: dict(
             animation_address=f'0x{self.script.address:08X}' if self.script else None), self, store)
         self.layout().insertWidget(1, self.check_bar)
+        from formats.sprites.entry_flags import EntryFlags
+        self.entry_flags = EntryFlags(self.table, 9, self.check_bar, 'animation')
+        self.entry_flags.fill([f'0x{address:08X}' for address in self.shown])
 
     def animation_key(self, script):
         from game.labels import content_key
@@ -280,7 +287,7 @@ class AnimationView(QWidget):
         step = self.script.steps[self.step]
         self.view.set_image(self.compose(step), subject=self.script.address)
         flags = {0: '', 0x8000: ', end', 0x4000: ', then jumps', 0xC000: ', then jumps and reports the end'}[step.flags]
-        self.status.setText(f'Step {self.step + 1}/{len(self.script.steps)}: frame {step.frame}, '
+        self.status.setText(f'Step {self.step + 1}/{len(self.script.steps)}: frame {step.frame:02X}, '
                             f'{step.ticks} updates, box {step.box}, argument {step.arg}{flags} '
                             f'| {self.script.ticks} updates a pass, {self.script.ending}')
 
