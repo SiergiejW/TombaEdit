@@ -107,6 +107,28 @@ def part_page(part, base=0):
     return ((part[5] | part[6] << 8) + base) & 0x1FF
 
 
+def same_texels(a, b, parts, base, clut=None, pixels_only=False):
+    """True when VRAM `a` and `b` hold the same pixels and palettes (or,
+    with `pixels_only`, the same pixels) for these parts drawn with page
+    base `base`."""
+    for part in parts:
+        page = part_page(part, base)
+        depth = page >> 7 & 3
+        per_word = 4 if depth == 0 else 2 if depth == 1 else 1
+        x, y = (page & 15) * 64, (page >> 4 & 1) * 256
+        us, vs = (part[0], part[3], part[7], part[11]), (part[1], part[4], part[8], part[12])
+        rows = slice(y + min(vs), y + max(vs) + 1)
+        words = slice(x + min(us) // per_word, x + max(us) // per_word + 1)
+        if not np.array_equal(a[rows, words], b[rows, words]):
+            return False
+        if depth < 2 and not pixels_only:
+            word = (part[2] if clut is None else clut) & 0x7FFF
+            cx, cy, count = (word & 63) * 16, (word >> 6) & 511, 16 if depth == 0 else 256
+            if not np.array_equal(a[cy, cx:cx + count], b[cy, cx:cx + count]):
+                return False
+    return True
+
+
 def guess_page(frames, vram, preferred=()):
     """Texture page base for a bank nothing else identifies: the one under
     which a few frames show the most pixels. Pages where a texture upload of

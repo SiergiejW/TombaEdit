@@ -266,15 +266,19 @@ out for each sprite, and the **Page from** column says how:
 | Page from | The page base comes from |
 | --- | --- |
 | object | an object placed in the section chosen for VRAM, which starts out showing the sprite |
-| object code | an animation that such an object's code goes on to play |
-| section NN | an object placed in another section; the sprite is drawn with that section's textures |
+| object code | an animation that such an object's code goes on to play, or another script of the animation list its first script belongs to |
+| section NN | an object placed in another section that loads the same bank, under any record or slot (*code*: an animation its code goes on to play, for the same record only); the sprite is drawn with that section's textures |
 | item table | the item descriptors in the executable |
-| routine | the routine of an object nothing places (a splash, a burst), run on a made-up object |
-| borrowed | the nearest sprite whose page is known and whose palette is in the same column of VRAM |
-| guess | nothing in the area shows the bank: the base that leaves the fewest empty pixels |
+| texture and palette uploads | the page where the section's uploads put the bank's art |
+| routine | the routine of an object nothing places (a splash, a burst), run on a made-up object, or a routine that creates objects, run as if a made-up object called it; the other scripts of such an object's animation list share its page |
+| area NN | an object placed in another area that loads the same bank, or with *routine* the routine of one; the sprite is drawn with that area's textures where this section's differ |
+| borrowed | the nearest sprite whose page is known and whose palette is in the same column of VRAM, one an object of the area is placed showing first; drawn with that sprite's textures, or with this section's palettes where it holds the same pixels as another section's |
+| guess | nothing in any area that loads the bank shows it: the base that leaves the fewest empty pixels |
 
 A borrowed or guessed page can be wrong, and so can one from a routine
-run with a type it was never given. The value can be set by hand.
+run with a type it was never given. The value can be set by hand. Only
+the first section of another area is searched for a bank its base group
+loads, and routines are run in a few of those areas only.
 
 A bank that only a system screen reads, such as the menu's, is drawn from
 that screen's pictures: the VRAM list then ends with the system load groups
@@ -309,10 +313,12 @@ and uploads one picture at a time; the phoenix is stored the same way.
 Opening a WPP bank lists its pictures, with the same saving choices as a
 sprite bank: one picture, a sheet with its layout, the selected rows or all
 of them. *Assembled frames* draws the pictures through the matching SPR bank,
-and the sprite viewer does the same for those SPR banks. The palette list
-of the picture viewer offers the palettes the matching SPR bank names where
-VRAM holds them, and for Tomba the outfit rows of the selected section's
-palette block.
+and the sprite viewer does the same for those SPR banks. Tomba is drawn the
+way his draw routine does it: whatever palette his parts name, each part
+takes either his hair row or his shorts row of the section's palette block,
+the first two outfit rows. The palette list of the picture viewer offers
+the outfit rows for Tomba, and for other picture banks the palettes the
+matching SPR bank names where VRAM holds them.
 
 ### VRAM
 
@@ -426,9 +432,12 @@ executable loaded with the bank. A script is found through a table of
 pointers, an address built in the code, or any other pointer to a run of
 steps whose frames all exist in the bank. Scripts that objects of the
 section start on are listed first with the classes that use them, followed
-by the other scripts of the same tables; *Show* widens the list to every
-script that fits the bank. A script only names frame numbers, so one found
-without an object may belong to another bank of the same size.
+by the rest of the object's animation list: the pointers the overlay keeps
+right before the scripts they point at, when one of them is a script an
+object starts on (**Found by** reads *Same list as* that script). *Show*
+widens the list to every script that fits the bank. A script only names
+frame numbers, so one found without an object may belong to another bank
+of the same size.
 
 Any address can be typed in and read as a script. Selecting one plays it
 at the game's rate, which can be changed, or step by step; each step shows

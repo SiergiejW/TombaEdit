@@ -21,7 +21,7 @@ from gui.widgets.columns import adjustable, elide_at_view_edge
 from game.labels import content_key
 from formats.images.vram_viewer import VramView
 from disc.reader import FormatError
-from psx.graphics import render_sprite, part_page, guess_page, palette_missing, palette_runtime
+from psx.graphics import render_sprite, part_page, guess_page, palette_missing, palette_runtime, same_texels
 
 
 PART_COLOURS = ((255, 80, 80, 255), (80, 220, 255, 255), (255, 220, 60, 255), (120, 255, 120, 255),
@@ -148,7 +148,8 @@ class SpriteView(QWidget):
             'How the texture page a sprite is drawn from is known: from an object placed in this section, '
             'from one placed in another section (the sprite is then drawn with that section\'s textures), '
             'from an animation an object\'s code goes on to play, from the item table, from running the '
-            'routine of an object nothing places, or borrowed from '
+            'routine of an object nothing places, from an object or routine of another area that loads '
+            'the same bank (drawn with that area\'s textures where this section\'s differ), or borrowed from '
             'the nearest sprite that is known. A borrowed page is a guess.')
         # The label is listed beside the sprite it names.
         self.bank.horizontalHeader().moveSection(LABEL, 1)
@@ -346,13 +347,15 @@ class SpriteView(QWidget):
             return self.pages[index]
         if self.known:
             if index not in self.borrowed:
-                # A frame nothing places goes with the nearest placed frame
-                # whose palette is in the same column of VRAM: the art and
-                # the palettes of one thing are loaded side by side. Failing
-                # that, with the last placed frame before it, since a
+                # A frame nothing places goes with the nearest known frame
+                # whose palette is in the same column of VRAM: the art and the
+                # palettes of one thing are loaded side by side. One that an
+                # object of the area is placed showing goes first. Failing
+                # that, with the last known frame before it, since a
                 # character's frames follow one another.
                 columns = self.columns(index)
                 same = [frame for frame in self.known if columns & self.columns(frame)]
+                same = [frame for frame in same if self.origin_of(frame).startswith(('object', 'section'))] or same
                 before = [frame for frame in self.known if frame <= index]
                 self.lender[index] = (min(same, key=lambda frame: abs(frame - index)) if same
                                       else before[-1] if before else self.known[0])
@@ -381,6 +384,13 @@ class SpriteView(QWidget):
                     # palette of its own draws all its frames through it.
                     own = self.cluts.get(lender)
                 vram = self.frame_vrams.get(index, self.frame_vrams.get(lender, self.vram))
+                if (index not in self.frame_vrams and vram is not self.vram
+                        and self.origin_of(lender).startswith('section') and self.frames[index]
+                        and same_texels(self.vram, vram, self.frames[index], base, pixels_only=True)
+                        and not any(palette_missing(self.vram, part[2]) for part in self.frames[index])):
+                    # The pixels are loaded here as well: the frame keeps this
+                    # section's palettes.
+                    vram = self.vram
                 parts = [tuple(clut if col == 2 else value for col, value in enumerate(part))
                          if (clut := overrides.get(n, own)) is not None else part
                          for n, part in enumerate(self.frames[index])]

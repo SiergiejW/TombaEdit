@@ -425,7 +425,7 @@ def build_scene(project, path, index):
     if palette_rows:
         notes.append(f'{palette_rows} model palette rows decoded from the area overlay.')
     images = {}
-    from formats.sprites.wpp import parse_wpp, frame_image, bank_palettes
+    from formats.sprites.wpp import parse_wpp, frame_image, bank_palettes, part_palettes
     pictures = {}
     for (family, slot), asset in resources.items():
         if family != 'WPP':
@@ -460,14 +460,7 @@ def build_scene(project, path, index):
                 if bank in pictures:
                     palettes = bank_palettes(vram, sprites[bank], bank == 0)
                     fallback = palettes[0][1] if palettes else None
-                    rows = {}
-                    for n, part in enumerate(parts):
-                        clut = visual.get('clut')
-                        clut = part[2] if clut is None else clut
-                        x, y = (clut & 63) * 16, (clut >> 6) & 511
-                        palette = vram[y, x:x + 16]
-                        if palette.any():
-                            rows[n] = palette
+                    rows = part_palettes(vram, parts, bank == 0, visual.get('clut'))
                     image = frame_image(pictures[bank][frame], parts, fallback, rows)
                 else:
                     image = render_sprite(parts, vram, tpage=visual.get('tpage', 0),
@@ -791,6 +784,51 @@ def build_scene(project, path, index):
                     [entry.note], sky=(0., 0., 0.), locations=locations, location_index=index, view_2d=True)))
     return scene
 
+# What sprite_pages() and sprite_routines() work out for a section, by the
+# project attribute each part is kept in: {(load table, section): value}.
+PAGE_CACHES = ('sprite_page_cache', 'sprite_clut_cache', 'sprite_owner_cache', 'sprite_coded_cache',
+               'model_owner_cache', 'sprite_animation_cache', 'sprite_style_cache')
+ROUTINE_CACHES = ('sprite_routine_cache', 'sprite_animation_cache', 'sprite_style_cache')
+# Kept per frame and per script, and added to rather than replaced, since
+# both analyses fill them.
+SHARED_CACHES = ('sprite_animation_cache', 'sprite_style_cache')
+
+
+def keep_section(project, kind, path, index, names):
+    """Save what an analysis of a section found (formats.level.disc_cache)."""
+    from formats.level import disc_cache
+    value = {}
+    for name in names:
+        found = project.__dict__.get(name, {}).get((path, index), {})
+        if name == 'sprite_style_cache':
+            # What an object went on to spawn is only needed by the level.
+            found = {slot: {frame: {k: v for k, v in visual.items() if k != 'spawned'}
+                            for frame, visual in frames.items()} for slot, frames in found.items()}
+        value[name] = found
+    disc_cache.save(project, (kind, path, index), value)
+
+
+def restore_section(project, kind, path, index, names):
+    """Read back what keep_section() saved; False when nothing was."""
+    from formats.level import disc_cache
+    saved = disc_cache.load(project, (kind, path, index))
+    if not isinstance(saved, dict) or any(name not in saved for name in names):
+        return False
+    for name in names:
+        caches = project.__dict__.setdefault(name, {})
+        if name not in SHARED_CACHES:
+            caches[path, index] = saved[name]
+            continue
+        mine = caches.setdefault((path, index), {})
+        for slot, entries in saved[name].items():
+            for key, value in entries.items():
+                if name == 'sprite_style_cache':
+                    mine.setdefault(slot, {}).setdefault(key, value)
+                else:
+                    users = mine.setdefault(slot, {}).setdefault(key, [])
+                    users += [user for user in value if user not in users]
+    return True
+
 
 def sprite_pages(project, path, index):
     """Texture page bases by SPR slot and frame, {slot: {frame: base}}, taken
@@ -799,7 +837,7 @@ def sprite_pages(project, path, index):
     cache = project.__dict__.setdefault('sprite_page_cache', {})
     palettes = project.__dict__.setdefault('sprite_clut_cache', {})
     owners = project.__dict__.setdefault('sprite_owner_cache', {})
-    if (path, index) not in cache:
+    if (path, index) not in cache and not restore_section(project, 'pages', path, index, PAGE_CACHES):
         resources = loaded_resources(project, path, index)
         resolver = InitialPoseResolver(project, area_of(path), max(0, index - 1), resources)
         # Bank inspection needs pages, palettes and animation links, not
@@ -910,6 +948,7 @@ def sprite_pages(project, path, index):
         owners[path, index] = shown
         project.__dict__.setdefault('model_owner_cache', {})[path, index] = built
         project.__dict__.setdefault('sprite_animation_cache', {})[path, index] = animations
+        keep_section(project, 'pages', path, index, PAGE_CACHES)
     return cache[path, index]
 
 
@@ -933,7 +972,7 @@ def sprite_routines(project, path, index):
     its tables, so where two answers differ the lower numbers win, and the
     result ranks below anything a placed object says."""
     cache = project.__dict__.setdefault('sprite_routine_cache', {})
-    if (path, index) in cache:
+    if (path, index) in cache or restore_section(project, 'routines', path, index, ROUTINE_CACHES):
         return cache[path, index]
     from formats.level.apd import Placement
     resources = loaded_resources(project, path, index)
@@ -991,6 +1030,27 @@ def sprite_routines(project, path, index):
                             if frame not in claims.setdefault(slot, {}) or rank < claims[slot][frame][0]:
                                 claims[slot][frame] = (rank, page, None if clut is None else clut & 0x7FFF,
                                                      dict(visual, handler=routine, layer=layer, kind=kind))
+        # Objects other objects create (a burst, a message mark): every
+        # routine that takes an object from a pool is run as if a made-up
+        # object called it, and what it creates is followed like a placed
+        # object. They rank after what the type tables give.
+        if not resolver.build.legacy8:
+            for routine in resolver.spawners():
+                for argument in range(3):
+                    for child in resolver.spawn_from(routine, argument):
+                        visual = resolver.resolve(child)
+                        if 'sprite' not in visual or visual['sprite'] not in counts:
+                            continue
+                        frames = [frame for frame, _ in visual['frames']]
+                        if not frames or max(frames) >= counts[visual['sprite']] or visual['tpage'] >= 32:
+                            continue
+                        clut = visual.get('clut')
+                        for frame in frames:
+                            rank = (32, argument)
+                            if frame not in claims.setdefault(visual['sprite'], {}) or rank < claims[visual['sprite']][frame][0]:
+                                claims[visual['sprite']][frame] = (
+                                    rank, visual['tpage'], None if clut is None else clut & 0x7FFF,
+                                    dict(visual, handler=routine, layer=child.layer, kind=child.kind))
         found = {slot: {frame: (page, clut) for frame, (_, page, clut, _) in frames.items()}
                  for slot, frames in claims.items()}
         styles = project.__dict__.setdefault('sprite_style_cache', {}).setdefault((path, index), {})
@@ -1013,6 +1073,7 @@ def sprite_routines(project, path, index):
                     if label not in users:
                         users.append(label)
     cache[path, index] = found
+    keep_section(project, 'routines', path, index, ROUTINE_CACHES)
     return found
 
 
@@ -1046,26 +1107,59 @@ def sprite_cluts(project, path, index):
     return project.sprite_clut_cache[path, index]
 
 
-def same_banks(project, data):
-    """Load tables of other areas that hold this very sprite bank. Areas
-    share enemies and items by carrying a copy of the bank each."""
+def bank_copies(project, data):
+    """[(load table, group, asset)] of every record that loads this very
+    sprite bank. Areas share enemies and items by carrying a copy of the
+    bank each, and an area can load one bank under several records."""
     import hashlib
+    from formats.level import disc_cache
     sizes = project.__dict__.setdefault('sprite_bank_size_index', {})
     size = len(data)
     if size not in sizes:
-        index = sizes[size] = {}
-        for path, groups in project.ldars.items():
-            for group in groups:
-                for asset in group.assets:
-                    if asset.kind == 'SPR' and asset.source is not None and asset.size == size:
-                        try:
-                            digest = hashlib.sha1(project.asset_data(asset)).digest()
-                        except FormatError:
-                            continue
-                        index.setdefault(digest, [])
-                        if path not in index[digest]:
-                            index[digest].append(path)
+        saved = disc_cache.load(project, ('bank copies', size))
+        if isinstance(saved, dict):
+            records = {(path, group.index, asset.record_offset): asset
+                       for path, groups in project.ldars.items() for group in groups for asset in group.assets}
+            index = {bytes.fromhex(digest): [(path, group, records[path, group, offset])
+                                             for path, group, offset in copies if (path, group, offset) in records]
+                     for digest, copies in saved.items()}
+        else:
+            index = {}
+            for path, groups in project.ldars.items():
+                for group in groups:
+                    for asset in group.assets:
+                        if asset.kind == 'SPR' and asset.source is not None and asset.size == size:
+                            try:
+                                digest = hashlib.sha1(project.asset_data(asset)).digest()
+                            except FormatError:
+                                continue
+                            index.setdefault(digest, []).append((path, group.index, asset))
+            disc_cache.save(project, ('bank copies', size), {
+                digest.hex(): [(path, group, asset.record_offset) for path, group, asset in copies]
+                for digest, copies in index.items()})
+        sizes[size] = index
     return sizes[size].get(hashlib.sha1(data).digest(), [])
+
+
+def same_banks(project, data):
+    """Load tables of other areas that hold this very sprite bank."""
+    return list(dict.fromkeys(path for path, _, _ in bank_copies(project, data)))
+
+
+def bank_sections(project, data):
+    """[(load table, section, slot)] of the sections that have this sprite
+    bank loaded, whichever record and slot it comes in: a record of the
+    section's own group, or of the base group when the section loads
+    nothing else into that slot. An area without sections counts as its
+    base group."""
+    found = []
+    for path, group, asset in bank_copies(project, data):
+        count = len(project.ldars[path])
+        sections = [group] if group or count == 1 else range(1, count)
+        for section in sections:
+            if loaded_resources(project, path, section).get(('SPR', asset.slot)) is asset:
+                found.append((path, section, asset.slot))
+    return list(dict.fromkeys(found))
 
 
 def lend_palettes(project, path, index, frames, vram, cluts=None, data=None):

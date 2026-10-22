@@ -8,7 +8,7 @@ from PyQt6.QtWidgets import (QWidget, QVBoxLayout, QHBoxLayout, QLabel, QComboBo
                              QAbstractItemView, QMessageBox, QInputDialog)
 from gui.widgets.image_view import ImageView, file_stem
 from gui.widgets.columns import adjustable
-from formats.sprites.animations import Memory, sniff, read_script
+from formats.sprites.animations import Memory, sniff, read_script, table_siblings
 
 FILTERS = ('Verified animations', 'Unverified candidates (advanced)', 'Verified in the overlay', 'Verified in the executable')
 BACKGROUND = (40, 40, 56, 255)
@@ -41,6 +41,7 @@ class AnimationView(QWidget):
         self.count, self.picture, self.users = count, picture, dict(users or {})
         self.rate, self.export_name = rate, name
         self.scripts, self.shown = None, []
+        self.listed = {}                # list neighbour -> the linked start it shares a list with
         self.script, self.step, self.left = None, 0, 0
         self.pictures = {}
         self.entry_flags = None
@@ -142,14 +143,23 @@ class AnimationView(QWidget):
         for address, script in self.scripts.items():
             if address in self.users:
                 script.found.add('object')
+        # The other animations of an object whose list holds a linked start.
+        self.listed = {}
+        for address, start in table_siblings(self.memory, set(self.scripts), self.count).items():
+            script = read_script(self.memory, address, self.count)
+            if script is not None:
+                script.found.add('list')
+                self.scripts[address] = script
+                self.listed[address] = start
         self.relist()
         self.note.setText(f'{len(self.users)} animation starts linked to this bank by object handlers or '
-                          'loaded animation tables. Other byte patterns are excluded from normal playback. '
+                          f'loaded animation tables, and {len(self.listed)} more from the same animation lists. '
+                          'Other byte patterns are excluded from normal playback. '
                           'Advanced candidates and manually entered addresses are not verified bank links.')
 
     def related(self):
-        """Scripts in use here and those sharing a table with one."""
-        return set(self.users) & set(self.scripts)
+        """Scripts in use here and those sharing an object's list with one."""
+        return (set(self.users) | set(self.listed)) & set(self.scripts)
 
     def relist(self):
         if self.scripts is None:
@@ -167,16 +177,18 @@ class AnimationView(QWidget):
         else:
             want = 'overlay' if mode == 2 else 'executable'
             chosen = {a for a in self.related() if self.memory.region(a) == want}
-        rank = {'typed': 0, 'object': 0, 'table': 1, 'code': 2, 'pointer': 3}
+        rank = {'typed': 0, 'object': 0, 'list': 1, 'table': 1, 'code': 2, 'pointer': 3}
         self.shown = sorted(chosen, key=lambda a: (min(rank.get(f, 4) for f in self.scripts[a].found or {'?'}), a))
         self.table.setRowCount(len(self.shown))
         for row, address in enumerate(self.shown):
             script = self.scripts[address]
-            table = f'table {script.tables[0][0]:08X} #{script.tables[0][1]}' if script.tables else ''
-            found = ('Verified: handler/table' if address in self.users else 'Unverified')
+            start = self.listed.get(address) if address not in self.users else None
+            found = ('Verified: handler/table' if address in self.users else
+                     f'Same list as {start:08X}' if start is not None else 'Unverified')
+            users = self.users.get(address, ()) if start is None else self.users.get(start, ())
             cells = (f'{address:08X}', self.memory.region(address), found, str(len(script.steps)),
                      str(script.ticks), script.ending, frames_text(script.frames),
-                     ', '.join(self.users.get(address, ())), self.animation_label(script))
+                     ', '.join(users), self.animation_label(script))
             for column, text in enumerate(cells):
                 item = QTableWidgetItem(text)
                 item.setToolTip(text)

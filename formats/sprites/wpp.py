@@ -32,6 +32,15 @@ from psx.graphics import rgba
 # holds Tomba's outfits, one per row.
 TOMBA_CLUT = (128, 480)
 
+# Tomba's draw routine (the European MAIN0 overlay's at 800EA124) ignores the
+# palettes his parts store. It counts the parts down and gives a part the
+# player's word +08 while bit 1 of the count still to draw is set, +C4
+# otherwise. initPlayer sets the two (US 800A53A0 and 800A545C) to a hair
+# row and a shorts row of the outfit block from the pairs of table 8007D5BC;
+# a new game wears its first two rows. The words the parts store, 7830/7870,
+# 7009/7049 or 7C0C/7C4C, follow the same pattern but are never drawn.
+TOMBA_OUTFIT = (0, 1)
+
 
 @dataclass
 class Picture:
@@ -143,6 +152,24 @@ def tomba_palettes(vram):
     return [row for row in rows if row.any()]
 
 
+def part_palettes(vram, parts, tomba, clut=None):
+    """{part number: palette} for the parts of a frame whose palette is
+    known: Tomba's parts the hair and shorts rows of the first outfit as his
+    draw routine hands them out, other parts the row their CLUT word (or
+    `clut`) names when VRAM holds it."""
+    x, y = TOMBA_CLUT
+    hair, shorts = (vram[y + row, x:x + 16] for row in TOMBA_OUTFIT)
+    if tomba and hair.any() and shorts.any():
+        return {n: hair if (len(parts) - n) & 2 else shorts for n in range(len(parts))}
+    rows = {}
+    for n, part in enumerate(parts):
+        word = (part[2] if clut is None else clut) & 0x7FFF
+        row = vram[(word >> 6) & 511, (word & 63) * 16:(word & 63) * 16 + 16]
+        if row.any():
+            rows[n] = row
+    return rows
+
+
 def frame_image(picture, parts, palette, part_palettes=None):
     """Assemble a SPR frame whose parts address one unpacked WPP picture.
 
@@ -169,15 +196,15 @@ def bank_palettes(vram, frames=None, tomba=True):
     """Palettes to offer for a picture bank, best first: [(name, words)].
 
     The palettes the matching SPR bank names come first when VRAM holds
-    them, as it does for the phoenix bank. Tomba's parts name a row the game
-    fills while running, so his bank gets the outfit rows of the section's
-    palette block instead."""
+    them, as it does for the phoenix bank. Tomba is drawn through the rows
+    of the outfit block whatever his parts name, so his bank gets those."""
     found = []
-    for clut in sorted({part[2] & 0x7FFF for frame in frames or [] for part in frame}):
-        x, y = (clut & 63) * 16, (clut >> 6) & 511
-        row = vram[y, x:x + 16]
-        if len(row) == 16 and row.any():
-            found.append((f'CLUT 0x{clut:04X}', row))
+    if not tomba:
+        for clut in sorted({part[2] & 0x7FFF for frame in frames or [] for part in frame}):
+            x, y = (clut & 63) * 16, (clut >> 6) & 511
+            row = vram[y, x:x + 16]
+            if len(row) == 16 and row.any():
+                found.append((f'CLUT 0x{clut:04X}', row))
     if tomba or not found:
         found += [(f'Tomba palette {i}', row) for i, row in enumerate(tomba_palettes(vram))]
     return found
@@ -185,7 +212,8 @@ def bank_palettes(vram, frames=None, tomba=True):
 
 def renderer(frames, pictures, vram, tomba):
     """Frame drawing callback for a SPR bank whose pixels live in `pictures`,
-    using the first palette bank_palettes() offers."""
+    using the first palette bank_palettes() offers; Tomba's parts take the
+    palettes his draw routine gives them (part_palettes())."""
     palettes = bank_palettes(vram, frames, tomba)
     palette = palettes[0][1] if palettes else None
 
@@ -193,7 +221,8 @@ def renderer(frames, pictures, vram, tomba):
         parts = frames[index]
         if not parts or index >= len(pictures):
             return Image.new('RGBA', (1, 1))
-        rows = {part: vram[(clut >> 6) & 511, (clut & 63) * 16:(clut & 63) * 16 + 16]
-                for part, clut in (overrides or {}).items()}
+        rows = part_palettes(vram, parts, True) if tomba else {}
+        rows.update({part: vram[(clut >> 6) & 511, (clut & 63) * 16:(clut & 63) * 16 + 16]
+                     for part, clut in (overrides or {}).items()})
         return frame_image(pictures[index], parts, palette, rows)
     return render

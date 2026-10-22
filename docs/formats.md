@@ -57,7 +57,16 @@ the item and effect sprites that SPR slot 4 draws, and their palette rows.
 Section VRAM is built on top of them.
 
 Every section uploads a 256 × 32 block of palettes at (128, 480). Its first
-column holds Tomba's outfits, one row each.
+column holds Tomba's outfits, one row each; colours 9 to 13 are what differ
+between rows. Tomba's draw routine (European MAIN0 overlay, 800EA124) does
+not use the palettes his SPR parts store. It counts a frame's parts down and
+gives a part the player's word `+08` while bit 1 of the count still to draw
+is set, `+C4` otherwise: of two parts the first takes `+08`, of four the
+middle two. `initPlayer` sets `+08` and `+C4` (US 800A53A0 and 800A545C)
+from the pairs of table 8007D5BC (US), a hair row and a shorts row; `7808`
+and `7848` come first, rows 480 and 481: pink hair and green shorts. The
+words the parts store (`7830`/`7870`, `7009`/`7049`, `7C0C`/`7C4C`) follow
+the same pattern, but those rows stay empty while the game runs.
 
 The loader (routine 80021D70) files each resource pointer by the high nibble
 of its type code and the slot in the next nibble: SPR at `1F8002C8`, FOUR at

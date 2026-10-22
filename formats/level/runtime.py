@@ -40,6 +40,9 @@ POOLS = (('objects', 0x1F800208, 0x1F800238, 48, 0x100), ('player', 0x1F800204, 
          ('models', 0x1F80020C, 0x1F80023A, 16, 0x100), ('controllers', 0x1F800210, 0x1F80023E, 10, 0x40),
          ('backdrops', 0x1F800214, 0x1F80023C, 16, 0x100))
 POOL_LISTS = SPAWN_AT + 0x40000
+# A made-up caller's page base and bank, which no real object has: what a
+# spawned object copies from its caller is told apart by them.
+CALLER_PAGE, CALLER_BANK = 0x1FF, 0x80BFFF00
 CONTROLLER = SPAWN_AT + 0x50000
 # Updates a section controller is given to spawn what it spawns.
 CONTROLLER_UPDATES = 90
@@ -386,6 +389,71 @@ class InitialPoseResolver:
                 break
             address = self.read_word(address + 8) if control & 0x4000 else address + 8
         return frames
+
+    def spawners(self):
+        """Routines of the loaded code that create objects: those that call
+        a routine reading an object pool's free list."""
+        if hasattr(self, '_spawners'):
+            return self._spawners
+        import bisect
+        from formats.sprites.animations import code_constants, routines
+        heads = {head for _, head, _, _, _ in POOLS}
+        images = [(self.build.overlay, bytes(self.overlay_code)), (self.base, bytes(self.exe[0x800:]))]
+        starts, pools = {}, set()
+        for base, data in images:
+            starts[base] = sorted(routines(base, data))
+            for value, where in code_constants(base, data).items():
+                if value in heads:
+                    for at in where:
+                        k = bisect.bisect_right(starts[base], at) - 1
+                        if k >= 0:
+                            pools.add(starts[base][k])
+        calls = [3 << 26 | (address >> 2) & 0x3FFFFFF for address in pools]
+        found = set()
+        for base, data in images:
+            words = np.frombuffer(data[:len(data) // 4 * 4], '<u4')
+            for i in np.nonzero(np.isin(words, calls))[0]:
+                k = bisect.bisect_right(starts[base], base + 4 * int(i)) - 1
+                if k >= 0:
+                    found.add(starts[base][k])
+        self._spawners = sorted(found - pools)
+        return self._spawners
+
+    def spawn_from(self, pc, argument):
+        """Placements of the objects routine `pc` creates when a made-up
+        object calls it with `argument` (and zeros after it). What takes its
+        page or its bank from the caller is left out: the caller is made up."""
+        from unicorn import UcError
+        from formats.level.apd import Placement
+        self.write(0x80000000, self.baseline)
+        self.write(0x1F800000, self.scratch)
+        self.prepare_pools()
+        self.spawn(OBJECT, Placement(0, bytes(16), (0, 0, 0)))
+        self.write(OBJECT + 0x1E, struct.pack('<H', CALLER_PAGE))
+        self.word(OBJECT + 0x3C, CALLER_BANK)
+        r = self.reg
+        try:
+            self.u.context_restore(self.cpu_context)
+            for register, value in ((r.UC_MIPS_REG_SP, 0x803F0000), (r.UC_MIPS_REG_RA, 0x80001000),
+                                    (r.UC_MIPS_REG_A0, OBJECT), (r.UC_MIPS_REG_A1, argument),
+                                    (r.UC_MIPS_REG_A2, 0), (r.UC_MIPS_REG_A3, 0)):
+                self.u.reg_write(register, value)
+            self.u.emu_start(pc, 0x80001000, count=20000)
+        except (UcError, OSError):
+            # A routine that needs a real caller can stop Unicorn itself.
+            return []
+        return [self.child(pool, address, state) for pool, address, state in self.spawned()
+                if struct.unpack_from('<H', state, 0x1E)[0] != CALLER_PAGE
+                and struct.unpack_from('<I', state, 0x3C)[0] != CALLER_BANK]
+
+    def animation_memory(self):
+        """The overlay and the executable as formats.sprites.animations
+        reads them."""
+        if not hasattr(self, '_animation_memory'):
+            from formats.sprites.animations import Memory
+            self._animation_memory = Memory([('overlay', self.build.overlay, self.overlay_code),
+                                             ('executable', self.base, self.exe[0x800:])])
+        return self._animation_memory
 
     def code_animations(self, pc, slot, count):
         """Scripts assigned to anim +24 by this object's reachable code."""

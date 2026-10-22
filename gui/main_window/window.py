@@ -265,14 +265,16 @@ def _prepare_preview(project, node, context=None):
             from formats.level.runtime import table_pages
             slot = (node.code >> 8) & 15
             result['sprite_pages'] = sprite_pages(project, node.ldar, context).get(slot, {})
-            from formats.level.scene import sprite_cluts, lend_palettes, sprite_owners
+            from formats.level.scene import sprite_cluts, lend_palettes, sprite_owners, bank_sections, loaded_resources
+            # The sections of the area that have this bank loaded, under
+            # this record or another with the same bytes, in any slot.
+            sections = [(index, their_slot) for path, index, their_slot in bank_sections(project, data)
+                        if path == node.ldar and index]
             # A frame is named for the objects that show it, in this section
             # first and then in the others of the area.
             result['sprite_names'] = {}
-            from formats.level.scene import loaded_resources
-            for group in [g for g in [groups[context]] + [g for g in groups[1:] if g.index != context and g.assets]
-                          if g.index and loaded_resources(project, node.ldar, g.index).get(('SPR', slot)) is node]:
-                for frame, users in sprite_owners(project, node.ldar, group.index).get(slot, {}).items():
+            for index, their_slot in sorted(sections, key=lambda section: section[0] != context):
+                for frame, users in sprite_owners(project, node.ldar, index).get(their_slot, {}).items():
                     known = result['sprite_names'].setdefault(frame, [])
                     known += [user for user in users if user not in known]
             result['sprite_cluts'] = dict(sprite_cluts(project, node.ldar, context).get(slot, {}))
@@ -283,26 +285,37 @@ def _prepare_preview(project, node, context=None):
             # A bank can be shown by other sections than the one chosen:
             # their objects say which page a frame is on, and the frame is
             # drawn with their textures, which this section has not loaded.
-            vrams = {}
-            for group in [g for g in groups[1:] if g.index != context and g.assets
-                          and loaded_resources(project, node.ldar, g.index).get(('SPR', slot)) is node]:
-                theirs = sprite_pages(project, node.ldar, group.index).get(slot, {})
-                coded = sprite_coded(project, node.ldar, group.index).get(slot, ())
-                palettes = sprite_cluts(project, node.ldar, group.index).get(slot, {})
+            vrams, deferred = {}, []
+
+            def from_section(frame, page, index, word, code):
+                if index not in vrams:
+                    vrams[index] = project.vram(node.ldar, index)
+                result['sprite_pages'][frame] = page
+                result['sprite_vrams'][frame] = vrams[index]
+                origins[frame] = f'section {index - 1:02d}' + (' code' if code else '')
+                if word is not None:
+                    result['sprite_cluts'][frame] = word
+                else:
+                    result['sprite_cluts'].pop(frame, None)
+            for index, their_slot in sections:
+                if index == context:
+                    continue
+                theirs = sprite_pages(project, node.ldar, index).get(their_slot, {})
+                coded = sprite_coded(project, node.ldar, index).get(their_slot, ())
+                palettes = sprite_cluts(project, node.ldar, index).get(their_slot, {})
+                # Through another record of the bank only what objects are
+                # placed showing counts, not what their code goes on to show.
+                other_record = loaded_resources(project, node.ldar, index).get(('SPR', their_slot)) is not node
                 for frame, page in theirs.items():
+                    if frame in coded:
+                        # What another section's objects only go on to show
+                        # ranks below this section's own routines.
+                        if not other_record:
+                            deferred.append((frame, page, index, palettes.get(frame)))
+                        continue
                     if frame in result['sprite_pages'] and origins.get(frame) != 'object code':
                         continue
-                    if frame in result['sprite_pages'] and frame in coded:
-                        continue
-                    if group.index not in vrams:
-                        vrams[group.index] = project.vram(node.ldar, group.index)
-                    result['sprite_pages'][frame] = page
-                    result['sprite_vrams'][frame] = vrams[group.index]
-                    origins[frame] = f'section {group.index - 1:02d}' + (' code' if frame in coded else '')
-                    if frame in palettes:
-                        result['sprite_cluts'][frame] = palettes[frame]
-                    else:
-                        result['sprite_cluts'].pop(frame, None)
+                    from_section(frame, page, index, palettes.get(frame), False)
             # Items are drawn with the page and the palette their descriptor
             # in the executable names, wherever they are placed.
             from formats.level.runtime import item_sprites
@@ -347,6 +360,9 @@ def _prepare_preview(project, node, context=None):
                             result['sprite_cluts'].setdefault(frame, word)
                 result['sprite_styles'] = project.__dict__.get('sprite_style_cache', {}).get((node.ldar, context), {}).get(slot, {})
                 result['animation_users'] = project.__dict__.get('sprite_animation_cache', {}).get((node.ldar, context), {}).get(slot, {})
+            for frame, page, index, word in deferred:
+                if frame not in result['sprite_pages']:
+                    from_section(frame, page, index, word, True)
             # A frame this section does not place may be placed, with a
             # palette of its object's own, in another section of the area.
             from psx.graphics import palette_missing
@@ -400,6 +416,34 @@ def _prepare_preview(project, node, context=None):
                 if overlay is not None:
                     result['sprite_pages'] = character_pages(project.asset_data(overlay), known.build.overlay,
                                                              slot, len(frames))
+            # What nothing in this area shows may be shown in another area
+            # that loads the same bank. Such frames are drawn with that
+            # area's textures unless this section holds the same pixels.
+            # Another area may draw the bank with other art, so a frame that
+            # shares a palette with one an object of this area shows stays
+            # with it, and one whose palette is in the same column of VRAM
+            # as a known frame's only takes a page that shows the same
+            # pixels here.
+            drawn = {i: {result['sprite_cluts'].get(i, part[2]) & 0x7FFF for part in frames[i]}
+                     for i in result['sprite_pages'] if i < len(frames)}
+            placed = set().union(*[words for i, words in drawn.items()
+                                   if origins.get(i, 'object').startswith(('object', 'section'))])
+            columns = {word & 63 for words in drawn.values() for word in words}
+            unknown = [i for i, frame in enumerate(frames) if frame and i not in result['sprite_pages']
+                       and not placed & {part[2] & 0x7FFF for part in frame}]
+            if unknown and slot:
+                from formats.sprites.shared import other_areas
+                elsewhere = other_areas(project, node, data, frames, unknown, result['vram'],
+                                        [i for i in unknown if columns & {part[2] & 63 for part in frames[i]}])
+                for frame, (page, word, vram, origin, names) in elsewhere.items():
+                    result['sprite_pages'][frame] = page
+                    origins[frame] = origin
+                    if word is not None:
+                        result['sprite_cluts'][frame] = word
+                    if vram is not None:
+                        result['sprite_vrams'][frame] = vram
+                    known = result['sprite_names'].setdefault(frame, [])
+                    known += [name for name in names if name not in known]
             # Tomba's own banks have no pixels in VRAM; a picture bank with
             # one entry per frame supplies them.
             for candidate in loaded:

@@ -74,6 +74,23 @@ class Memory:
 
     def __init__(self, regions):
         self.regions = [(name, base, bytes(data)) for name, base, data in regions if data]
+        self.pointers = None    # word value -> cells holding it, for values inside the images
+        self.lists = {}         # (script, frame count) -> scripts of its list, for table_siblings()
+
+    def cells(self, value):
+        """Addresses of the words that hold `value`, an address inside the images."""
+        if self.pointers is None:
+            self.pointers = {}
+            spans = [(base, base + len(data)) for _, base, data in self.regions]
+            for _, base, data in self.regions:
+                count = len(data) // 4
+                words = np.frombuffer(data[:count * 4], '<u4')
+                inside = np.zeros(count, bool)
+                for low, high in spans:
+                    inside |= (words >= low) & (words < high)
+                for i in np.nonzero(inside & ((words & 3) == 0))[0]:
+                    self.pointers.setdefault(int(words[i]), []).append(base + 4 * int(i))
+        return self.pointers.get(value, ())
 
     def find(self, address, count=1):
         for name, base, data in self.regions:
@@ -176,6 +193,81 @@ def read_script(memory, address, frame_count=None):
     if not total or total > MAX_TICKS:
         return None
     return Script(address, steps, loop)
+
+
+def table_siblings(memory, starts, frame_count):
+    """{script address: start} for the scripts that share a list with one
+    of `starts`. An object's animations are a list of pointers that the
+    area overlay lays out right before the scripts it points at; only such
+    a list counts, every entry a script of this bank and the first script
+    starting where the list ends, so a table of another object's scripts
+    is not taken for this one's."""
+    found = {}
+    for start in starts:
+        key = (start, frame_count)
+        if key not in memory.lists:
+            memory.lists[key] = []
+
+            def valid(at):
+                return memory.inside(at, 4) and read_script(memory, memory.u32(at), frame_count) is not None
+            for cell in memory.cells(start):
+                low, high = cell, cell
+                while valid(low - 4) and cell - low < 4 * 64:
+                    low -= 4
+                while valid(high + 4) and high - cell < 4 * 64:
+                    high += 4
+                targets = [memory.u32(at) for at in range(low, high + 4, 4)]
+                if len(targets) > 1 and min(targets) == high + 4 and max(targets) < high + 0x800:
+                    memory.lists[key] += targets
+        for target in memory.lists[key]:
+            if target not in starts:
+                found.setdefault(target, start)
+    return found
+
+
+def setup_records(memory, slot, frame_count):
+    """{frame: page base} from the object setup records that name SPR
+    `slot`. A record is twelve bytes: a hit box, the page base and the slot
+    (two halfwords) and a pointer to the object's animation list; the
+    object's routine copies the base to the object's +1E and starts on an
+    entry of the list (US routine 8005788C reads them by subtype for the
+    people scripts create). The list runs until an entry is not a script of
+    this bank, another record's list begins or its own scripts do."""
+    candidates = []
+    for name, base, data in memory.regions:
+        count = len(data) // 4
+        words = np.frombuffer(data[:count * 4], '<u4').astype(np.int64)
+        if count < 3:
+            continue
+        middle, pointer = words[1:-1], words[2:]
+        hits = np.nonzero(((middle >> 16) == slot) & ((middle & 0xFFFF) < 0x200) & ((pointer & 3) == 0)
+                          & (pointer >= 0x80000000))[0]
+        candidates += [(int(middle[i] & 0xFFFF), int(pointer[i])) for i in hits if memory.inside(int(pointer[i]), 4)]
+    starts = {pointer for _, pointer in candidates}
+    found = {}
+    for page, pointer in candidates:
+        scripts, cell = [], pointer
+        while len(scripts) < 64 and memory.inside(cell, 4) and (cell == pointer or cell not in starts):
+            script = read_script(memory, memory.u32(cell), frame_count)
+            if script is None or (scripts and cell >= min(s.address for s in scripts)):
+                break
+            scripts.append(script)
+            cell += 4
+        for script in scripts:
+            for frame in script.frames:
+                found.setdefault(frame, page)
+    return found
+
+
+def listed_scripts(memory, start, frame_count):
+    """{address: Script}: the script at `start` and the others of the
+    animation list it belongs to (table_siblings())."""
+    found = {}
+    for address in [start, *table_siblings(memory, {start}, frame_count)]:
+        script = read_script(memory, address, frame_count)
+        if script is not None:
+            found[address] = script
+    return found
 
 
 # Scratchpad words holding the loaded SPR banks by slot.

@@ -291,7 +291,24 @@ class Project:
 
     def vram(self, path, group_index, over=None):
         """VRAM as an area's load group leaves it. `over` is a group of the
-        system load table to lay on top, as when a menu is opened."""
+        system load table to lay on top, as when a menu is opened. Each is
+        built once a session and kept between sessions
+        (formats.level.disc_cache); callers get a copy to change."""
+        from formats.level import disc_cache
+        key = (path, group_index, over)
+        built = self.__dict__.setdefault('vram_cache', OrderedDict())
+        if key not in built:
+            vram = disc_cache.load(self, ('vram', path, group_index, over))
+            if not isinstance(vram, np.ndarray) or vram.shape != (512, 1024):
+                vram = self.build_vram(path, group_index, over)
+                disc_cache.save(self, ('vram', path, group_index, over), vram)
+            built[key] = vram
+            while len(built) > 48:
+                built.popitem(last=False)
+        built.move_to_end(key)
+        return built[key].copy()
+
+    def build_vram(self, path, group_index, over=None):
         vram = np.zeros((512, 1024), dtype=np.uint16)
         groups = self.ldars[path]
         wanted = [(groups[0], 0)] if group_index == 0 else [(groups[0], 0), (groups[group_index], 0)]
