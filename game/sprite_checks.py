@@ -13,7 +13,7 @@ STATUSES = {
     'wrong_sprites': 'Wrong sprites',
     'wrong_animation': 'Wrong animation',
     'partially_correct': 'Partially correct, remaining sprites look wrong',
-    'empty': 'Empty: nothing should show here',
+    'empty': 'Empty: the whole SPR draws blank',
 }
 
 
@@ -85,7 +85,7 @@ class SpriteChecks:
             if not isinstance(entry, dict) or not isinstance(entry.get('id'), str):
                 raise ValueError('Invalid sprite check entry. The existing file was not changed.')
             if entry.get('status') == 'other':
-                # The status once called Other meant the bank shows nothing.
+                # The status once called Other meant the whole bank draws blank.
                 entry['status'] = 'empty'
         return doc
 
