@@ -1,0 +1,3405 @@
+{
+  "schema": "tombaedit.labels",
+  "version": 1,
+  "name": "TombaEdit portable labels",
+  "build": "shared",
+  "serial": "",
+  "bins": {},
+  "areas": {},
+  "entries": [
+    {
+      "content": "ee9f63debcef71ea",
+      "start": "000000",
+      "end": "01E393",
+      "type": "WVD",
+      "name": "100 Year Old Man Room"
+    },
+    {
+      "content": "ae8f7194ce03e11d",
+      "start": "000000",
+      "end": "000000",
+      "type": "SPR frame",
+      "name": "Kokka Bird (Haunted Mansion)"
+    },
+    {
+      "content": "4a0caddac115e0bd",
+      "start": "000000",
+      "end": "000000",
+      "type": "SPR frame",
+      "name": "Kokka Bird (Haunted Mansion)"
+    },
+    {
+      "content": "8833c2ecbca15e3a",
+      "start": "000000",
+      "end": "000000",
+      "type": "SPR frame",
+      "name": "Kokka Bird (Haunted Mansion)"
+    },
+    {
+      "content": "d26e5cdd27823f1e",
+      "start": "000000",
+      "end": "000000",
+      "type": "SPR frame",
+      "name": "Kokka Bird (Haunted Mansion)"
+    },
+    {
+      "content": "a66a14ad812df472",
+      "start": "000000",
+      "end": "000000",
+      "type": "SPR frame",
+      "name": "Kokka Bird (Haunted Mansion)"
+    },
+    {
+      "content": "1e52d81f9361b9c6",
+      "start": "000000",
+      "end": "000000",
+      "type": "SPR frame",
+      "name": "Kokka Bird (Haunted Mansion)"
+    },
+    {
+      "content": "2ccab0b69cc46151",
+      "start": "000000",
+      "end": "000000",
+      "type": "SPR frame",
+      "name": "Kokka Bird (Haunted Mansion)"
+    },
+    {
+      "content": "107cf03889f014f7",
+      "start": "000000",
+      "end": "000000",
+      "type": "SPR frame",
+      "name": "Kokka Bird (Haunted Mansion)"
+    },
+    {
+      "content": "e88e18e7126de03f",
+      "start": "000000",
+      "end": "000000",
+      "type": "SPR frame",
+      "name": "Kokka Bird (Haunted Mansion)"
+    },
+    {
+      "content": "89e47fa88ec1ebe1",
+      "start": "000000",
+      "end": "000000",
+      "type": "SPR frame",
+      "name": "Kokka Bird (Haunted Mansion)"
+    },
+    {
+      "content": "61b3ef4a4e02608d",
+      "start": "000000",
+      "end": "000000",
+      "type": "SPR frame",
+      "name": "Kokka Bird (Haunted Mansion)"
+    },
+    {
+      "content": "4e7c9facf4e98b22",
+      "start": "000000",
+      "end": "000000",
+      "type": "SPR frame",
+      "name": "Kokka Bird (Haunted Mansion)"
+    },
+    {
+      "content": "152783342eaa4bab",
+      "start": "000000",
+      "end": "000000",
+      "type": "SPR frame",
+      "name": "Kokka Bird (Haunted Mansion)"
+    },
+    {
+      "content": "1961c8284b06763a",
+      "start": "000000",
+      "end": "000000",
+      "type": "SPR frame",
+      "name": "Kokka Bird (Haunted Mansion)"
+    },
+    {
+      "content": "731fb434fd339cd5",
+      "start": "000000",
+      "end": "000000",
+      "type": "SPR frame",
+      "name": "Kokka Bird (Haunted Mansion)"
+    },
+    {
+      "content": "43c4d1e953a15c4a",
+      "start": "000000",
+      "end": "000000",
+      "type": "SPR frame",
+      "name": "Kokka Bird (Haunted Mansion)"
+    },
+    {
+      "content": "96067afbe2e931c5",
+      "start": "000000",
+      "end": "000000",
+      "type": "SPR frame",
+      "name": "Kokka Bird (Haunted Mansion)"
+    },
+    {
+      "content": "a4df09fb9ac51379",
+      "start": "000000",
+      "end": "000000",
+      "type": "SPR frame",
+      "name": "Kokka Bird (Haunted Mansion)"
+    },
+    {
+      "content": "720a88ff3ee69a96",
+      "start": "000000",
+      "end": "000000",
+      "type": "SPR frame",
+      "name": "Kokka Bird (Haunted Mansion)"
+    },
+    {
+      "content": "172cd5557367e123",
+      "start": "000000",
+      "end": "000000",
+      "type": "SPR frame",
+      "name": "Kokka Bird (Haunted Mansion)"
+    },
+    {
+      "content": "b4cf528be5505986",
+      "start": "000000",
+      "end": "000000",
+      "type": "SPR frame",
+      "name": "Kokka Bird (Haunted Mansion)"
+    },
+    {
+      "content": "3fe6c362c23b4c1c",
+      "start": "000000",
+      "end": "000000",
+      "type": "SPR frame",
+      "name": "Kokka Bird (Haunted Mansion)"
+    },
+    {
+      "content": "5788d829dc7e41b7",
+      "start": "000000",
+      "end": "000000",
+      "type": "SPR frame",
+      "name": "Kokka Bird (Haunted Mansion)"
+    },
+    {
+      "content": "5e753c3fcd932a9f",
+      "start": "000000",
+      "end": "000000",
+      "type": "SPR frame",
+      "name": "Kokka Bird (Haunted Mansion)"
+    },
+    {
+      "content": "c6f46fafdeb55c10",
+      "start": "000000",
+      "end": "000000",
+      "type": "SPR frame",
+      "name": "Kokka Bird (Haunted Mansion)"
+    },
+    {
+      "content": "a849809309fadaaf",
+      "start": "000000",
+      "end": "000000",
+      "type": "SPR frame",
+      "name": "Kokka Bird (Haunted Mansion)"
+    },
+    {
+      "content": "ab0812811ab2841a",
+      "start": "000000",
+      "end": "000000",
+      "type": "SPR frame",
+      "name": "Kokka Bird (Haunted Mansion)"
+    },
+    {
+      "content": "4f6045860b40aab5",
+      "start": "000000",
+      "end": "000000",
+      "type": "SPR frame",
+      "name": "Kokka Bird (Haunted Mansion)"
+    },
+    {
+      "content": "4f9668673f941ad0",
+      "start": "000000",
+      "end": "000000",
+      "type": "SPR frame",
+      "name": "Kokka Bird (Haunted Mansion)"
+    },
+    {
+      "content": "0030bb109bff7978",
+      "start": "000000",
+      "end": "000000",
+      "type": "SPR frame",
+      "name": "Kokka Bird (Haunted Mansion)"
+    },
+    {
+      "content": "fdf1bcefcb17f5d6",
+      "start": "000000",
+      "end": "000000",
+      "type": "SPR frame",
+      "name": "Kokka Bird (Haunted Mansion)"
+    },
+    {
+      "content": "98e605bffa130b11",
+      "start": "000000",
+      "end": "000000",
+      "type": "SPR frame",
+      "name": "Kokka Bird (Haunted Mansion)"
+    },
+    {
+      "content": "36a6bc954522ff4a",
+      "start": "000000",
+      "end": "000000",
+      "type": "SPR frame",
+      "name": "Kokka Bird (Haunted Mansion)"
+    },
+    {
+      "content": "36e33b56eecefe54",
+      "start": "000000",
+      "end": "000000",
+      "type": "SPR frame",
+      "name": "Kokka Bird (Haunted Mansion)"
+    },
+    {
+      "content": "28403667b9dd54db",
+      "start": "000000",
+      "end": "000000",
+      "type": "SPR frame",
+      "name": "Kokka Bird (Haunted Mansion)"
+    },
+    {
+      "content": "855daced59a77039",
+      "start": "000000",
+      "end": "000000",
+      "type": "SPR frame",
+      "name": "Kokka Bird (Haunted Mansion)"
+    },
+    {
+      "content": "e25a0215512a3af9",
+      "start": "000000",
+      "end": "000000",
+      "type": "SPR frame",
+      "name": "Kokka Bird (Haunted Mansion)"
+    },
+    {
+      "content": "e9bc4999748c6627",
+      "start": "000000",
+      "end": "000000",
+      "type": "SPR frame",
+      "name": "Kokka Bird (Haunted Mansion)"
+    },
+    {
+      "content": "7ddebc5d31eb0e38",
+      "start": "000000",
+      "end": "000000",
+      "type": "SPR frame",
+      "name": "Kokka Bird (Haunted Mansion)"
+    },
+    {
+      "content": "d1a79023d95b0b1b",
+      "start": "000000",
+      "end": "000000",
+      "type": "SPR frame",
+      "name": "Kokka Bird (Haunted Mansion)"
+    },
+    {
+      "content": "9291de0e1e34f3d6",
+      "start": "000000",
+      "end": "000000",
+      "type": "SPR frame",
+      "name": "Kokka Bird (Haunted Mansion)"
+    },
+    {
+      "content": "a134228cf56c7a15",
+      "start": "000000",
+      "end": "000000",
+      "type": "SPR frame",
+      "name": "Kokka Bird (Haunted Mansion)"
+    },
+    {
+      "content": "a3a69c6452e56fe4",
+      "start": "000000",
+      "end": "000000",
+      "type": "SPR frame",
+      "name": "Kokka Bird (Haunted Mansion)"
+    },
+    {
+      "content": "f3a964ca23f36d45",
+      "start": "000000",
+      "end": "000000",
+      "type": "SPR frame",
+      "name": "Kokka Bird (Haunted Mansion)"
+    },
+    {
+      "content": "2796338e147d268b",
+      "start": "000000",
+      "end": "000000",
+      "type": "SPR frame",
+      "name": "Kokka Bird (Haunted Mansion)"
+    },
+    {
+      "content": "42736d8af86047b1",
+      "start": "000000",
+      "end": "000000",
+      "type": "SPR frame",
+      "name": "Kokka Bird (Haunted Mansion)"
+    },
+    {
+      "content": "2b10d5d60eeab510",
+      "start": "000000",
+      "end": "000000",
+      "type": "SPR frame",
+      "name": "Kokka Bird (Haunted Mansion)"
+    },
+    {
+      "content": "cf87f72c442dc313",
+      "start": "000000",
+      "end": "000000",
+      "type": "SPR frame",
+      "name": "Kokka Bird (Haunted Mansion)"
+    },
+    {
+      "content": "bf2c9f76892b62ae",
+      "start": "000000",
+      "end": "000000",
+      "type": "SPR frame",
+      "name": "Kokka Bird (Haunted Mansion)"
+    },
+    {
+      "content": "e9878b43adcb377a",
+      "start": "000000",
+      "end": "000000",
+      "type": "SPR frame",
+      "name": "Kokka Bird (Haunted Mansion)"
+    },
+    {
+      "content": "e24746fbc3736eb7",
+      "start": "000000",
+      "end": "000000",
+      "type": "SPR frame",
+      "name": "Kokka Bird (Haunted Mansion)"
+    },
+    {
+      "content": "373355691f362a07",
+      "start": "000000",
+      "end": "000000",
+      "type": "SPR frame",
+      "name": "Kokka Bird (Haunted Mansion)"
+    },
+    {
+      "content": "3a5455d90a2ed093",
+      "start": "000000",
+      "end": "000000",
+      "type": "SPR frame",
+      "name": "Kokka Bird (Haunted Mansion)"
+    },
+    {
+      "content": "ef6d3947a7e58334",
+      "start": "000000",
+      "end": "000000",
+      "type": "SPR frame",
+      "name": "Kokka Bird (Haunted Mansion)"
+    },
+    {
+      "content": "d5ce3c852918ef92",
+      "start": "000000",
+      "end": "000000",
+      "type": "SPR frame",
+      "name": "Kokka Bird (Haunted Mansion)"
+    },
+    {
+      "content": "1ffdcec7f4cb52f2",
+      "start": "000000",
+      "end": "000000",
+      "type": "SPR frame",
+      "name": "Kokka Bird (Haunted Mansion)"
+    },
+    {
+      "content": "708d2a2c1ef7aa3e",
+      "start": "000000",
+      "end": "000000",
+      "type": "SPR frame",
+      "name": "Kokka Bird (Haunted Mansion)"
+    },
+    {
+      "content": "df8b5cad23114bdb",
+      "start": "000000",
+      "end": "000000",
+      "type": "SPR frame",
+      "name": "Kokka Bird (Haunted Mansion)"
+    },
+    {
+      "content": "b2eef91041d158d8",
+      "start": "000000",
+      "end": "000000",
+      "type": "SPR frame",
+      "name": "Kokka Bird (Haunted Mansion)"
+    },
+    {
+      "content": "bb9c4868de19105c",
+      "start": "000000",
+      "end": "000000",
+      "type": "SPR frame",
+      "name": "Kokka Bird (Haunted Mansion)"
+    },
+    {
+      "content": "9c59b3667089b0c9",
+      "start": "000000",
+      "end": "000000",
+      "type": "SPR frame",
+      "name": "Kokka Bird (Haunted Mansion)"
+    },
+    {
+      "content": "9e556bedbcfedbd2",
+      "start": "000000",
+      "end": "000000",
+      "type": "SPR frame",
+      "name": "Kokka Bird (Haunted Mansion)"
+    },
+    {
+      "content": "c8bfdaff7e9d88c6",
+      "start": "000000",
+      "end": "000000",
+      "type": "SPR frame",
+      "name": "Kokka Bird (Haunted Mansion)"
+    },
+    {
+      "content": "4ae31f8f01e2fb54",
+      "start": "000000",
+      "end": "000000",
+      "type": "SPR frame",
+      "name": "Kokka Bird (Haunted Mansion)"
+    },
+    {
+      "content": "f69fc14104e39af5",
+      "start": "000000",
+      "end": "000000",
+      "type": "SPR frame",
+      "name": "Kokka Bird (Haunted Mansion)"
+    },
+    {
+      "content": "437b430c76dbce76",
+      "start": "000000",
+      "end": "000000",
+      "type": "SPR frame",
+      "name": "Kokka Bird (Haunted Mansion)"
+    },
+    {
+      "content": "63318c5a66179a62",
+      "start": "000000",
+      "end": "000000",
+      "type": "SPR frame",
+      "name": "Kokka Bird (Haunted Mansion)"
+    },
+    {
+      "content": "a376abc1750c33b8",
+      "start": "000000",
+      "end": "000000",
+      "type": "SPR frame",
+      "name": "Kokka Bird (Haunted Mansion)"
+    },
+    {
+      "content": "898011f649e60d7c",
+      "start": "000000",
+      "end": "000000",
+      "type": "SPR frame",
+      "name": "Kokka Bird (Haunted Mansion)"
+    },
+    {
+      "content": "f30c95d15799ee49",
+      "start": "000000",
+      "end": "000000",
+      "type": "SPR frame",
+      "name": "Kokka Bird (Haunted Mansion)"
+    },
+    {
+      "content": "aaa6a236032e07e8",
+      "start": "000000",
+      "end": "000000",
+      "type": "SPR frame",
+      "name": "Kokka Bird (Haunted Mansion)"
+    },
+    {
+      "content": "f8724d22f22000b2",
+      "start": "000000",
+      "end": "000000",
+      "type": "SPR frame",
+      "name": "Kokka Bird (Haunted Mansion)"
+    },
+    {
+      "content": "74325b45b7576a30",
+      "start": "000000",
+      "end": "000000",
+      "type": "SPR frame",
+      "name": "Kokka Bird (Haunted Mansion)"
+    },
+    {
+      "content": "09c1693e001f324d",
+      "start": "000000",
+      "end": "000000",
+      "type": "SPR frame",
+      "name": "Kokka Bird (Haunted Mansion)"
+    },
+    {
+      "content": "e51488a0b44d868c",
+      "start": "000000",
+      "end": "000000",
+      "type": "SPR frame",
+      "name": "Kokka Bird (Haunted Mansion)"
+    },
+    {
+      "content": "f34f31b0f75cd52c",
+      "start": "000000",
+      "end": "000000",
+      "type": "SPR frame",
+      "name": "Kokka Bird (Haunted Mansion)"
+    },
+    {
+      "content": "4b7e74fdce2665c0",
+      "start": "000000",
+      "end": "000000",
+      "type": "SPR frame",
+      "name": "Kokka Bird (Haunted Mansion)"
+    },
+    {
+      "content": "e024eb33864aa15f",
+      "start": "000000",
+      "end": "000000",
+      "type": "SPR frame",
+      "name": "Kokka Bird (Haunted Mansion)"
+    },
+    {
+      "content": "01c8a35b9dd7f3e1",
+      "start": "000000",
+      "end": "000000",
+      "type": "SPR frame",
+      "name": "Kokka Bird (Haunted Mansion)"
+    },
+    {
+      "content": "11b2296fb1158858",
+      "start": "000000",
+      "end": "000000",
+      "type": "SPR frame",
+      "name": "Kokka Bird (Haunted Mansion)"
+    },
+    {
+      "content": "e39086f637ab49e6",
+      "start": "000000",
+      "end": "000000",
+      "type": "SPR frame",
+      "name": "Kokka Bird (Haunted Mansion)"
+    },
+    {
+      "content": "b0cf470d79233bf3",
+      "start": "000000",
+      "end": "000000",
+      "type": "SPR frame",
+      "name": "Kokka Bird (Haunted Mansion)"
+    },
+    {
+      "content": "dba5abcaba3a66a4",
+      "start": "000000",
+      "end": "000000",
+      "type": "SPR frame",
+      "name": "Kokka Bird (Haunted Mansion)"
+    },
+    {
+      "content": "d1939b00cbf3ef44",
+      "start": "000000",
+      "end": "000000",
+      "type": "SPR frame",
+      "name": "Kokka Bird (Haunted Mansion)"
+    },
+    {
+      "content": "f45fcc637641fc5e",
+      "start": "000000",
+      "end": "000000",
+      "type": "SPR frame",
+      "name": "Kokka Bird (Haunted Mansion)"
+    },
+    {
+      "content": "dff5109806752587",
+      "start": "000000",
+      "end": "000000",
+      "type": "SPR frame",
+      "name": "Kokka Bird (Haunted Mansion)"
+    },
+    {
+      "content": "506ae024f59bf102",
+      "start": "000000",
+      "end": "000000",
+      "type": "SPR frame",
+      "name": "Kokka Bird (Haunted Mansion)"
+    },
+    {
+      "content": "adf68391060dbd43",
+      "start": "000000",
+      "end": "000000",
+      "type": "SPR frame",
+      "name": "Kokka Bird (Haunted Mansion)"
+    },
+    {
+      "content": "de901e4dbc971b4a",
+      "start": "000000",
+      "end": "000000",
+      "type": "SPR frame",
+      "name": "Kokka Bird (Haunted Mansion)"
+    },
+    {
+      "content": "96f285507c086510",
+      "start": "000000",
+      "end": "000000",
+      "type": "SPR frame",
+      "name": "Kokka Bird (Haunted Mansion)"
+    },
+    {
+      "content": "dc466ea83b861c5b",
+      "start": "000000",
+      "end": "000000",
+      "type": "SPR frame",
+      "name": "Kokka Bird (Haunted Mansion)"
+    },
+    {
+      "content": "f89700fd6e90f57b",
+      "start": "000000",
+      "end": "000000",
+      "type": "SPR frame",
+      "name": "Kokka Bird (Haunted Mansion)"
+    },
+    {
+      "content": "88d447be4989f5cf",
+      "start": "000000",
+      "end": "000000",
+      "type": "SPR frame",
+      "name": "Kokka Bird (Haunted Mansion)"
+    },
+    {
+      "content": "07da4281e0566804",
+      "start": "000000",
+      "end": "000000",
+      "type": "SPR frame",
+      "name": "Kokka Bird (Haunted Mansion)"
+    },
+    {
+      "content": "798dd544483da94c",
+      "start": "000000",
+      "end": "000000",
+      "type": "SPR frame",
+      "name": "Kokka Bird (Haunted Mansion)"
+    },
+    {
+      "content": "1937a752f184c043",
+      "start": "000000",
+      "end": "000000",
+      "type": "SPR frame",
+      "name": "Kokka Bird (Haunted Mansion)"
+    },
+    {
+      "content": "54e150cf5d56ec25",
+      "start": "000000",
+      "end": "000000",
+      "type": "SPR frame",
+      "name": "Kokka Bird (Haunted Mansion)"
+    },
+    {
+      "content": "f587d3318396c470",
+      "start": "000000",
+      "end": "000000",
+      "type": "SPR frame",
+      "name": "Kokka Bird (Haunted Mansion)"
+    },
+    {
+      "content": "b340263b6f3dc814",
+      "start": "000000",
+      "end": "000000",
+      "type": "SPR frame",
+      "name": "Kokka Bird (Haunted Mansion)"
+    },
+    {
+      "content": "0d2c920331fafb9b",
+      "start": "000000",
+      "end": "000000",
+      "type": "SPR frame",
+      "name": "Kokka Bird (Haunted Mansion)"
+    },
+    {
+      "content": "d5ac25d5177d765c",
+      "start": "000000",
+      "end": "000000",
+      "type": "SPR frame",
+      "name": "Kokka Bird (Haunted Mansion)"
+    },
+    {
+      "content": "3b044e97326c4b21",
+      "start": "000000",
+      "end": "000000",
+      "type": "SPR frame",
+      "name": "Kokka Bird (Haunted Mansion)"
+    },
+    {
+      "content": "3d904d1b22895616",
+      "start": "000000",
+      "end": "000000",
+      "type": "SPR frame",
+      "name": "Kokka Bird (Haunted Mansion)"
+    },
+    {
+      "content": "bb8a2bc77534a9cb",
+      "start": "000000",
+      "end": "000000",
+      "type": "SPR frame",
+      "name": "Kokka Bird (Haunted Mansion)"
+    },
+    {
+      "content": "41bc01b879990581",
+      "start": "000000",
+      "end": "000000",
+      "type": "SPR frame",
+      "name": "Kokka Bird (Haunted Mansion)"
+    },
+    {
+      "content": "389799077f989b84",
+      "start": "000000",
+      "end": "000000",
+      "type": "SPR frame",
+      "name": "Kokka Bird (Haunted Mansion)"
+    },
+    {
+      "content": "fee3f7cd86c286f7",
+      "start": "000000",
+      "end": "000000",
+      "type": "SPR frame",
+      "name": "Kokka Bird (Haunted Mansion)"
+    },
+    {
+      "content": "6c6336ca7432c9c2",
+      "start": "000000",
+      "end": "000000",
+      "type": "SPR frame",
+      "name": "Kokka Bird (Haunted Mansion)"
+    },
+    {
+      "content": "7d9d123088fb11ba",
+      "start": "000000",
+      "end": "000000",
+      "type": "SPR frame",
+      "name": "Kokka Bird (Haunted Mansion)"
+    },
+    {
+      "content": "2b92253bf8f506db",
+      "start": "000000",
+      "end": "000000",
+      "type": "SPR frame",
+      "name": "Kokka Bird (Haunted Mansion)"
+    },
+    {
+      "content": "517f9156c25d5c35",
+      "start": "000000",
+      "end": "000000",
+      "type": "SPR frame",
+      "name": "Kokka Bird (Haunted Mansion)"
+    },
+    {
+      "content": "7d3575f386ec5422",
+      "start": "000000",
+      "end": "000000",
+      "type": "SPR frame",
+      "name": "Kokka Bird (Haunted Mansion)"
+    },
+    {
+      "content": "4248bca0856718d5",
+      "start": "000000",
+      "end": "000000",
+      "type": "SPR frame",
+      "name": "Kokka Bird (Haunted Mansion)"
+    },
+    {
+      "content": "d7570474dec220d3",
+      "start": "000000",
+      "end": "000000",
+      "type": "SPR frame",
+      "name": "Kokka Bird (Haunted Mansion)"
+    },
+    {
+      "content": "0e360ffac66a3c43",
+      "start": "000000",
+      "end": "000000",
+      "type": "SPR frame",
+      "name": "Kokka Bird (Haunted Mansion)"
+    },
+    {
+      "content": "d257d6e1e33a52ce",
+      "start": "000000",
+      "end": "000000",
+      "type": "SPR frame",
+      "name": "Kokka Bird (Haunted Mansion)"
+    },
+    {
+      "content": "fe9bfcf70421b856",
+      "start": "000000",
+      "end": "000000",
+      "type": "SPR frame",
+      "name": "Kokka Bird (Haunted Mansion)"
+    },
+    {
+      "content": "06e25d1b3c503dbc",
+      "start": "000000",
+      "end": "000000",
+      "type": "SPR frame",
+      "name": "Yellow Mushroom"
+    },
+    {
+      "content": "442a2d37b9c35ed2",
+      "start": "000000",
+      "end": "000000",
+      "type": "SPR frame",
+      "name": "Yellow Mushroom"
+    },
+    {
+      "content": "3afef3348e4671a4",
+      "start": "000000",
+      "end": "000000",
+      "type": "SPR frame",
+      "name": "Yellow Mushroom"
+    },
+    {
+      "content": "94f2706be99319d2",
+      "start": "000000",
+      "end": "000000",
+      "type": "SPR frame",
+      "name": "Yellow Mushroom"
+    },
+    {
+      "content": "cccf353d1fab378a",
+      "start": "000000",
+      "end": "000000",
+      "type": "SPR frame",
+      "name": "Yellow Mushroom"
+    },
+    {
+      "content": "2657c1048e56cbc4",
+      "start": "000000",
+      "end": "000000",
+      "type": "SPR frame",
+      "name": "Yellow Mushroom"
+    },
+    {
+      "content": "3918ceb6ddeac3a9",
+      "start": "000000",
+      "end": "000000",
+      "type": "SPR frame",
+      "name": "Yellow Mushroom"
+    },
+    {
+      "content": "b8fdc52b43693428",
+      "start": "000000",
+      "end": "000000",
+      "type": "SPR frame",
+      "name": "Yellow Mushroom"
+    },
+    {
+      "content": "83a8af2224bb2bfd",
+      "start": "000000",
+      "end": "000000",
+      "type": "SPR frame",
+      "name": "Yellow Mushroom"
+    },
+    {
+      "content": "623cc4927f95baa4",
+      "start": "000000",
+      "end": "000000",
+      "type": "SPR frame",
+      "name": "Yellow Mushroom"
+    },
+    {
+      "content": "03c1f7ff362238be",
+      "start": "000000",
+      "end": "000000",
+      "type": "SPR frame",
+      "name": "Yellow Mushroom"
+    },
+    {
+      "content": "488140cd016d6cf4",
+      "start": "000000",
+      "end": "000000",
+      "type": "SPR frame",
+      "name": "Yellow Mushroom"
+    },
+    {
+      "content": "ed76c124c449e219",
+      "start": "000000",
+      "end": "000000",
+      "type": "SPR frame",
+      "name": "Yellow Mushroom"
+    },
+    {
+      "content": "0edb650942df6b17",
+      "start": "000000",
+      "end": "000000",
+      "type": "SPR frame",
+      "name": "Yellow Mushroom"
+    },
+    {
+      "content": "f994959430a568cb",
+      "start": "000000",
+      "end": "000000",
+      "type": "SPR frame",
+      "name": "Yellow Mushroom"
+    },
+    {
+      "content": "a27e373c70a6154d",
+      "start": "000000",
+      "end": "000000",
+      "type": "SPR frame",
+      "name": "Yellow Mushroom"
+    },
+    {
+      "content": "59c14e493b4a21cf",
+      "start": "000000",
+      "end": "000000",
+      "type": "SPR frame",
+      "name": "Mushroom plant"
+    },
+    {
+      "content": "b8642be81f913e44",
+      "start": "000000",
+      "end": "000000",
+      "type": "SPR frame",
+      "name": "Mushroom plant"
+    },
+    {
+      "content": "2358c2c74828dc5a",
+      "start": "000000",
+      "end": "000000",
+      "type": "SPR frame",
+      "name": "Mushroom plant"
+    },
+    {
+      "content": "ab0e8023b5dd4178",
+      "start": "000000",
+      "end": "000000",
+      "type": "SPR frame",
+      "name": "Mushroom plant"
+    },
+    {
+      "content": "74edb9446eb206eb",
+      "start": "000000",
+      "end": "000000",
+      "type": "SPR frame",
+      "name": "Mushroom plant"
+    },
+    {
+      "content": "7c7251e44f132c7a",
+      "start": "000000",
+      "end": "000000",
+      "type": "SPR frame",
+      "name": "Mushroom plant"
+    },
+    {
+      "content": "640d8bdbc4e09a42",
+      "start": "000000",
+      "end": "000000",
+      "type": "SPR frame",
+      "name": "Mushroom plant"
+    },
+    {
+      "content": "28bb9853d2f9d904",
+      "start": "000000",
+      "end": "000000",
+      "type": "SPR frame",
+      "name": "Mushroom plant"
+    },
+    {
+      "content": "d0f521cb649483c6",
+      "start": "000000",
+      "end": "000000",
+      "type": "SPR frame",
+      "name": "Mushroom plant"
+    },
+    {
+      "content": "a5f8be3ffb9ca2bd",
+      "start": "000000",
+      "end": "000000",
+      "type": "SPR frame",
+      "name": "Mushroom plant"
+    },
+    {
+      "content": "7020593344a02020",
+      "start": "000000",
+      "end": "000000",
+      "type": "SPR frame",
+      "name": "Mushroom plant"
+    },
+    {
+      "content": "2cb98fcb1699ce9f",
+      "start": "000000",
+      "end": "000000",
+      "type": "SPR frame",
+      "name": "Mushroom plant"
+    },
+    {
+      "content": "ea5036c4fc1c8109",
+      "start": "000000",
+      "end": "000000",
+      "type": "SPR frame",
+      "name": "Mushroom plant"
+    },
+    {
+      "content": "e1b536ca68b533a9",
+      "start": "000000",
+      "end": "000000",
+      "type": "SPR frame",
+      "name": "Mushroom plant"
+    },
+    {
+      "content": "4be097ad3e022dcd",
+      "start": "000000",
+      "end": "000000",
+      "type": "SPR frame",
+      "name": "Mushroom plant"
+    },
+    {
+      "content": "f8efedcec827fc21",
+      "start": "000000",
+      "end": "000000",
+      "type": "SPR frame",
+      "name": "Mushroom plant"
+    },
+    {
+      "content": "1e39a799223ee176",
+      "start": "000000",
+      "end": "000000",
+      "type": "SPR frame",
+      "name": "Mushroom plant"
+    },
+    {
+      "content": "368df8302e23338d",
+      "start": "000000",
+      "end": "000000",
+      "type": "SPR frame",
+      "name": "Mushroom plant"
+    },
+    {
+      "content": "cb1af01d9d847ca3",
+      "start": "000000",
+      "end": "000000",
+      "type": "SPR frame",
+      "name": "Mushroom plant"
+    },
+    {
+      "content": "1c38109e87c7d0d5",
+      "start": "000000",
+      "end": "000000",
+      "type": "SPR frame",
+      "name": "Mushroom plant"
+    },
+    {
+      "content": "9a83a0fe3f72ad50",
+      "start": "000000",
+      "end": "000000",
+      "type": "SPR frame",
+      "name": "Mushroom plant"
+    },
+    {
+      "content": "5cedd692cffba776",
+      "start": "000000",
+      "end": "000000",
+      "type": "SPR frame",
+      "name": "Mushroom plant"
+    },
+    {
+      "content": "d458423c69321ace",
+      "start": "000000",
+      "end": "000000",
+      "type": "SPR frame",
+      "name": "Mushroom plant"
+    },
+    {
+      "content": "39cecf81e960594c",
+      "start": "000000",
+      "end": "000000",
+      "type": "SPR frame",
+      "name": "Mushroom plant"
+    },
+    {
+      "content": "ce15556a1e20bd97",
+      "start": "000000",
+      "end": "000000",
+      "type": "SPR frame",
+      "name": "Mushroom plant"
+    },
+    {
+      "content": "5d93183a205edd47",
+      "start": "000000",
+      "end": "000000",
+      "type": "SPR frame",
+      "name": "Mushroom plant"
+    },
+    {
+      "content": "3ca6c45cdb79c5fd",
+      "start": "000000",
+      "end": "000000",
+      "type": "SPR frame",
+      "name": "Mushroom plant"
+    },
+    {
+      "content": "519333fd2bdd6c89",
+      "start": "000000",
+      "end": "000000",
+      "type": "SPR frame",
+      "name": "Mushroom plant"
+    },
+    {
+      "content": "2a60979820ab82bd",
+      "start": "6F58",
+      "end": "10B7",
+      "type": "SPR",
+      "name": "Level Sprites, Keyhole, Chests, 1,000 Year Old Man, NPCs"
+    },
+    {
+      "content": "6b8e58cb234e8eee",
+      "start": "01A178",
+      "end": "0003CF",
+      "type": "SEQ",
+      "name": "Death"
+    },
+    {
+      "content": "e6606d8a65dc5ce5",
+      "start": "02A290",
+      "end": "001477",
+      "type": "SPR",
+      "name": "Pig"
+    },
+    {
+      "content": "f0dbc9978d794c4f",
+      "start": "000000",
+      "end": "01AF2B",
+      "type": "WVD",
+      "name": "Masakari Jungle (sound effects)"
+    },
+    {
+      "content": "2534edd57f569407",
+      "start": "000000",
+      "end": "01A2DB",
+      "type": "WVD",
+      "name": "Masakari River (sound effects)"
+    },
+    {
+      "content": "44a4388c74aa6e32",
+      "start": "000000",
+      "end": "02F563",
+      "type": "WVD",
+      "name": "The Village of All Beginnings"
+    },
+    {
+      "content": "145ecae782fe9a1b",
+      "start": "000000",
+      "end": "00C77B",
+      "type": "WVD",
+      "name": "Dwarf Forest (sound effects)"
+    },
+    {
+      "content": "a05b85df0ccb14e1",
+      "start": "000000",
+      "end": "014DCB",
+      "type": "WVD",
+      "name": "Wobbly Warf (sound effects)"
+    },
+    {
+      "content": "2119772f657fd1b7",
+      "start": "000000",
+      "end": "00E30B",
+      "type": "WVD",
+      "name": "Watch Tower (sound effects)"
+    },
+    {
+      "content": "f41599687fc30a08",
+      "start": "000000",
+      "end": "022CF3",
+      "type": "WVD",
+      "name": "Phoenix Mountain (second part)"
+    },
+    {
+      "content": "dd5cb793f77b2df1",
+      "start": "000000",
+      "end": "0319A3",
+      "type": "WVD",
+      "name": "Phoenix Mountain (first part)"
+    },
+    {
+      "content": "5bdb003c3ab5ff78",
+      "start": "000000",
+      "end": "024A03",
+      "type": "WVD",
+      "name": "Lava Caves"
+    },
+    {
+      "content": "60fdeb00f161a736",
+      "start": "000000",
+      "end": "01E6A3",
+      "type": "WVD",
+      "name": "Lava Caves (curse lifted)"
+    },
+    {
+      "content": "c15277e80bc2ba51",
+      "start": "000000",
+      "end": "02DEC3",
+      "type": "WVD",
+      "name": "Haunted Mansion"
+    },
+    {
+      "content": "608a76795036f0d4",
+      "start": "000000",
+      "end": "019F5B",
+      "type": "WVD",
+      "name": "Haunted Mansion (sound effects)"
+    },
+    {
+      "content": "b0d5de60ee478b6b",
+      "start": "000000",
+      "end": "02F503",
+      "type": "WVD",
+      "name": "Haunted Mansion (inside)"
+    },
+    {
+      "content": "3a070daaafd24fd6",
+      "start": "000000",
+      "end": "01F77B",
+      "type": "WVD",
+      "name": "Dwarf Forest (instruments)"
+    },
+    {
+      "content": "788d2fbf7b537a36",
+      "start": "000000",
+      "end": "01DF0B",
+      "type": "WVD",
+      "name": "Haunted Mansion (inside) (sound effects)"
+    },
+    {
+      "content": "7d1f3e22f18c50be",
+      "start": "000000",
+      "end": "02ABA3",
+      "type": "WVD",
+      "name": "Motorcross Course"
+    },
+    {
+      "content": "95060181df6de7a5",
+      "start": "000000",
+      "end": "026063",
+      "type": "WVD",
+      "name": "Baccus Pier"
+    },
+    {
+      "content": "5ee2cdc427d923b6",
+      "start": "000000",
+      "end": "02E8E3",
+      "type": "WVD",
+      "name": "Mushroom Forest"
+    },
+    {
+      "content": "a271af36377eba31",
+      "start": "000000",
+      "end": "01C25B",
+      "type": "WVD",
+      "name": "Masakari Jungle (instruments)"
+    },
+    {
+      "content": "6c852590cbe01600",
+      "start": "000000",
+      "end": "01174B",
+      "type": "WVD",
+      "name": "Lumberjack Factory (instruments)"
+    },
+    {
+      "content": "df5c4647d4f64aae",
+      "start": "000000",
+      "end": "034D33",
+      "type": "WVD",
+      "name": "Iron Castle"
+    },
+    {
+      "content": "e44e4238665ab970",
+      "start": "000000",
+      "end": "000D94",
+      "type": "SEQ",
+      "name": "Trick Village (purified)"
+    },
+    {
+      "content": "614cc6fda183d30f",
+      "start": "000000",
+      "end": "0005A0",
+      "type": "SEQ",
+      "name": "Main Menu"
+    },
+    {
+      "content": "fdc8bebfe5faad0f",
+      "start": "000000",
+      "end": "000E0F",
+      "type": "SEQ",
+      "name": "Settings Menu"
+    },
+    {
+      "content": "58bc3a835616086f",
+      "start": "000000",
+      "end": "0017DA",
+      "type": "SEQ",
+      "name": "Ending"
+    },
+    {
+      "content": "06bde201b17bb010",
+      "start": "000000",
+      "end": "000492",
+      "type": "SEQ",
+      "name": "Dwarf Village (purified)"
+    },
+    {
+      "content": "fb09038be18967c1",
+      "start": "000000",
+      "end": "0022AE",
+      "type": "SEQ",
+      "name": "Y Crossing"
+    },
+    {
+      "content": "ec5bf5b408ab0bdd",
+      "start": "000000",
+      "end": "000ADF",
+      "type": "SEQ",
+      "name": "Mizuno"
+    },
+    {
+      "content": "673d89aa7668c787",
+      "start": "000000",
+      "end": "00193D",
+      "type": "SEQ",
+      "name": "Iron Castle"
+    },
+    {
+      "content": "2dfa4860ec7f2b99",
+      "start": "000000",
+      "end": "00107E",
+      "type": "SEQ",
+      "name": "Clock Tower"
+    },
+    {
+      "content": "1f27bddd2e8829a8",
+      "start": "000000",
+      "end": "00349E",
+      "type": "SEQ",
+      "name": "Real Evil Pig"
+    },
+    {
+      "content": "6b0472c57ff6ce05",
+      "start": "000000",
+      "end": "001BD6",
+      "type": "SEQ",
+      "name": "Evil Pig"
+    },
+    {
+      "content": "7f35004a5f29aa1c",
+      "start": "000000",
+      "end": "0013A5",
+      "type": "SEQ",
+      "name": "Flower Tower"
+    },
+    {
+      "content": "7a9ec4e5c1007f05",
+      "start": "000000",
+      "end": "002127",
+      "type": "SEQ",
+      "name": "Lumberjack Factory"
+    },
+    {
+      "content": "3c3fd86068b64711",
+      "start": "000000",
+      "end": "00089E",
+      "type": "SEQ",
+      "name": "Trick Village (cursed)"
+    },
+    {
+      "content": "eea9f7cf722fcdbf",
+      "start": "000000",
+      "end": "001944",
+      "type": "SEQ",
+      "name": "Dwarf Forest (purified)"
+    },
+    {
+      "content": "bd2aecf5c0ad677b",
+      "start": "000000",
+      "end": "001035",
+      "type": "SEQ",
+      "name": "Dwarf Forest"
+    },
+    {
+      "content": "b122f9126df45866",
+      "start": "000000",
+      "end": "000D18",
+      "type": "SEQ",
+      "name": "100 Year Old Man"
+    },
+    {
+      "content": "23953c861ff2512a",
+      "start": "000000",
+      "end": "00246F",
+      "type": "SEQ",
+      "name": "The Village of All Beginnings"
+    },
+    {
+      "content": "38292ab56ead0685",
+      "start": "000000",
+      "end": "00FBCB",
+      "type": "WVD",
+      "name": "Settings Menu (instruments)"
+    },
+    {
+      "content": "c848cb7428fa5bc5",
+      "start": "000000",
+      "end": "04A6CB",
+      "type": "WVD",
+      "name": "General Sounds"
+    },
+    {
+      "content": "919209fe984c500a",
+      "start": "000000",
+      "end": "01242B",
+      "type": "WVD",
+      "name": "Ending (instruments)"
+    },
+    {
+      "content": "8204b314abf2170a",
+      "start": "000000",
+      "end": "01583B",
+      "type": "WVD",
+      "name": "Masakari Jungle (purified) (instruments)"
+    },
+    {
+      "content": "84dda070091db959",
+      "start": "000000",
+      "end": "02E007",
+      "type": "WPP",
+      "name": "Tomba (side)"
+    },
+    {
+      "content": "d7508d257e3a88ab",
+      "start": "000000",
+      "end": "0018C7",
+      "type": "WPP",
+      "name": "Weapons"
+    },
+    {
+      "content": "a44ca839f199add4",
+      "start": "0018C8",
+      "end": "003247",
+      "type": "SPR",
+      "name": "Tomba (side)"
+    },
+    {
+      "content": "a1fa1d39c36301b3",
+      "start": "48C0",
+      "end": "2CF",
+      "type": "SPR",
+      "name": "Mermaid"
+    },
+    {
+      "content": "e0ae593e0560b5c9",
+      "start": "004B10",
+      "end": "00067B",
+      "type": "SPR",
+      "name": "Red Kokka Bird"
+    },
+    {
+      "content": "104649f8157b42d8",
+      "start": "01054C",
+      "end": "0001F3",
+      "type": "WMD",
+      "name": "Event Cube"
+    },
+    {
+      "content": "21246cc6fde65646",
+      "start": "016A38",
+      "end": "001693",
+      "type": "WMD",
+      "name": "Boomerangs"
+    },
+    {
+      "content": "6d0c5b4c600908c5",
+      "start": "0180CC",
+      "end": "000527",
+      "type": "SEQ",
+      "name": "Event Completed"
+    },
+    {
+      "content": "c2b50ce187211ad4",
+      "start": "0189C4",
+      "end": "00412B",
+      "type": "WFM",
+      "name": "Events"
+    },
+    {
+      "content": "628ac4c8532a939b",
+      "start": "02E008",
+      "end": "014CDB",
+      "type": "WPP",
+      "name": "Red Kokka Bird"
+    },
+    {
+      "content": "9639189f9b66d411",
+      "start": "0",
+      "end": "0",
+      "type": "SPR animation",
+      "name": "test"
+    },
+    {
+      "content": "b910a51b65883acc",
+      "start": "26DA4",
+      "end": "F4B",
+      "type": "SPR",
+      "name": "Pig Caterpillar"
+    },
+    {
+      "content": "d0f0c50fa00368cb",
+      "start": "27CF0",
+      "end": "94B",
+      "type": "SPR",
+      "name": "Dwarves"
+    },
+    {
+      "content": "e2c07e0da081e676",
+      "start": "518C",
+      "end": "8B",
+      "type": "SPR",
+      "name": "Village doorway"
+    },
+    {
+      "content": "11b24a0a6ed16a3e",
+      "start": "5218",
+      "end": "3BF",
+      "type": "SPR",
+      "name": "Baron"
+    },
+    {
+      "content": "8337775b565c9dc5",
+      "start": "55D8",
+      "end": "1C97",
+      "type": "SPR",
+      "name": "Pig, Charles, Villager"
+    },
+    {
+      "content": "51b53ec816381cfb",
+      "start": "7270",
+      "end": "2487",
+      "type": "SPR",
+      "name": "Level sprites, Chests, 100 Year Old Man"
+    },
+    {
+      "content": "38379f6f2cd2235f",
+      "start": "96F8",
+      "end": "4CDB",
+      "type": "SPR",
+      "name": "GUI and SFX"
+    },
+    {
+      "content": "1437bd3e69011943",
+      "start": "E3D4",
+      "end": "2BB",
+      "type": "SPR",
+      "name": "Spiky plants"
+    },
+    {
+      "content": "99d7fd19912900a7",
+      "start": "E690",
+      "end": "1EBB",
+      "type": "SPR",
+      "name": "Cursor"
+    },
+    {
+      "content": "0c38d8c846f7bc0f",
+      "start": "30C8C",
+      "end": "793",
+      "type": "SPR",
+      "name": "Tomba sliding"
+    },
+    {
+      "content": "74ea32180bab77b3",
+      "start": "E3C",
+      "end": "377",
+      "type": "SPR",
+      "name": "Fisherman"
+    },
+    {
+      "content": "5ed44f12ffa05999",
+      "start": "4F5C",
+      "end": "1EDF",
+      "type": "SPR",
+      "name": "Level sprites, Chests, Thief"
+    },
+    {
+      "content": "c064694a5d0e30d5",
+      "start": "348D4",
+      "end": "603",
+      "type": "SPR",
+      "name": "Propeller Bug"
+    },
+    {
+      "content": "0542be86888d282a",
+      "start": "3408",
+      "end": "DB",
+      "type": "SPR",
+      "name": "Yan"
+    },
+    {
+      "content": "71e4294e3e0e0300",
+      "start": "34E4",
+      "end": "3AB",
+      "type": "SPR",
+      "name": "Statue"
+    },
+    {
+      "content": "1e67293a86d9d94f",
+      "start": "0",
+      "end": "11DB",
+      "type": "SPR",
+      "name": "Tomba"
+    },
+    {
+      "content": "609ecb987e1bc09a",
+      "start": "11DC",
+      "end": "2653",
+      "type": "SPR",
+      "name": "Wdarf villagers and village sprites"
+    },
+    {
+      "content": "748299c706772274",
+      "start": "3830",
+      "end": "25F",
+      "type": "SPR",
+      "name": "Chests, Pig Bag, Leaves"
+    },
+    {
+      "content": "52376d7c85288d00",
+      "start": "94C",
+      "end": "2A3",
+      "type": "SPR",
+      "name": "Thief, Hut sprites"
+    },
+    {
+      "content": "e9577cfa11d29a85",
+      "start": "BF0",
+      "end": "327",
+      "type": "SPR",
+      "name": "Chests, pig bag, Gold flower"
+    },
+    {
+      "content": "26de0f87ec5b81eb",
+      "start": "7738",
+      "end": "21B",
+      "type": "SPR",
+      "name": "Small room sprites"
+    },
+    {
+      "content": "ddf394d98a529f15",
+      "start": "7954",
+      "end": "52B",
+      "type": "SPR",
+      "name": "Evil pigs, NPCs"
+    },
+    {
+      "content": "822e7cced58c6e71",
+      "start": "0",
+      "end": "0",
+      "type": "SPR frame",
+      "name": "Dwarf"
+    },
+    {
+      "content": "775757e83b991a1f",
+      "start": "0",
+      "end": "0",
+      "type": "SPR frame",
+      "name": "Pirate"
+    },
+    {
+      "content": "5f6dfa4e33a5cc7e",
+      "start": "0",
+      "end": "0",
+      "type": "SPR frame",
+      "name": "Try again"
+    },
+    {
+      "content": "3787a341e372721b",
+      "start": "0",
+      "end": "0",
+      "type": "SPR frame",
+      "name": "Swirling stars"
+    },
+    {
+      "content": "931d0128455c96c8",
+      "start": "0",
+      "end": "0",
+      "type": "SPR frame",
+      "name": "Swirling stars"
+    },
+    {
+      "content": "90a7f998aebd27cd",
+      "start": "0",
+      "end": "0",
+      "type": "SPR frame",
+      "name": "Swirling stars"
+    },
+    {
+      "content": "bfee69140fb3436d",
+      "start": "0",
+      "end": "0",
+      "type": "SPR frame",
+      "name": "Swirling stars"
+    },
+    {
+      "content": "e9734aa76c844ff8",
+      "start": "0",
+      "end": "0",
+      "type": "SPR frame",
+      "name": "Swirling stars"
+    },
+    {
+      "content": "87ce872cc8ae5862",
+      "start": "0",
+      "end": "0",
+      "type": "SPR frame",
+      "name": "Swirling stars"
+    },
+    {
+      "content": "12a118655316160b",
+      "start": "0",
+      "end": "0",
+      "type": "SPR frame",
+      "name": "Swirling stars"
+    },
+    {
+      "content": "aaab814f6d84dd20",
+      "start": "0",
+      "end": "0",
+      "type": "SPR frame",
+      "name": "Swirling stars"
+    },
+    {
+      "content": "29e6ecd64c43462c",
+      "start": "0",
+      "end": "0",
+      "type": "SPR frame",
+      "name": "Swirling stars"
+    },
+    {
+      "content": "ff37b32186b3269b",
+      "start": "0",
+      "end": "0",
+      "type": "SPR frame",
+      "name": "Swirling stars"
+    },
+    {
+      "content": "7650c3a037360548",
+      "start": "0",
+      "end": "0",
+      "type": "SPR frame",
+      "name": "Swirling stars"
+    },
+    {
+      "content": "b575d9688209f57b",
+      "start": "0",
+      "end": "0",
+      "type": "SPR frame",
+      "name": "Weapon - Grapplejack"
+    },
+    {
+      "content": "be4e9ff4dc3c3907",
+      "start": "0",
+      "end": "0",
+      "type": "SPR frame",
+      "name": ""
+    },
+    {
+      "content": "46c2466e8ab15976",
+      "start": "0",
+      "end": "0",
+      "type": "SPR frame",
+      "name": ""
+    },
+    {
+      "content": "1cbb6fea51329ad6",
+      "start": "0",
+      "end": "0",
+      "type": "SPR frame",
+      "name": ""
+    },
+    {
+      "content": "0544375723dfae97",
+      "start": "0",
+      "end": "0",
+      "type": "SPR frame",
+      "name": "Bomb"
+    },
+    {
+      "content": "b04ea6648d421c72",
+      "start": "0",
+      "end": "0",
+      "type": "SPR frame",
+      "name": ""
+    },
+    {
+      "content": "f1bb6e498ab1e76b",
+      "start": "0",
+      "end": "0",
+      "type": "SPR frame",
+      "name": ""
+    },
+    {
+      "content": "44d4c3601f820d9a",
+      "start": "0",
+      "end": "0",
+      "type": "SPR frame",
+      "name": "GUI frame"
+    },
+    {
+      "content": "87ac9be8800e1d95",
+      "start": "0",
+      "end": "0",
+      "type": "SPR frame",
+      "name": "Cheese"
+    },
+    {
+      "content": "b006474f5e15ad84",
+      "start": "0",
+      "end": "0",
+      "type": "SPR frame",
+      "name": "Number"
+    },
+    {
+      "content": "d2aae00b1fe184e5",
+      "start": "0",
+      "end": "0",
+      "type": "SPR frame",
+      "name": "Weapon - Blackjack"
+    },
+    {
+      "content": "bb42bd3823c90790",
+      "start": "0",
+      "end": "0",
+      "type": "SPR frame",
+      "name": "Dust"
+    },
+    {
+      "content": "269bf9e8e9f46efc",
+      "start": "0",
+      "end": "0",
+      "type": "SPR frame",
+      "name": "Dust"
+    },
+    {
+      "content": "545cee26577c6bb1",
+      "start": "0",
+      "end": "0",
+      "type": "SPR frame",
+      "name": "Umbrella"
+    },
+    {
+      "content": "9348954ebe1cbb4a",
+      "start": "0",
+      "end": "0",
+      "type": "SPR frame",
+      "name": "Grapple"
+    },
+    {
+      "content": "f1c5d801f67df850",
+      "start": "0",
+      "end": "0",
+      "type": "SPR frame",
+      "name": "Wing"
+    },
+    {
+      "content": "f73d40843fd06ab5",
+      "start": "0",
+      "end": "0",
+      "type": "SPR frame",
+      "name": "Wing"
+    },
+    {
+      "content": "088cc322b0983de2",
+      "start": "0",
+      "end": "0",
+      "type": "SPR frame",
+      "name": "Wing"
+    },
+    {
+      "content": "90c5b947105f086b",
+      "start": "0",
+      "end": "0",
+      "type": "SPR frame",
+      "name": "Wing"
+    },
+    {
+      "content": "4f7fe82f15dd0e86",
+      "start": "0",
+      "end": "0",
+      "type": "SPR frame",
+      "name": "Wing"
+    },
+    {
+      "content": "5214aba8ef486274",
+      "start": "0",
+      "end": "0",
+      "type": "SPR frame",
+      "name": "Wing"
+    },
+    {
+      "content": "339c6817d2791e14",
+      "start": "0",
+      "end": "0",
+      "type": "SPR frame",
+      "name": "Wing"
+    },
+    {
+      "content": "e06c950d3f566a6c",
+      "start": "0",
+      "end": "0",
+      "type": "SPR frame",
+      "name": "Wing"
+    },
+    {
+      "content": "1ac665ed47f90b78",
+      "start": "0",
+      "end": "0",
+      "type": "SPR frame",
+      "name": "Wing"
+    },
+    {
+      "content": "8d877b0d2d7ab0a1",
+      "start": "0",
+      "end": "0",
+      "type": "SPR frame",
+      "name": "Wing"
+    },
+    {
+      "content": "183cc02b7aacabb7",
+      "start": "0",
+      "end": "0",
+      "type": "SPR frame",
+      "name": "Wing"
+    },
+    {
+      "content": "045b3f93b00300d8",
+      "start": "0",
+      "end": "0",
+      "type": "SPR frame",
+      "name": "Text"
+    },
+    {
+      "content": "d5d4fa6f21ac7094",
+      "start": "0",
+      "end": "0",
+      "type": "SPR frame",
+      "name": "Text"
+    },
+    {
+      "content": "3be4e5e59907a137",
+      "start": "0",
+      "end": "0",
+      "type": "SPR frame",
+      "name": "Text"
+    },
+    {
+      "content": "536a0c7a79b927af",
+      "start": "0",
+      "end": "0",
+      "type": "SPR frame",
+      "name": "Text"
+    },
+    {
+      "content": "cba6406d6508fbe8",
+      "start": "0",
+      "end": "0",
+      "type": "SPR frame",
+      "name": "Text"
+    },
+    {
+      "content": "b27d0f1006ce92d6",
+      "start": "0",
+      "end": "0",
+      "type": "SPR frame",
+      "name": "GUI frame"
+    },
+    {
+      "content": "1ead35dc81d05180",
+      "start": "17770",
+      "end": "133F",
+      "type": "SPR",
+      "name": "Funga Tribesman"
+    },
+    {
+      "content": "bc9218f16d2ce872",
+      "start": "0",
+      "end": "0",
+      "type": "SPR frame",
+      "name": "Fish"
+    },
+    {
+      "content": "b88c92d1c7318335",
+      "start": "0",
+      "end": "0",
+      "type": "SPR frame",
+      "name": "Fish"
+    },
+    {
+      "content": "56727c06f361bb5c",
+      "start": "0",
+      "end": "0",
+      "type": "SPR frame",
+      "name": "Fish"
+    },
+    {
+      "content": "ed04c8b7842ae6e8",
+      "start": "0",
+      "end": "0",
+      "type": "SPR frame",
+      "name": "Fish"
+    },
+    {
+      "content": "7f96d73898723e27",
+      "start": "0",
+      "end": "0",
+      "type": "SPR frame",
+      "name": "Fish"
+    },
+    {
+      "content": "ac3e6517ccd6d2c8",
+      "start": "0",
+      "end": "0",
+      "type": "SPR frame",
+      "name": "Fish"
+    },
+    {
+      "content": "c202301447d41e95",
+      "start": "0",
+      "end": "0",
+      "type": "SPR frame",
+      "name": "Fish"
+    },
+    {
+      "content": "7dfdeb41e2bf9987",
+      "start": "0",
+      "end": "0",
+      "type": "SPR frame",
+      "name": "Fish"
+    },
+    {
+      "content": "834e50ea2dd6994f",
+      "start": "0",
+      "end": "0",
+      "type": "SPR frame",
+      "name": "Fish"
+    },
+    {
+      "content": "cd52580e22bdd33d",
+      "start": "0",
+      "end": "0",
+      "type": "SPR frame",
+      "name": "Fish"
+    },
+    {
+      "content": "33b02d2b558906b7",
+      "start": "0",
+      "end": "0",
+      "type": "SPR frame",
+      "name": "Fish"
+    },
+    {
+      "content": "e51807859bdeeec5",
+      "start": "0",
+      "end": "0",
+      "type": "SPR frame",
+      "name": "Fish"
+    },
+    {
+      "content": "8b25973fef65ebd5",
+      "start": "0",
+      "end": "0",
+      "type": "SPR frame",
+      "name": "Fish"
+    },
+    {
+      "content": "324cd149602a8670",
+      "start": "0",
+      "end": "0",
+      "type": "SPR frame",
+      "name": "Fish"
+    },
+    {
+      "content": "c2446a7dfed17d13",
+      "start": "0",
+      "end": "0",
+      "type": "SPR frame",
+      "name": "Fish"
+    },
+    {
+      "content": "21ff1f3fac7f4b64",
+      "start": "0",
+      "end": "0",
+      "type": "SPR frame",
+      "name": "Fish"
+    },
+    {
+      "content": "d2e90d5d3608442e",
+      "start": "0",
+      "end": "0",
+      "type": "SPR frame",
+      "name": "Fish"
+    },
+    {
+      "content": "d28f0cb31dc05744",
+      "start": "0",
+      "end": "0",
+      "type": "SPR frame",
+      "name": "Fish"
+    },
+    {
+      "content": "1e9da939ab695896",
+      "start": "0",
+      "end": "0",
+      "type": "SPR frame",
+      "name": "Fish"
+    },
+    {
+      "content": "cf31a0c67129ebd8",
+      "start": "0",
+      "end": "0",
+      "type": "SPR frame",
+      "name": "Fish"
+    },
+    {
+      "content": "151293abe0cc944e",
+      "start": "0",
+      "end": "0",
+      "type": "SPR frame",
+      "name": "Fish"
+    },
+    {
+      "content": "82544836f5827901",
+      "start": "0",
+      "end": "0",
+      "type": "SPR frame",
+      "name": "Fish"
+    },
+    {
+      "content": "cd6f4e19cfa0415c",
+      "start": "0",
+      "end": "0",
+      "type": "SPR frame",
+      "name": "Fish"
+    },
+    {
+      "content": "18a2fbf25e01805f",
+      "start": "0",
+      "end": "0",
+      "type": "SPR frame",
+      "name": "Fish"
+    },
+    {
+      "content": "a6f10ca1042c72a6",
+      "start": "0",
+      "end": "0",
+      "type": "SPR frame",
+      "name": "Fish"
+    },
+    {
+      "content": "ab1123b70a49a45d",
+      "start": "0",
+      "end": "0",
+      "type": "SPR frame",
+      "name": "Fish"
+    },
+    {
+      "content": "39f99d1a79727dca",
+      "start": "0",
+      "end": "0",
+      "type": "SPR frame",
+      "name": "Fish"
+    },
+    {
+      "content": "5e97432d74064027",
+      "start": "0",
+      "end": "0",
+      "type": "SPR frame",
+      "name": "Fish"
+    },
+    {
+      "content": "0852faa9dfdc9972",
+      "start": "0",
+      "end": "0",
+      "type": "SPR frame",
+      "name": "Fish"
+    },
+    {
+      "content": "ff2fa6009e9907f1",
+      "start": "0",
+      "end": "0",
+      "type": "SPR frame",
+      "name": "Fish"
+    },
+    {
+      "content": "c7b81901c3f053d7",
+      "start": "0",
+      "end": "0",
+      "type": "SPR frame",
+      "name": "Fish"
+    },
+    {
+      "content": "9d868722343ed526",
+      "start": "0",
+      "end": "0",
+      "type": "SPR frame",
+      "name": "Fish"
+    },
+    {
+      "content": "65c3e91749500240",
+      "start": "0",
+      "end": "0",
+      "type": "SPR frame",
+      "name": "Fish"
+    },
+    {
+      "content": "dad302e3b2ad3b7e",
+      "start": "0",
+      "end": "0",
+      "type": "SPR frame",
+      "name": "Fish"
+    },
+    {
+      "content": "8c745935d7beccab",
+      "start": "0",
+      "end": "0",
+      "type": "SPR frame",
+      "name": "Fish"
+    },
+    {
+      "content": "1d27478148ff6de8",
+      "start": "0",
+      "end": "0",
+      "type": "SPR frame",
+      "name": "Fish"
+    },
+    {
+      "content": "6cf7f8a26ea31599",
+      "start": "0",
+      "end": "0",
+      "type": "SPR frame",
+      "name": "Fish"
+    },
+    {
+      "content": "41b496a02eacad68",
+      "start": "0",
+      "end": "707",
+      "type": "SPR",
+      "name": "10,000 Year Old Man"
+    },
+    {
+      "content": "5d315698a599e5e6",
+      "start": "3434C",
+      "end": "3D3",
+      "type": "SPR",
+      "name": "Fish"
+    },
+    {
+      "content": "2c5fc1d37613844f",
+      "start": "A7C4",
+      "end": "287",
+      "type": "SPR",
+      "name": "Charles"
+    },
+    {
+      "content": "f81264a2743dcd62",
+      "start": "26224",
+      "end": "17FB",
+      "type": "SPR",
+      "name": "Miner"
+    },
+    {
+      "content": "952278adef414438",
+      "start": "36B58",
+      "end": "B67",
+      "type": "SPR",
+      "name": "Digger, Phoenix"
+    },
+    {
+      "content": "4c2d0082dacb14c7",
+      "start": "3779C",
+      "end": "AFF",
+      "type": "SPR",
+      "name": "Cowboy, Sombrero Man"
+    },
+    {
+      "content": "fd9631df442608b2",
+      "start": "36964",
+      "end": "1F3",
+      "type": "SPR",
+      "name": "Pitcher Plant"
+    },
+    {
+      "content": "28472ae2bb4b0d10",
+      "start": "35D28",
+      "end": "C3B",
+      "type": "SPR",
+      "name": "Needlegator"
+    },
+    {
+      "content": "59bdd7f92cfdcae0",
+      "start": "46EEC",
+      "end": "18AB",
+      "type": "SPR",
+      "name": "Charles, Dwarf, Koma Pig, other NPCs"
+    },
+    {
+      "content": "959abd2428ee2df9",
+      "start": "D188",
+      "end": "F0B",
+      "type": "SPR",
+      "name": "Phoenix Mountain sprites"
+    },
+    {
+      "content": "4dade4315e4fc664",
+      "start": "30CF4",
+      "end": "34F",
+      "type": "SPR",
+      "name": "Chests, Bucket, Droplet"
+    },
+    {
+      "content": "c555ace904bd6fa6",
+      "start": "30488",
+      "end": "86B",
+      "type": "SPR",
+      "name": "Thieves"
+    },
+    {
+      "content": "8baffde17151973f",
+      "start": "2ECB4",
+      "end": "C6B",
+      "type": "SPR",
+      "name": "Devil Koma Pig, Smoke, Portal"
+    },
+    {
+      "content": "9b73a28edf28a30f",
+      "start": "82E8",
+      "end": "923",
+      "type": "SPR",
+      "name": "Kokka Bird (Haunted Mansion)"
+    },
+    {
+      "content": "ea678e2aafe02a59",
+      "start": "3B54",
+      "end": "16B3",
+      "type": "SPR",
+      "name": "Baccus NPCs, Koma Pig"
+    },
+    {
+      "content": "4e8a724f5da7988b",
+      "start": "1504",
+      "end": "1B63",
+      "type": "SPR",
+      "name": "Hidden Village residents"
+    },
+    {
+      "content": "7a1196f566af708a",
+      "start": "0",
+      "end": "327",
+      "type": "SPR",
+      "name": "Chests, Leaf Butterfly, Red Pig Bag"
+    },
+    {
+      "content": "b1540e066a037a7d",
+      "start": "0",
+      "end": "0",
+      "type": "SPR frame",
+      "name": "GUI frame"
+    },
+    {
+      "content": "cadffc69c93d4101",
+      "start": "0",
+      "end": "0",
+      "type": "SPR frame",
+      "name": "GUI frame"
+    },
+    {
+      "content": "6d59d9ab391e16ca",
+      "start": "0",
+      "end": "0",
+      "type": "SPR frame",
+      "name": "GUI frame"
+    },
+    {
+      "content": "8fe6a9ff0d293ee4",
+      "start": "0",
+      "end": "0",
+      "type": "SPR frame",
+      "name": "Bubble"
+    },
+    {
+      "content": "16b83ff0812a0a66",
+      "start": "0",
+      "end": "0",
+      "type": "SPR frame",
+      "name": "Bubble"
+    },
+    {
+      "content": "3c7e2b934a41cddd",
+      "start": "0",
+      "end": "0",
+      "type": "SPR frame",
+      "name": "Bubble"
+    },
+    {
+      "content": "f658239f084e1f26",
+      "start": "0",
+      "end": "0",
+      "type": "SPR frame",
+      "name": "Crystal Pickup"
+    },
+    {
+      "content": "1bc0dd74ab4c8c66",
+      "start": "0",
+      "end": "0",
+      "type": "SPR frame",
+      "name": "Crystal Pickup"
+    },
+    {
+      "content": "5a3ebe51291ac0ed",
+      "start": "0",
+      "end": "0",
+      "type": "SPR frame",
+      "name": "Crystal Pickup"
+    },
+    {
+      "content": "eb20b3aa25648827",
+      "start": "0",
+      "end": "0",
+      "type": "SPR frame",
+      "name": "Crystal Pickup"
+    },
+    {
+      "content": "e62bf39d676149bd",
+      "start": "0",
+      "end": "0",
+      "type": "SPR frame",
+      "name": "10 sprite"
+    },
+    {
+      "content": "573f48d79bf2fd44",
+      "start": "0",
+      "end": "0",
+      "type": "SPR frame",
+      "name": "9 sprite"
+    },
+    {
+      "content": "6e281cafe4074b9a",
+      "start": "0",
+      "end": "0",
+      "type": "SPR frame",
+      "name": "8 sprite"
+    },
+    {
+      "content": "98648333dd9f1889",
+      "start": "0",
+      "end": "0",
+      "type": "SPR frame",
+      "name": "7 sprite"
+    },
+    {
+      "content": "53e754c7fe0d795e",
+      "start": "0",
+      "end": "0",
+      "type": "SPR frame",
+      "name": "6 sprite"
+    },
+    {
+      "content": "e3eab0c7ea9fc433",
+      "start": "0",
+      "end": "0",
+      "type": "SPR frame",
+      "name": "5 sprite"
+    },
+    {
+      "content": "02ca824f738c2f14",
+      "start": "0",
+      "end": "0",
+      "type": "SPR frame",
+      "name": "4 sprite"
+    },
+    {
+      "content": "a74f13298dbbf8b7",
+      "start": "0",
+      "end": "0",
+      "type": "SPR frame",
+      "name": "3 sprite"
+    },
+    {
+      "content": "8b976143a0793fbc",
+      "start": "0",
+      "end": "0",
+      "type": "SPR frame",
+      "name": "2 sprite"
+    },
+    {
+      "content": "f91c62575051ceb5",
+      "start": "0",
+      "end": "0",
+      "type": "SPR frame",
+      "name": "1 sprite"
+    },
+    {
+      "content": "d33f07c81170ebce",
+      "start": "0",
+      "end": "0",
+      "type": "SPR frame",
+      "name": "GUI"
+    },
+    {
+      "content": "3a67d190b7b644e0",
+      "start": "0",
+      "end": "0",
+      "type": "SPR frame",
+      "name": "Hit animation"
+    },
+    {
+      "content": "e59c5ab471c40130",
+      "start": "0",
+      "end": "0",
+      "type": "SPR frame",
+      "name": "Hit animation"
+    },
+    {
+      "content": "2e9dddf81fb8f3f6",
+      "start": "0",
+      "end": "0",
+      "type": "SPR frame",
+      "name": "Hit animation"
+    },
+    {
+      "content": "08d527f65bb5d57e",
+      "start": "0",
+      "end": "0",
+      "type": "SPR frame",
+      "name": "Hit animation"
+    },
+    {
+      "content": "cf7e3a4027716f92",
+      "start": "0",
+      "end": "0",
+      "type": "SPR frame",
+      "name": "Hit animation"
+    },
+    {
+      "content": "251bc53bb9f58e32",
+      "start": "0",
+      "end": "0",
+      "type": "SPR frame",
+      "name": "Hit animation"
+    },
+    {
+      "content": "36a38220b4e4e951",
+      "start": "0",
+      "end": "0",
+      "type": "SPR frame",
+      "name": "Hit animation"
+    },
+    {
+      "content": "9c5b47a5e5654bee",
+      "start": "0",
+      "end": "0",
+      "type": "SPR frame",
+      "name": "Hit animation"
+    },
+    {
+      "content": "d17ec89667049dce",
+      "start": "0",
+      "end": "0",
+      "type": "SPR frame",
+      "name": "Health circular bars"
+    },
+    {
+      "content": "fbbed3fbe9a03e1b",
+      "start": "0",
+      "end": "0",
+      "type": "SPR frame",
+      "name": "Health circular bars"
+    },
+    {
+      "content": "94c1158f6585370f",
+      "start": "0",
+      "end": "0",
+      "type": "SPR frame",
+      "name": "Health circular bars"
+    },
+    {
+      "content": "0ec4d715b8189c8a",
+      "start": "0",
+      "end": "0",
+      "type": "SPR frame",
+      "name": "Health circular bars"
+    },
+    {
+      "content": "24a4f7eb7dfc070f",
+      "start": "0",
+      "end": "0",
+      "type": "SPR frame",
+      "name": "Health circular bars"
+    },
+    {
+      "content": "e6bc96c36ed75a4a",
+      "start": "0",
+      "end": "0",
+      "type": "SPR frame",
+      "name": "Health circular bars"
+    },
+    {
+      "content": "0bced118c55d99cd",
+      "start": "0",
+      "end": "0",
+      "type": "SPR frame",
+      "name": "Health circular bars"
+    },
+    {
+      "content": "6801ffda19930285",
+      "start": "0",
+      "end": "0",
+      "type": "SPR frame",
+      "name": "Health circular bars"
+    },
+    {
+      "content": "4632de339c1bbfd6",
+      "start": "0",
+      "end": "0",
+      "type": "SPR frame",
+      "name": "Health circular bars"
+    },
+    {
+      "content": "3758bd2b6d28687a",
+      "start": "0",
+      "end": "0",
+      "type": "SPR frame",
+      "name": "Health circular bars"
+    },
+    {
+      "content": "d0c943097f437d52",
+      "start": "0",
+      "end": "0",
+      "type": "SPR frame",
+      "name": "Health circular bars"
+    },
+    {
+      "content": "b837cb24895c4483",
+      "start": "0",
+      "end": "0",
+      "type": "SPR frame",
+      "name": "Health circular bars"
+    },
+    {
+      "content": "1bdc884ad55bec53",
+      "start": "0",
+      "end": "0",
+      "type": "SPR frame",
+      "name": "Health circular bars"
+    },
+    {
+      "content": "4e92fcbf396f6fc5",
+      "start": "0",
+      "end": "0",
+      "type": "SPR frame",
+      "name": "Health circular bars"
+    },
+    {
+      "content": "9ef8f71f90c87fda",
+      "start": "0",
+      "end": "0",
+      "type": "SPR frame",
+      "name": "Health circular bars"
+    },
+    {
+      "content": "fb35598d5cc09028",
+      "start": "0",
+      "end": "0",
+      "type": "SPR frame",
+      "name": "Health circular bars"
+    },
+    {
+      "content": "cb8283d620c01cd5",
+      "start": "0",
+      "end": "0",
+      "type": "SPR frame",
+      "name": "Health circular bars"
+    },
+    {
+      "content": "f0054fa60fd9e204",
+      "start": "0",
+      "end": "0",
+      "type": "SPR frame",
+      "name": "Health circular bars"
+    },
+    {
+      "content": "1f532dfa3ff40207",
+      "start": "0",
+      "end": "0",
+      "type": "SPR frame",
+      "name": "Health circular bars"
+    },
+    {
+      "content": "570289449081bc8e",
+      "start": "0",
+      "end": "0",
+      "type": "SPR frame",
+      "name": "Health circular bars"
+    },
+    {
+      "content": "03e86827d809f1a1",
+      "start": "0",
+      "end": "0",
+      "type": "SPR frame",
+      "name": "Health circular bars"
+    },
+    {
+      "content": "0a1346d02df4aa4a",
+      "start": "0",
+      "end": "0",
+      "type": "SPR frame",
+      "name": "Health circular bars"
+    },
+    {
+      "content": "897fa2945e6c7c1f",
+      "start": "0",
+      "end": "0",
+      "type": "SPR frame",
+      "name": "Health circular bars"
+    },
+    {
+      "content": "52f13d9a4736580c",
+      "start": "0",
+      "end": "0",
+      "type": "SPR frame",
+      "name": "Health circular bars"
+    },
+    {
+      "content": "f64a30de68528d4e",
+      "start": "0",
+      "end": "0",
+      "type": "SPR frame",
+      "name": "Numbers"
+    },
+    {
+      "content": "269fa5f1b5e7767b",
+      "start": "0",
+      "end": "0",
+      "type": "SPR frame",
+      "name": "Numbers"
+    },
+    {
+      "content": "10513b037def6869",
+      "start": "0",
+      "end": "0",
+      "type": "SPR frame",
+      "name": "Numbers"
+    },
+    {
+      "content": "60986e031de33b90",
+      "start": "0",
+      "end": "0",
+      "type": "SPR frame",
+      "name": "Numbers"
+    },
+    {
+      "content": "e346c3c5d09daaae",
+      "start": "0",
+      "end": "0",
+      "type": "SPR frame",
+      "name": "Numbers"
+    },
+    {
+      "content": "60d6e8d6bfd867bc",
+      "start": "0",
+      "end": "0",
+      "type": "SPR frame",
+      "name": "Numbers"
+    },
+    {
+      "content": "842647206f705294",
+      "start": "0",
+      "end": "0",
+      "type": "SPR frame",
+      "name": "Numbers"
+    },
+    {
+      "content": "de358c67930bfacc",
+      "start": "0",
+      "end": "0",
+      "type": "SPR frame",
+      "name": "Numbers"
+    },
+    {
+      "content": "b3e708332b1f77b5",
+      "start": "0",
+      "end": "0",
+      "type": "SPR frame",
+      "name": "Numbers"
+    },
+    {
+      "content": "e68f4679b915ee5a",
+      "start": "0",
+      "end": "0",
+      "type": "SPR frame",
+      "name": "Numbers"
+    },
+    {
+      "content": "6a1a073010d8b7c8",
+      "start": "0",
+      "end": "0",
+      "type": "SPR frame",
+      "name": "Numbers"
+    },
+    {
+      "content": "d39827acd27ced26",
+      "start": "0",
+      "end": "0",
+      "type": "SPR frame",
+      "name": "Numbers"
+    },
+    {
+      "content": "3da4d6afe57ad0d2",
+      "start": "0",
+      "end": "0",
+      "type": "SPR frame",
+      "name": "Numbers"
+    },
+    {
+      "content": "2112a0916ecf66df",
+      "start": "0",
+      "end": "0",
+      "type": "SPR frame",
+      "name": "Numbers"
+    },
+    {
+      "content": "2385689eb2fdd228",
+      "start": "0",
+      "end": "0",
+      "type": "SPR frame",
+      "name": "Numbers"
+    },
+    {
+      "content": "203b9d40fe291bfc",
+      "start": "0",
+      "end": "0",
+      "type": "SPR frame",
+      "name": "Numbers"
+    },
+    {
+      "content": "398014c79379db3e",
+      "start": "0",
+      "end": "0",
+      "type": "SPR frame",
+      "name": "Numbers"
+    },
+    {
+      "content": "3f07e3cba46517c9",
+      "start": "0",
+      "end": "0",
+      "type": "SPR frame",
+      "name": "Numbers"
+    },
+    {
+      "content": "807f0948dc9da522",
+      "start": "0",
+      "end": "0",
+      "type": "SPR frame",
+      "name": "Numbers"
+    },
+    {
+      "content": "b72d75005ce2e1d6",
+      "start": "0",
+      "end": "0",
+      "type": "SPR frame",
+      "name": "Numbers"
+    },
+    {
+      "content": "001dd2f27c2c8bb4",
+      "start": "0",
+      "end": "0",
+      "type": "SPR frame",
+      "name": "Numbers"
+    },
+    {
+      "content": "c3c70430d6f19eb8",
+      "start": "0",
+      "end": "0",
+      "type": "SPR frame",
+      "name": "Numbers"
+    },
+    {
+      "content": "0c6dd0e14decb039",
+      "start": "0",
+      "end": "0",
+      "type": "SPR frame",
+      "name": "Numbers"
+    },
+    {
+      "content": "544357738c3c7676",
+      "start": "0",
+      "end": "0",
+      "type": "SPR frame",
+      "name": "Numbers"
+    },
+    {
+      "content": "3e04993546119e53",
+      "start": "0",
+      "end": "0",
+      "type": "SPR frame",
+      "name": "Numbers"
+    },
+    {
+      "content": "f2715476966e56bd",
+      "start": "0",
+      "end": "0",
+      "type": "SPR frame",
+      "name": "Numbers"
+    },
+    {
+      "content": "3d2751dc8f2f597f",
+      "start": "0",
+      "end": "0",
+      "type": "SPR frame",
+      "name": "E"
+    },
+    {
+      "content": "53612f735535d95a",
+      "start": "0",
+      "end": "0",
+      "type": "SPR frame",
+      "name": "1 up pickup"
+    },
+    {
+      "content": "b3f8b0c62795626c",
+      "start": "0",
+      "end": "0",
+      "type": "SPR frame",
+      "name": "Weapon GUI"
+    },
+    {
+      "content": "8695e6a87669508d",
+      "start": "0",
+      "end": "0",
+      "type": "SPR frame",
+      "name": "Weapon GUI"
+    },
+    {
+      "content": "d4567ee441425a0b",
+      "start": "0",
+      "end": "0",
+      "type": "SPR frame",
+      "name": "Weapon GUI"
+    },
+    {
+      "content": "b9ae0764133f31d4",
+      "start": "0",
+      "end": "0",
+      "type": "SPR frame",
+      "name": "0"
+    },
+    {
+      "content": "59c494c93b5522cf",
+      "start": "0",
+      "end": "0",
+      "type": "SPR frame",
+      "name": "Signpost"
+    },
+    {
+      "content": "14de4ea930796c7b",
+      "start": "0",
+      "end": "0",
+      "type": "SPR frame",
+      "name": "Signpost"
+    },
+    {
+      "content": "6d8dcea080e5772e",
+      "start": "0",
+      "end": "0",
+      "type": "SPR frame",
+      "name": "\"?\" bubble"
+    },
+    {
+      "content": "3017b77e17ce2c27",
+      "start": "0",
+      "end": "0",
+      "type": "SPR frame",
+      "name": "\"?\" bubble"
+    },
+    {
+      "content": "49f470e0408447ed",
+      "start": "0",
+      "end": "0",
+      "type": "SPR frame",
+      "name": "Banana"
+    },
+    {
+      "content": "13fcf36749f2ae9a",
+      "start": "0",
+      "end": "0",
+      "type": "SPR frame",
+      "name": "Hit animation"
+    },
+    {
+      "content": "cdfce48b428005e3",
+      "start": "0",
+      "end": "0",
+      "type": "SPR frame",
+      "name": "Hit animation"
+    },
+    {
+      "content": "ba05fd86f840b8ba",
+      "start": "0",
+      "end": "0",
+      "type": "SPR frame",
+      "name": "Hit animation"
+    },
+    {
+      "content": "9ad90bfe626126d4",
+      "start": "0",
+      "end": "0",
+      "type": "SPR frame",
+      "name": "Hit animation"
+    },
+    {
+      "content": "4cf27da28f64e084",
+      "start": "0",
+      "end": "0",
+      "type": "SPR frame",
+      "name": "Hit animation"
+    },
+    {
+      "content": "39179fa90bddf7f4",
+      "start": "0",
+      "end": "0",
+      "type": "SPR frame",
+      "name": "Hit animation"
+    },
+    {
+      "content": "9ee410fba758dd41",
+      "start": "0",
+      "end": "0",
+      "type": "SPR frame",
+      "name": "AP numbers"
+    },
+    {
+      "content": "e2403caddc6e3356",
+      "start": "0",
+      "end": "0",
+      "type": "SPR frame",
+      "name": "AP numbers"
+    },
+    {
+      "content": "c73c47b235279bdd",
+      "start": "0",
+      "end": "0",
+      "type": "SPR frame",
+      "name": "AP numbers"
+    },
+    {
+      "content": "e87fe95f2fa632ae",
+      "start": "0",
+      "end": "0",
+      "type": "SPR frame",
+      "name": "AP numbers"
+    },
+    {
+      "content": "a00d1344ec6b0400",
+      "start": "0",
+      "end": "0",
+      "type": "SPR frame",
+      "name": "AP numbers"
+    },
+    {
+      "content": "c66207dfb5c2ba01",
+      "start": "0",
+      "end": "0",
+      "type": "SPR frame",
+      "name": "AP numbers"
+    },
+    {
+      "content": "916f8f48dc9e791f",
+      "start": "0",
+      "end": "0",
+      "type": "SPR frame",
+      "name": "AP numbers"
+    },
+    {
+      "content": "e37d3ed9cd22922a",
+      "start": "0",
+      "end": "0",
+      "type": "SPR frame",
+      "name": "AP numbers"
+    },
+    {
+      "content": "899136b6910909d2",
+      "start": "0",
+      "end": "0",
+      "type": "SPR frame",
+      "name": "AP numbers"
+    },
+    {
+      "content": "de8f577e7e322cd7",
+      "start": "0",
+      "end": "0",
+      "type": "SPR frame",
+      "name": "AP numbers"
+    },
+    {
+      "content": "e6bf3ffb18430863",
+      "start": "0",
+      "end": "0",
+      "type": "SPR frame",
+      "name": "AP frame"
+    },
+    {
+      "content": "bb934dfc549988f1",
+      "start": "4968",
+      "end": "557",
+      "type": "SPR",
+      "name": "Mizuno"
+    },
+    {
+      "content": "9b6b15e9c2edce74",
+      "start": "4968",
+      "end": "27B",
+      "type": "SPR",
+      "name": "Chests, Central Park sprites"
+    },
+    {
+      "content": "35d1861ea106530d",
+      "start": "4EE4",
+      "end": "C7B",
+      "type": "SPR",
+      "name": "Cursed Baccus Villager Male/Female, Red Fortune Teller"
+    },
+    {
+      "content": "6a9a0b6986c3a0e0",
+      "start": "29F0",
+      "end": "277",
+      "type": "SPR",
+      "name": "Million Year Old Man"
+    },
+    {
+      "content": "5c32a543878099ce",
+      "start": "32C8",
+      "end": "2EB",
+      "type": "SPR",
+      "name": "Hidden Village sprites"
+    },
+    {
+      "content": "2a30a45d41a321b3",
+      "start": "0",
+      "end": "B5B",
+      "type": "SPR",
+      "name": "Village of Civilization sprites, NPCs"
+    },
+    {
+      "content": "7fb9d340870b7f90",
+      "start": "5174",
+      "end": "62B",
+      "type": "SPR",
+      "name": "Clock Tower sprites"
+    },
+    {
+      "content": "315c69691635ecc8",
+      "start": "105D0",
+      "end": "A7B",
+      "type": "SPR",
+      "name": "The Real Evil Pig"
+    },
+    {
+      "content": "6cbdd9b8f6563517",
+      "start": "11028",
+      "end": "767",
+      "type": "SPR",
+      "name": "Haunted Evil Pig"
+    },
+    {
+      "content": "80374fab1bc213ad",
+      "start": "9B9C",
+      "end": "6EB",
+      "type": "SPR",
+      "name": "Deep Jungle Evil Pig"
+    },
+    {
+      "content": "17a8d34e189e9549",
+      "start": "8ADC",
+      "end": "B4F",
+      "type": "SPR",
+      "name": "Forest Evil Pig"
+    },
+    {
+      "content": "6b779b74d557dc07",
+      "start": "8F10",
+      "end": "8B7",
+      "type": "SPR",
+      "name": "Fire Evil Pig"
+    },
+    {
+      "content": "b468637680f5614f",
+      "start": "6878",
+      "end": "6E3",
+      "type": "SPR",
+      "name": "Underwater Evil Pig"
+    },
+    {
+      "content": "863391013cc010fb",
+      "start": "6028",
+      "end": "623",
+      "type": "SPR",
+      "name": "Mouse Evil Pig"
+    },
+    {
+      "content": "3b2c03424010d298",
+      "start": "11754",
+      "end": "647",
+      "type": "SPR",
+      "name": "Stormy Evil Pig"
+    },
+    {
+      "content": "b749c0a1a054aedc",
+      "start": "180A8",
+      "end": "2457",
+      "type": "SPR",
+      "name": "Evil Pig Bag, SFX animations"
+    },
+    {
+      "content": "1ac792040360fab9",
+      "start": "1A500",
+      "end": "853",
+      "type": "SPR",
+      "name": "Evil Pig Level sprites"
+    },
+    {
+      "content": "5958c4e807e9b045",
+      "start": "1694",
+      "end": "2B7",
+      "type": "SPR",
+      "name": "Lumberjack Factory Level sprites"
+    },
+    {
+      "content": "feae75a1bfac00cf",
+      "start": "26750",
+      "end": "973",
+      "type": "SPR",
+      "name": "Bonsugee"
+    },
+    {
+      "content": "73a5bae6dbbffab6",
+      "start": "270C4",
+      "end": "363",
+      "type": "SPR",
+      "name": "Chests, Pig Bag, Bucket, Drum"
+    },
+    {
+      "content": "17884ee6e0e4f1f5",
+      "start": "1B6E4",
+      "end": "1733",
+      "type": "SPR",
+      "name": "Jungle Level Sprites"
+    },
+    {
+      "content": "b3b51d6a9207a4db",
+      "start": "16A58",
+      "end": "AAB",
+      "type": "SPR",
+      "name": "Mushroom Forest Level Sprites"
+    },
+    {
+      "content": "5d3282de5051918a",
+      "start": "0",
+      "end": "537",
+      "type": "SPR",
+      "name": "Mansion Sprites"
+    },
+    {
+      "content": "c8c6025dfd4f8b33",
+      "start": "704",
+      "end": "CF",
+      "type": "SPR",
+      "name": "?"
+    },
+    {
+      "content": "6a5cbaa38cfa9086",
+      "start": "0",
+      "end": "703",
+      "type": "SPR",
+      "name": "Beach sprites"
+    },
+    {
+      "content": "eac8107b7962b56b",
+      "start": "50B1C",
+      "end": "BCF",
+      "type": "SPR",
+      "name": "Laughing/Crying Mushroom"
+    },
+    {
+      "content": "9d1f2a44cf301b75",
+      "start": "0",
+      "end": "3FF",
+      "type": "SPR",
+      "name": "Mermaid, Waves"
+    },
+    {
+      "content": "1de158772726eaf9",
+      "start": "D54",
+      "end": "59B",
+      "type": "SPR",
+      "name": "Motocross Sprites, Letters"
+    },
+    {
+      "content": "9d5ec32883896192",
+      "start": "1C0",
+      "end": "3FF",
+      "type": "SPR",
+      "name": "Koma Pig, Motocross Man"
+    },
+    {
+      "content": "3a04957b20a2a56c",
+      "start": "20B8",
+      "end": "2DF",
+      "type": "SPR",
+      "name": "Baccus Village Overlay"
+    },
+    {
+      "content": "ce3a30dffdf2babc",
+      "start": "4BE4",
+      "end": "2FF",
+      "type": "SPR",
+      "name": "?"
+    },
+    {
+      "content": "a15a10a59a17f9d4",
+      "start": "143C",
+      "end": "A4F",
+      "type": "SPR",
+      "name": "Blue Fortune Teller, Digger"
+    }
+  ],
+  "builds": {
+    "SCUS_942.36": {
+      "name": "Tomba!",
+      "build": "SCUS_942.36",
+      "serial": "SCUS_942.36",
+      "bins": {
+        "('GROUP', 'SYS/LDAR11.BIN', 2)": "",
+        "('GROUP', 'SYS/LDAR06.BIN', 1)": ""
+      },
+      "areas": {},
+      "entries": []
+    },
+    "SCUS_942.36:c45cd788df40a540": {
+      "name": "Tomba!",
+      "build": "SCUS_942.36:c45cd788df40a540",
+      "serial": "SCUS_942.36",
+      "bins": {
+        "('GROUP', 'SYS/LDAR11.BIN', 2)": "",
+        "('GROUP', 'SYS/LDAR06.BIN', 1)": ""
+      },
+      "areas": {},
+      "entries": []
+    }
+  },
+  "migrated_settings": [
+    "\\HKEY_CURRENT_USER\\Software\\TombaEdit\\TombaEdit"
+  ]
+}
