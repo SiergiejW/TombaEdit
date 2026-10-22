@@ -701,6 +701,9 @@ class MainWindow(QMainWindow):
         view = self.menuBar().addMenu("&View")
         self.action(view, "Collapse tree", lambda: self.current_tree().collapseAll())
         self.action(view, "Expand tree", lambda: self.current_tree().expandAll())
+        self.map_action = self.action(view, "Game &map", self.open_game_map)
+        self.map_action.setToolTip('Open the world map used by the Select-menu Map screen.')
+        self.map_action.setEnabled(False)
         themes = self.menuBar().addMenu("&Settings").addMenu("Theme")
         group = QActionGroup(self)
         self.theme_actions = {}
@@ -768,6 +771,8 @@ class MainWindow(QMainWindow):
         self.model_view = ModelView()
         self.tabs.addTab(self.model_view, 'Geometry')
         self.persistent.add(self.model_view)
+        self.map_view = ModelView()
+        self.persistent.add(self.map_view)
         from formats.level.viewer import LevelView
         from formats.models.four_viewer import FourView
         self.level_view = LevelView()
@@ -870,6 +875,54 @@ class MainWindow(QMainWindow):
         self.raw_action.setEnabled(False)
         self.submit(lambda: Project(path), self.opened)
 
+    def open_game_map(self):
+        """Show the dedicated world-map model, with the system screen VRAM.
+
+        SUBMAP.WMD is not ordinary area geometry. LDAR system group 07 loads
+        it together with the artwork and palette used by the pause-menu Map
+        screen, so it must use that group's final VRAM state.
+        """
+        if self.project is None:
+            return
+        assets = self.project.by_source.get('SYSTEM/SUBMAP.WMD', [])
+        asset = next((item for item in assets if item.ldar == 'SYS/LDSYS.BIN' and item.group == 7), None)
+        if asset is None:
+            QMessageBox.information(self, 'Game map',
+                                    'This disc does not provide the SYSTEM/SUBMAP.WMD world-map resource.')
+            return
+        self.statusBar().showMessage('Loading game map...')
+        self.submit(lambda: prepare_preview(self.project, asset, 7), self.game_map_ready)
+
+    def game_map_ready(self, generation, result, error):
+        if generation != self.generation:
+            return
+        if error:
+            QMessageBox.warning(self, 'Game map unavailable', error)
+            self.statusBar().showMessage('Game map unavailable')
+            return
+        meshes, vram = result.get('meshes'), result.get('vram')
+        if not meshes or vram is None:
+            QMessageBox.warning(self, 'Game map unavailable', 'SYSTEM/SUBMAP.WMD did not decode as a map model.')
+            self.statusBar().showMessage('Game map unavailable')
+            return
+        source = result['node']
+        key = labels.content_key(result['data'])
+        def rename(rows, name):
+            for row in rows:
+                self.labels.rename(key, name, kind='World map model', start=meshes[row].offset)
+            self.persist_labels()
+        self.map_view.set_data(meshes, vram, source.code, {0: 'World map'}, rename,
+                               spread=False, label_lookup=lambda _row: self.labels.label_for(key))
+        self.map_view.canvas.stats_label.setText(
+            'Select-menu Map | SYSTEM/SUBMAP.WMD | system group 07 VRAM\n'
+            'F: frame selected | Double-click a row: frame it')
+        self.map_view.canvas.stats_label.adjustSize()
+        existing = self.tabs.indexOf(self.map_view)
+        if existing < 0:
+            existing = self.tabs.addTab(self.map_view, 'Game map')
+        self.tabs.setCurrentIndex(existing)
+        self.statusBar().showMessage('Game map ready')
+
     def opened(self, generation, project, error):
         if generation != self.generation:
             return
@@ -879,6 +932,8 @@ class MainWindow(QMainWindow):
             QMessageBox.warning(self, "Cannot open disc", error)
             return
         self.project = project
+        self.map_action.setEnabled(any(item.ldar == 'SYS/LDSYS.BIN' and item.group == 7
+                                       for item in project.by_source.get('SYSTEM/SUBMAP.WMD', [])))
         self.label_index_epoch += 1
         self.label_pool.clear()
         self.label_index_running = False

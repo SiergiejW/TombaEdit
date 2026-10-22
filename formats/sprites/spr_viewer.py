@@ -377,13 +377,19 @@ class SpriteView(QWidget):
                 # that frame's palette if its own is one the game sets.
                 lender = self.lender.get(index) if index not in self.pages else None
                 own = self.cluts.get(index)
+                vram = self.frame_vrams.get(index, self.frame_vrams.get(lender, self.vram))
+                # A traced object field can resemble a palette address even
+                # when that row was never uploaded by this section. Preserve
+                # a frame's embedded palette instead of using an empty row.
+                # A user-picked override remains explicit and is unaffected.
+                if own is not None and palette_missing(vram, own):
+                    own = None
                 if own is None and lender is not None and self.frames[index] and (
                         all(palette_runtime(part[2]) for part in self.frames[index])
                         or {part[2] for part in self.frames[index]} <= {part[2] for part in self.frames[lender]}):
                     # ...or one the two frames share: an object that brings a
                     # palette of its own draws all its frames through it.
                     own = self.cluts.get(lender)
-                vram = self.frame_vrams.get(index, self.frame_vrams.get(lender, self.vram))
                 if (index not in self.frame_vrams and vram is not self.vram
                         and self.origin_of(lender).startswith('section') and self.frames[index]
                         and same_texels(self.vram, vram, self.frames[index], base, pixels_only=True)
