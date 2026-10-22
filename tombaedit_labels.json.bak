@@ -3358,7 +3358,7 @@
       "start": "20B8",
       "end": "2DF",
       "type": "SPR",
-      "name": "Baccus Village Level Sprites"
+      "name": "Baccus Village Overlay"
     },
     {
       "content": "ce3a30dffdf2babc",
@@ -3373,6 +3373,97 @@
       "end": "A4F",
       "type": "SPR",
       "name": "Blue Fortune Teller, Digger"
+    },
+    {
+      "content": "961ffff881a8e26c",
+      "start": "0",
+      "end": "0",
+      "type": "Object class",
+      "name": "Pickup"
+    },
+    {
+      "content": "80ab3ce793cfb628",
+      "start": "0",
+      "end": "0",
+      "type": "Object class",
+      "name": "Cactus Sprite"
+    },
+    {
+      "content": "0e56846c8f668288",
+      "start": "0",
+      "end": "0",
+      "type": "Object class",
+      "name": "Leaves"
+    },
+    {
+      "content": "22bcbd08b450704e",
+      "start": "0",
+      "end": "0",
+      "type": "Object class",
+      "name": "Cactus Model"
+    },
+    {
+      "content": "50520f51eaf1e7a0",
+      "start": "0",
+      "end": "0",
+      "type": "Object class",
+      "name": "Crystal ball"
+    },
+    {
+      "content": "1c2a32c3c1ec6081",
+      "start": "0",
+      "end": "0",
+      "type": "Object class",
+      "name": "Cottage"
+    },
+    {
+      "content": "0be773449a2e7128",
+      "start": "0",
+      "end": "0",
+      "type": "Object class",
+      "name": "Sprite asset"
+    },
+    {
+      "content": "adf5aa079f0de6c1",
+      "start": "0",
+      "end": "0",
+      "type": "Object class",
+      "name": "Looking glass"
+    },
+    {
+      "content": "42a00565aa470421",
+      "start": "0",
+      "end": "0",
+      "type": "Object class",
+      "name": "Looking glass"
+    },
+    {
+      "content": "ad6a11c98d16f123",
+      "start": "0",
+      "end": "0",
+      "type": "Object class",
+      "name": "Droplet"
+    },
+    {
+      "content": "69f1396cd8f54787",
+      "start": "0",
+      "end": "0",
+      "type": "Object class",
+      "name": "Mysterious Slab"
+    },
+    {
+      "content": "22de18af8ade75b4",
+      "start": "0",
+      "end": "0",
+      "type": "Object class",
+      "name": "Wave"
+    },
+    {
+      "content": "1eb0b4a6db441706",
+      "start": "0",
+      "end": "0",
+      "type": "Object class",
+      "name": "Sea backgorund"
     }
   ],
   "builds": {
