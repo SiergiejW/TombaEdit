@@ -363,9 +363,12 @@ entries. Routine 8003A614 unpacks an entry: a flag byte covers the next eight
 items, low bit first; a clear bit copies one byte, a set bit reads a count
 and a value and repeats the value. The result is a 16-bit width in VRAM
 words, a 16-bit height and 4-bit pixels, which 8003B0D4 uploads to the page
-slot reserved for Tomba whenever his frame number changes. The SPR bank in
-slot 0 has one frame per picture of the bank in WPP slot 0, and SPR slot 5
-pairs with WPP slot 2.
+slot reserved for Tomba whenever his frame number changes: the top of
+texture page 0, two buffers 16 VRAM words wide side by side, the picture one
+word and four rows in from a buffer's corner. Other banks draw pieces of
+him from there, as the village doorway does in grey. The SPR bank in slot 0
+has one frame per picture of the bank in WPP slot 0, and SPR slot 5 pairs
+with WPP slot 2.
 
 WPP is not the only sprite pixel source. Kokka uses the packed pictures in
 slot 2; many other sprites use pixels already resident in section VRAM.
@@ -376,7 +379,12 @@ These are preview and export choices, without modifying disc data.
 
 WPP slot 3 holds GAM-compressed TIM images behind a bare offset table. In
 the 1997 builds a bank can also be one TIM on its own, neither packed nor
-indexed.
+indexed. A section that starts loads the first TIM with the game's TIM
+loader (800174FC in the European build), which puts its 128 x 80 pixels at
+VRAM (32, 0), beside Tomba's buffers, and its five palette rows at
+(128, 495), whatever the TIM's header says: effect art and the grey ramp
+other sprites borrow. The town sections checked in the emulator (Baccus
+Village and area 19) do not load it.
 
 ## WHM
 

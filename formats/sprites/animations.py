@@ -225,51 +225,6 @@ def table_siblings(memory, starts, frame_count):
     return found
 
 
-def setup_records(memory, slot, frame_count):
-    """{frame: page base} from the object setup records that name SPR
-    `slot`. A record is twelve bytes: a hit box, the page base and the slot
-    (two halfwords) and a pointer to the object's animation list; the
-    object's routine copies the base to the object's +1E and starts on an
-    entry of the list (US routine 8005788C reads them by subtype for the
-    people scripts create). The list runs until an entry is not a script of
-    this bank, another record's list begins or its own scripts do."""
-    candidates = []
-    for name, base, data in memory.regions:
-        count = len(data) // 4
-        words = np.frombuffer(data[:count * 4], '<u4').astype(np.int64)
-        if count < 3:
-            continue
-        middle, pointer = words[1:-1], words[2:]
-        hits = np.nonzero(((middle >> 16) == slot) & ((middle & 0xFFFF) < 0x200) & ((pointer & 3) == 0)
-                          & (pointer >= 0x80000000))[0]
-        candidates += [(int(middle[i] & 0xFFFF), int(pointer[i])) for i in hits if memory.inside(int(pointer[i]), 4)]
-    starts = {pointer for _, pointer in candidates}
-    found = {}
-    for page, pointer in candidates:
-        scripts, cell = [], pointer
-        while len(scripts) < 64 and memory.inside(cell, 4) and (cell == pointer or cell not in starts):
-            script = read_script(memory, memory.u32(cell), frame_count)
-            if script is None or (scripts and cell >= min(s.address for s in scripts)):
-                break
-            scripts.append(script)
-            cell += 4
-        for script in scripts:
-            for frame in script.frames:
-                found.setdefault(frame, page)
-    return found
-
-
-def listed_scripts(memory, start, frame_count):
-    """{address: Script}: the script at `start` and the others of the
-    animation list it belongs to (table_siblings())."""
-    found = {}
-    for address in [start, *table_siblings(memory, {start}, frame_count)]:
-        script = read_script(memory, address, frame_count)
-        if script is not None:
-            found[address] = script
-    return found
-
-
 # Scratchpad words holding the loaded SPR banks by slot.
 SPR_SLOTS = 0x1F8002C8
 

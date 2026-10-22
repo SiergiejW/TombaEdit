@@ -18,7 +18,7 @@ from PyQt6.QtWidgets import (QWidget, QVBoxLayout, QHBoxLayout, QLabel, QSpinBox
 from gui.widgets.image_view import ImageView, file_stem
 from gui.widgets.sheet_layout import SpacingControls
 from gui.widgets.columns import adjustable, elide_at_view_edge
-from game.labels import content_key
+from game.labels import sprite_frame_key
 from formats.images.vram_viewer import VramView
 from disc.reader import FormatError
 from psx.graphics import render_sprite, part_page, guess_page, palette_missing, palette_runtime, same_texels
@@ -241,11 +241,8 @@ class SpriteView(QWidget):
         self.entry_flags.fill(range(len(self.frames)))
 
     def frame_key(self, index):
-        """What a frame's label is kept under: a hash of its part records,
-        so the same frame in another bank carries the same name. A frame
-        with no parts has nothing to tell it by and cannot be named."""
-        frame = self.frames[index]
-        return content_key(repr([tuple(part) for part in frame]).encode()) if frame else ''
+        """What a frame's label is kept under (game.labels.sprite_frame_key)."""
+        return sprite_frame_key(self.frames[index])
 
     def label(self, index):
         key = self.frame_key(index)

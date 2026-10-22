@@ -41,6 +41,42 @@ TOMBA_CLUT = (128, 480)
 # 7009/7049 or 7C0C/7C4C, follow the same pattern but are never drawn.
 TOMBA_OUTFIT = (0, 1)
 
+# Where 8003B0D4 uploads Tomba's current picture: the top of texture page 0,
+# two buffers 16 VRAM words wide side by side, drawn alternately. A picture
+# goes one word and four rows in from a buffer's corner.
+PLAYER_BUFFERS = ((0, 0), (16, 0))
+PLAYER_BUFFER = (16, 64)
+PLAYER_PICTURE = (1, 4)
+
+
+def reads_player_buffer(vram, parts, base):
+    """True when these parts, drawn with page base `base`, read only the
+    picture buffers of page 0 and VRAM holds nothing there: they show pieces
+    of Tomba's current picture."""
+    from psx.graphics import part_page
+    words, rows = PLAYER_BUFFER
+    for part in parts:
+        page = part_page(part, base)
+        if page & 31 or page >> 7 & 3:
+            return False
+        us, vs = (part[0], part[3], part[7], part[11]), (part[1], part[4], part[8], part[12])
+        if max(us) // 4 >= words * len(PLAYER_BUFFERS) or min(vs) > rows:
+            return False
+    return not vram[:rows, :words * len(PLAYER_BUFFERS)].any()
+
+
+def with_player_picture(vram, picture):
+    """A copy of `vram` with `picture` uploaded to both of Tomba's buffers."""
+    out = vram.copy()
+    indices = picture.indices.astype(np.uint16)
+    height, width = indices.shape
+    width -= width % 4
+    words = indices[:, 0:width:4] | indices[:, 1:width:4] << 4 | indices[:, 2:width:4] << 8 | indices[:, 3:width:4] << 12
+    dx, dy = PLAYER_PICTURE
+    for x, y in PLAYER_BUFFERS:
+        out[y + dy:y + dy + height, x + dx:x + dx + words.shape[1]] = words
+    return out
+
 
 @dataclass
 class Picture:

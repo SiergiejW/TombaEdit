@@ -209,6 +209,14 @@ GTE interpreter taken from Tombi-Decomp. Blended pixels are shown
 half transparent; additive and subtractive blending can only be approached
 that way.
 
+A section creates every record of its own APD list and, from the other lists
+it has loaded, the records whose section byte names it, or names the section
+before it with the bit pattern inverted (a record kept for two sections).
+Exact copies of its own records are the same objects. Sections whose load
+list is empty (some of the castle's and mansion's rooms) are entered through
+a door and keep what the section before loaded; where they also read that
+section's placement list they are shown as that section.
+
 Objects that no list places are traced too. Each section has a short list
 of controllers in the executable that set it up when it starts; they are
 run, and what they and the placed objects spawn while being traced is added
@@ -228,7 +236,8 @@ instance, come from a controller).
   behave as distant scenery: sliding the view sideways makes each drift by
   its own fraction, turning the camera carries the backdrop across, looking
   up or down shows more of it, and moving towards the level leaves it still.
-  Looping scenery repeats. Interiors and
+  Looping scenery repeats. Backdrop objects that only update once the
+  camera is near or past them are measured from there. Interiors and
   other sections with a fixed picture behind them show it in place, with
   their foreground pieces over it. Behind all of it the view is cleared to
   the colour at the top edge of the scenery, standing in for the game's own
@@ -241,13 +250,28 @@ instance, come from a controller).
   and orientation come from the section's tables in the executable.
 - **Town Map** applies to towns such as Dwarf Village, which are a single
   pre-rendered picture rather than geometry. The picture is the backdrop of
-  the scene and placements are positions on it. The toggle tints it by the
+  the scene. Placements are pixel positions, with the picture's top left
+  corner at (-129, 39): there the overlay sprites, which repeat parts of the
+  picture to draw them in front of characters, cover exactly those parts, as
+  they do in the running game. The toggle tints it by the
   town's map of 8 × 8 pixel cells, one colour per cell value, with the values
   that have bit 7 set in blue. **Collision** outlines the same map: green
   around the walkable ground, magenta between cells of different values.
   Town characters are created by the towns' controllers and scripts rather
   than by placement records; they are listed as spawned objects and event
   previews.
+- The **Class** column lists each object's APD layer and type, the class's
+  name, and in brackets the label of the first labelled sprite frame the
+  object shows. Right-click objects and choose **Rename class...** (or press
+  F2) to name their class; **Clear class label** returns it
+  to the built-in name. Only the class label changes, sprite labels stay as
+  they are. A class whose routine is the same in every area (in the
+  executable or the start every area overlay shares) has one name for all
+  areas; an area's own class is named per area. Class names are kept in the
+  same labels file as everything else.
+- An object placed more than a screen above all of the section's collision
+  and level geometry at its X says so in its details, as area 10's three
+  pickups at (172, -833) do; the running game has them at that place too.
 - *Show* limits the scene to geometry, models, sprites, spawned objects,
   event previews or unresolved objects, and *Open asset* jumps to any
   resource the group loads.
@@ -266,12 +290,16 @@ out for each sprite, and the **Page from** column says how:
 | Page from | The page base comes from |
 | --- | --- |
 | object | an object placed in the section chosen for VRAM, which starts out showing the sprite |
-| object code | an animation that such an object's code goes on to play, or another script of the animation list its first script belongs to |
+| object code | an animation that such an object's code goes on to play; where the sprite's parts are most like those of a sprite another object is placed showing, as when an object creates another and starts its animation, that object's page and palette |
 | section NN | an object placed in another section that loads the same bank, under any record or slot (*code*: an animation its code goes on to play, for the same record only); the sprite is drawn with that section's textures |
 | item table | the item descriptors in the executable |
 | texture and palette uploads | the page where the section's uploads put the bank's art |
-| routine | the routine of an object nothing places (a splash, a burst), run on a made-up object, or a routine that creates objects, run as if a made-up object called it; the other scripts of such an object's animation list share its page |
+| routine | the routine of an object nothing places (a splash, a burst), run on a made-up object, or a routine that creates objects, run as if a made-up object called it |
+| town code | the town overlay's records for the characters it creates: a page and a list of animations each |
+| system screen code | the code of the system screen chosen for VRAM (*page*: a sprite its code does not name, on the traced page that shows the most of it) |
 | area NN | an object placed in another area that loads the same bank, or with *routine* the routine of one; the sprite is drawn with that area's textures where this section's differ |
+| …, area NN textures | the page as before, drawn with another area's textures: those most areas that load the bank have there where this area has put art of its own over them, or, for a sprite on a part of the bank's sheet no object here shows, those of an area that holds the same pixels as this one for what objects here do show and whose objects are placed showing that part of the sheet on that page |
+| …, Tomba's picture | the sprite reads the two buffers at the top of texture page 0 that Tomba's current picture is uploaded to; his first picture stands in, with the palette the bank's other such sprites are given |
 | borrowed | the nearest sprite whose page is known and whose palette is in the same column of VRAM, one an object of the area is placed showing first; drawn with that sprite's textures, or with this section's palettes where it holds the same pixels as another section's |
 | guess | nothing in any area that loads the bank shows it: the base that leaves the fewest empty pixels |
 
@@ -282,8 +310,13 @@ loads, and routines are run in a few of those areas only.
 
 A bank that only a system screen reads, such as the menu's, is drawn from
 that screen's pictures: the VRAM list then ends with the system load groups
-whose code reads the bank, and the bank opens on the one that loads the most
-pictures.
+whose code reads the bank, and the bank opens on the first of them. A screen
+whose code reads the bank's slot but sets up none of its sprites, as event
+scenes do with the characters of the area, draws it as the area does.
+
+A bank that nothing in its area shows, only loads, and whose palettes are
+mostly missing there is drawn as the section of another area that loads the
+same bytes and shows the most of it.
 
 **Sprite bounds** draws a box around every sprite and **Part bounds**
 outlines the parts it is assembled from, one colour per part. Both apply to

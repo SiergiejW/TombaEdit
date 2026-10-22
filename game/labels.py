@@ -93,6 +93,19 @@ def content_key(data):
     return hashlib.sha256(data).hexdigest()[:HASH_LENGTH]
 
 
+def sprite_frame_key(parts):
+    """What a SPR frame's label is kept under: a hash of its part records,
+    so the same frame in another bank carries the same name. A frame with
+    no parts has nothing to tell it by and cannot be named."""
+    return content_key(repr([tuple(part) for part in parts]).encode()) if parts else ''
+
+
+def class_key(area, layer, kind, shared):
+    """What an object class's label is kept under. A class whose routine
+    every area shares is one entry; an area's own class is one per area."""
+    return content_key(f'object class {"shared" if shared else area} {layer}:{kind:02X}'.encode())
+
+
 class LabelError(ValueError):
     """Raised when a file doesn't read as a labels file."""
 

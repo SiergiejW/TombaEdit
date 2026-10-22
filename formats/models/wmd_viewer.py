@@ -331,7 +331,8 @@ class MeshCanvas(CameraEventMixin, QOpenGLWidget):
             order = [(None, i) for i in self.flat_order]
         else:
             order = [(False, i) for i in range(len(self.meshes))] + [
-                (True, i) for i, mesh in enumerate(self.meshes) if any(key[2] for key in mesh.batches)]
+                (True, i) for i, mesh in enumerate(self.meshes)
+                if any(key[2] for key in mesh.batches) or getattr(mesh, 'blend_layers', None)]
         for blended, i in order:
             mesh = self.meshes[i]
             if i not in self.visible:
@@ -352,22 +353,29 @@ class MeshCanvas(CameraEventMixin, QOpenGLWidget):
                 gl.glDisable(gl.GL_CULL_FACE)
             # A semi-transparent textured primitive is two layers: the
             # texels flagged for blending, and the rest of it drawn solid.
+            # A sprite the game draws partly blended carries its solid
+            # texels and one picture per blend mode; each is drawn over the
+            # same card, the blended ones with their own blend.
+            layered = getattr(mesh, 'blend_layers', None) if self.transparency and self.textured else None
             jobs = []
             for (page, clut, semi), arrays in mesh.batches.items():
                 semi = semi and self.transparency
                 split = semi and self.textured and page >= 0 and mesh.image is None
                 layers = ((None,) if not semi else ('solid', 'blend') if split else ('blend',))
-                jobs += [(page, clut, layer, arrays) for layer in layers
+                image = mesh.solid_image if layered else mesh.image
+                jobs += [(page, clut, layer, arrays, image) for layer in layers
                          if blended is None or (layer == 'blend') == blended]
-            for page, clut, layer, (vertices, uv, colors) in jobs:
+                if layered and blended is not False:
+                    jobs += [(mode << 5, clut, 'blend', arrays, picture) for mode, picture in layered]
+            for page, clut, layer, (vertices, uv, colors), image in jobs:
                 semi = layer == 'blend'
                 if semi:
                     self.blend(gl, page)
-                use_texture = self.textured and (page >= 0 or mesh.image is not None)
+                use_texture = self.textured and (page >= 0 or image is not None)
                 if use_texture:
-                    key = ('image', id(mesh.image)) if mesh.image is not None else (page, clut, layer)
+                    key = ('image', id(image)) if image is not None else (page, clut, layer)
                     if key not in self.textures:
-                        im = mesh.image if mesh.image is not None else texture_page(
+                        im = image if image is not None else texture_page(
                             self.vram, page, clut, flagged=None if layer is None else layer == 'blend')
                         tex = int(gl.glGenTextures(1))
                         self.textures[key] = tex

@@ -350,10 +350,15 @@ def _texels(vram, tpage, clut, cache):
     return cache[key]
 
 
-def render(prims, vram):
+def render(prims, vram, layer=None):
     """(RGBA image, left, top) of primitives over nothing; left and top are
     the image's offset from the object's position. None when nothing is
-    drawn."""
+    drawn.
+
+    `layer` picks part of the picture: 'solid' for the texels drawn as they
+    are, or a blend mode (0 to 3) for the texels blended that way, as their
+    own colour, to be blended with the scene behind. By default blended
+    texels are mixed with what the sprite itself draws under them."""
     from PIL import Image
     if not prims:
         return None
@@ -370,12 +375,17 @@ def render(prims, vram):
         covered = np.zeros((height, width), bool)
         for tri in ((0, 1, 2), (1, 2, 3)):
             _triangle(canvas, prim, [corners[k] for k in tri],
-                      [prim.uv[k] for k in tri] if prim.textured else None, vram, cache, covered)
+                      [prim.uv[k] for k in tri] if prim.textured else None, vram, cache, covered, layer)
     image = Image.fromarray(np.clip(canvas, 0, 255).astype(np.uint8), 'RGBA')
     return image, left, top
 
 
-def _triangle(canvas, prim, xy, uv, vram, cache, covered=None):
+def blend_modes(prims):
+    """The blend modes some of these primitives are drawn with."""
+    return sorted({prim.mode for prim in prims if prim.blend})
+
+
+def _triangle(canvas, prim, xy, uv, vram, cache, covered=None, layer=None):
     (x0, y0), (x1, y1), (x2, y2) = xy
     area = (x1 - x0) * (y2 - y0) - (x2 - x0) * (y1 - y0)
     if area == 0:
@@ -417,6 +427,12 @@ def _triangle(canvas, prim, xy, uv, vram, cache, covered=None):
             rgb = np.clip(rgb * (np.array(prim.colour, np.float32) / 128), 0, 255)
         blended = solid & bool(prim.blend) & (words >> 15 == 1)
     region = canvas[lo_y:hi_y, lo_x:hi_x]
+    if layer is not None:
+        shown = solid & ~blended if layer == 'solid' else blended if prim.mode == layer else None
+        if shown is not None:
+            region[..., :3][shown] = rgb[shown]
+            region[..., 3][shown] = 255
+        return
     back = region[..., :3].astype(np.int16) >> 3
     front = rgb.astype(np.int16) >> 3
     if prim.mode == 0:

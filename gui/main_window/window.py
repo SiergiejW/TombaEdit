@@ -203,7 +203,7 @@ def prepare_preview(project, node, context=None):
     return result
 
 
-def _prepare_preview(project, node, context=None):
+def _prepare_preview(project, node, context=None, delegated=False):
     result = {"node": node, "notes": [], "data": None, "preview_context": context}
     if isinstance(node, tuple):
         _, path, index = node
@@ -231,7 +231,15 @@ def _prepare_preview(project, node, context=None):
                 elif context is None and first is not None:
                     screen = screens[first]
                 if screen is not None:
-                    context = 0
+                    from formats.sprites.screens import screen_bank
+                    if screen_bank(project, node.ldar, screen, (node.code >> 8) & 15, sprite_frames(data))[1]:
+                        context = 0
+                    else:
+                        # Event code that reads the slot without setting up
+                        # any of its frames draws what the area loaded.
+                        result['notes'].append(f'System screen {screen} sets up none of these frames; '
+                                               'they are drawn as the area shows them.')
+                        screen = context = None
             context = node.group if context is None else context
             if node.kind in ('SPR', 'WPP') and context == 0 and len(project.ldars[node.ldar]) > 1 and screen is None:
                 context = 1
@@ -254,13 +262,30 @@ def _prepare_preview(project, node, context=None):
                 from formats.sprites.screens import screen_bank
                 slot = (node.code >> 8) & 15
                 vram, pages, cluts = screen_bank(project, node.ldar, screen, slot, frames)
-                result.update(vram=vram, sprite_pages=pages, sprite_cluts=cluts,
-                              sprite_origins={i: 'system screen code' for i in pages},
+                origins = {i: 'system screen code' for i in pages}
+                pages = dict(pages)
+                # The screen's objects step through frames its code does not
+                # name; each such frame takes the traced page that shows the
+                # most of it.
+                from psx.graphics import render_sprite
+
+                def opaque(parts, base):
+                    try:
+                        return sum(render_sprite(parts, vram, tpage=base, grey_missing=True).getchannel('A').histogram()[1:])
+                    except FormatError:
+                        return 0
+                bases = sorted(set(pages.values()))
+                for i, frame in enumerate(frames):
+                    if frame and i not in pages and bases:
+                        best = max(bases, key=lambda base: opaque(frame, base))
+                        if opaque(frame, best):
+                            pages[i], origins[i] = best, 'system screen page'
+                result.update(vram=vram, sprite_pages=pages, sprite_cluts=cluts, sprite_origins=origins,
                               sprite_names={}, sprite_vrams={}, sprite_default=next(iter(pages.values()), 1),
                               sprite_unavailable={i for i, frame in enumerate(frames) if frame and i not in pages})
                 result['notes'].append(f'System screen {screen}: pages and palettes traced from its code. '
-                                      'Frames not initialized by this screen are listed without a guessed image. '
-                                      'Choose another screen, or set a texture page and palette manually to inspect them.')
+                                      'Frames its code does not name take the traced page that shows the most of them; '
+                                      'frames no traced page shows are listed without a guessed image.')
                 return result
             from formats.level.runtime import table_pages
             slot = (node.code >> 8) & 15
@@ -363,6 +388,24 @@ def _prepare_preview(project, node, context=None):
             for frame, page, index, word in deferred:
                 if frame not in result['sprite_pages']:
                     from_section(frame, page, index, word, True)
+            # A bank nothing of this area shows, only loaded, and whose
+            # palettes the area does not load either, is drawn as the area
+            # whose objects or routines show it draws it.
+            from psx.graphics import palette_missing
+            if not delegated and slot and not any(origins.get(i, 'object') != 'item table'
+                                                  for i in result['sprite_pages']) \
+                    and sum(any(palette_missing(result['vram'], part[2]) for part in frame)
+                            for frame in frames if frame) * 2 > sum(1 for frame in frames if frame):
+                from formats.sprites.shared import showing_area
+                found = showing_area(project, node, data)
+                if found is not None:
+                    other, section = found
+                    shown = _prepare_preview(project, other, section, delegated=True)
+                    shown.update(node=node, data=data, size=len(data), preview_context=context)
+                    shown['notes'].insert(0, f'Nothing in this area shows this bank. It is drawn as '
+                                             f'{other.ldar} section {section - 1:02d}, which loads the same bank, '
+                                             'shows it.')
+                    return shown
             # A frame this section does not place may be placed, with a
             # palette of its object's own, in another section of the area.
             from psx.graphics import palette_missing
@@ -408,14 +451,19 @@ def _prepare_preview(project, node, context=None):
             if town is not None and slot == town.bank:
                 result['sprite_pages'].update(town.pages)
                 result['sprite_cluts'].update(town.cluts)
-            elif not result['sprite_pages'] and executable(project, node.ldar) is not None:
+            elif executable(project, node.ldar) is not None and not any(
+                    origins.get(i, 'object').startswith(('object', 'section')) for i in result['sprite_pages']):
                 # A bank nothing places: the characters a town overlay spawns.
+                # What routines and the item table say stays.
                 from formats.level.town import character_pages
                 known = executable(project, node.ldar)
                 overlay = next((a for a in loaded if a.kind == 'INS'), None)
                 if overlay is not None:
-                    result['sprite_pages'] = character_pages(project.asset_data(overlay), known.build.overlay,
-                                                             slot, len(frames))
+                    for frame, page in character_pages(project.asset_data(overlay), known.build.overlay,
+                                                       slot, len(frames)).items():
+                        if frame not in result['sprite_pages']:
+                            result['sprite_pages'][frame] = page
+                            origins[frame] = 'town code'
             # What nothing in this area shows may be shown in another area
             # that loads the same bank. Such frames are drawn with that
             # area's textures unless this section holds the same pixels.
@@ -433,8 +481,15 @@ def _prepare_preview(project, node, context=None):
                        and not placed & {part[2] & 0x7FFF for part in frame}]
             if unknown and slot:
                 from formats.sprites.shared import other_areas
+                # Pages a section group uploads along with the bank hold the
+                # bank's own art in this area.
+                own_pages = {column + row * 16
+                             for a in (groups[node.group].assets if node.group else ()) if a.rect
+                             for column in range(a.rect[0] // 64, (a.rect[0] + a.rect[2] - 1) // 64 + 1)
+                             for row in range(a.rect[1] // 256, (a.rect[1] + a.rect[3] - 1) // 256 + 1)}
                 elsewhere = other_areas(project, node, data, frames, unknown, result['vram'],
-                                        [i for i in unknown if columns & {part[2] & 63 for part in frames[i]}])
+                                        [i for i in unknown if columns & {part[2] & 63 for part in frames[i]}],
+                                        own_pages)
                 for frame, (page, word, vram, origin, names) in elsewhere.items():
                     result['sprite_pages'][frame] = page
                     origins[frame] = origin
@@ -451,10 +506,63 @@ def _prepare_preview(project, node, context=None):
                 from formats.sprites.shared import common_textures
                 weak = {i: page for i, page in result['sprite_pages'].items() if i not in result['sprite_vrams']
                         and not origins.get(i, 'object').startswith(('object', 'section'))}
-                for frame, (vram, area) in common_textures(project, node, data, frames, weak,
-                                                           result['sprite_cluts'], result['vram']).items():
+                # So is a frame nothing shows whose parts lie on pages of the
+                # bank's sheet that no frame an object here shows uses.
+                sheet = {part[5] | part[6] << 8 for i, page in result['sprite_pages'].items()
+                         if i < len(frames) and origins.get(i, 'object').startswith(('object', 'section'))
+                         for part in frames[i]}
+                from formats.sprites.shared import same_sheet
+                shown = {i: page for i, page in result['sprite_pages'].items() if i < len(frames) and frames[i]
+                         and i not in result['sprite_vrams']
+                         and origins.get(i, 'object').startswith(('object', 'section'))}
+
+                def lender(i):
+                    """The page the viewer borrows for a frame: the nearest
+                    shown frame's with a palette in the same VRAM column."""
+                    columns = {part[2] & 63 for part in frames[i]}
+                    same = [k for k in shown if columns & {part[2] & 63 for part in frames[k]}] or list(shown)
+                    return shown[min(same, key=lambda k: abs(k - i))]
+                unshown = {i: lender(i) for i, frame in enumerate(frames)
+                           if frame and sheet and shown and i not in result['sprite_pages']
+                           and i not in result['sprite_vrams'] and not sheet & {part[5] | part[6] << 8 for part in frame}}
+                textures = common_textures(project, node, data, frames, weak,
+                                           result['sprite_cluts'], result['vram'])
+                if unshown:
+                    textures.update(same_sheet(project, node, data, frames, shown, unshown,
+                                               result['sprite_pages'], result['sprite_cluts'], result['vram']))
+                for frame, (vram, area) in textures.items():
                     result['sprite_vrams'][frame] = vram
-                    origins[frame] = f'{origins.get(frame, "object")}, area {area:02d} textures'
+                    if frame in unshown:
+                        result['sprite_pages'][frame] = unshown[frame]
+                    origins[frame] = f'{origins.get(frame, "guess")}, area {area:02d} textures'
+            # Frames that read the buffers Tomba's current picture is uploaded
+            # to show pieces of him; his first picture stands in. The object
+            # that draws them gives them all one palette.
+            if slot and ('WPP', 0) in (resources := loaded_resources(project, node.ldar, context)):
+                from formats.sprites.wpp import reads_player_buffer, with_player_picture
+                default = result['sprite_default']
+                cut = [i for i, page in result['sprite_pages'].items() if i < len(frames) and frames[i]
+                       and i not in result['sprite_vrams'] and reads_player_buffer(result['vram'], frames[i], page)]
+                # Frames nothing shows are drawn by the same object, with
+                # its page.
+                bases = {result['sprite_pages'][i] for i in cut}
+                if len(bases) == 1:
+                    default = next(iter(bases))
+                    cut += [i for i, frame in enumerate(frames) if frame and i not in result['sprite_pages']
+                            and reads_player_buffer(result['vram'], frame, default)]
+                try:
+                    kind, pictures = parse_wpp(project.asset_data(resources['WPP', 0]))
+                except (FormatError, ValueError):
+                    kind = None
+                if cut and kind == 'frames':
+                    vram = with_player_picture(result['vram'], pictures[0])
+                    words = {result['sprite_cluts'][i] for i in cut if result['sprite_cluts'].get(i)}
+                    for frame in cut:
+                        result['sprite_vrams'][frame] = vram
+                        result['sprite_pages'].setdefault(frame, default)
+                        if len(words) == 1 and not result['sprite_cluts'].get(frame):
+                            result['sprite_cluts'][frame] = next(iter(words))
+                        origins[frame] = f'{origins.get(frame, "guess")}, Tomba\'s picture'
             # Tomba's own banks have no pixels in VRAM; a picture bank with
             # one entry per frame supplies them.
             for candidate in loaded:
@@ -1177,6 +1285,7 @@ class MainWindow(QMainWindow):
             if "group" in result:
                 group = result["group"]
                 if 'level' in result:
+                    self.level_view.set_labels(self.labels, self.persist_labels)
                     self.level_view.set_scene(result['level'])
                     self.tabs.addTab(self.level_view, 'Level editor')
                 self.asset_table(group.assets)
@@ -1273,6 +1382,7 @@ class MainWindow(QMainWindow):
                 self.tabs.addTab(placements, 'Placements')
                 if 'placement_scene' in result:
                     scene = result['placement_scene']
+                    self.level_view.set_labels(self.labels, self.persist_labels)
                     self.level_view.set_scene(scene)
                     self.tabs.addTab(self.level_view, 'Placements in level')
                     by_offset = {e.placement.offset: i for i, e in enumerate(scene.entries)

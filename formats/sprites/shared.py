@@ -29,6 +29,19 @@ def sections_elsewhere(project, node, data):
                               if loaded_resources(project, path, section).get(('SPR', asset.slot)) is asset))
 
 
+def showing_area(project, node, data):
+    """(asset, load group) of another area's section that loads this bank
+    and whose objects or routines show the most of it, or None."""
+    best, most = None, 0
+    for rank, (path, section, slot) in enumerate(sections_elsewhere(project, node, data)):
+        shown = set(sprite_pages(project, path, section).get(slot, {}))
+        if rank < ROUTINE_SECTIONS:
+            shown |= set(sprite_routines(project, path, section).get(slot, {}))
+        if len(shown) > most:
+            best, most = (loaded_resources(project, path, section)[('SPR', slot)], section), len(shown)
+    return best
+
+
 def texels(vram, parts, base, clut=None):
     """The pixels and palettes these parts read when drawn with page base
     `base`, as bytes."""
@@ -74,17 +87,55 @@ def common_textures(project, node, data, frames, pages, cluts, vram):
     return found
 
 
-def other_areas(project, node, data, frames, wanted, vram, own_pixels=()):
+def same_sheet(project, node, data, frames, shown, wanted, pages, cluts, vram):
+    """{frame: (VRAM, area)} for the frames in `wanted` (frame: page base)
+    drawn with the textures of another area that loads the same sheet as
+    this one: whose pixels match this area's for every frame in `shown`
+    (frame: page base), the frames objects here show. A bank can lay its
+    characters over several pages, of which an area loads only those of the
+    characters it uses."""
+    mine = {frame: texels(vram, frames[frame], page, cluts.get(frame)) for frame, page in shown.items()}
+    found = {}
+    if not mine:
+        return found
+    for path, section, slot in sections_elsewhere(project, node, data):
+        open_frames = set(wanted) - set(found)
+        if not open_frames:
+            break
+        # Only what that section's objects are placed showing, on the page
+        # they show it on, is taken.
+        theirs_shown = sprite_pages(project, path, section).get(slot, {})
+        coded = sprite_coded(project, path, section).get(slot, ())
+        # The parts of the sheet, by page word and base, its objects show.
+        used = {(part[5] | part[6] << 8, page) for frame, page in theirs_shown.items()
+                if frame not in coded and frame < len(frames) for part in frames[frame]}
+        eligible = [frame for frame in open_frames
+                    if {(part[5] | part[6] << 8, wanted[frame]) for part in frames[frame]} <= used]
+        if not eligible:
+            continue
+        theirs = project.vram(path, section)
+        if any(texels(theirs, frames[frame], shown[frame], cluts.get(frame)) != pixels
+               for frame, pixels in mine.items()):
+            continue
+        for frame in eligible:
+            if texels(theirs, frames[frame], wanted[frame], cluts.get(frame)) != texels(
+                    vram, frames[frame], wanted[frame], cluts.get(frame)):
+                found[frame] = (theirs, area_of(path))
+    return found
+
+
+def other_areas(project, node, data, frames, wanted, vram, own_pixels=(), own_pages=()):
     """{frame: (page base, CLUT word or None, VRAM or None, origin, [names])}
     for the frames in `wanted` that another area shows. The VRAM is None
     when `vram` holds the same pixels and palettes as that area's.
 
     Areas can draw one bank with different art, so where several show a
     frame the one whose page holds the same pixels here wins, and after
-    that the one that shows the most of the bank. Frames in `own_pixels`
-    take only such a page, never another area's textures. Routines are
-    only run for frames no placed object shows."""
-    wanted, own_pixels = set(wanted), set(own_pixels)
+    that the one that shows the most of the bank. Frames in `own_pixels`,
+    and pages whose every part lands in one of `own_pages` (texture page
+    numbers 0-31), take only such a page, never another area's textures.
+    Routines are only run for frames no placed object shows."""
+    wanted, own_pixels, own_pages = set(wanted), set(own_pixels), set(own_pages)
     order = sections_elsewhere(project, node, data)
     vrams, offers = {}, {}
     for routines, limit in ((False, PLACEMENT_SECTIONS), (True, ROUTINE_SECTIONS)):
@@ -112,7 +163,8 @@ def other_areas(project, node, data, frames, wanted, vram, own_pixels=()):
             for frame in shown:
                 page, word = pages[frame], words.get(frame)
                 same = same_texels(vram, theirs, frames[frame], page, word)
-                if not same and frame in own_pixels:
+                if not same and (frame in own_pixels or own_pages and all(
+                        part_page(part, page) & 31 in own_pages for part in frames[frame])):
                     continue
                 offers.setdefault(frame, []).append((
                     (not same, -len(shown), routines, rank),

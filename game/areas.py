@@ -42,6 +42,14 @@ SECTIONS[7] = SECTIONS[1]
 SECTIONS[12] = SECTIONS[4]
 
 
+# Sections whose load list is empty: the game enters them through a door
+# and keeps the overlay, models, textures and placement lists the section
+# before loaded. {(area, section): the section it is entered from}, as the
+# Tombi-Decomp emulator enters them (psxemu/capture.py SIBLINGS).
+DOOR_SIBLINGS = {(11, 0): 1, (11, 3): 1, (11, 4): 2, (16, 0): 3, (16, 1): 3, (16, 2): 3, (17, 0): 1, (17, 6): 1,
+                 (17, 7): 2, (17, 8): 3, (17, 9): 1, (17, 10): 2, (18, 0): 1}
+
+
 def section_name(area, index):
     names = SECTIONS.get(area, [])
     return names[index] if 0 <= index < len(names) else "Additional load entry"

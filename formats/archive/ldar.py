@@ -332,8 +332,32 @@ class Project:
                 pixels = np.frombuffer(self.asset_data(asset), dtype="<u2").reshape(h, w)
                 # Section data overwrites the base, including zero/transparent pixels.
                 vram[y:y + h, x:x + w] = pixels
+        self.effects_picture(vram, [group for group, _ in wanted])
         self.town_palette(vram, [group for group, _ in wanted])
         return vram
+
+    def effects_picture(self, vram, groups):
+        """The picture a section loads from the first TIM of WPP slot 3 when
+        it starts: the TIM loader (800174FC in the European build) puts its
+        pixels at VRAM (32, 0), beside Tomba's picture buffers, and its five
+        palette rows at (128, 495). Sections that keep art of their own
+        there, as the towns do, do not load it."""
+        picture = next((a for g in groups for a in g.assets if a.kind == 'WPP' and a.slot == 3), None)
+        if picture is None or vram[0:80, 32:64].any() or vram[495:500, 128:144].any():
+            return
+        try:
+            from formats.sprites.wpp import parse_wpp
+            kind, pictures = parse_wpp(self.asset_data(picture))
+        except (FormatError, ValueError):
+            return
+        if kind != 'tim' or not pictures:
+            return
+        tim = pictures[0]
+        if tim.cluts is None or tim.cluts.shape != (5, 16) or tim.indices.shape != (80, 128):
+            return
+        indices = tim.indices.astype(np.uint16)
+        vram[0:80, 32:64] = indices[:, 0::4] | indices[:, 1::4] << 4 | indices[:, 2::4] << 8 | indices[:, 3::4] << 12
+        vram[495:500, 128:144] = tim.cluts
 
     def town_palette(self, vram, groups):
         """The palette a town overlay loads when it starts: INFO and INFO2

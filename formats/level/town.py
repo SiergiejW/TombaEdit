@@ -122,9 +122,10 @@ def character_pages(data, base, slot, count):
 
     One overlay serves several towns, each with a bank of its own in the
     same slot. The run that belongs to this bank is the one whose frames
-    reach exactly its last frame and never give one frame two pages; if no
-    run does, nothing is returned. Frames no script shows take the page of
-    the character before them."""
+    reach exactly its last frame and never give one frame two pages, or
+    failing that the one that reaches furthest; a run that gives only one
+    page is not taken. Frames no script shows take the page of the
+    character before them."""
     data = bytes(data)
     end = base + len(data)
     tails = []
@@ -162,17 +163,26 @@ def character_pages(data, base, slot, count):
             runs.append([])
         runs[-1].append((page, frames))
         last = at
+    fits = []
     for run in runs:
         pages, clash = {}, False
         for page, frames in run:
             for frame in frames:
                 clash = clash or pages.setdefault(frame, page) != page
-        if not clash and max(pages) == count - 1 and len(set(pages.values())) > 1:
-            current = pages[min(pages)]
-            for frame in range(count):
-                current = pages.setdefault(frame, current)
-            return pages
-    return {}
+        if not clash and len(set(pages.values())) > 1:
+            fits.append(pages)
+    # Failing a run that reaches the last frame, the one that reaches
+    # furthest: the last frames can be ones no script shows. A run of
+    # another town's larger bank names frames past this one's and is not
+    # among them.
+    ending = [pages for pages in fits if max(pages) == count - 1]
+    pages = ending[0] if ending else max(fits, key=max, default=None)
+    if pages is None:
+        return {}
+    current = pages[min(pages)]
+    for frame in range(count):
+        current = pages.setdefault(frame, current)
+    return pages
 
 
 def dwarf_graphics(project, resources, area, section):

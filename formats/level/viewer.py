@@ -2,7 +2,7 @@
 from gui.console import announce
 from PyQt6.QtCore import Qt, QTimer, pyqtSignal
 from PyQt6.QtGui import QAction, QColor, QIcon, QPixmap
-from PyQt6.QtWidgets import QHBoxLayout, QLabel, QComboBox, QPushButton, QStyle, QTabWidget
+from PyQt6.QtWidgets import QHBoxLayout, QLabel, QComboBox, QPushButton, QStyle, QTabWidget, QMenu, QInputDialog
 from formats.models.wmd_viewer import ModelView
 from formats.collision.inspector import CollisionInspector
 from formats.level.flat import paint_order
@@ -21,6 +21,7 @@ class LevelView(ModelView):
     def __init__(self):
         super().__init__()
         self.scene = None
+        self.label_set, self.save_labels = None, None
         self.animated = []      # [entry index, step, ticks left]
         self.filter = QComboBox()
         self.filter.addItems(['Whole level', 'Geometry', 'Models', 'Sprites', 'Spawned', 'Backgrounds', 'Event previews', 'Unresolved'])
@@ -157,15 +158,9 @@ class LevelView(ModelView):
                       {i: e.name for i, e in enumerate(scene.entries)}, level=not flat)
         self.canvas.selection_types = [e.category for e in scene.entries]
         self.canvas.selection_colors = [e.color for e in scene.entries]
-        self.objects.blockSignals(True)
         for row, entry in enumerate(scene.entries):
             self.objects.item(row, 1).setIcon(self.class_icon(entry.color))
-            self.objects.item(row, 2).setText(entry.class_label)
-            self.objects.item(row, 2).setToolTip(
-                (f'{entry.class_name}. {entry.class_note}\n' if entry.class_name else '')
-                + f'APD layer {entry.placement.layer}, type {entry.placement.kind:02X}: every object of this '
-                'class runs the same routine and is marked in the same colour.' if entry.placement else '')
-        self.objects.blockSignals(False)
+        self.reload_labels()
         self.objects.setColumnWidth(2, 150)
         self.canvas.controls_label.setText(
             ('2D view | Middle/right-drag: pan | Scroll: zoom\n'
@@ -216,6 +211,85 @@ class LevelView(ModelView):
                 'The 2D view paints objects in game ordering priority. Transparent pixels '
                 'allow you to select visible objects behind them. Middle/right-drag pans; scroll zooms.')
         self.toggle_animation(self.animate_action.isChecked())
+
+    def set_labels(self, label_set, save):
+        """Take the label set classes and sprites are named in, and what stores it."""
+        self.label_set, self.save_labels = label_set, save
+        self.reload_labels()
+
+    def class_name(self, entry):
+        """The class's label, or the name it is known by."""
+        named = self.label_set.label_for(entry.class_key) if self.label_set and entry.class_key else None
+        return named or entry.class_name
+
+    def class_text(self, entry):
+        """The class as listed: layer and type, name, and the name of the
+        first labelled sprite the object shows."""
+        text = f'{entry.object_class} {self.class_name(entry)}'.strip()
+        if self.label_set is not None:
+            sprite = next(filter(None, map(self.label_set.label_for, entry.sprite_keys)), None)
+            if sprite:
+                text += f' ({sprite})'
+        return text
+
+    def reload_labels(self):
+        if self.scene is None:
+            return
+        self.objects.blockSignals(True)
+        for row, entry in enumerate(self.scene.entries):
+            if self.objects.item(row, 2) is None:
+                continue
+            name = self.class_name(entry)
+            self.objects.item(row, 2).setText(self.class_text(entry))
+            self.objects.item(row, 2).setToolTip(
+                (f'{name}. {entry.class_note}\n' if name else '')
+                + f'APD layer {entry.placement.layer}, type {entry.placement.kind:02X}: every object of this '
+                'class runs the same routine and is marked in the same colour.' if entry.placement else '')
+        self.objects.blockSignals(False)
+
+    def selected_classes(self):
+        """[(entry, class key)] of the selected objects whose class can be named."""
+        if self.scene is None or self.label_set is None:
+            return []
+        return [(self.scene.entries[row], self.scene.entries[row].class_key) for row in self.selected_rows()
+                if row < len(self.scene.entries) and self.scene.entries[row].class_key]
+
+    def objects_menu(self, point):
+        """Right-click on objects: name their class. Only the class label
+        changes; the sprites it shows keep theirs."""
+        keys = list(dict.fromkeys(key for _, key in self.selected_classes()))
+        if not keys:
+            return
+        menu = QMenu(self)
+        rename = menu.addAction('Rename class...' if len(keys) == 1 else f'Rename {len(keys)} classes...')
+        clear = menu.addAction('Clear class label' if len(keys) == 1 else 'Clear class labels')
+        clear.setEnabled(any(self.label_set.label_for(key) for key in keys))
+        chosen = menu.exec(self.objects.viewport().mapToGlobal(point))
+        if chosen is rename:
+            self.rename_selection()
+        elif chosen is clear:
+            self.label_classes(keys, '')
+
+    def rename_selection(self):
+        """Ask for one name and give it to the class of every selected object."""
+        selected = self.selected_classes()
+        keys = list(dict.fromkeys(key for _, key in selected))
+        if not keys:
+            return
+        old = {self.class_name(entry) for entry, _ in selected}
+        name, accepted = QInputDialog.getText(
+            self, 'Name class' if len(keys) == 1 else f'Name {len(keys)} classes',
+            'Class name (empty goes back to the built-in name):', text=old.pop() if len(old) == 1 else '')
+        if accepted:
+            self.label_classes(keys, name.strip())
+
+    def label_classes(self, keys, name):
+        for key in keys:
+            self.label_set.rename(key, name, kind='Object class')
+        if self.save_labels:
+            self.save_labels()
+        self.reload_labels()
+        self.show_entry(self.objects.currentRow())
 
     def class_icon(self, color):
         """A square of the class colour for the list."""
@@ -394,7 +468,7 @@ class LevelView(ModelView):
         if self.scene is None or not 0 <= row < len(self.scene.entries):
             return
         e = self.scene.entries[row]
-        text = (f'{e.name}\n{e.category} | class {e.class_label}\n'
+        text = (f'{e.name}\n{e.category} | class {self.class_text(e)}\n'
                 + (e.class_note + '\n' if e.class_note else '') + f'{e.source.label}\n\n{e.note}')
         if e.placement:
             p = e.placement
@@ -425,7 +499,7 @@ class LevelView(ModelView):
         e = self.scene.entries[row]
         if not e.placement:
             return f'{e.name} | {e.source.label}'
-        return (f'{e.name} | {e.class_name or "unnamed class"} | {e.category} | position {e.placement.position} | '
+        return (f'{e.name} | {self.class_name(e) or "unnamed class"} | {e.category} | position {e.placement.position} | '
                 f'APD offset 0x{e.placement.offset:04X} | {e.note}')
 
     def picked_entry(self, selected):

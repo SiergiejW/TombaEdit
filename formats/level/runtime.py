@@ -354,12 +354,15 @@ class InitialPoseResolver:
         anchor = tuple(placement.position[:2])
         base = follow = None
         # A sprite that is off the screen is left where it was, so look from
-        # a few camera positions until it shows.
-        for start in (0, 512, 1024, 1536):
-            seen, across, down = update(start, 0), update(start + NUDGE, 0), update(start, NUDGE)
+        # a few camera positions until it shows: along the level at its top,
+        # then round the placement at its height. Some only update once the
+        # camera has passed them.
+        for start, height in [(start, 0) for start in (0, 512, 1024, 1536)] + \
+                [(start, anchor[1] - 120) for start in (anchor[0] - 160, anchor[0], anchor[0] + 160, 2048, 4096)]:
+            seen, across, down = update(start, height), update(start + NUDGE, height), update(start, height + NUDGE)
             if seen != anchor and across != anchor and down != anchor:
                 follow = ((seen[0] - across[0]) / NUDGE, (seen[1] - down[1]) / NUDGE)
-                base = (round(seen[0] + start * follow[0]), seen[1])
+                base = (round(seen[0] + start * follow[0]), round(seen[1] + height * follow[1]))
                 break
         if base is None or (start == 0 and follow == (0, 0) and base == anchor):
             return {}
@@ -371,7 +374,7 @@ class InitialPoseResolver:
         # travelled one period; the strips of a loop are placed a period apart.
         period = 0
         if follow[0]:
-            travel = next((c for c in (256, 512, 1024, 2048, 4096, 8192) if update(start + c, 0) == seen), 0)
+            travel = next((c for c in (256, 512, 1024, 2048, 4096, 8192) if update(start + c, height) == seen), 0)
             period = round(travel * follow[0])
         return dict(screen=base, follow=follow, period=period)
 

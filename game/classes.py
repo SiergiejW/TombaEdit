@@ -6,6 +6,15 @@ area overlay shares, is the same thing in every area, and its name is listed
 once. The rest of an overlay is the area's own, so those names go by area.
 """
 
+# Bytes at the start of every area overlay that hold the same routines.
+SHARED_CODE = 0x2DE6C
+
+
+def shared_routine(handler, overlay, overlay_size):
+    """Whether a class's routine is the same in every area: in the
+    executable, or in the overlay's shared start."""
+    return handler is not None and not overlay + SHARED_CODE <= handler < overlay + overlay_size
+
 # The same in every area.
 SHARED = {
     (4, 0x3E): 'Evil Pig door',

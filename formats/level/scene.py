@@ -7,7 +7,7 @@ from formats.level.apd import parse_apd, Placement
 from formats.level.runtime import InitialPoseResolver, OBJECT
 # At most this many spawned objects are added to a section.
 SPAWN_LIMIT = 160
-from formats.level.draw import render as render_primitives
+from formats.level.draw import render as render_primitives, blend_modes
 from formats.models.wmd import parse_wmd
 from formats.models.four import rebuild_mesh
 from psx.graphics import sprite_frames, render_sprite, texture_page
@@ -36,6 +36,9 @@ class SceneEntry:
     draw_bucket: float = 0
     class_name: str = ''    # what the class is, where it has been identified
     class_note: str = ''
+    class_key: str = ''     # what a label for the class is kept under
+    # Label keys of the SPR frames the entry shows, in the order shown.
+    sprite_keys: list = field(default_factory=list)
 
     @property
     def class_label(self):
@@ -110,6 +113,20 @@ def loaded_resources(project, path, index):
         for asset in group.assets:
             resources[asset.kind, asset.slot] = asset
     return resources
+
+
+def door_sibling(project, path, index):
+    """The section an empty load group's section is entered from, when the
+    game then reads that section's placement list, or None."""
+    from game.areas import DOOR_SIBLINGS
+    groups = project.ldars[path]
+    if not 0 < index < len(groups) or groups[index].assets:
+        return None
+    section = index - 1
+    sibling = DOOR_SIBLINGS.get((area_of(path), section))
+    if sibling is None or sibling + 1 >= len(groups) or not groups[sibling + 1].assets or section & 7 != sibling & 7:
+        return None
+    return sibling
 
 
 def translated(mesh, position):
@@ -283,6 +300,30 @@ def orient_assemblies(entries):
             assembled = []
 
 
+# How far above the highest collision and geometry of its column an object
+# has to be placed to be noted: one screen.
+OUT_OF_REACH = 240
+
+
+def out_of_reach(entries, collision):
+    """Note on placed objects whose position is more than a screen above
+    everything the section's collision and geometry reach at that X. Some
+    lists put objects there, as area 10 does three pickups at (172, -833);
+    the running game has them at the same place."""
+    points = [np.asarray(collision)[:, :2]]
+    points += [np.array([vertex[:2] for polygon in e.mesh.polygons for vertex in polygon['vertices']])
+               for e in entries if e.category == 'Geometry' and e.placement is None and e.mesh.polygons]
+    points = np.concatenate(points)
+    for e in entries:
+        if e.placement is None or e.category in ('Geometry', 'Backgrounds') or e.placement.layer == 7:
+            continue
+        x, y = e.placement.position[:2]
+        column = points[np.abs(points[:, 0] - x) < 64, 1]
+        if len(column) and -y - column.max() > OUT_OF_REACH:
+            e.note += (f' Placed {-y - column.max():.0f} units above the highest collision and level geometry'
+                       ' at this X.')
+
+
 def cell_colours():
     """One translucent colour per cell value; 0 stays clear. Values with bit
     7 set share a blue cast so they read as one group."""
@@ -293,6 +334,10 @@ def cell_colours():
         r, g, b = colorsys.hsv_to_rgb(hue, .85, 1.)
         table[value] = (int(r * 255), int(g * 255), int(b * 255), 110)
     return table
+
+
+# Where a town picture's top left corner is, in placement coordinates.
+TOWN_ORIGIN = (-129, 39)
 
 
 def town_picture(project, resources, notes):
@@ -325,8 +370,14 @@ def town_picture(project, resources, notes):
             used = sorted(set(grid.reshape(-1).tolist()) - {0})
             notes.append('Town map cell values: ' + ' '.join(f'{v:02X}' for v in used)
                          + '. Blue cells have bit 7 set.')
-    # Placements in a town are pixel positions on the picture.
-    corners = [(0, 0, -1), (image.width, 0, -1), (0, -image.height, -1), (image.width, -image.height, -1)]
+    # Placements in a town are pixel positions, but the picture is not drawn
+    # from their origin: the game shows picture pixel (p, q) where an object
+    # at (p - 129, q + 39) stands. Measured in the emulator in Baccus Village
+    # and Dwarf Village, where the overlay sprites that repeat parts of the
+    # picture land on those parts only so.
+    left, top = TOWN_ORIGIN
+    corners = [(left, -top, -1), (left + image.width, -top, -1),
+               (left, -top - image.height, -1), (left + image.width, -top - image.height, -1)]
     entry = SceneEntry('Town picture', 'Geometry', quad(corners, image), picture,
                        note=f'{image.width} x {image.height} pre-rendered picture. '
                             'Town map shows it tinted by the 8 x 8 cell map.')
@@ -361,7 +412,9 @@ def town_lines(grid):
                 colours += [SURFACE, SURFACE]
     if not vertices:
         return None
-    return np.asarray(vertices, np.float32), np.asarray(colours, np.float32)
+    # The map lies over the picture.
+    vertices = np.asarray(vertices, np.float32) + (TOWN_ORIGIN[0], -TOWN_ORIGIN[1], 0)
+    return vertices.astype(np.float32), np.asarray(colours, np.float32)
 
 
 @dataclass
@@ -396,6 +449,16 @@ def scripted_placements(project, resolver, area, section):
 
 
 def build_scene(project, path, index):
+    sibling = door_sibling(project, path, index)
+    if sibling is not None:
+        # The spawner reads placement list slot (section & 7), the one the
+        # sibling filled, so the game shows the sibling's scene.
+        scene = build_scene(project, path, sibling + 1)
+        scene.location_index = index
+        scene.notes.insert(0, f'Section {index - 1:02d} loads nothing of its own. The game enters it through a door '
+                              f'from section {sibling:02d}, keeps what that section loaded and reads the same '
+                              'placement list, so it is shown as that section.')
+        return scene
     resources = loaded_resources(project, path, index)
     vram = project.vram(path, index)
     entries, notes, models, sprites = [], [], {}, {}
@@ -403,9 +466,12 @@ def build_scene(project, path, index):
     backdrops = []
     area = area_of(path)
     resolver = InitialPoseResolver(project, area, max(0, index-1), resources)
-    from game.classes import class_name, class_note
+    from game.classes import class_name, class_note, shared_routine
+    from game.labels import class_key, sprite_frame_key
     # Classes are named by the area whose code runs them.
     runtime = getattr(resolver, 'area', area)
+    overlay_base = resolver.build.overlay if resolver.available else 0
+    overlay_size = resources['INS', 0].size if ('INS', 0) in resources else 0
     slots = resolver.placement_slots(area, index-1) if resolver.available and index else None
     notes.append(resolver.reason)
     notes.append('Initial state preview. Event conditions and scripted spawns are not simulated. Diamond markers, in the colour of their class, have unresolved visuals.')
@@ -442,14 +508,20 @@ def build_scene(project, path, index):
     drawn_pictures = {}
 
     def drawn_picture(placement, frame):
-        """(image, left, top) of a frame as the game's draw routine
-        assembles it for this object, or None."""
+        """(image, left, top, layers) of a frame as the game's draw routine
+        assembles it for this object, or None. `layers` is (solid image,
+        [(blend mode, image)]) when some of it is blended, else None."""
         prims = resolver.draw(placement, frame)
         if not prims:
             return None
         key = tuple(prim.key() for prim in prims)
         if key not in drawn_pictures:
-            drawn_pictures[key] = render_primitives(prims, vram)
+            picture = render_primitives(prims, vram)
+            layers = None
+            if picture is not None and blend_modes(prims):
+                layers = (render_primitives(prims, vram, 'solid')[0],
+                          [(mode, render_primitives(prims, vram, mode)[0]) for mode in blend_modes(prims)])
+            drawn_pictures[key] = None if picture is None else picture + (layers,)
         return drawn_pictures[key]
 
     def sprite_image(bank, frame, visual):
@@ -518,16 +590,26 @@ def build_scene(project, path, index):
     if controlled:
         notes.append(f'{controlled} objects are spawned by the section\'s controllers and by Tomba\'s entry '
                      'when it starts; they are listed as spawned objects.')
+    # The game creates the whole of the section's own list and, from every
+    # other list loaded, the records whose section byte is the section, ~
+    # the section, or ~ the section before (a record for two sections). A
+    # copy of a record of the section's own list is the same object.
+    # Measured against the emulator's room dumps (work/section_rule.py).
+    own_records = {placement.raw for slot, _, placements, created in batches
+                   if slots and slot == slots[0] and created is None for placement in placements}
+    shared = (index - 1, ~(index - 1), ~(index - 2))
+    retail = resolver.available and not resolver.build.early and not resolver.build.legacy8
     for slot, asset, placements, created in batches:
         for i, placement in enumerate(placements):
             active = (created is not None or bool(placement.origin) or slots is None or slot == slots[0] or (
-                slot == slots[1] and placement.section in (index-1, ~(index-1))))
+                placement.section in shared and placement.raw not in own_records if retail else
+                slot == slots[1] and placement.section in shared[:2]))
             name = f'Object {placement.layer}:{placement.kind:02X} / {placement.variant:02X}'
             model_frames = []
             mesh, category, note = None, 'Unresolved', 'Visual link is unresolved; position comes from APD.'
-            if slots and slot == slots[1] != slots[0] and created is None:
-                # Records of the area-wide list carry their room number in
-                # +6B without the one the section's own list subtracts.
+            if slots and slot is not None and slot != slots[0] and created is None:
+                # Records of other lists carry their room number in +6B
+                # without the one the section's own list subtracts.
                 placement = replace(placement, extra=placement.extra + ((0x6B, bytes((placement.raw[15] >> 2,))),))
             visual = resolver.resolve(placement) if active else {}
             if visual.get('spawned') and placement.origin.count('spawned by') < 2:
@@ -593,8 +675,12 @@ def build_scene(project, path, index):
                     parts = sprites[bank][frame] if frame < len(sprites[bank]) else None
                     picture = drawn_picture(placement, frame) if assembled and parts else None
                     if picture is not None:
-                        image, left, top = picture
-                        frames.append((placed_sprite(image, left, top, where, placement.offset), ticks))
+                        image, left, top, layers = picture
+                        card = placed_sprite(image, left, top, where, placement.offset)
+                        if layers is not None:
+                            # Drawn as the game blends it with what is behind.
+                            card.solid_image, card.blend_layers = layers
+                        frames.append((card, ticks))
                         drawn += 1
                         continue
                     image = sprite_image(bank, frame, visual) if parts else None
@@ -705,6 +791,13 @@ def build_scene(project, path, index):
             else:
                 entry.class_name = class_name(runtime, placement.layer, placement.kind)
                 entry.class_note = class_note(runtime, placement.layer, placement.kind)
+            entry.class_key = class_key(runtime, placement.layer, placement.kind,
+                                        shared_routine(entry.handler, overlay_base, overlay_size))
+            if category in ('Sprites', 'Spawned', 'Event previews') and 'sprite' in visual \
+                    and visual['sprite'] in sprites:
+                shown = sprites[visual['sprite']]
+                entry.sprite_keys = list(dict.fromkeys(
+                    sprite_frame_key(shown[frame]) for frame, _ in visual.get('frames', ()) if frame < len(shown)))
             entry.animation_address = visual.get('animation_address')
             from formats.level.flat import ordering_bucket
             entry.draw_bucket = ordering_bucket(placement, visual, fixed_picture=bool(pieces))
@@ -742,6 +835,8 @@ def build_scene(project, path, index):
     collision = lines([r for r in collision_records if r.route == 'Default route'])
     if collision is None and town is not None and getattr(town, 'cells', None) is not None:
         collision = town_lines(town.cells)
+    elif collision is not None and not turned:
+        out_of_reach(entries, collision[0])
     # The art stops where the game's clear colour takes over. That colour is
     # not stored with the section, so the top edge of the highest piece of
     # scenery stands in for it.
@@ -760,7 +855,7 @@ def build_scene(project, path, index):
         context = 'World collision origins are not verified for this executable. Open a WHM asset for its local X/Y boundaries.'
     from game.areas import section_name
     locations = [(section_name(area, g.index - 1), path, g.index)
-                 for g in project.ldars[path][1:] if g.assets]
+                 for g in project.ldars[path][1:] if g.assets or door_sibling(project, path, g.index) is not None]
     scene = LevelScene(entries, list(resources.values()), vram, notes, collision, backdrops, sky,
                        collision_records, context, locations, index)
     scene.overlay = resolver.build.overlay if resolver.available else 0
@@ -846,7 +941,7 @@ def sprite_pages(project, path, index):
         pages, cluts, shown, built = {}, {}, {}, {}
         later = []      # (slot, frames, page base, CLUT, label) from what an object's code can go on to show
         kinds = {}      # class -> the (slot, page base) pairs its objects use
-        counts = {}
+        counts, parts = {}, {}
         from game.classes import class_name
         runtime = getattr(resolver, 'area', area_of(path))
         placed = []
@@ -908,9 +1003,10 @@ def sprite_pages(project, path, index):
                     slot = visual['sprite']
                     if slot not in counts:
                         try:
-                            counts[slot] = len(sprite_frames(project.asset_data(resources['SPR', slot])))
+                            parts[slot] = sprite_frames(project.asset_data(resources['SPR', slot]))
                         except (FormatError, KeyError):
-                            counts[slot] = 0
+                            parts[slot] = []
+                        counts[slot] = len(parts[slot])
                     assigned = resolver.code_animations(resolver.handler_address(placement), slot, counts[slot])
                     for address, script in assigned.items():
                         users = animations.setdefault(slot, {}).setdefault(address, [])
@@ -928,6 +1024,32 @@ def sprite_pages(project, path, index):
         # different pages by variant is left out: which page goes with
         # which of its scripts cannot be told from one object.
         direct = {slot: set(frames) for slot, frames in pages.items()}
+
+        def signature(slot, frame):
+            """The page words and palettes a frame's parts store: alike for
+            the frames of one character."""
+            shape = parts.get(slot, [])[frame] if frame < len(parts.get(slot, [])) else ()
+            return {(part[5] | part[6] << 8, part[2] & 0x7FFF) for part in shape}
+
+        def kin(slot, frame):
+            """(page base, CLUT) of the placed frames of the slot whose parts
+            are most like this frame's, or None when objects with different
+            pages are equally like it."""
+            mine = signature(slot, frame)
+            if not mine:
+                return None
+            scored = {}
+            for other in direct.get(slot, ()):
+                theirs = signature(slot, other)
+                if theirs:
+                    key = min((abs(a - c), abs(b - d)) for a, b in mine for c, d in theirs)
+                    scored.setdefault(key, set()).add((pages[slot][other], cluts.get(slot, {}).get(other)))
+            best = scored[min(scored)] if scored else set()
+            return next(iter(best)) if len({base for base, _ in best}) == 1 else None
+        # A frame one object's code goes on to show, whose parts are most
+        # like those of a frame another object is placed showing, is that
+        # object's: an object that creates another loads the scripts it
+        # starts it with.
         coded = {}
         for slot, frames, page, clut, label, kind in later:
             if len(kinds[kind]) > 1:
@@ -935,13 +1057,15 @@ def sprite_pages(project, path, index):
             for frame in frames:
                 if frame in direct.get(slot, ()):
                     continue
-                pages.setdefault(slot, {}).setdefault(frame, page)
+                owner = kin(slot, frame)
+                base, word = owner if owner and owner[0] != page else (page, clut)
+                pages.setdefault(slot, {}).setdefault(frame, base)
                 coded.setdefault(slot, set()).add(frame)
                 users = shown.setdefault(slot, {}).setdefault(frame, [])
                 if label not in users:
                     users.append(label)
-                if clut is not None:
-                    cluts.setdefault(slot, {}).setdefault(frame, clut & 0x7FFF)
+                if word is not None:
+                    cluts.setdefault(slot, {}).setdefault(frame, word & 0x7FFF)
         project.__dict__.setdefault('sprite_coded_cache', {})[path, index] = coded
         cache[path, index] = pages
         palettes[path, index] = cluts
