@@ -273,10 +273,18 @@ def shared_bank_preview(project, asset, context, frames):
         found = executable(project, path)
         code = project.asset_data(resources['INS', 0])
         vram = project.vram(path, group)
-        origins = {frame: f'{path} group {group}: town code' for frame in profile.pages}
+        # What the section's objects are placed showing comes first; the
+        # houses' record fills in the frames nothing places.
+        from formats.level.scene import sprite_pages, sprite_cluts
+        placed = sprite_pages(project, path, group).get(asset.slot, {})
+        placed_cluts = sprite_cluts(project, path, group).get(asset.slot, {})
+        pages = {**profile.pages, **placed}
+        cluts = {frame: word for frame, word in profile.cluts.items() if frame not in placed}
+        cluts.update({frame: word for frame, word in placed_cluts.items() if frame in placed})
+        origins = {frame: f'{path} group {group}: town code' for frame in profile.pages if frame not in placed}
         from collections import Counter
-        default = Counter(profile.pages.values()).most_common(1)[0][0]
-        return dict(sprite_pages=profile.pages, sprite_cluts=profile.cluts, sprite_names={},
+        default = Counter(pages.values()).most_common(1)[0][0]
+        return dict(sprite_pages=pages, sprite_cluts=cluts, sprite_names={},
                     sprite_origins=origins, sprite_vrams={}, sprite_default=default,
                     vram=vram, animation_users=profile.animations,
                     animation_code=[('overlay', found.build.overlay, code),

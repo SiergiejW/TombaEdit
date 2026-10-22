@@ -9,7 +9,7 @@ from there.
 """
 from formats.level.scene import (area_of, bank_copies, loaded_resources, sprite_pages, sprite_coded,
                                  sprite_cluts, sprite_owners, sprite_routines)
-from psx.graphics import same_texels
+from psx.graphics import same_texels, part_page
 
 # Sections searched per bank: those with a record of their own for the bank
 # first, then the first section of each area whose base group has it.
@@ -27,6 +27,51 @@ def sections_elsewhere(project, node, data):
     order += [(path, 1 if len(project.ldars[path]) > 1 else 0, asset) for path, group, asset in copies if not group]
     return list(dict.fromkeys((path, section, asset.slot) for path, section, asset in order
                               if loaded_resources(project, path, section).get(('SPR', asset.slot)) is asset))
+
+
+def texels(vram, parts, base, clut=None):
+    """The pixels and palettes these parts read when drawn with page base
+    `base`, as bytes."""
+    out = []
+    for part in parts:
+        page = part_page(part, base)
+        depth = page >> 7 & 3
+        per_word = 4 if depth == 0 else 2 if depth == 1 else 1
+        x, y = (page & 15) * 64, (page >> 4 & 1) * 256
+        us, vs = (part[0], part[3], part[7], part[11]), (part[1], part[4], part[8], part[12])
+        out.append(vram[y + min(vs):y + max(vs) + 1, x + min(us) // per_word:x + max(us) // per_word + 1].tobytes())
+        if depth < 2:
+            word = (part[2] if clut is None else clut) & 0x7FFF
+            cx, cy = (word & 63) * 16, (word >> 6) & 511
+            out.append(vram[cy, cx:cx + (16 if depth == 0 else 256)].tobytes())
+    return b''.join(out)
+
+
+def common_textures(project, node, data, frames, pages, cluts, vram):
+    """{frame: (VRAM, area)} for frames of a bank most areas load whose page
+    holds other pixels here than in most of those areas: this area has put
+    its own art over the bank's, as area 19's scenery covers the effects of
+    the base groups' bank. Such frames are drawn with the textures most
+    areas have."""
+    order = [(path, section) for path, section, _ in sections_elsewhere(project, node, data)]
+    firsts = list(dict.fromkeys(path for path, _ in order))
+    if len(firsts) < 3:
+        return {}
+    others = [(path, project.vram(path, next(s for p, s in order if p == path))) for path in firsts]
+    found = {}
+    for frame, page in pages.items():
+        parts = frames[frame] if frame < len(frames) else None
+        if not parts:
+            continue
+        mine = texels(vram, parts, page, cluts.get(frame))
+        seen = {}
+        for path, theirs in others:
+            seen.setdefault(texels(theirs, parts, page, cluts.get(frame)), []).append((path, theirs))
+        best = max(seen.values(), key=len)
+        if texels(best[0][1], parts, page, cluts.get(frame)) != mine and len(best) * 2 >= len(others) \
+                and len(best) > len(seen.get(mine, ())):
+            found[frame] = (best[0][1], area_of(best[0][0]))
+    return found
 
 
 def other_areas(project, node, data, frames, wanted, vram, own_pixels=()):

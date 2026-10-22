@@ -444,6 +444,17 @@ def _prepare_preview(project, node, context=None):
                         result['sprite_vrams'][frame] = vram
                     known = result['sprite_names'].setdefault(frame, [])
                     known += [name for name in names if name not in known]
+            # A frame of a bank most areas load, whose page this area covers
+            # with art of its own, is drawn with the textures most of those
+            # areas give it. What an object here is placed showing stays.
+            if slot:
+                from formats.sprites.shared import common_textures
+                weak = {i: page for i, page in result['sprite_pages'].items() if i not in result['sprite_vrams']
+                        and not origins.get(i, 'object').startswith(('object', 'section'))}
+                for frame, (vram, area) in common_textures(project, node, data, frames, weak,
+                                                           result['sprite_cluts'], result['vram']).items():
+                    result['sprite_vrams'][frame] = vram
+                    origins[frame] = f'{origins.get(frame, "object")}, area {area:02d} textures'
             # Tomba's own banks have no pixels in VRAM; a picture bank with
             # one entry per frame supplies them.
             for candidate in loaded:

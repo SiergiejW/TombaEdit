@@ -42,7 +42,7 @@ welcome page and application version. `python main.py --version` prints it.
 
 The Sprites tab has a **Check whole SPR** dropdown: **Wrong CLUT**,
 **Everything OK**, **Wrong sprites**, **Partially correct, remaining sprites look wrong**,
-or **Other**. Choosing a status immediately
+or **Empty** (nothing should show in this VRAM context). Choosing a status immediately
 creates or updates `sprite_checks.json`, replacing the previous status for that
 SPR entry in the same ROM and VRAM context. There are no notes or export steps.
 Hover over the dropdown for the JSON file's location. Send that file when finished.
