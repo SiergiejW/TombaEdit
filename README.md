@@ -205,9 +205,12 @@ primitives it produces are read back. Page, palette, mirroring, rotation,
 scaling, shading and blending are therefore the game's own, including the
 towns' separate renderers (Dwarf Village, Baccus Village and the others draw
 their sprites with code of their own). The routines run on an R3000A and
-GTE interpreter taken from Tombi-Decomp. Blended pixels are shown
-half transparent; additive and subtractive blending can only be approached
-that way.
+GTE interpreter taken from Tombi-Decomp. Parts the game blends with what is
+behind them are kept apart, one layer per blend mode, and the 3D view blends
+each with the scene the way the console does: the average, the sum (the
+fog of Village of All Beginnings), the difference, or a quarter added. A
+blended part that a later part of the same sprite covers stays under it, so
+a character's shadow is drawn beneath its feet.
 
 A section creates every record of its own APD list and, from the other lists
 it has loaded, the records whose section byte names it, or names the section
@@ -227,6 +230,12 @@ instance, come from a controller).
   rate, one step per update: 60 a second, 50 on the European disc. Models
   that the game animates by rewriting
   their texture coordinates, such as water surfaces, play the same way.
+  Palettes the game rewrites as the section runs play too. Every update
+  the executable calls a routine of the area's code, and some objects load
+  palettes of their own; the palette rows they upload (the water of
+  Masakari River, four versions of one row, one every eight updates; the
+  flickering sky of area 4, from a backdrop object) are recorded by running
+  that code for a few hundred updates. The stats line counts them.
   **Save GIF** writes one cycle of the selected object: a sprite's frames, or
   for such a model its texture, either cropped to the moving UVs or as the
   whole page with them outlined.

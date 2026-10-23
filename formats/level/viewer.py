@@ -23,6 +23,7 @@ class LevelView(ModelView):
         self.scene = None
         self.label_set, self.save_labels = None, None
         self.animated = []      # [entry index, step, ticks left]
+        self.palette_steps = []     # [palette index, step, ticks left]
         self.filter = QComboBox()
         self.filter.addItems(['Whole level', 'Geometry', 'Models', 'Sprites', 'Spawned', 'Backgrounds', 'Event previews', 'Unresolved'])
         self.scope = QComboBox()
@@ -191,6 +192,10 @@ class LevelView(ModelView):
         self.town_action.setEnabled(any(e.alternative is not None for e in scene.entries))
         self.toggle_town(self.town_action.isChecked())
         self.animated = [[i, 0, e.frames[0][1]] for i, e in enumerate(scene.entries) if e.frames]
+        # Palette rows the area's update cycles, from their first step.
+        self.palette_steps = [[k, 0, cycle[0][1]] for k, (_, _, _, _, cycle) in enumerate(scene.palettes)]
+        for x, y, width, height, cycle in scene.palettes:
+            self.canvas.set_palette(x, y, width, height, cycle[0][0])
         self.assets.clear()
         for a in scene.resources:
             self.assets.addItem(a.label, a)
@@ -202,6 +207,7 @@ class LevelView(ModelView):
         resolved = sum(e.active and e.category in ('Models', 'Sprites', 'Spawned') for e in scene.entries)
         total = sum(e.active and e.placement is not None for e in scene.entries)
         summary = (f'{resolved}/{total} placed visuals resolved | {len(self.animated)} animated'
+                   + (f' | {len(scene.palettes)} palette cycles' if scene.palettes else '')
                    if not town_index else scene.entries[0].name)
         self.canvas.stats_label.setText(('2D view | ' if flat else '3D view | ') + summary + '\n'
                                         'F: frame selected | Double-click a row: frame it')
@@ -416,7 +422,7 @@ class LevelView(ModelView):
                 self.canvas.set_mesh(index, entry.alternative if value else entry.mesh)
 
     def toggle_animation(self, value):
-        if value and self.animated and self.isVisible():
+        if value and (self.animated or self.palette_steps) and self.isVisible():
             self.timer.start(max(1, round(1000 / self.scene.rate)))
         else:
             self.timer.stop()
@@ -431,6 +437,15 @@ class LevelView(ModelView):
             step = (step + 1) % len(frames)
             state[1], state[2] = step, frames[step][1]
             self.canvas.set_mesh(index, frames[step][0])
+        for state in self.palette_steps:
+            state[2] -= 1
+            if state[2] > 0:
+                continue
+            index, step, _ = state
+            x, y, width, height, cycle = self.scene.palettes[index]
+            step = (step + 1) % len(cycle)
+            state[1], state[2] = step, cycle[step][1]
+            self.canvas.set_palette(x, y, width, height, cycle[step][0])
 
     def showEvent(self, event):
         super().showEvent(event)

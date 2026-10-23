@@ -212,6 +212,23 @@ class MeshCanvas(CameraEventMixin, QOpenGLWidget):
             self.meshes[index] = mesh
             self.update()
 
+    def set_palette(self, x, y, width, height, words):
+        """Write palette rows into VRAM, as the game's LoadImage does, and
+        drop the textures drawn with them."""
+        self.vram[y:y + height, x:x + width] = np.frombuffer(words, '<u2').reshape(height, width)
+        stale = [key for key in self.textures if len(key) == 3 and isinstance(key[0], int) and key[0] >= 0
+                 and y <= (key[1] >> 6 & 511) < y + height
+                 and (key[1] & 63) * 16 < x + width and x < (key[1] & 63) * 16 + (16 if not key[0] >> 7 & 3 else 256)]
+        if stale and self.context() and self.context().isValid():
+            from OpenGL import GL as gl
+            self.makeCurrent()
+            gl.glDeleteTextures([self.textures.pop(key) for key in stale])
+            self.doneCurrent()
+        else:
+            for key in stale:
+                self.textures.pop(key)
+        self.update()
+
     def resizeEvent(self, event):
         super().resizeEvent(event)
         if getattr(self, 'auto_fit', False):

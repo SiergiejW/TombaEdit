@@ -22,6 +22,7 @@ NUDGE = 64
 # banks by slot, and the camera position.
 SPR_TABLE, WMD_TABLE, APD_TABLE = 0x1F8002C8, 0x1F800330, 0x1F800358
 CAMERA_X, CAMERA_Y = 0x1F800176, 0x1F800186
+EMPTY_LIST = 0x803E0000         # a list with no entries, for routines that take one
 # Where the resolver keeps its one object and the banks it loads.
 OBJECT, SPR_MEMORY, WMD_MEMORY, BANK_SPACING = 0x80300000, 0x80400000, 0x80800000, 0x40000
 # Scripts and tables are looked for from the executable to this far past the
@@ -56,6 +57,26 @@ def runtime_area(area, section, early=False):
     if early:
         return area
     return 1 if area == 7 else 4 if area == 12 else 2 if area == 19 and section < 2 else area
+
+
+def palette_cycles(uploads):
+    """[(x, y, width, height, [(words, ticks)])] from recorded palette
+    uploads: per row the shortest run of uploads the rest repeat, or, when
+    nothing repeats, all of them in turn (a flicker drawn from a random
+    number). Rows that never change are left out."""
+    rows = {}
+    for when, x, y, width, height, data in uploads:
+        rows.setdefault((x, y, width, height), []).append((when, data))
+    found = []
+    for rect, steps in rows.items():
+        datas = [data for _, data in steps]
+        if len(set(datas)) < 2:
+            continue
+        period = next((p for p in range(2, len(datas) // 2 + 1)
+                       if all(datas[i] == datas[i + p] for i in range(len(datas) - p))), len(datas) - 1)
+        cycle = [(datas[i], steps[i + 1][0] - steps[i][0]) for i in range(period)]
+        found.append(rect + (cycle,))
+    return found
 
 
 class InitialPoseResolver:
@@ -214,6 +235,137 @@ class InitialPoseResolver:
         except Exception:
             pass
         return []
+
+    def area_routine(self):
+        """(routine, state, copy) of the area's own update, or None.
+
+        Every update the executable calls a routine from a table indexed by
+        the area (EU 8002AFC8: table 80079B3C), with the area's state block
+        (EU 800B0D98) and the level geometry bank (word 1F800330), then
+        copies a byte of the game's state into the block's byte +1. The call
+        is found by its code: lui a1,1F80; lw a1,0330(a1); sll v0,v0,2;
+        lui at; addu; lw v0,(at); lui a0; addiu a0; jalr v0; nop; and the
+        copy that follows."""
+        words = np.frombuffer(bytes(self.exe[0x800:len(self.exe) // 4 * 4]), '<u4')
+        low = lambda word: (int(word) & 0xFFFF) - (0x10000 if word & 0x8000 else 0)
+        for i in np.nonzero(words[:-14] == 0x3C051F80)[0]:
+            w = words[i:i + 14]
+            if (w[1] == 0x8CA50330 and w[2] == 0x00021080 and w[3] >> 16 == 0x3C01 and w[5] >> 16 == 0x8C22
+                    and w[6] >> 16 == 0x3C04 and w[7] >> 16 == 0x2484 and w[8] == 0x0040F809
+                    and w[10] >> 16 == 0x3C02 and w[11] >> 16 == 0x9042 and w[12] >> 16 == 0x3C01 and w[13] >> 16 == 0xA022):
+                table = ((int(w[3]) & 0xFFFF) << 16) + low(w[5])
+                routine = self.exe_word(table + 4 * self.area)
+                if not any(start <= routine < end for start, end in self.code):
+                    return None
+                return (routine, ((int(w[6]) & 0xFFFF) << 16) + low(w[7]),
+                        (((int(w[10]) & 0xFFFF) << 16) + low(w[11]), ((int(w[12]) & 0xFFFF) << 16) + low(w[13])))
+        return None
+
+    def palette_animation(self, section, ticks=512):
+        """Palette rows the area's own update rewrites as it runs, as
+        [(x, y, width, height, [(words, ticks)])] for one cycle each.
+
+        Area 10's routine cycles the river's palette (row 511, x 304) through
+        four versions, one every eight updates. The routine is run for a few
+        hundred updates with the frame counter (1F8001F8) counting, and
+        every LoadImage call it makes is recorded."""
+        if not self.available or self.build.legacy8:
+            return []
+        found = self.area_routine()
+        if found is None:
+            return []
+        routine, state, (source, target) = found
+        r = self.reg
+
+        def update(tick):
+            self.u.context_restore(self.cpu_context)
+            self.u.reg_write(r.UC_MIPS_REG_SP, 0x803F0000)
+            self.u.reg_write(r.UC_MIPS_REG_RA, 0x80001000)
+            self.u.reg_write(r.UC_MIPS_REG_A0, state)
+            # An empty model list: the routine's set-up registers the list's
+            # models again on every call here, into the same block that
+            # keeps its palette step.
+            self.u.reg_write(r.UC_MIPS_REG_A1, EMPTY_LIST)
+            self.u.reg_write(r.UC_MIPS_REG_V1, max(0, section))
+            self.u.emu_start(routine, 0x80001000, count=200000)
+            self.write(target, self.read(source, 1))
+
+        return palette_cycles(self.record_palettes(update, ticks))
+
+    def object_palettes(self, placement, ticks=512):
+        """Palette rows a placed object's update rewrites as it runs, in the
+        form of palette_animation(). Area 4's sky is lit this way by a layer
+        7 object (type 09). Only objects whose routine can reach LoadImage
+        are run."""
+        if not self.available or self.build.legacy8:
+            return []
+        handler = self.handler_address(placement)
+        state = self.object_states.get((placement.raw, placement.position))
+        if handler is None or state is None or handler not in self.image_loaders():
+            return []
+
+        def update(tick):
+            if tick == 0:
+                self.write(OBJECT, state)
+            self.run_handler(handler, OBJECT, 20000)
+
+        return palette_cycles(self.record_palettes(update, ticks))
+
+    def record_palettes(self, update, ticks):
+        """[(tick, x, y, width, height, words)] of the palette rows LoadImage
+        is given while update(tick) runs for `ticks` updates, from the
+        state the section starts in."""
+        load_image = self.build.get_clut + 0xFA0
+        if self.read(load_image, 4) != bytes.fromhex('e0ffbd27'):
+            return []
+        from unicorn import UC_HOOK_CODE
+        r, uploads, tick = self.reg, [], [0]
+
+        def upload(uc, address, size, user):
+            x, y, width, height = struct.unpack('<4h', self.read(uc.reg_read(r.UC_MIPS_REG_A0), 8))
+            if 0 < width <= 256 and 0 < height <= 16 and 0 <= x < 1024 and 448 <= y < 512:
+                uploads.append((tick[0], x, y, width, height, self.read(uc.reg_read(r.UC_MIPS_REG_A1), width * height * 2)))
+            uc.reg_write(r.UC_MIPS_REG_V0, 0)
+            uc.reg_write(r.UC_MIPS_REG_PC, uc.reg_read(r.UC_MIPS_REG_RA))
+
+        handle = self.u.hook_add(UC_HOOK_CODE, upload, begin=load_image, end=load_image)
+        self.write(0x80000000, self.baseline)
+        self.write(0x1F800000, self.scratch)
+        self.write(EMPTY_LIST, bytes(16))
+        try:
+            for tick[0] in range(ticks):
+                self.write(0x1F8001F8, struct.pack('<H', tick[0]))
+                update(tick[0])
+        except Exception:
+            pass
+        finally:
+            self.u.hook_del(handle)
+            self.write(0x80000000, self.baseline)
+            self.write(0x1F800000, self.scratch)
+        return uploads
+
+    def image_loaders(self):
+        """Routines of the loaded code that call LoadImage, directly or
+        through up to three others."""
+        if hasattr(self, '_image_loaders'):
+            return self._image_loaders
+        import bisect
+        from formats.sprites.animations import routines
+        callers = {}
+        for base, data in ((self.build.overlay, bytes(self.overlay_code)), (self.base, bytes(self.exe[0x800:]))):
+            starts = routines(base, data)
+            words = np.frombuffer(data[:len(data) // 4 * 4], '<u4')
+            for i in np.nonzero(words >> 26 == 3)[0]:
+                k = bisect.bisect_right(starts, base + 4 * int(i)) - 1
+                if k >= 0:
+                    target = 0x80000000 | (int(words[i]) & 0x3FFFFFF) << 2
+                    callers.setdefault(target, set()).add(starts[k])
+        found, edge = set(), {self.build.get_clut + 0xFA0}
+        for _ in range(4):
+            edge = {caller for callee in edge for caller in callers.get(callee, ())} - found
+            found |= edge
+        self._image_loaders = found
+        return found
 
     def model_animation(self, placement):
         """Versions of a layer 8 object's model as its handler rewrites it.

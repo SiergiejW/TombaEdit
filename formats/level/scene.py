@@ -7,7 +7,7 @@ from formats.level.apd import parse_apd, Placement
 from formats.level.runtime import InitialPoseResolver, OBJECT
 # At most this many spawned objects are added to a section.
 SPAWN_LIMIT = 160
-from formats.level.draw import render as render_primitives, blend_modes
+from formats.level.draw import render as render_primitives, render_layers, blend_modes
 from formats.models.wmd import parse_wmd
 from formats.models.four import rebuild_mesh
 from psx.graphics import sprite_frames, render_sprite, texture_page
@@ -92,6 +92,9 @@ class LevelScene:
     locations: list = field(default_factory=list)
     location_index: int = 0
     town_views: list = field(default_factory=list)
+    # Palette rows the area's own update cycles: [(x, y, width, height,
+    # [(words, ticks)])], one cycle each.
+    palettes: list = field(default_factory=list)
     # Where the build loads the area's code overlay; 0 when not known.
     overlay: int = 0
     view_2d: bool = False
@@ -519,8 +522,7 @@ def build_scene(project, path, index):
             picture = render_primitives(prims, vram)
             layers = None
             if picture is not None and blend_modes(prims):
-                layers = (render_primitives(prims, vram, 'solid')[0],
-                          [(mode, render_primitives(prims, vram, mode)[0]) for mode in blend_modes(prims)])
+                layers = render_layers(prims, vram)
             drawn_pictures[key] = None if picture is None else picture + (layers,)
         return drawn_pictures[key]
 
@@ -860,6 +862,19 @@ def build_scene(project, path, index):
                        collision_records, context, locations, index)
     scene.overlay = resolver.build.overlay if resolver.available else 0
     scene.rate = 50 if resolver.available and 'European' in resolver.build.name else 60
+    scene.palettes = resolver.palette_animation(index - 1) if resolver.available and index else []
+    # Objects that rewrite palettes as they run (area 4's sky), one cycle
+    # per row: the first object found for a row is the one kept.
+    rows = {palette[:4] for palette in scene.palettes}
+    for entry in entries:
+        if entry.active and entry.placement is not None and resolver.available and entry.handler in resolver.image_loaders():
+            for palette in resolver.object_palettes(entry.placement):
+                if palette[:4] not in rows:
+                    rows.add(palette[:4])
+                    scene.palettes.append(palette)
+    if scene.palettes:
+        scene.notes.append(f'{len(scene.palettes)} palette rows cycled as the section runs: '
+                           + ', '.join(f'({x}, {y}) {len(cycle)} steps' for x, y, _, _, cycle in scene.palettes) + '.')
     from formats.level.flat import is_flat
     scene.view_2d = is_flat(entries)
     if town is not None:

@@ -350,15 +350,29 @@ def _texels(vram, tpage, clut, cache):
     return cache[key]
 
 
-def render(prims, vram, layer=None):
+def render(prims, vram):
     """(RGBA image, left, top) of primitives over nothing; left and top are
     the image's offset from the object's position. None when nothing is
-    drawn.
+    drawn. Blended texels are mixed with what the sprite itself draws under
+    them."""
+    return _render(prims, vram, None)
 
-    `layer` picks part of the picture: 'solid' for the texels drawn as they
-    are, or a blend mode (0 to 3) for the texels blended that way, as their
-    own colour, to be blended with the scene behind. By default blended
-    texels are mixed with what the sprite itself draws under them."""
+
+def render_layers(prims, vram):
+    """(solid image, [(blend mode, image)]) of primitives, in the frame of
+    render(): the texels drawn as they are, and per blend mode the texels
+    blended that way, as their own colour, to be blended with the scene
+    behind. Primitives are taken in drawing order, so what a later solid
+    one covers is left out of the blended layers (a shadow drawn before the
+    figure stands under it)."""
+    layers = {'solid': None, **{mode: None for mode in blend_modes(prims)}}
+    found = _render(prims, vram, layers)
+    if found is None:
+        return None
+    return layers['solid'], [(mode, image) for mode, image in layers.items() if mode != 'solid']
+
+
+def _render(prims, vram, layers):
     from PIL import Image
     if not prims:
         return None
@@ -369,13 +383,17 @@ def render(prims, vram, layer=None):
     if not (0 < width <= 2048 and 0 < height <= 2048):
         return None
     canvas = np.zeros((height, width, 4), np.float32)
+    split = None if layers is None else {key: np.zeros((height, width, 4), np.float32) for key in layers}
     cache = {}
     for prim in prims:
         corners = [(x - left, y - top) for x, y in prim.corners]
         covered = np.zeros((height, width), bool)
         for tri in ((0, 1, 2), (1, 2, 3)):
             _triangle(canvas, prim, [corners[k] for k in tri],
-                      [prim.uv[k] for k in tri] if prim.textured else None, vram, cache, covered, layer)
+                      [prim.uv[k] for k in tri] if prim.textured else None, vram, cache, covered, split)
+    if split is not None:
+        for key, pixels in split.items():
+            layers[key] = Image.fromarray(np.clip(pixels, 0, 255).astype(np.uint8), 'RGBA')
     image = Image.fromarray(np.clip(canvas, 0, 255).astype(np.uint8), 'RGBA')
     return image, left, top
 
@@ -385,7 +403,7 @@ def blend_modes(prims):
     return sorted({prim.mode for prim in prims if prim.blend})
 
 
-def _triangle(canvas, prim, xy, uv, vram, cache, covered=None, layer=None):
+def _triangle(canvas, prim, xy, uv, vram, cache, covered=None, split=None):
     (x0, y0), (x1, y1), (x2, y2) = xy
     area = (x1 - x0) * (y2 - y0) - (x2 - x0) * (y1 - y0)
     if area == 0:
@@ -427,12 +445,23 @@ def _triangle(canvas, prim, xy, uv, vram, cache, covered=None, layer=None):
             rgb = np.clip(rgb * (np.array(prim.colour, np.float32) / 128), 0, 255)
         blended = solid & bool(prim.blend) & (words >> 15 == 1)
     region = canvas[lo_y:hi_y, lo_x:hi_x]
-    if layer is not None:
-        shown = solid & ~blended if layer == 'solid' else blended if prim.mode == layer else None
-        if shown is not None:
-            region[..., :3][shown] = rgb[shown]
-            region[..., 3][shown] = 255
-        return
+    if split is not None:
+        # A solid texel hides whatever was drawn there before; a blended one
+        # is mixed with what is under it, so it goes on its mode's layer and
+        # leaves the solid layer below it alone.
+        opaque = solid & ~blended
+        for key, pixels in split.items():
+            part = pixels[lo_y:hi_y, lo_x:hi_x]
+            if key == 'solid':
+                part[..., :3][opaque] = rgb[opaque]
+                part[..., 3][opaque] = 255
+            elif key == prim.mode:
+                part[..., :3][blended] = rgb[blended]
+                part[..., 3][blended] = 255
+            else:
+                part[..., 3][opaque | blended] = 0
+            if key != 'solid':
+                part[..., 3][opaque] = 0
     back = region[..., :3].astype(np.int16) >> 3
     front = rgb.astype(np.int16) >> 3
     if prim.mode == 0:
