@@ -93,11 +93,10 @@ class ImageView(QWidget):
             self.canvas.set_zoom([1, 1, 2, 4, 8][self.zoom.currentIndex()])
 
     def show_area(self, left, top, right, bottom):
-        """Zoom to at least 200% and scroll so the given pixels are centred."""
+        """Scroll so the given pixels are centred, at the zoom chosen; Fit
+        shows them in the whole picture."""
         if self.image is None:
             return
-        if self.zoom.currentIndex() < 2:
-            self.zoom.setCurrentIndex(2)
         scale = self.canvas.zoom
         for bar, middle in ((self.view.horizontalScrollBar(), (left + right + 1) / 2),
                             (self.view.verticalScrollBar(), (top + bottom + 1) / 2)):

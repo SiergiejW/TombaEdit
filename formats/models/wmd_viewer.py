@@ -26,6 +26,9 @@ from formats.models.selection import mesh_outline, POLYGON_OUTLINE, GEOMETRY_OUT
 # Downward tilt a level opens with, close to the game's own camera.
 LEVEL_TILT = 10.0
 LABEL = 5   # the model list's column of labels
+# Level objects at least this wide or tall are framed tightly, smaller ones
+# from further out.
+CONTEXT_SIZE = 320
 from PIL import ImageDraw
 
 class MeshCanvas(CameraEventMixin, QOpenGLWidget):
@@ -183,6 +186,12 @@ class MeshCanvas(CameraEventMixin, QOpenGLWidget):
             distance = max(height / 2 / half, width / 2 / (half * aspect)) * 1.08 + depth / 2
             if not self.flat_mode:
                 margin = max(distance, self.radius * 0.2) / (self.radius * 1.2)
+        if indices is not None and found is not None and getattr(self, 'frame_context', False):
+            # One object of a level is framed with some of the level round
+            # it: twice as far for something the size of a pickup, easing
+            # to the tight framing for anything a screen wide.
+            size = float(max(found[1][0] - found[0][0], found[1][1] - found[0][1]))
+            margin *= 1 + max(0., min(1., (CONTEXT_SIZE - size) / (CONTEXT_SIZE - 32)))
         frame = camera.glide_frame if animate else camera.frame
         frame(self.center, self.radius, heading=heading, pitch=pitch, margin=margin)
         # Until the camera is moved by hand, a resize keeps everything framed.
@@ -798,9 +807,14 @@ class ModelView(QWidget):
         self.uv = ImageView()
         sl.addWidget(self.uv)
         split.addWidget(side)
-        split.setSizes([280, 680, 300])
+        # The view gets the room: the lists keep their width when the
+        # window grows.
+        split.setSizes([300, 1000, 320])
+        for pane, stretch in enumerate((0, 1, 0)):
+            split.setStretchFactor(pane, stretch)
         layout.addWidget(split, 1)
         self.canvas.picked.connect(self.show_polygon)
+        self.canvas.picked.connect(self.picked_nothing)
         if meshes is not None:
             self.set_data(meshes, vram, code)
 
@@ -813,10 +827,6 @@ class ModelView(QWidget):
         self.label_lookup = label_lookup
         self.model_names = names or {}
         self.objects.setColumnHidden(LABEL, False)
-        # A list with labels needs the room for them.
-        sizes = self.split.sizes()
-        if rename_callback is not None and sum(sizes) and sizes[0] < 480:
-            self.split.setSizes([480, max(300, sizes[1] - (480 - sizes[0])), sizes[2]])
         self.objects.setSelectionMode(QAbstractItemView.SelectionMode.SingleSelection if rename_callback is None
                                       else QAbstractItemView.SelectionMode.ExtendedSelection)
         had_meshes = bool(self.canvas.meshes)
@@ -830,6 +840,7 @@ class ModelView(QWidget):
         level = code in (0x5080, 0x50FF) if level is None else level
         self.canvas.view_angles = (MODEL_HEADING, LEVEL_TILT if level else MODEL_PITCH)
         self.canvas.view_margin = 1.0 if level else 1.25
+        self.canvas.frame_context = level
         self.canvas.compute_spread_offsets()
         self.canvas.selected = None
         self.objects.blockSignals(True)
@@ -975,6 +986,17 @@ class ModelView(QWidget):
         self.canvas.selected = None
         self.show_polygon(None)
         self.canvas.fit()
+
+    def picked_nothing(self, selected):
+        """A click on the background clears the selection."""
+        if selected is not None:
+            return
+        self.canvas.selected_model = None
+        self.objects.blockSignals(True)
+        self.objects.clearSelection()
+        self.objects.setCurrentCell(-1, -1)
+        self.objects.blockSignals(False)
+        self.canvas.update()
 
     def show_polygon(self, selected, announce=True):
         if selected is None:

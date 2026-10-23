@@ -46,6 +46,7 @@ class AnimationView(QWidget):
         self.pictures = {}
         self.entry_flags = None
         self.label_set, self.save_labels, self.bank_key = None, None, ''
+        self.palette_source, self.clut_window = None, None
         layout = QVBoxLayout(self)
         tools = QHBoxLayout()
         self.filter = QComboBox()
@@ -98,10 +99,15 @@ class AnimationView(QWidget):
         self.marker = QCheckBox('Origin')
         self.marker.setToolTip('Mark the object\'s position.')
         self.marker.toggled.connect(self.redraw)
+        self.cluts = QPushButton('CLUTs...')
+        self.cluts.setToolTip('Pick the palette pieces of the frame on screen are drawn through, '
+                              'as the Sprites tab does; playback draws with it.')
+        self.cluts.clicked.connect(self.open_cluts)
+        self.cluts.setVisible(False)
         gif, strip = QPushButton('GIF...'), QPushButton('Strip...')
         gif.clicked.connect(self.save_gif)
         strip.clicked.connect(self.save_strip)
-        for widget in (self.play, back, forward, self.speed, self.marker):
+        for widget in (self.play, back, forward, self.speed, self.marker, self.cluts):
             controls.addWidget(widget)
         controls.addStretch()
         controls.addWidget(gif)
@@ -273,6 +279,29 @@ class AnimationView(QWidget):
             if row >= 0:
                 self.table.setItem(row, 8, QTableWidgetItem(name.strip()))
 
+    def set_palette_source(self, sprites):
+        """The SpriteView whose palette overrides the frames are drawn with."""
+        self.palette_source = sprites
+        self.cluts.setVisible(sprites is not None and sprites.renderer is None)
+
+    def open_cluts(self):
+        from formats.sprites.clut_window import ClutWindow
+        if self.palette_source is None:
+            return
+        if self.clut_window is None:
+            self.clut_window = ClutWindow(self.palette_source, self)
+        if self.script is not None:
+            self.clut_window.follow(self.script.steps[self.step].frame)
+        self.clut_window.show()
+        self.clut_window.raise_()
+
+    def pictures_changed(self):
+        """The frames are drawn differently now: draw them again."""
+        self.pictures.clear()
+        if self.script is not None:
+            self.box = self.bounds(self.script)
+        self.redraw()
+
     def frame_picture(self, frame):
         if frame not in self.pictures:
             self.pictures[frame] = self.picture(frame)
@@ -305,6 +334,8 @@ class AnimationView(QWidget):
             return
         step = self.script.steps[self.step]
         self.view.set_image(self.compose(step), subject=self.script.address)
+        if self.clut_window is not None and self.clut_window.isVisible():
+            self.clut_window.follow(step.frame)
         flags = {0: '', 0x8000: ', end', 0x4000: ', then jumps', 0xC000: ', then jumps and reports the end'}[step.flags]
         self.status.setText(f'Step {self.step + 1}/{len(self.script.steps)}: frame {step.frame:02X}, '
                             f'{step.ticks} updates, box {step.box}, argument {step.arg}{flags} '

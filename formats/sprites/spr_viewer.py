@@ -71,6 +71,7 @@ class SpriteView(QWidget):
         self.cache = {}
         self.texture_cache = {}
         self.clut_overrides = {}  # (sprite, part) -> palette address; preview only
+        self.animation_player = None    # the Animations tab drawing these frames
         self.frame_index = 0
         self.entry_flags = None
         layout = QVBoxLayout(self)
@@ -491,8 +492,10 @@ class SpriteView(QWidget):
               + ('' if self.renderer or not frame else f' | texture page base 0x{self.base_for(row):X}'))
 
     def set_animations(self, player):
-        # Sprite inspection remains static. Playback belongs to AnimationView.
+        # Sprite inspection remains static. Playback belongs to AnimationView,
+        # which draws the frames as this view does, palette overrides too.
         self.animation_player = player
+        player.set_palette_source(self)
 
     def frame_sprite(self, row, column):
         if row < 0:
@@ -550,17 +553,25 @@ class SpriteView(QWidget):
             self.info.setText('Select a sprite to recolour it, or set the crosshair to recolour the whole bank.')
             return
         sprites = range(len(self.frames)) if scope == 2 else [self.frame_index]
-        for sprite in sprites:
-            for part in range(len(self.frames[sprite])) if scope else selected:
-                self.clut_overrides[sprite, part] = value
-        self.cache.clear()
-        self.refresh()
+        self.recolour([(sprite, part) for sprite in sprites
+                       for part in (range(len(self.frames[sprite])) if scope else selected)], value)
+
+    def recolour(self, targets, value):
+        """Draw these (sprite, piece) pairs through palette `value`."""
+        for sprite, part in targets:
+            self.clut_overrides[sprite, part] = value
+        self.palettes_changed()
 
     def reset_palettes(self):
         self.clut_overrides.clear()
+        self.palettes_changed()
+        self.show_in_vram()
+
+    def palettes_changed(self):
         self.cache.clear()
         self.refresh()
-        self.show_in_vram()
+        if self.animation_player is not None:
+            self.animation_player.pictures_changed()
 
     def selected(self):
         indices = self.selected_indices()

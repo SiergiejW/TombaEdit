@@ -251,7 +251,8 @@ instance, come from a controller).
   their foreground pieces over it. Behind all of it the view is cleared to
   the colour at the top edge of the scenery, standing in for the game's own
   sky colour, which is not stored with the section.
-- **Collision** overlays the section's WHM data: green walkable surfaces,
+- **Collision** overlays the section's WHM data (opening the Collision page
+  of the side panel turns it on): green walkable surfaces,
   magenta surfaces with special attributes, and orange outlines around solid
   ranges. Each plane is drawn at the depth where the objects that use it
   stand. Sections whose path runs into the screen, such as two of the
@@ -269,6 +270,10 @@ instance, come from a controller).
   Town characters are created by the towns' controllers and scripts rather
   than by placement records; they are listed as spawned objects and event
   previews.
+- **F** or double-clicking a row frames the object with some of the level
+  round it: twice as far out for something the size of a pickup, closer
+  for larger objects, as tight as before for anything a screen wide.
+  Clicking where nothing is drawn clears the selection.
 - The **Class** column lists each object's APD layer and type, the class's
   name, and in brackets the label of the first labelled sprite frame the
   object shows. Right-click objects and choose **Rename class...** (or press
@@ -486,6 +491,14 @@ at the game's rate, which can be changed, or step by step; each step shows
 its frame, duration, hit box and argument. **GIF** and **Strip** save one
 pass.
 
+**CLUTs...** opens a window on the frame on screen: its pieces, with the
+palette each is drawn through, and the section's VRAM. Putting the crosshair
+on a palette redraws through it what *Crosshair recolours* names: the
+selected pieces, the whole frame, every frame of the animation, or the
+whole bank. These are the same palette choices as the Sprites tab's, so
+both tabs, playback and saved GIFs draw with them; *Reset CLUTs* undoes
+them. The window follows the animation as it plays.
+
 ### Scripts
 
 A `.WSS` file is an event script: the instructions that run a scene. It opens
@@ -609,9 +622,11 @@ number; they can be given one on the Glyphs tab.
 
 ## Known gaps
 
-- Textures and palettes the game uploads while running, other than Tomba's
-  frames. Objects that depend on them keep their markers.
-- Additive and subtractive blending, shown as partial transparency.
+- Textures the game uploads while running, other than Tomba's frames.
+  Objects that depend on them keep their markers. Palettes it cycles are
+  played on the level, but sprite pictures keep their first palette.
+- Blending in the Sprites and Animations tabs, shown as partial
+  transparency; the level view blends as the console does.
 - Objects spawned by Tomba himself, by objects later in play, or under event
   conditions other than a new game's.
 - The meaning of most collision attribute bits, of town cell values, and of

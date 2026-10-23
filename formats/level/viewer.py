@@ -68,6 +68,7 @@ class LevelView(ModelView):
         self.inspect_tabs.currentChanged.connect(lambda index: [
             object_buttons.itemAt(i).widget().setVisible(index == 0)
             for i in range(object_buttons.count()) if object_buttons.itemAt(i).widget()])
+        self.inspect_tabs.currentChanged.connect(self.inspector_changed)
         self.canvas.line_picker = lambda p: (self.inspect_tabs.currentIndex() == 1 and
                                             self.collision_inspector.pick(p))
         # The triangle count's column carries the object class here.
@@ -78,7 +79,7 @@ class LevelView(ModelView):
         self.objects.setMinimumWidth(200)
         # The pane has to be as wide as the list, or the last column is cut off.
         self.inspect_tabs.parentWidget().setMinimumWidth(240)
-        self.split.setSizes([470, 640, 280])
+        self.split.setSizes([320, 1000, 320])
         self.class_icons = {}
         self.objects.cellClicked.connect(self.show_entry)
         self.canvas.picked.connect(self.picked_entry)
@@ -313,6 +314,11 @@ class LevelView(ModelView):
     def choose_town_view(self, row):
         scene = self.section_scene if row == 0 else self.section_scene.town_views[row - 1][1]
         self.set_scene(scene, row)
+
+    def inspector_changed(self, index):
+        """The Collision page shows what it inspects."""
+        if index == 1 and self.collision_action.isEnabled() and not self.collision_action.isChecked():
+            self.collision_action.setChecked(True)
 
     def toggle_collision(self, value):
         self.canvas.show_lines = value
