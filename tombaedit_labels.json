@@ -1136,10 +1136,10 @@
     },
     {
       "content": "519333fd2bdd6c89",
-      "start": "000000",
-      "end": "000000",
+      "start": "0",
+      "end": "0",
       "type": "SPR frame",
-      "name": "Mushroom plant"
+      "name": "Mushroom plant debris"
     },
     {
       "content": "2a60979820ab82bd",
@@ -1601,7 +1601,7 @@
       "start": "E690",
       "end": "1EBB",
       "type": "SPR",
-      "name": "Cursor"
+      "name": "System"
     },
     {
       "content": "0c38d8c846f7bc0f",
@@ -3471,6 +3471,3709 @@
       "end": "0",
       "type": "Object class",
       "name": "Motocross Man"
+    },
+    {
+      "content": "3d2a01781e1b010c",
+      "start": "0",
+      "end": "0",
+      "type": "SPR animation",
+      "name": "running"
+    },
+    {
+      "content": "d5241f4c198d83dc",
+      "start": "0",
+      "end": "0",
+      "type": "SPR animation",
+      "name": "stand back"
+    },
+    {
+      "content": "55182e370a74f258",
+      "start": "0",
+      "end": "0",
+      "type": "SPR animation",
+      "name": "stand front"
+    },
+    {
+      "content": "22f11e0e55d71902",
+      "start": "0",
+      "end": "0",
+      "type": "SPR animation",
+      "name": "stang back"
+    },
+    {
+      "content": "36e8b4ca6f76b28d",
+      "start": "0",
+      "end": "0",
+      "type": "SPR animation",
+      "name": "stand side"
+    },
+    {
+      "content": "8028403d31a37c4d",
+      "start": "0",
+      "end": "0",
+      "type": "SPR animation",
+      "name": "walk side"
+    },
+    {
+      "content": "d08f7601e3e53b2b",
+      "start": "0",
+      "end": "0",
+      "type": "SPR animation",
+      "name": "walk side faster"
+    },
+    {
+      "content": "155ea5b08e18a1e6",
+      "start": "0",
+      "end": "0",
+      "type": "SPR animation",
+      "name": "brace"
+    },
+    {
+      "content": "09928fc2eeff6a03",
+      "start": "0",
+      "end": "0",
+      "type": "SPR animation",
+      "name": "brace"
+    },
+    {
+      "content": "0addcf4138552182",
+      "start": "0",
+      "end": "0",
+      "type": "SPR animation",
+      "name": "spin 1 frame"
+    },
+    {
+      "content": "964c195f2fb07e39",
+      "start": "0",
+      "end": "0",
+      "type": "SPR animation",
+      "name": "lay down"
+    },
+    {
+      "content": "3fdedf523d952c69",
+      "start": "0",
+      "end": "0",
+      "type": "SPR animation",
+      "name": "lay face forward, get up"
+    },
+    {
+      "content": "cb5515560ee78a8a",
+      "start": "0",
+      "end": "0",
+      "type": "SPR animation",
+      "name": "falling"
+    },
+    {
+      "content": "ea4b859aea2e00ce",
+      "start": "0",
+      "end": "0",
+      "type": "SPR animation",
+      "name": "scared sitting"
+    },
+    {
+      "content": "656df16dea5c48f6",
+      "start": "0",
+      "end": "0",
+      "type": "SPR animation",
+      "name": "upward ascend"
+    },
+    {
+      "content": "0c18ee96775fe689",
+      "start": "0",
+      "end": "0",
+      "type": "SPR animation",
+      "name": "grab"
+    },
+    {
+      "content": "48a99f67cb09d1e6",
+      "start": "0",
+      "end": "0",
+      "type": "SPR animation",
+      "name": "throw 360"
+    },
+    {
+      "content": "6fd13f0996d30031",
+      "start": "0",
+      "end": "0",
+      "type": "SPR animation",
+      "name": "mid roll frame"
+    },
+    {
+      "content": "57394bcd0e9a83a7",
+      "start": "0",
+      "end": "0",
+      "type": "SPR animation",
+      "name": "throw downward"
+    },
+    {
+      "content": "fdbc0fb7c9b1c9f1",
+      "start": "0",
+      "end": "0",
+      "type": "SPR animation",
+      "name": "hold grab"
+    },
+    {
+      "content": "08e952cf699085c1",
+      "start": "0",
+      "end": "0",
+      "type": "SPR animation",
+      "name": "ledge grabbed"
+    },
+    {
+      "content": "af5c02b77e8c7d19",
+      "start": "0",
+      "end": "0",
+      "type": "SPR animation",
+      "name": "ledge grabbed legs move"
+    },
+    {
+      "content": "b34daf7d85b1e858",
+      "start": "0",
+      "end": "0",
+      "type": "SPR animation",
+      "name": "jump done"
+    },
+    {
+      "content": "3467365c4f657bec",
+      "start": "0",
+      "end": "0",
+      "type": "SPR animation",
+      "name": "jump done back"
+    },
+    {
+      "content": "90affaae3d97c166",
+      "start": "0",
+      "end": "0",
+      "type": "SPR animation",
+      "name": "climb frame"
+    },
+    {
+      "content": "d525671c86c9c9b5",
+      "start": "0",
+      "end": "0",
+      "type": "SPR animation",
+      "name": "climb animation"
+    },
+    {
+      "content": "e9d0468196655549",
+      "start": "0",
+      "end": "0",
+      "type": "SPR animation",
+      "name": "climb faster animation"
+    },
+    {
+      "content": "f48c6f1b48a71b81",
+      "start": "0",
+      "end": "0",
+      "type": "SPR animation",
+      "name": "climb down frames"
+    },
+    {
+      "content": "8b0800f679399bbe",
+      "start": "0",
+      "end": "0",
+      "type": "SPR animation",
+      "name": "climb grab"
+    },
+    {
+      "content": "4cdfae5124fb4f1c",
+      "start": "0",
+      "end": "0",
+      "type": "SPR animation",
+      "name": "ready to jump back"
+    },
+    {
+      "content": "5d039ddeb7ea659f",
+      "start": "0",
+      "end": "0",
+      "type": "SPR animation",
+      "name": "jumps back frame"
+    },
+    {
+      "content": "136ec4d396206589",
+      "start": "0",
+      "end": "0",
+      "type": "SPR animation",
+      "name": "climb back frame"
+    },
+    {
+      "content": "1ff7dcd566b068f9",
+      "start": "0",
+      "end": "0",
+      "type": "SPR animation",
+      "name": "climb back animation"
+    },
+    {
+      "content": "4c08eba66cee6dcd",
+      "start": "0",
+      "end": "0",
+      "type": "SPR animation",
+      "name": "ready to jump front"
+    },
+    {
+      "content": "e084bca492828ba9",
+      "start": "0",
+      "end": "0",
+      "type": "SPR animation",
+      "name": "jumping front"
+    },
+    {
+      "content": "a270891eb03e0f4e",
+      "start": "0",
+      "end": "0",
+      "type": "SPR animation",
+      "name": "grab side animation"
+    },
+    {
+      "content": "42add0d36ebd0e0d",
+      "start": "0",
+      "end": "0",
+      "type": "SPR animation",
+      "name": "one hand hang"
+    },
+    {
+      "content": "763af8bdbdd0f332",
+      "start": "0",
+      "end": "0",
+      "type": "SPR animation",
+      "name": "mechanism"
+    },
+    {
+      "content": "1f8b01402c270117",
+      "start": "0",
+      "end": "0",
+      "type": "SPR animation",
+      "name": "one hang swing"
+    },
+    {
+      "content": "5e517cac6c2fcae3",
+      "start": "0",
+      "end": "0",
+      "type": "SPR animation",
+      "name": "one hand hanging legs move"
+    },
+    {
+      "content": "33e7181a31831209",
+      "start": "0",
+      "end": "0",
+      "type": "SPR animation",
+      "name": "emptying stomach"
+    },
+    {
+      "content": "24bdc84a5f5db322",
+      "start": "0",
+      "end": "0",
+      "type": "SPR animation",
+      "name": "laugh front"
+    },
+    {
+      "content": "801ecf228beb0cef",
+      "start": "0",
+      "end": "0",
+      "type": "SPR animation",
+      "name": "push side"
+    },
+    {
+      "content": "1d3615e6310b9cca",
+      "start": "0",
+      "end": "0",
+      "type": "SPR animation",
+      "name": "sit frame side"
+    },
+    {
+      "content": "58cf782b2978bc3a",
+      "start": "0",
+      "end": "0",
+      "type": "SPR animation",
+      "name": "standing up side"
+    },
+    {
+      "content": "1c13ef9d0509ea38",
+      "start": "0",
+      "end": "0",
+      "type": "SPR animation",
+      "name": "letting go of hanging side"
+    },
+    {
+      "content": "cdd639f93901b051",
+      "start": "0",
+      "end": "0",
+      "type": "SPR animation",
+      "name": "climbing rope side"
+    },
+    {
+      "content": "1120a54ac4e28d45",
+      "start": "0",
+      "end": "0",
+      "type": "SPR animation",
+      "name": "sliding down rotating"
+    },
+    {
+      "content": "4febe14b73f6e2b3",
+      "start": "0",
+      "end": "0",
+      "type": "SPR animation",
+      "name": "rotating over"
+    },
+    {
+      "content": "637c9ff165ac8724",
+      "start": "0",
+      "end": "0",
+      "type": "SPR animation",
+      "name": "flip over side"
+    },
+    {
+      "content": "2cde5601ad7c3752",
+      "start": "0",
+      "end": "0",
+      "type": "SPR animation",
+      "name": "animal dash"
+    },
+    {
+      "content": "cdfc95a0f70bae6b",
+      "start": "0",
+      "end": "0",
+      "type": "SPR animation",
+      "name": "crying side"
+    },
+    {
+      "content": "67da8b50581bc440",
+      "start": "0",
+      "end": "0",
+      "type": "SPR animation",
+      "name": "walk back"
+    },
+    {
+      "content": "6b00cc672dc5476b",
+      "start": "0",
+      "end": "0",
+      "type": "SPR animation",
+      "name": "walk front"
+    },
+    {
+      "content": "fcde17db706c13b0",
+      "start": "0",
+      "end": "0",
+      "type": "SPR animation",
+      "name": "falling side"
+    },
+    {
+      "content": "ee4a7c3d0f8d5216",
+      "start": "0",
+      "end": "0",
+      "type": "SPR animation",
+      "name": "crying walk side"
+    },
+    {
+      "content": "c977154bcc8de63b",
+      "start": "0",
+      "end": "0",
+      "type": "SPR animation",
+      "name": "hurray hops"
+    },
+    {
+      "content": "ecba4cccf9924151",
+      "start": "0",
+      "end": "0",
+      "type": "SPR animation",
+      "name": "scared side"
+    },
+    {
+      "content": "132b31a3f4a7d12d",
+      "start": "0",
+      "end": "0",
+      "type": "SPR animation",
+      "name": "scared falling over side"
+    },
+    {
+      "content": "fc98cfb01bdf479d",
+      "start": "0",
+      "end": "0",
+      "type": "SPR animation",
+      "name": "falling side"
+    },
+    {
+      "content": "406c6cbb1ffd968e",
+      "start": "0",
+      "end": "0",
+      "type": "SPR animation",
+      "name": "fall over lying side"
+    },
+    {
+      "content": "eb2593970b7e1fe8",
+      "start": "0",
+      "end": "0",
+      "type": "SPR animation",
+      "name": "jumping back side"
+    },
+    {
+      "content": "ec0b78368585f505",
+      "start": "0",
+      "end": "0",
+      "type": "SPR animation",
+      "name": "shocked tomba side"
+    },
+    {
+      "content": "98d39109f5fec07b",
+      "start": "0",
+      "end": "0",
+      "type": "SPR animation",
+      "name": "looking around cautiously"
+    },
+    {
+      "content": "adf52af73bcb2524",
+      "start": "0",
+      "end": "0",
+      "type": "SPR animation",
+      "name": "swimming"
+    },
+    {
+      "content": "cff4b216443c28ee",
+      "start": "0",
+      "end": "0",
+      "type": "SPR animation",
+      "name": "swimming side forward"
+    },
+    {
+      "content": "03a2cae2ec610a8f",
+      "start": "0",
+      "end": "0",
+      "type": "SPR animation",
+      "name": "diving animation forward"
+    },
+    {
+      "content": "937464750da24f3b",
+      "start": "0",
+      "end": "0",
+      "type": "SPR animation",
+      "name": "propelling diving forward"
+    },
+    {
+      "content": "12a046d285ea69a3",
+      "start": "0",
+      "end": "0",
+      "type": "SPR animation",
+      "name": "crying back"
+    },
+    {
+      "content": "4d55c9a7ae92f767",
+      "start": "0",
+      "end": "0",
+      "type": "SPR animation",
+      "name": "lauginh back"
+    },
+    {
+      "content": "e30a3f1d2ba22a52",
+      "start": "0",
+      "end": "0",
+      "type": "SPR animation",
+      "name": "sliding down looking down"
+    },
+    {
+      "content": "02fe3bbdc36a70c9",
+      "start": "0",
+      "end": "0",
+      "type": "SPR animation",
+      "name": "talking"
+    },
+    {
+      "content": "a4801b777a4ca1bd",
+      "start": "0",
+      "end": "0",
+      "type": "SPR animation",
+      "name": "nodding side"
+    },
+    {
+      "content": "91adae90aa573546",
+      "start": "0",
+      "end": "0",
+      "type": "SPR animation",
+      "name": "getting shocked electricity"
+    },
+    {
+      "content": "1430f99b71c2581b",
+      "start": "0",
+      "end": "0",
+      "type": "SPR animation",
+      "name": "shaking off water"
+    },
+    {
+      "content": "015e8e1386e2cf35",
+      "start": "0",
+      "end": "0",
+      "type": "SPR animation",
+      "name": "shaking off water frame"
+    },
+    {
+      "content": "637a51b0da917ea5",
+      "start": "0",
+      "end": "0",
+      "type": "SPR animation",
+      "name": "burned shocked"
+    },
+    {
+      "content": "7e922343429a2ed8",
+      "start": "0",
+      "end": "0",
+      "type": "SPR animation",
+      "name": "burned shocked falling over"
+    },
+    {
+      "content": "facf4554e6b27f8e",
+      "start": "0",
+      "end": "0",
+      "type": "SPR animation",
+      "name": "burned shocked falling frame"
+    },
+    {
+      "content": "898cf2d6f067b8ad",
+      "start": "0",
+      "end": "0",
+      "type": "SPR animation",
+      "name": "burned shocked lying on back"
+    },
+    {
+      "content": "6da9d7a19000cd9b",
+      "start": "0",
+      "end": "0",
+      "type": "SPR animation",
+      "name": "burned roll frame"
+    },
+    {
+      "content": "524874ffc26b2d30",
+      "start": "0",
+      "end": "0",
+      "type": "SPR animation",
+      "name": "burned lying on back"
+    },
+    {
+      "content": "2bde8dbf8df8691f",
+      "start": "0",
+      "end": "0",
+      "type": "SPR animation",
+      "name": "idle"
+    },
+    {
+      "content": "d7914e50b7d943cc",
+      "start": "0",
+      "end": "0",
+      "type": "SPR animation",
+      "name": "flying"
+    },
+    {
+      "content": "29321d9c6b2ae793",
+      "start": "0",
+      "end": "0",
+      "type": "SPR animation",
+      "name": "shocked"
+    },
+    {
+      "content": "03fa8b85514b4c3e",
+      "start": "0",
+      "end": "0",
+      "type": "SPR animation",
+      "name": "rolled up"
+    },
+    {
+      "content": "a18ddac8bd6f81ff",
+      "start": "0",
+      "end": "0",
+      "type": "SPR animation",
+      "name": "cleaning its wing"
+    },
+    {
+      "content": "504ee3091bf1244b",
+      "start": "0",
+      "end": "0",
+      "type": "SPR animation",
+      "name": "roar"
+    },
+    {
+      "content": "366c762c81bcdb1b",
+      "start": "0",
+      "end": "0",
+      "type": "SPR animation",
+      "name": "looking around"
+    },
+    {
+      "content": "4249e32ada4c3aff",
+      "start": "0",
+      "end": "0",
+      "type": "SPR animation",
+      "name": "flying"
+    },
+    {
+      "content": "18607d911d11bce4",
+      "start": "0",
+      "end": "0",
+      "type": "SPR animation",
+      "name": "lfying looking around"
+    },
+    {
+      "content": "b6ff2663d1c9c38a",
+      "start": "0",
+      "end": "0",
+      "type": "SPR animation",
+      "name": "flying opening its beak"
+    },
+    {
+      "content": "b301ba3ade3c7d4e",
+      "start": "0",
+      "end": "0",
+      "type": "SPR animation",
+      "name": "standing flapping wings"
+    },
+    {
+      "content": "0c765eed362bd5ad",
+      "start": "0",
+      "end": "0",
+      "type": "SPR animation",
+      "name": "flying upward"
+    },
+    {
+      "content": "f748c44d60b18013",
+      "start": "0",
+      "end": "0",
+      "type": "SPR animation",
+      "name": "sitting wings closed"
+    },
+    {
+      "content": "68170d47389acc6e",
+      "start": "0",
+      "end": "0",
+      "type": "SPR animation",
+      "name": "defeated"
+    },
+    {
+      "content": "cda9cd1406459e5e",
+      "start": "0",
+      "end": "0",
+      "type": "SPR animation",
+      "name": "shouting at side"
+    },
+    {
+      "content": "4697161bab2ac883",
+      "start": "0",
+      "end": "0",
+      "type": "SPR animation",
+      "name": "wing slightly open frame"
+    },
+    {
+      "content": "0e498883c9150ade",
+      "start": "0",
+      "end": "0",
+      "type": "SPR animation",
+      "name": "wings flapping looking down"
+    },
+    {
+      "content": "911354cad8430855",
+      "start": "0",
+      "end": "0",
+      "type": "SPR animation",
+      "name": "wings slightly opened frame"
+    },
+    {
+      "content": "62b42c135cc72618",
+      "start": "0",
+      "end": "0",
+      "type": "SPR animation",
+      "name": "running side"
+    },
+    {
+      "content": "b078f515567becd8",
+      "start": "0",
+      "end": "0",
+      "type": "SPR animation",
+      "name": "standing"
+    },
+    {
+      "content": "e26e6df36fba520d",
+      "start": "0",
+      "end": "0",
+      "type": "SPR animation",
+      "name": "running fast"
+    },
+    {
+      "content": "f0680c9ec6d3e803",
+      "start": "0",
+      "end": "0",
+      "type": "SPR animation",
+      "name": "flying side"
+    },
+    {
+      "content": "ec59a04e3a6ec7b2",
+      "start": "0",
+      "end": "0",
+      "type": "SPR animation",
+      "name": "stand front"
+    },
+    {
+      "content": "4ccc9fcca2da9cf5",
+      "start": "0",
+      "end": "0",
+      "type": "SPR animation",
+      "name": "getting up front"
+    },
+    {
+      "content": "846fcf0469d653ee",
+      "start": "0",
+      "end": "0",
+      "type": "SPR frame",
+      "name": "Charles"
+    },
+    {
+      "content": "c577281c9a80442a",
+      "start": "0",
+      "end": "0",
+      "type": "SPR frame",
+      "name": "Charles"
+    },
+    {
+      "content": "a24b56451401d0e9",
+      "start": "0",
+      "end": "0",
+      "type": "SPR frame",
+      "name": "Koma Pig"
+    },
+    {
+      "content": "e1b57326009f87ec",
+      "start": "0",
+      "end": "0",
+      "type": "SPR frame",
+      "name": "Koma Pig"
+    },
+    {
+      "content": "f5d5203dfaad574b",
+      "start": "0",
+      "end": "0",
+      "type": "SPR frame",
+      "name": "Koma Pig"
+    },
+    {
+      "content": "bde95e23568c6e91",
+      "start": "0",
+      "end": "0",
+      "type": "SPR frame",
+      "name": "Koma Pig"
+    },
+    {
+      "content": "7dc9767af82f7960",
+      "start": "0",
+      "end": "0",
+      "type": "SPR frame",
+      "name": "Koma Pig"
+    },
+    {
+      "content": "a9bd5b9658fffe1f",
+      "start": "0",
+      "end": "0",
+      "type": "SPR frame",
+      "name": "Koma Pig"
+    },
+    {
+      "content": "729b0f182ed8a539",
+      "start": "0",
+      "end": "0",
+      "type": "SPR frame",
+      "name": "Koma Pig"
+    },
+    {
+      "content": "286c0650e6473bbb",
+      "start": "0",
+      "end": "0",
+      "type": "SPR frame",
+      "name": "Koma Pig"
+    },
+    {
+      "content": "3daad1f0289a76a1",
+      "start": "0",
+      "end": "0",
+      "type": "SPR frame",
+      "name": "Koma Pig"
+    },
+    {
+      "content": "71b6adcb100d8af6",
+      "start": "0",
+      "end": "0",
+      "type": "SPR frame",
+      "name": "Koma Pig"
+    },
+    {
+      "content": "1bf741fbca4cf351",
+      "start": "0",
+      "end": "0",
+      "type": "SPR frame",
+      "name": "Koma Pig"
+    },
+    {
+      "content": "f5b9b2aad68cec1a",
+      "start": "0",
+      "end": "0",
+      "type": "SPR frame",
+      "name": "Koma Pig"
+    },
+    {
+      "content": "b37c0d56503db3e5",
+      "start": "0",
+      "end": "0",
+      "type": "SPR frame",
+      "name": "Koma Pig"
+    },
+    {
+      "content": "5458a5478dfea0b0",
+      "start": "0",
+      "end": "0",
+      "type": "SPR frame",
+      "name": "Koma Pig"
+    },
+    {
+      "content": "3c99b7396491118d",
+      "start": "0",
+      "end": "0",
+      "type": "SPR frame",
+      "name": "Koma Pig"
+    },
+    {
+      "content": "c445b1695cff8d15",
+      "start": "0",
+      "end": "0",
+      "type": "SPR frame",
+      "name": "Koma Pig"
+    },
+    {
+      "content": "433870f2c6f2e401",
+      "start": "0",
+      "end": "0",
+      "type": "SPR frame",
+      "name": "Koma Pig"
+    },
+    {
+      "content": "d15a85c9239032b2",
+      "start": "0",
+      "end": "0",
+      "type": "SPR frame",
+      "name": "Koma Pig"
+    },
+    {
+      "content": "360afc6b66f9ee8e",
+      "start": "0",
+      "end": "0",
+      "type": "SPR frame",
+      "name": "Koma Pig"
+    },
+    {
+      "content": "751522569e1d796b",
+      "start": "0",
+      "end": "0",
+      "type": "SPR frame",
+      "name": "Koma Pig"
+    },
+    {
+      "content": "ac99a20230214951",
+      "start": "0",
+      "end": "0",
+      "type": "SPR frame",
+      "name": "Koma Pig"
+    },
+    {
+      "content": "717f01f0027e0445",
+      "start": "0",
+      "end": "0",
+      "type": "SPR frame",
+      "name": "Koma Pig"
+    },
+    {
+      "content": "400da4853bf9a73a",
+      "start": "0",
+      "end": "0",
+      "type": "SPR frame",
+      "name": "Koma Pig"
+    },
+    {
+      "content": "6be73f3cd71cdbda",
+      "start": "0",
+      "end": "0",
+      "type": "SPR frame",
+      "name": "Koma Pig"
+    },
+    {
+      "content": "cb766187494d4835",
+      "start": "0",
+      "end": "0",
+      "type": "SPR frame",
+      "name": "Koma Pig"
+    },
+    {
+      "content": "cafcc148a043e34a",
+      "start": "0",
+      "end": "0",
+      "type": "SPR frame",
+      "name": "Koma Pig"
+    },
+    {
+      "content": "de93a54b6f81f77c",
+      "start": "0",
+      "end": "0",
+      "type": "SPR frame",
+      "name": "Koma Pig"
+    },
+    {
+      "content": "e035e6793103d299",
+      "start": "0",
+      "end": "0",
+      "type": "SPR frame",
+      "name": "Charles explaining"
+    },
+    {
+      "content": "9d430805796b9adf",
+      "start": "0",
+      "end": "0",
+      "type": "SPR frame",
+      "name": "Charles explaining"
+    },
+    {
+      "content": "a973fce515c74279",
+      "start": "0",
+      "end": "0",
+      "type": "SPR frame",
+      "name": "Charles explaining"
+    },
+    {
+      "content": "03b8c2fb4fb9af09",
+      "start": "0",
+      "end": "0",
+      "type": "SPR frame",
+      "name": "Koma Pig"
+    },
+    {
+      "content": "72e9c8b497336c85",
+      "start": "0",
+      "end": "0",
+      "type": "SPR frame",
+      "name": "Koma Pig"
+    },
+    {
+      "content": "ee2fa255cbaff39c",
+      "start": "0",
+      "end": "0",
+      "type": "SPR frame",
+      "name": "Koma Pig"
+    },
+    {
+      "content": "a87a5acf1b9d4efc",
+      "start": "0",
+      "end": "0",
+      "type": "SPR frame",
+      "name": "Koma Pig"
+    },
+    {
+      "content": "9fd65597370e5136",
+      "start": "0",
+      "end": "0",
+      "type": "SPR frame",
+      "name": "Koma Pig"
+    },
+    {
+      "content": "4576958a3b6efb71",
+      "start": "0",
+      "end": "0",
+      "type": "SPR frame",
+      "name": "Koma Pig"
+    },
+    {
+      "content": "78975ee6b9376382",
+      "start": "0",
+      "end": "0",
+      "type": "SPR frame",
+      "name": "Koma Pig"
+    },
+    {
+      "content": "a8fad20053431455",
+      "start": "0",
+      "end": "0",
+      "type": "SPR frame",
+      "name": "Koma Pig"
+    },
+    {
+      "content": "46a5c641e0d09b52",
+      "start": "0",
+      "end": "0",
+      "type": "SPR frame",
+      "name": "Koma Pig"
+    },
+    {
+      "content": "7d57b6bc1400af32",
+      "start": "0",
+      "end": "0",
+      "type": "SPR frame",
+      "name": "Koma Pig"
+    },
+    {
+      "content": "a8ee7c296543d70e",
+      "start": "0",
+      "end": "0",
+      "type": "SPR frame",
+      "name": "Koma Pig"
+    },
+    {
+      "content": "92f8c7f08e9ba3ce",
+      "start": "0",
+      "end": "0",
+      "type": "SPR frame",
+      "name": "Koma Pig"
+    },
+    {
+      "content": "ffcd23de2c61b5a1",
+      "start": "0",
+      "end": "0",
+      "type": "SPR frame",
+      "name": "Koma Pig"
+    },
+    {
+      "content": "c622427247331c08",
+      "start": "0",
+      "end": "0",
+      "type": "SPR frame",
+      "name": "Koma Pig"
+    },
+    {
+      "content": "834676552284b60b",
+      "start": "0",
+      "end": "0",
+      "type": "SPR frame",
+      "name": "Koma Pig"
+    },
+    {
+      "content": "2637845b76e7b70b",
+      "start": "0",
+      "end": "0",
+      "type": "SPR frame",
+      "name": "Koma Pig"
+    },
+    {
+      "content": "f46365854c9d8ba4",
+      "start": "0",
+      "end": "0",
+      "type": "SPR frame",
+      "name": "Charles hand wave"
+    },
+    {
+      "content": "a3f2fb6c41f98018",
+      "start": "0",
+      "end": "0",
+      "type": "SPR frame",
+      "name": "Charles hand wave"
+    },
+    {
+      "content": "b5ede66bdaee4b75",
+      "start": "0",
+      "end": "0",
+      "type": "SPR frame",
+      "name": "Koma Pig"
+    },
+    {
+      "content": "a6f295e9470c08d6",
+      "start": "0",
+      "end": "0",
+      "type": "SPR frame",
+      "name": "Koma Pig"
+    },
+    {
+      "content": "abdf19baf95f6662",
+      "start": "0",
+      "end": "0",
+      "type": "SPR frame",
+      "name": "Koma Pig"
+    },
+    {
+      "content": "1b8aa96f2368f8be",
+      "start": "0",
+      "end": "0",
+      "type": "SPR frame",
+      "name": "Koma Pig"
+    },
+    {
+      "content": "9d00527670a50414",
+      "start": "0",
+      "end": "0",
+      "type": "SPR frame",
+      "name": "Koma Pig"
+    },
+    {
+      "content": "81c4be59a90e4d93",
+      "start": "0",
+      "end": "0",
+      "type": "SPR frame",
+      "name": "Koma Pig"
+    },
+    {
+      "content": "217446a623cdbe7c",
+      "start": "0",
+      "end": "0",
+      "type": "SPR frame",
+      "name": "Koma Pig"
+    },
+    {
+      "content": "8e1d3a0587287b05",
+      "start": "0",
+      "end": "0",
+      "type": "SPR frame",
+      "name": "Koma Pig"
+    },
+    {
+      "content": "757018aff9ed2dbb",
+      "start": "0",
+      "end": "0",
+      "type": "SPR frame",
+      "name": "Koma Pig"
+    },
+    {
+      "content": "93e49c7556b2d244",
+      "start": "0",
+      "end": "0",
+      "type": "SPR frame",
+      "name": "Koma Pig"
+    },
+    {
+      "content": "68e227d5f0177abf",
+      "start": "0",
+      "end": "0",
+      "type": "SPR frame",
+      "name": "Koma Pig"
+    },
+    {
+      "content": "8f982b525cbd86a7",
+      "start": "0",
+      "end": "0",
+      "type": "SPR frame",
+      "name": "Koma Pig"
+    },
+    {
+      "content": "97c4d06d8ed607e4",
+      "start": "0",
+      "end": "0",
+      "type": "SPR frame",
+      "name": "Koma Pig"
+    },
+    {
+      "content": "2a3e71fa57469436",
+      "start": "0",
+      "end": "0",
+      "type": "SPR frame",
+      "name": "Koma Pig"
+    },
+    {
+      "content": "37759ca6f14696ca",
+      "start": "0",
+      "end": "0",
+      "type": "SPR frame",
+      "name": "Koma Pig"
+    },
+    {
+      "content": "73bcbb18e1f07a0d",
+      "start": "0",
+      "end": "0",
+      "type": "SPR frame",
+      "name": "Koma Pig"
+    },
+    {
+      "content": "438ffc05e43a5273",
+      "start": "0",
+      "end": "0",
+      "type": "SPR frame",
+      "name": "Koma Pig"
+    },
+    {
+      "content": "337d9ca06e36e9e4",
+      "start": "0",
+      "end": "0",
+      "type": "SPR frame",
+      "name": "Koma Pig"
+    },
+    {
+      "content": "2890cfb7cfbf2ef6",
+      "start": "0",
+      "end": "0",
+      "type": "SPR frame",
+      "name": "Koma Pig"
+    },
+    {
+      "content": "636c67972fb994a3",
+      "start": "0",
+      "end": "0",
+      "type": "SPR frame",
+      "name": "Koma Pig"
+    },
+    {
+      "content": "518eb65251579baa",
+      "start": "0",
+      "end": "0",
+      "type": "SPR frame",
+      "name": "Koma Pig"
+    },
+    {
+      "content": "b3c793ed49282164",
+      "start": "0",
+      "end": "0",
+      "type": "SPR frame",
+      "name": "Koma Pig"
+    },
+    {
+      "content": "7724242c07444595",
+      "start": "0",
+      "end": "0",
+      "type": "SPR frame",
+      "name": "Koma Pig"
+    },
+    {
+      "content": "f498774790059cf0",
+      "start": "0",
+      "end": "0",
+      "type": "SPR frame",
+      "name": "Koma Pig"
+    },
+    {
+      "content": "76dc2d2f97302ae1",
+      "start": "0",
+      "end": "0",
+      "type": "SPR frame",
+      "name": "Koma Pig"
+    },
+    {
+      "content": "0955880658a8b1e2",
+      "start": "0",
+      "end": "0",
+      "type": "SPR frame",
+      "name": "Koma Pig"
+    },
+    {
+      "content": "86b05ad046118608",
+      "start": "0",
+      "end": "0",
+      "type": "SPR frame",
+      "name": "Koma Pig"
+    },
+    {
+      "content": "c02a03755ebe6d43",
+      "start": "0",
+      "end": "0",
+      "type": "SPR frame",
+      "name": "Koma Pig"
+    },
+    {
+      "content": "253a85cda14c7256",
+      "start": "0",
+      "end": "0",
+      "type": "SPR frame",
+      "name": "Koma Pig"
+    },
+    {
+      "content": "6b0bb01724680b4e",
+      "start": "0",
+      "end": "0",
+      "type": "SPR frame",
+      "name": "Koma Pig"
+    },
+    {
+      "content": "484725b7c38f9faa",
+      "start": "0",
+      "end": "0",
+      "type": "SPR frame",
+      "name": "Koma Pig"
+    },
+    {
+      "content": "842008932b0679e3",
+      "start": "0",
+      "end": "0",
+      "type": "SPR frame",
+      "name": "Koma Pig"
+    },
+    {
+      "content": "fcf5795286058789",
+      "start": "0",
+      "end": "0",
+      "type": "SPR frame",
+      "name": "Koma Pig"
+    },
+    {
+      "content": "d42ed7e115543715",
+      "start": "0",
+      "end": "0",
+      "type": "SPR frame",
+      "name": "Koma Pig"
+    },
+    {
+      "content": "7d545b018a656e11",
+      "start": "0",
+      "end": "0",
+      "type": "SPR frame",
+      "name": "Koma Pig"
+    },
+    {
+      "content": "dbd025bb5231080b",
+      "start": "0",
+      "end": "0",
+      "type": "SPR frame",
+      "name": "Charles Parasol"
+    },
+    {
+      "content": "9d563df64c9188df",
+      "start": "0",
+      "end": "0",
+      "type": "SPR frame",
+      "name": "Koma Pig"
+    },
+    {
+      "content": "b2621ee6264c7e3c",
+      "start": "0",
+      "end": "0",
+      "type": "SPR frame",
+      "name": "Koma Pig"
+    },
+    {
+      "content": "e3b2a87c6b634d86",
+      "start": "0",
+      "end": "0",
+      "type": "SPR frame",
+      "name": "Koma Pig"
+    },
+    {
+      "content": "8d5e201d29940754",
+      "start": "0",
+      "end": "0",
+      "type": "SPR frame",
+      "name": "Koma Pig"
+    },
+    {
+      "content": "17c94c72ea97c7a8",
+      "start": "0",
+      "end": "0",
+      "type": "SPR frame",
+      "name": "Koma Pig"
+    },
+    {
+      "content": "15eb096e62f80f99",
+      "start": "0",
+      "end": "0",
+      "type": "SPR frame",
+      "name": "Koma Pig"
+    },
+    {
+      "content": "c1a6db28f8481d5d",
+      "start": "0",
+      "end": "0",
+      "type": "SPR frame",
+      "name": "Koma Pig"
+    },
+    {
+      "content": "bb6c49cb944ba242",
+      "start": "0",
+      "end": "0",
+      "type": "SPR frame",
+      "name": "Koma Pig"
+    },
+    {
+      "content": "6b2f6054e07f56de",
+      "start": "0",
+      "end": "0",
+      "type": "SPR frame",
+      "name": "Koma Pig"
+    },
+    {
+      "content": "807e70273449e00c",
+      "start": "0",
+      "end": "0",
+      "type": "SPR frame",
+      "name": "Koma Pig"
+    },
+    {
+      "content": "9997ec4f158cf46c",
+      "start": "0",
+      "end": "0",
+      "type": "SPR frame",
+      "name": "Koma Pig"
+    },
+    {
+      "content": "dc93f8a00efd6ec8",
+      "start": "0",
+      "end": "0",
+      "type": "SPR frame",
+      "name": "Koma Pig"
+    },
+    {
+      "content": "174323145e60e9df",
+      "start": "0",
+      "end": "0",
+      "type": "SPR frame",
+      "name": "Koma Pig"
+    },
+    {
+      "content": "48b6bbde797a5ffc",
+      "start": "0",
+      "end": "0",
+      "type": "SPR frame",
+      "name": "Koma Pig"
+    },
+    {
+      "content": "2e5deec8c263a6b2",
+      "start": "0",
+      "end": "0",
+      "type": "SPR frame",
+      "name": "Koma Pig"
+    },
+    {
+      "content": "b73b7a7373f24283",
+      "start": "0",
+      "end": "0",
+      "type": "SPR frame",
+      "name": "Koma Pig"
+    },
+    {
+      "content": "b07f211a87d79fce",
+      "start": "0",
+      "end": "0",
+      "type": "SPR frame",
+      "name": "Koma Pig"
+    },
+    {
+      "content": "d3de116aa5ef645e",
+      "start": "0",
+      "end": "0",
+      "type": "SPR frame",
+      "name": "Koma Pig"
+    },
+    {
+      "content": "f9b456786ea90b58",
+      "start": "0",
+      "end": "0",
+      "type": "SPR frame",
+      "name": "Koma Pig"
+    },
+    {
+      "content": "aea3be790e4ce93f",
+      "start": "0",
+      "end": "0",
+      "type": "SPR frame",
+      "name": "Koma Pig"
+    },
+    {
+      "content": "5e3f011f3ca39946",
+      "start": "0",
+      "end": "0",
+      "type": "SPR frame",
+      "name": "Koma Pig"
+    },
+    {
+      "content": "4527245d255f6fa9",
+      "start": "0",
+      "end": "0",
+      "type": "SPR frame",
+      "name": "Koma Pig"
+    },
+    {
+      "content": "76ba629c20f0ad3c",
+      "start": "0",
+      "end": "0",
+      "type": "SPR frame",
+      "name": "Koma Pig"
+    },
+    {
+      "content": "5bb3d88bc6df8bdd",
+      "start": "0",
+      "end": "0",
+      "type": "SPR frame",
+      "name": "Koma Pig"
+    },
+    {
+      "content": "9ecb06756fd7377c",
+      "start": "0",
+      "end": "0",
+      "type": "SPR frame",
+      "name": "Koma Pig"
+    },
+    {
+      "content": "eb9452f14f11899a",
+      "start": "0",
+      "end": "0",
+      "type": "SPR frame",
+      "name": "Koma Pig"
+    },
+    {
+      "content": "4a8ede1bc682caef",
+      "start": "0",
+      "end": "0",
+      "type": "SPR frame",
+      "name": "Koma Pig"
+    },
+    {
+      "content": "36e423e97283ba77",
+      "start": "0",
+      "end": "0",
+      "type": "SPR frame",
+      "name": "Charles parasol hop side"
+    },
+    {
+      "content": "901cb8de6c0c35d9",
+      "start": "0",
+      "end": "0",
+      "type": "SPR frame",
+      "name": "Charles parasol hop side"
+    },
+    {
+      "content": "7c7c95c805a0d28f",
+      "start": "0",
+      "end": "0",
+      "type": "SPR frame",
+      "name": "Charles parasol hop side"
+    },
+    {
+      "content": "74e7826217dda48b",
+      "start": "0",
+      "end": "0",
+      "type": "SPR frame",
+      "name": "Koma Pig"
+    },
+    {
+      "content": "70bb45cd49a20e13",
+      "start": "0",
+      "end": "0",
+      "type": "SPR frame",
+      "name": "Koma Pig"
+    },
+    {
+      "content": "ee8cea18a70bf650",
+      "start": "0",
+      "end": "0",
+      "type": "SPR frame",
+      "name": "Koma Pig"
+    },
+    {
+      "content": "8a1dd8e4592be005",
+      "start": "0",
+      "end": "0",
+      "type": "SPR frame",
+      "name": "Dust"
+    },
+    {
+      "content": "9d9cf5502ff22d64",
+      "start": "0",
+      "end": "0",
+      "type": "SPR frame",
+      "name": "Dust"
+    },
+    {
+      "content": "f787b52d1436ab94",
+      "start": "0",
+      "end": "0",
+      "type": "SPR frame",
+      "name": "Dust"
+    },
+    {
+      "content": "8b4fb85f71a782e6",
+      "start": "0",
+      "end": "0",
+      "type": "SPR frame",
+      "name": "Dust"
+    },
+    {
+      "content": "ab84412302912fe5",
+      "start": "0",
+      "end": "0",
+      "type": "SPR frame",
+      "name": "Dust"
+    },
+    {
+      "content": "9e8928c3597e58aa",
+      "start": "0",
+      "end": "0",
+      "type": "SPR frame",
+      "name": "Koma Pig"
+    },
+    {
+      "content": "c76a04a9e44a5127",
+      "start": "0",
+      "end": "0",
+      "type": "SPR frame",
+      "name": "Koma Pig"
+    },
+    {
+      "content": "b2e0f4defcd135fb",
+      "start": "0",
+      "end": "0",
+      "type": "SPR frame",
+      "name": "Koma Pig"
+    },
+    {
+      "content": "3b6aa3aa3fc5e6a6",
+      "start": "0",
+      "end": "0",
+      "type": "SPR frame",
+      "name": "Koma Pig"
+    },
+    {
+      "content": "3d87ceda6abe6fe2",
+      "start": "0",
+      "end": "0",
+      "type": "SPR frame",
+      "name": "Koma Pig"
+    },
+    {
+      "content": "6719ffc6710ac625",
+      "start": "0",
+      "end": "0",
+      "type": "SPR frame",
+      "name": "Koma Pig"
+    },
+    {
+      "content": "8a4a7b87bc73a60d",
+      "start": "0",
+      "end": "0",
+      "type": "SPR frame",
+      "name": "Koma Pig"
+    },
+    {
+      "content": "515a37dd7297d02c",
+      "start": "0",
+      "end": "0",
+      "type": "SPR frame",
+      "name": "Koma Pig"
+    },
+    {
+      "content": "bfe2bdd2d6c236ef",
+      "start": "0",
+      "end": "0",
+      "type": "SPR frame",
+      "name": "Koma Pig"
+    },
+    {
+      "content": "e46c4db507e45d23",
+      "start": "0",
+      "end": "0",
+      "type": "SPR frame",
+      "name": "Koma Pig"
+    },
+    {
+      "content": "f4fd52879c54c567",
+      "start": "0",
+      "end": "0",
+      "type": "SPR frame",
+      "name": "Koma Pig"
+    },
+    {
+      "content": "e099e67017641422",
+      "start": "0",
+      "end": "0",
+      "type": "SPR frame",
+      "name": "Koma Pig"
+    },
+    {
+      "content": "6417c6759419d29c",
+      "start": "0",
+      "end": "0",
+      "type": "SPR frame",
+      "name": "Koma Pig"
+    },
+    {
+      "content": "f0d282001a43e0de",
+      "start": "0",
+      "end": "0",
+      "type": "SPR frame",
+      "name": "Koma Pig"
+    },
+    {
+      "content": "c4585022f2821ebb",
+      "start": "0",
+      "end": "0",
+      "type": "SPR frame",
+      "name": "Koma Pig"
+    },
+    {
+      "content": "a2519f37f29fda4d",
+      "start": "0",
+      "end": "0",
+      "type": "SPR frame",
+      "name": "Koma Pig"
+    },
+    {
+      "content": "134ba6bf13cff570",
+      "start": "0",
+      "end": "0",
+      "type": "SPR frame",
+      "name": "Koma Pig"
+    },
+    {
+      "content": "49257d0af0e3b089",
+      "start": "0",
+      "end": "0",
+      "type": "SPR frame",
+      "name": "Koma Pig"
+    },
+    {
+      "content": "925649ae487045ad",
+      "start": "0",
+      "end": "0",
+      "type": "SPR frame",
+      "name": "Koma Pig"
+    },
+    {
+      "content": "209600d6ba2c6b33",
+      "start": "0",
+      "end": "0",
+      "type": "SPR frame",
+      "name": "Koma Pig"
+    },
+    {
+      "content": "1d242fbeecf19d8d",
+      "start": "0",
+      "end": "0",
+      "type": "SPR frame",
+      "name": "Koma Pig"
+    },
+    {
+      "content": "b7c5487b9adf93c0",
+      "start": "0",
+      "end": "0",
+      "type": "SPR frame",
+      "name": "Koma Pig"
+    },
+    {
+      "content": "95b0a6d1d19bbdf9",
+      "start": "0",
+      "end": "0",
+      "type": "SPR frame",
+      "name": "Koma Pig"
+    },
+    {
+      "content": "77328f367b67a39c",
+      "start": "0",
+      "end": "0",
+      "type": "SPR frame",
+      "name": "Koma Pig"
+    },
+    {
+      "content": "54f9e12ac3f801e1",
+      "start": "0",
+      "end": "0",
+      "type": "SPR frame",
+      "name": "Koma Pig"
+    },
+    {
+      "content": "2454b67babeb54da",
+      "start": "0",
+      "end": "0",
+      "type": "SPR frame",
+      "name": "Dust"
+    },
+    {
+      "content": "0cc4db62e84edc69",
+      "start": "0",
+      "end": "0",
+      "type": "SPR frame",
+      "name": "Dust"
+    },
+    {
+      "content": "4f2f56cdac233291",
+      "start": "0",
+      "end": "0",
+      "type": "SPR frame",
+      "name": "Dust"
+    },
+    {
+      "content": "f1c0268ae8792d50",
+      "start": "0",
+      "end": "0",
+      "type": "SPR frame",
+      "name": "Dust"
+    },
+    {
+      "content": "65ab4b0d666fc3f7",
+      "start": "0",
+      "end": "0",
+      "type": "SPR frame",
+      "name": "Dust"
+    },
+    {
+      "content": "ea64202d5207c66c",
+      "start": "0",
+      "end": "0",
+      "type": "SPR frame",
+      "name": "Dust"
+    },
+    {
+      "content": "e4b5e8473bb1437d",
+      "start": "0",
+      "end": "0",
+      "type": "SPR frame",
+      "name": "Dust"
+    },
+    {
+      "content": "4ca4b4d51db235ab",
+      "start": "0",
+      "end": "0",
+      "type": "SPR frame",
+      "name": "Koma Pig"
+    },
+    {
+      "content": "e2dbc4e22d2239cc",
+      "start": "0",
+      "end": "0",
+      "type": "SPR frame",
+      "name": "Koma Pig"
+    },
+    {
+      "content": "b22302cbe279c8fd",
+      "start": "0",
+      "end": "0",
+      "type": "SPR frame",
+      "name": "Koma Pig"
+    },
+    {
+      "content": "16af0641aa765026",
+      "start": "0",
+      "end": "0",
+      "type": "SPR frame",
+      "name": "Koma Pig"
+    },
+    {
+      "content": "e01a0559d0866e21",
+      "start": "0",
+      "end": "0",
+      "type": "SPR frame",
+      "name": "Koma Pig"
+    },
+    {
+      "content": "22db8f68019397be",
+      "start": "0",
+      "end": "0",
+      "type": "SPR frame",
+      "name": "Koma Pig"
+    },
+    {
+      "content": "1930948bdf0bca92",
+      "start": "0",
+      "end": "0",
+      "type": "SPR frame",
+      "name": "Koma Pig"
+    },
+    {
+      "content": "64a6923f4e914d97",
+      "start": "0",
+      "end": "0",
+      "type": "SPR frame",
+      "name": "Koma Pig"
+    },
+    {
+      "content": "711d2b1e98fd9e22",
+      "start": "0",
+      "end": "0",
+      "type": "SPR frame",
+      "name": "Koma Pig"
+    },
+    {
+      "content": "09ffb6b061c56ff2",
+      "start": "0",
+      "end": "0",
+      "type": "SPR frame",
+      "name": "Koma Pig"
+    },
+    {
+      "content": "18f6b6eabfaad378",
+      "start": "0",
+      "end": "0",
+      "type": "SPR frame",
+      "name": "Koma Pig"
+    },
+    {
+      "content": "d01275b83baca073",
+      "start": "0",
+      "end": "0",
+      "type": "SPR frame",
+      "name": "Koma Pig"
+    },
+    {
+      "content": "a25d55e3976010b8",
+      "start": "0",
+      "end": "0",
+      "type": "SPR frame",
+      "name": "Koma Pig"
+    },
+    {
+      "content": "04a30b7378a57990",
+      "start": "0",
+      "end": "0",
+      "type": "SPR frame",
+      "name": "Koma Pig"
+    },
+    {
+      "content": "7d736ce435886a8a",
+      "start": "0",
+      "end": "0",
+      "type": "SPR frame",
+      "name": "Koma Pig"
+    },
+    {
+      "content": "9a7a2d30239bf5f2",
+      "start": "0",
+      "end": "0",
+      "type": "SPR frame",
+      "name": "Koma Pig"
+    },
+    {
+      "content": "042930ccc2de3bc4",
+      "start": "0",
+      "end": "0",
+      "type": "SPR frame",
+      "name": "Koma Pig"
+    },
+    {
+      "content": "934703ace29b03c7",
+      "start": "0",
+      "end": "0",
+      "type": "SPR frame",
+      "name": "Charles angry"
+    },
+    {
+      "content": "129245f169ce08a0",
+      "start": "0",
+      "end": "0",
+      "type": "SPR frame",
+      "name": "Charles angry"
+    },
+    {
+      "content": "efa34b5699dfdd40",
+      "start": "0",
+      "end": "0",
+      "type": "SPR frame",
+      "name": "Charles angry"
+    },
+    {
+      "content": "88b319d88947ac19",
+      "start": "0",
+      "end": "0",
+      "type": "SPR frame",
+      "name": "Charles angry"
+    },
+    {
+      "content": "2b64633dd4db3de1",
+      "start": "0",
+      "end": "0",
+      "type": "SPR frame",
+      "name": "Koma Pig looking down"
+    },
+    {
+      "content": "75e237a08985bf05",
+      "start": "0",
+      "end": "0",
+      "type": "SPR frame",
+      "name": "Koma Pig looking down"
+    },
+    {
+      "content": "d758f6c9b7307759",
+      "start": "0",
+      "end": "0",
+      "type": "SPR frame",
+      "name": "Koma Pig looking down"
+    },
+    {
+      "content": "0c8f065d2a464b90",
+      "start": "0",
+      "end": "0",
+      "type": "SPR frame",
+      "name": "Safari Man"
+    },
+    {
+      "content": "3357902cea8663af",
+      "start": "0",
+      "end": "0",
+      "type": "SPR frame",
+      "name": "Koma Pig weary lying on belly"
+    },
+    {
+      "content": "f4c82f49f787b961",
+      "start": "0",
+      "end": "0",
+      "type": "SPR frame",
+      "name": "Safari Man"
+    },
+    {
+      "content": "8fe60f60142914b4",
+      "start": "0",
+      "end": "0",
+      "type": "SPR frame",
+      "name": "Safari Man"
+    },
+    {
+      "content": "02e0427f45d92ec0",
+      "start": "0",
+      "end": "0",
+      "type": "SPR frame",
+      "name": "Safari Man"
+    },
+    {
+      "content": "eee70bd4793a52c1",
+      "start": "0",
+      "end": "0",
+      "type": "SPR frame",
+      "name": "Safari Man"
+    },
+    {
+      "content": "c8298bc0cdb2fbe8",
+      "start": "0",
+      "end": "0",
+      "type": "SPR frame",
+      "name": "Safari Man"
+    },
+    {
+      "content": "5a0148074d7b99bb",
+      "start": "0",
+      "end": "0",
+      "type": "SPR frame",
+      "name": "Mini Koma Pig"
+    },
+    {
+      "content": "1421743686574d1c",
+      "start": "0",
+      "end": "0",
+      "type": "SPR frame",
+      "name": "Mini Koma Pig"
+    },
+    {
+      "content": "a2f32513b01f7f5f",
+      "start": "0",
+      "end": "0",
+      "type": "SPR frame",
+      "name": "Mini Koma Pig"
+    },
+    {
+      "content": "55aaabb04aaae5aa",
+      "start": "0",
+      "end": "0",
+      "type": "SPR frame",
+      "name": "Mini Koma Pig"
+    },
+    {
+      "content": "1db3de526343504f",
+      "start": "0",
+      "end": "0",
+      "type": "SPR frame",
+      "name": "Mini Koma Pig"
+    },
+    {
+      "content": "282634e0c4fc64da",
+      "start": "0",
+      "end": "0",
+      "type": "SPR frame",
+      "name": "Mini Koma Pig"
+    },
+    {
+      "content": "8746a4d6acafc3d6",
+      "start": "0",
+      "end": "0",
+      "type": "SPR frame",
+      "name": "Mini Koma Pig"
+    },
+    {
+      "content": "41a3c9138a12bf58",
+      "start": "0",
+      "end": "0",
+      "type": "SPR frame",
+      "name": "Droplet animation splash"
+    },
+    {
+      "content": "0ae3c5041357d298",
+      "start": "0",
+      "end": "0",
+      "type": "SPR frame",
+      "name": "Droplet animation splash"
+    },
+    {
+      "content": "574f72c5364cdbc3",
+      "start": "0",
+      "end": "0",
+      "type": "SPR frame",
+      "name": "Droplet animation splash"
+    },
+    {
+      "content": "3eed5e72a1643909",
+      "start": "0",
+      "end": "0",
+      "type": "SPR frame",
+      "name": "Droplet animation splash"
+    },
+    {
+      "content": "f81576d887929090",
+      "start": "0",
+      "end": "0",
+      "type": "SPR frame",
+      "name": "Droplet animation splash"
+    },
+    {
+      "content": "e379dbde7de51652",
+      "start": "0",
+      "end": "0",
+      "type": "SPR frame",
+      "name": "Droplet animation splash"
+    },
+    {
+      "content": "0896f421045b4f58",
+      "start": "0",
+      "end": "0",
+      "type": "SPR frame",
+      "name": "Droplet animation splash"
+    },
+    {
+      "content": "28138543a58483c1",
+      "start": "0",
+      "end": "0",
+      "type": "SPR frame",
+      "name": "Background sea"
+    },
+    {
+      "content": "05b7850e9fe452eb",
+      "start": "0",
+      "end": "0",
+      "type": "SPR frame",
+      "name": "Droplet possibly"
+    },
+    {
+      "content": "31a64868d7f4fb4f",
+      "start": "0",
+      "end": "0",
+      "type": "SPR frame",
+      "name": "Droplet possibly"
+    },
+    {
+      "content": "2a57c14bb0038931",
+      "start": "0",
+      "end": "0",
+      "type": "SPR frame",
+      "name": "Droplet possibly"
+    },
+    {
+      "content": "d2c6615e21fd33ed",
+      "start": "0",
+      "end": "0",
+      "type": "SPR frame",
+      "name": "Droplet possibly"
+    },
+    {
+      "content": "4413f680b1159e96",
+      "start": "0",
+      "end": "0",
+      "type": "SPR frame",
+      "name": "Droplet possibly"
+    },
+    {
+      "content": "4973a1eca562dd6c",
+      "start": "0",
+      "end": "0",
+      "type": "SPR frame",
+      "name": "Droplet possibly"
+    },
+    {
+      "content": "34f8a1a45737441b",
+      "start": "0",
+      "end": "0",
+      "type": "SPR frame",
+      "name": "Droplet possibly"
+    },
+    {
+      "content": "e28cde928ae41141",
+      "start": "0",
+      "end": "0",
+      "type": "SPR frame",
+      "name": "Droplet possibly"
+    },
+    {
+      "content": "5be09797328ff0c6",
+      "start": "0",
+      "end": "0",
+      "type": "SPR frame",
+      "name": "Belll"
+    },
+    {
+      "content": "812f68a5bf491e03",
+      "start": "0",
+      "end": "0",
+      "type": "SPR frame",
+      "name": "Yan hidden"
+    },
+    {
+      "content": "5aa715a04c718e3f",
+      "start": "0",
+      "end": "0",
+      "type": "SPR frame",
+      "name": "Yan hidden"
+    },
+    {
+      "content": "78485c60cac37edb",
+      "start": "0",
+      "end": "0",
+      "type": "SPR frame",
+      "name": "Yan hidden"
+    },
+    {
+      "content": "d534867310aaaf44",
+      "start": "0",
+      "end": "0",
+      "type": "SPR frame",
+      "name": "Yan hidden jump"
+    },
+    {
+      "content": "9f59bc42b76ddbf6",
+      "start": "0",
+      "end": "0",
+      "type": "SPR frame",
+      "name": "Yan hidden jump"
+    },
+    {
+      "content": "d10c1b0f502d25fa",
+      "start": "0",
+      "end": "0",
+      "type": "SPR frame",
+      "name": "Yan hidden jump"
+    },
+    {
+      "content": "60e64e68ad14415f",
+      "start": "0",
+      "end": "0",
+      "type": "SPR frame",
+      "name": "Letter"
+    },
+    {
+      "content": "cf21f2ae3fe6c874",
+      "start": "0",
+      "end": "0",
+      "type": "SPR frame",
+      "name": "Leaf"
+    },
+    {
+      "content": "89580ddb3399a772",
+      "start": "0",
+      "end": "0",
+      "type": "SPR frame",
+      "name": "Leaf"
+    },
+    {
+      "content": "1cc4f4d4f9499fac",
+      "start": "0",
+      "end": "0",
+      "type": "SPR frame",
+      "name": "Mushroom plant"
+    },
+    {
+      "content": "da4d7380209b5a94",
+      "start": "0",
+      "end": "0",
+      "type": "SPR frame",
+      "name": "Mushroom plant"
+    },
+    {
+      "content": "495017ef9dbb77bc",
+      "start": "0",
+      "end": "0",
+      "type": "SPR frame",
+      "name": "Mushroom plant"
+    },
+    {
+      "content": "30b0138e9634260b",
+      "start": "0",
+      "end": "0",
+      "type": "SPR frame",
+      "name": "Mushroom plant"
+    },
+    {
+      "content": "0e5a631b826f964a",
+      "start": "0",
+      "end": "0",
+      "type": "SPR frame",
+      "name": "Mushroom plant"
+    },
+    {
+      "content": "15481a313b677eec",
+      "start": "0",
+      "end": "0",
+      "type": "SPR frame",
+      "name": "Small whirlwind"
+    },
+    {
+      "content": "0edd981a26d31cd0",
+      "start": "0",
+      "end": "0",
+      "type": "SPR frame",
+      "name": "Small whirlwind"
+    },
+    {
+      "content": "c5ab3f95e84ef7d7",
+      "start": "0",
+      "end": "0",
+      "type": "SPR frame",
+      "name": "Small whirlwind"
+    },
+    {
+      "content": "6b73f156084881fe",
+      "start": "0",
+      "end": "0",
+      "type": "SPR frame",
+      "name": "Small whirlwind"
+    },
+    {
+      "content": "ff21889a40e7597c",
+      "start": "0",
+      "end": "0",
+      "type": "SPR frame",
+      "name": "Small whirlwind"
+    },
+    {
+      "content": "e87069697f742bcf",
+      "start": "0",
+      "end": "0",
+      "type": "SPR frame",
+      "name": "Small whirlwind"
+    },
+    {
+      "content": "9b9bf32baa105440",
+      "start": "0",
+      "end": "0",
+      "type": "SPR frame",
+      "name": "Leaf debris"
+    },
+    {
+      "content": "0f8fa88a25a68979",
+      "start": "0",
+      "end": "0",
+      "type": "SPR frame",
+      "name": "Leaf debris"
+    },
+    {
+      "content": "9040f700b33b9b1d",
+      "start": "0",
+      "end": "0",
+      "type": "SPR frame",
+      "name": "Leaf debris"
+    },
+    {
+      "content": "77ad635c12fec093",
+      "start": "0",
+      "end": "0",
+      "type": "SPR frame",
+      "name": "Leaf debris"
+    },
+    {
+      "content": "5d4ee0530f01563a",
+      "start": "0",
+      "end": "0",
+      "type": "SPR frame",
+      "name": "Mist"
+    },
+    {
+      "content": "83f6217a8abda145",
+      "start": "0",
+      "end": "0",
+      "type": "SPR frame",
+      "name": "Mist"
+    },
+    {
+      "content": "45efffe7cb443ea1",
+      "start": "0",
+      "end": "0",
+      "type": "SPR frame",
+      "name": "Rope"
+    },
+    {
+      "content": "334458ffca6ae0bf",
+      "start": "0",
+      "end": "0",
+      "type": "SPR frame",
+      "name": "grass debris"
+    },
+    {
+      "content": "e0d41598cb5442b9",
+      "start": "0",
+      "end": "0",
+      "type": "SPR frame",
+      "name": "grass debris"
+    },
+    {
+      "content": "a5203b945685984d",
+      "start": "0",
+      "end": "0",
+      "type": "SPR frame",
+      "name": "grass debris"
+    },
+    {
+      "content": "9bf043ac42fb5889",
+      "start": "0",
+      "end": "0",
+      "type": "SPR frame",
+      "name": "grass debris"
+    },
+    {
+      "content": "c45cf67112dd1927",
+      "start": "0",
+      "end": "0",
+      "type": "SPR frame",
+      "name": "Egg"
+    },
+    {
+      "content": "9f64d00ffcb89568",
+      "start": "0",
+      "end": "0",
+      "type": "SPR frame",
+      "name": "Egg debris"
+    },
+    {
+      "content": "c3b1c82b4f69071f",
+      "start": "0",
+      "end": "0",
+      "type": "SPR frame",
+      "name": "Egg debris"
+    },
+    {
+      "content": "3841c28fde5b052e",
+      "start": "0",
+      "end": "0",
+      "type": "SPR frame",
+      "name": "Egg debris"
+    },
+    {
+      "content": "777b9b47f2ffe1ce",
+      "start": "0",
+      "end": "0",
+      "type": "SPR frame",
+      "name": "Egg debris"
+    },
+    {
+      "content": "220708d20d2843e1",
+      "start": "0",
+      "end": "0",
+      "type": "SPR frame",
+      "name": "Egg debris"
+    },
+    {
+      "content": "0964ffb476350b0f",
+      "start": "0",
+      "end": "0",
+      "type": "SPR frame",
+      "name": "Egg debris"
+    },
+    {
+      "content": "c5e242a3856ee0cf",
+      "start": "0",
+      "end": "0",
+      "type": "SPR frame",
+      "name": "Nest"
+    },
+    {
+      "content": "f71a79a82506e7ad",
+      "start": "0",
+      "end": "0",
+      "type": "SPR frame",
+      "name": "Nest"
+    },
+    {
+      "content": "49d1ce29529bb796",
+      "start": "0",
+      "end": "0",
+      "type": "SPR frame",
+      "name": "Dust smoke"
+    },
+    {
+      "content": "83aebbdafaba07a5",
+      "start": "0",
+      "end": "0",
+      "type": "SPR frame",
+      "name": "Dust smoke"
+    },
+    {
+      "content": "0ddf8b1dbc914859",
+      "start": "0",
+      "end": "0",
+      "type": "SPR frame",
+      "name": "Dust smoke"
+    },
+    {
+      "content": "8870cfcda17c48cf",
+      "start": "0",
+      "end": "0",
+      "type": "SPR frame",
+      "name": "Dust smoke"
+    },
+    {
+      "content": "4900f87c1ce508fb",
+      "start": "0",
+      "end": "0",
+      "type": "SPR frame",
+      "name": "Dust smoke"
+    },
+    {
+      "content": "eaae97ea1e5a6e06",
+      "start": "0",
+      "end": "0",
+      "type": "SPR frame",
+      "name": "Dust smoke"
+    },
+    {
+      "content": "444cec160dbe7f77",
+      "start": "0",
+      "end": "0",
+      "type": "SPR frame",
+      "name": "Dust smoke"
+    },
+    {
+      "content": "139872ad74c3d068",
+      "start": "0",
+      "end": "0",
+      "type": "SPR frame",
+      "name": "Dust smoke"
+    },
+    {
+      "content": "f343a7b6dd8e7485",
+      "start": "0",
+      "end": "0",
+      "type": "SPR frame",
+      "name": "Dust smoke"
+    },
+    {
+      "content": "ffb5b370e4a234af",
+      "start": "0",
+      "end": "0",
+      "type": "SPR frame",
+      "name": "Dust smoke"
+    },
+    {
+      "content": "d0829c9840843800",
+      "start": "0",
+      "end": "0",
+      "type": "SPR frame",
+      "name": "Dust smoke"
+    },
+    {
+      "content": "f5638a4c969df874",
+      "start": "0",
+      "end": "0",
+      "type": "SPR frame",
+      "name": "Dust smoke"
+    },
+    {
+      "content": "a465ba35d62d01b1",
+      "start": "0",
+      "end": "0",
+      "type": "SPR frame",
+      "name": "Dust smoke"
+    },
+    {
+      "content": "9e3b1b2c8a722b32",
+      "start": "0",
+      "end": "0",
+      "type": "SPR frame",
+      "name": "Dust smoke"
+    },
+    {
+      "content": "bc18dd29a690f736",
+      "start": "0",
+      "end": "0",
+      "type": "SPR frame",
+      "name": "Purple growth"
+    },
+    {
+      "content": "2823a06a99749fc1",
+      "start": "0",
+      "end": "0",
+      "type": "SPR frame",
+      "name": "Purple growth"
+    },
+    {
+      "content": "f368de0ac57d464d",
+      "start": "0",
+      "end": "0",
+      "type": "SPR frame",
+      "name": "Purple growth"
+    },
+    {
+      "content": "b3b62b29573d438d",
+      "start": "0",
+      "end": "0",
+      "type": "SPR frame",
+      "name": "Purple growth"
+    },
+    {
+      "content": "a2148fb794cebdec",
+      "start": "0",
+      "end": "0",
+      "type": "SPR frame",
+      "name": "Purple growth"
+    },
+    {
+      "content": "b883559e1420f297",
+      "start": "0",
+      "end": "0",
+      "type": "SPR frame",
+      "name": "Purple growth"
+    },
+    {
+      "content": "92af2ab395e17f3b",
+      "start": "0",
+      "end": "0",
+      "type": "SPR frame",
+      "name": "Purple growth"
+    },
+    {
+      "content": "1e38694df4b9718d",
+      "start": "0",
+      "end": "0",
+      "type": "SPR frame",
+      "name": "Purle growth pop"
+    },
+    {
+      "content": "ff33bf4efc8735b9",
+      "start": "0",
+      "end": "0",
+      "type": "SPR frame",
+      "name": "Purle growth pop"
+    },
+    {
+      "content": "3385c376ff778aa2",
+      "start": "0",
+      "end": "0",
+      "type": "SPR frame",
+      "name": "Purle growth pop"
+    },
+    {
+      "content": "98b0e886d7f3a268",
+      "start": "0",
+      "end": "0",
+      "type": "SPR frame",
+      "name": "Purle growth pop"
+    },
+    {
+      "content": "d113fad7102f4f12",
+      "start": "0",
+      "end": "0",
+      "type": "SPR frame",
+      "name": "Purle growth pop"
+    },
+    {
+      "content": "056f2c069c9b8e39",
+      "start": "0",
+      "end": "0",
+      "type": "SPR frame",
+      "name": "Purle growth pop"
+    },
+    {
+      "content": "5195120a4a08ef73",
+      "start": "0",
+      "end": "0",
+      "type": "SPR frame",
+      "name": "Cloud"
+    },
+    {
+      "content": "ec69e4efd40b7c43",
+      "start": "0",
+      "end": "0",
+      "type": "SPR frame",
+      "name": "Chick"
+    },
+    {
+      "content": "efcff28a24b09209",
+      "start": "0",
+      "end": "0",
+      "type": "SPR frame",
+      "name": "Chick"
+    },
+    {
+      "content": "a58a6526c528c551",
+      "start": "0",
+      "end": "0",
+      "type": "SPR frame",
+      "name": "Chick"
+    },
+    {
+      "content": "d70ced1b0e10e1ff",
+      "start": "0",
+      "end": "0",
+      "type": "SPR frame",
+      "name": "100-Year Old Chest closed"
+    },
+    {
+      "content": "1394dce7c1ec4f53",
+      "start": "0",
+      "end": "0",
+      "type": "SPR frame",
+      "name": "100-Year Old Chest opened"
+    },
+    {
+      "content": "61b7a2886b3d678a",
+      "start": "0",
+      "end": "0",
+      "type": "SPR frame",
+      "name": "100-Year Old Chest debris"
+    },
+    {
+      "content": "e449a59639ca9253",
+      "start": "0",
+      "end": "0",
+      "type": "SPR frame",
+      "name": "100-Year Old Chest debris"
+    },
+    {
+      "content": "4f327ea852032624",
+      "start": "0",
+      "end": "0",
+      "type": "SPR frame",
+      "name": "100-Year Old Chest debris"
+    },
+    {
+      "content": "119e976f054c6fbc",
+      "start": "0",
+      "end": "0",
+      "type": "SPR frame",
+      "name": "100-Year Old Chest debris"
+    },
+    {
+      "content": "1e78ff39b069ea46",
+      "start": "0",
+      "end": "0",
+      "type": "SPR frame",
+      "name": "100-Year Old Chest debris"
+    },
+    {
+      "content": "77487ad74695b9ea",
+      "start": "0",
+      "end": "0",
+      "type": "SPR frame",
+      "name": "Small fire"
+    },
+    {
+      "content": "0df87554cf60c9a6",
+      "start": "0",
+      "end": "0",
+      "type": "SPR frame",
+      "name": "Small fire"
+    },
+    {
+      "content": "146a5dddd67dd235",
+      "start": "0",
+      "end": "0",
+      "type": "SPR frame",
+      "name": "Small fire"
+    },
+    {
+      "content": "1512ca6948f5a81b",
+      "start": "0",
+      "end": "0",
+      "type": "SPR frame",
+      "name": "Small fire"
+    },
+    {
+      "content": "048eef6e0c48b5d8",
+      "start": "0",
+      "end": "0",
+      "type": "SPR frame",
+      "name": "glow"
+    },
+    {
+      "content": "ac73c067964b2a5d",
+      "start": "0",
+      "end": "0",
+      "type": "SPR frame",
+      "name": "Fire derbis"
+    },
+    {
+      "content": "c8d6532f173a0228",
+      "start": "0",
+      "end": "0",
+      "type": "SPR frame",
+      "name": "Fire derbis"
+    },
+    {
+      "content": "3b5ac6ac9054491f",
+      "start": "0",
+      "end": "0",
+      "type": "SPR frame",
+      "name": "Fire derbis"
+    },
+    {
+      "content": "d56a3fe25489adc6",
+      "start": "0",
+      "end": "0",
+      "type": "SPR frame",
+      "name": "halo glow"
+    },
+    {
+      "content": "5551091c729f7a2e",
+      "start": "0",
+      "end": "0",
+      "type": "SPR frame",
+      "name": "Frog idle"
+    },
+    {
+      "content": "4a5a03c60ef4a3dc",
+      "start": "0",
+      "end": "0",
+      "type": "SPR frame",
+      "name": "Frog idle"
+    },
+    {
+      "content": "e3fe18c98fc5c2dc",
+      "start": "0",
+      "end": "0",
+      "type": "SPR frame",
+      "name": "Frog idle"
+    },
+    {
+      "content": "eafc228a7bc0766c",
+      "start": "0",
+      "end": "0",
+      "type": "SPR frame",
+      "name": "Frog walk side"
+    },
+    {
+      "content": "f4c811d725d891f1",
+      "start": "0",
+      "end": "0",
+      "type": "SPR frame",
+      "name": "Frog walk side"
+    },
+    {
+      "content": "6be403663d5e4d43",
+      "start": "0",
+      "end": "0",
+      "type": "SPR frame",
+      "name": "Frog walk side"
+    },
+    {
+      "content": "b071ce335c0d7eb1",
+      "start": "0",
+      "end": "0",
+      "type": "SPR frame",
+      "name": "Frog panic"
+    },
+    {
+      "content": "9bf8fb802206cdab",
+      "start": "0",
+      "end": "0",
+      "type": "SPR frame",
+      "name": "Frog panic"
+    },
+    {
+      "content": "9d99fe47120f85c2",
+      "start": "0",
+      "end": "0",
+      "type": "SPR frame",
+      "name": "Frog jump high"
+    },
+    {
+      "content": "c34ce7d0b184dbf0",
+      "start": "0",
+      "end": "0",
+      "type": "SPR frame",
+      "name": "Frog jump high"
+    },
+    {
+      "content": "52e67c34a03def27",
+      "start": "0",
+      "end": "0",
+      "type": "SPR frame",
+      "name": "Frog climb side"
+    },
+    {
+      "content": "5ba0107852208c9d",
+      "start": "0",
+      "end": "0",
+      "type": "SPR frame",
+      "name": "Frog climb side"
+    },
+    {
+      "content": "f0171c452ce35aa2",
+      "start": "0",
+      "end": "0",
+      "type": "SPR frame",
+      "name": "Frog climb back"
+    },
+    {
+      "content": "3a17bca019b18ca6",
+      "start": "0",
+      "end": "0",
+      "type": "SPR frame",
+      "name": "Key"
+    },
+    {
+      "content": "47cb61b40821994d",
+      "start": "0",
+      "end": "0",
+      "type": "SPR frame",
+      "name": "10,000-Year Old Chest closed"
+    },
+    {
+      "content": "55e38cf27cceb566",
+      "start": "0",
+      "end": "0",
+      "type": "SPR frame",
+      "name": "10,000-Year Old Chest opened"
+    },
+    {
+      "content": "058b7c9ef52ea944",
+      "start": "0",
+      "end": "0",
+      "type": "SPR frame",
+      "name": "10,000-Year Old Chest debris"
+    },
+    {
+      "content": "3476d3ae3cc494bf",
+      "start": "0",
+      "end": "0",
+      "type": "SPR frame",
+      "name": "10,000-Year Old Chest debris"
+    },
+    {
+      "content": "717efc52776953a4",
+      "start": "0",
+      "end": "0",
+      "type": "SPR frame",
+      "name": "10,000-Year Old Chest debris"
+    },
+    {
+      "content": "cc4f6d81579f6f4b",
+      "start": "0",
+      "end": "0",
+      "type": "SPR frame",
+      "name": "10,000-Year Old Chest debris"
+    },
+    {
+      "content": "93e5f6e14e565a2b",
+      "start": "0",
+      "end": "0",
+      "type": "SPR frame",
+      "name": "10,000-Year Old Chest debris"
+    },
+    {
+      "content": "f6c9405c29db80c1",
+      "start": "0",
+      "end": "0",
+      "type": "SPR frame",
+      "name": "1,000,000-Year Old Chest closed"
+    },
+    {
+      "content": "8f27fcacd27238d3",
+      "start": "0",
+      "end": "0",
+      "type": "SPR frame",
+      "name": "1,000,000-Year Old Chest opened"
+    },
+    {
+      "content": "122241c9766f5567",
+      "start": "0",
+      "end": "0",
+      "type": "SPR frame",
+      "name": "1,000,000-Year Old Chest debris"
+    },
+    {
+      "content": "1494bb2f5bcb7fba",
+      "start": "0",
+      "end": "0",
+      "type": "SPR frame",
+      "name": "1,000,000-Year Old Chest debris"
+    },
+    {
+      "content": "ba47e93713f7260f",
+      "start": "0",
+      "end": "0",
+      "type": "SPR frame",
+      "name": "1,000,000-Year Old Chest debris"
+    },
+    {
+      "content": "282b23f3c690b452",
+      "start": "0",
+      "end": "0",
+      "type": "SPR frame",
+      "name": "1,000,000-Year Old Chest debris"
+    },
+    {
+      "content": "87cdc25002fd22e5",
+      "start": "0",
+      "end": "0",
+      "type": "SPR frame",
+      "name": "1,000,000-Year Old Chest debris"
+    },
+    {
+      "content": "3ef5790927a7f4ac",
+      "start": "0",
+      "end": "0",
+      "type": "SPR frame",
+      "name": "Green grass bush moving"
+    },
+    {
+      "content": "b0bb5058ada21864",
+      "start": "0",
+      "end": "0",
+      "type": "SPR frame",
+      "name": "Green grass bush moving"
+    },
+    {
+      "content": "d68c5d426426a725",
+      "start": "0",
+      "end": "0",
+      "type": "SPR frame",
+      "name": "Green grass bush moving"
+    },
+    {
+      "content": "bd8fbc82782739f7",
+      "start": "0",
+      "end": "0",
+      "type": "SPR frame",
+      "name": "Green grass bush moving"
+    },
+    {
+      "content": "d26376acda42f5a0",
+      "start": "0",
+      "end": "0",
+      "type": "SPR frame",
+      "name": "Green grass bush moving"
+    },
+    {
+      "content": "bb1584f519df43a2",
+      "start": "0",
+      "end": "0",
+      "type": "SPR frame",
+      "name": "Green grass bush moving"
+    },
+    {
+      "content": "6c1f5a432ea0251e",
+      "start": "0",
+      "end": "0",
+      "type": "SPR frame",
+      "name": "Green grass bush moving"
+    },
+    {
+      "content": "b000ff51015c4708",
+      "start": "0",
+      "end": "0",
+      "type": "SPR frame",
+      "name": "Grass"
+    },
+    {
+      "content": "14323e331fc1a91a",
+      "start": "0",
+      "end": "0",
+      "type": "SPR frame",
+      "name": "Biting Plant egg claws"
+    },
+    {
+      "content": "ce1bf01bde0449ac",
+      "start": "0",
+      "end": "0",
+      "type": "SPR frame",
+      "name": "Biting Plant egg claws"
+    },
+    {
+      "content": "9ba2ea13443c6c4c",
+      "start": "0",
+      "end": "0",
+      "type": "SPR frame",
+      "name": "Biting plant stalk"
+    },
+    {
+      "content": "f86506b30bd9d2b7",
+      "start": "0",
+      "end": "0",
+      "type": "SPR frame",
+      "name": "Biting plant stalk"
+    },
+    {
+      "content": "8e987d2ff393c2b0",
+      "start": "0",
+      "end": "0",
+      "type": "SPR frame",
+      "name": "Bakcgorund clouds"
+    },
+    {
+      "content": "c235f916b2b5ddbf",
+      "start": "0",
+      "end": "0",
+      "type": "SPR frame",
+      "name": "Bakcgorund landscape"
+    },
+    {
+      "content": "eacf2b95713e2a68",
+      "start": "0",
+      "end": "0",
+      "type": "SPR frame",
+      "name": "Tree leaves"
+    },
+    {
+      "content": "284c278a6fbb5336",
+      "start": "0",
+      "end": "0",
+      "type": "SPR frame",
+      "name": "Tree leaves"
+    },
+    {
+      "content": "e4ad76359c1a76ed",
+      "start": "0",
+      "end": "0",
+      "type": "SPR frame",
+      "name": "Tree leaves"
+    },
+    {
+      "content": "947e509c718b987f",
+      "start": "0",
+      "end": "0",
+      "type": "SPR frame",
+      "name": "Tree leaves"
+    },
+    {
+      "content": "1f7d561509bd8c1c",
+      "start": "0",
+      "end": "0",
+      "type": "SPR frame",
+      "name": "Yan blinking"
+    },
+    {
+      "content": "48d5168bdbb2fd39",
+      "start": "0",
+      "end": "0",
+      "type": "SPR frame",
+      "name": "Yan blinking"
+    },
+    {
+      "content": "c86e8fb0c8db95db",
+      "start": "0",
+      "end": "0",
+      "type": "SPR frame",
+      "name": "Small biting plant"
+    },
+    {
+      "content": "c70eb76d2e116bc4",
+      "start": "0",
+      "end": "0",
+      "type": "SPR frame",
+      "name": "Chamomile flower"
+    },
+    {
+      "content": "ed00e9701570beb3",
+      "start": "0",
+      "end": "0",
+      "type": "SPR frame",
+      "name": "Chamomile flower"
+    },
+    {
+      "content": "f3a4afe7a86e927a",
+      "start": "0",
+      "end": "0",
+      "type": "SPR frame",
+      "name": "Turtle shell"
+    },
+    {
+      "content": "abadb075b59b47ca",
+      "start": "0",
+      "end": "0",
+      "type": "SPR frame",
+      "name": "Water ripple"
+    },
+    {
+      "content": "0437f1ed8227900b",
+      "start": "0",
+      "end": "0",
+      "type": "SPR frame",
+      "name": "Water ripple"
+    },
+    {
+      "content": "b6ec96a13cc5933f",
+      "start": "0",
+      "end": "0",
+      "type": "SPR frame",
+      "name": "Water ripple"
+    },
+    {
+      "content": "c9a44549460eb132",
+      "start": "0",
+      "end": "0",
+      "type": "SPR frame",
+      "name": "Water ripple"
+    },
+    {
+      "content": "ae54cf80220c6382",
+      "start": "0",
+      "end": "0",
+      "type": "SPR frame",
+      "name": "Turtle swim right"
+    },
+    {
+      "content": "7dce29b4b7d20aa1",
+      "start": "0",
+      "end": "0",
+      "type": "SPR frame",
+      "name": "Turtle swim right"
+    },
+    {
+      "content": "bd9d93e7041a88dc",
+      "start": "0",
+      "end": "0",
+      "type": "SPR frame",
+      "name": "Turtle swim right"
+    },
+    {
+      "content": "8a19fe59e385b696",
+      "start": "0",
+      "end": "0",
+      "type": "SPR frame",
+      "name": "Turtle swim right"
+    },
+    {
+      "content": "03e3e949cb5c68ce",
+      "start": "0",
+      "end": "0",
+      "type": "SPR frame",
+      "name": "Seaweed"
+    },
+    {
+      "content": "b98e03df3a00b22f",
+      "start": "0",
+      "end": "0",
+      "type": "SPR frame",
+      "name": "Seaweed"
+    },
+    {
+      "content": "7afb96d8c09a7bbe",
+      "start": "0",
+      "end": "0",
+      "type": "SPR frame",
+      "name": "Underwater stone"
+    },
+    {
+      "content": "534087a98a81b24b",
+      "start": "0",
+      "end": "0",
+      "type": "SPR frame",
+      "name": "Underwater stone"
+    },
+    {
+      "content": "37796a51f8ef91d4",
+      "start": "0",
+      "end": "0",
+      "type": "SPR frame",
+      "name": "Wood log"
+    },
+    {
+      "content": "609243c1eec9c1cb",
+      "start": "0",
+      "end": "0",
+      "type": "SPR frame",
+      "name": "Turtle swim left"
+    },
+    {
+      "content": "5d17c860a5e0ced7",
+      "start": "0",
+      "end": "0",
+      "type": "SPR frame",
+      "name": "Turtle swim left"
+    },
+    {
+      "content": "fcbf7b3280bb42d3",
+      "start": "0",
+      "end": "0",
+      "type": "SPR frame",
+      "name": "Turtle swim left"
+    },
+    {
+      "content": "944917fca0b725e6",
+      "start": "0",
+      "end": "0",
+      "type": "SPR frame",
+      "name": "Turtle swim left"
+    },
+    {
+      "content": "aff6a96e98c63131",
+      "start": "0",
+      "end": "0",
+      "type": "SPR frame",
+      "name": "Turtle swim left"
+    },
+    {
+      "content": "4dfcabb92d22e5e7",
+      "start": "0",
+      "end": "0",
+      "type": "SPR frame",
+      "name": "Red Chest opened"
+    },
+    {
+      "content": "ae845c86472e39d0",
+      "start": "0",
+      "end": "0",
+      "type": "SPR frame",
+      "name": "Red Chest debris"
+    },
+    {
+      "content": "2a6588a162440aef",
+      "start": "0",
+      "end": "0",
+      "type": "SPR frame",
+      "name": "Red Chest debris"
+    },
+    {
+      "content": "6102d8b6b83dd649",
+      "start": "0",
+      "end": "0",
+      "type": "SPR frame",
+      "name": "Red Chest debris"
+    },
+    {
+      "content": "eff370ef85812284",
+      "start": "0",
+      "end": "0",
+      "type": "SPR frame",
+      "name": "Red Chest debris"
+    },
+    {
+      "content": "4b9486bb665e5606",
+      "start": "0",
+      "end": "0",
+      "type": "SPR frame",
+      "name": "Red Chest debris"
+    },
+    {
+      "content": "ac6453fa0e019fad",
+      "start": "0",
+      "end": "0",
+      "type": "SPR frame",
+      "name": "Climbing rope grid mesh"
+    },
+    {
+      "content": "85543b4ec7058662",
+      "start": "0",
+      "end": "0",
+      "type": "SPR frame",
+      "name": "Climbing rope grid mesh"
+    },
+    {
+      "content": "2ae4bd3ddadf739e",
+      "start": "0",
+      "end": "0",
+      "type": "SPR frame",
+      "name": "Climbing rope grid mesh"
+    },
+    {
+      "content": "bb7063e24a037f8a",
+      "start": "0",
+      "end": "0",
+      "type": "SPR frame",
+      "name": "Climbing rope grid mesh"
+    },
+    {
+      "content": "ffa116686f2b2edd",
+      "start": "0",
+      "end": "0",
+      "type": "SPR frame",
+      "name": "Climbing rope grid mesh"
+    },
+    {
+      "content": "a5809f2ed7735be1",
+      "start": "0",
+      "end": "0",
+      "type": "SPR frame",
+      "name": "Climbing rope grid mesh"
+    },
+    {
+      "content": "45bbea66e24c6da8",
+      "start": "0",
+      "end": "0",
+      "type": "SPR frame",
+      "name": "Climbing rope grid mesh"
+    },
+    {
+      "content": "fbc4fcf6faa103c8",
+      "start": "0",
+      "end": "0",
+      "type": "SPR frame",
+      "name": "Climbing rope grid mesh"
+    },
+    {
+      "content": "b515d316ee36f5a7",
+      "start": "0",
+      "end": "0",
+      "type": "SPR frame",
+      "name": "100 Year Old Man"
+    },
+    {
+      "content": "a0fb98d556f356ac",
+      "start": "0",
+      "end": "0",
+      "type": "SPR frame",
+      "name": "100 Year Old Man"
+    },
+    {
+      "content": "87719971ed3593b8",
+      "start": "0",
+      "end": "0",
+      "type": "SPR frame",
+      "name": "100 Year Old Man"
+    },
+    {
+      "content": "174da1a1b698de3a",
+      "start": "0",
+      "end": "0",
+      "type": "SPR frame",
+      "name": "100 Year Old Man"
+    },
+    {
+      "content": "15f19bcfde3ab48d",
+      "start": "0",
+      "end": "0",
+      "type": "SPR frame",
+      "name": "100 Year Old Man"
+    },
+    {
+      "content": "2dd32e9016c79da2",
+      "start": "0",
+      "end": "0",
+      "type": "SPR frame",
+      "name": "100 Year Old Man"
+    },
+    {
+      "content": "992cadb4df68b9a6",
+      "start": "0",
+      "end": "0",
+      "type": "SPR frame",
+      "name": "100 Year Old Man"
+    },
+    {
+      "content": "4566c9e73447b072",
+      "start": "0",
+      "end": "0",
+      "type": "SPR frame",
+      "name": "100 Year Old Man"
+    },
+    {
+      "content": "bd48a140a077e381",
+      "start": "0",
+      "end": "0",
+      "type": "SPR frame",
+      "name": "100 Year Old Man"
+    },
+    {
+      "content": "8543daacdcc6b5b3",
+      "start": "0",
+      "end": "0",
+      "type": "SPR frame",
+      "name": "100 Year Old Man"
+    },
+    {
+      "content": "6c1cd8d2441ec89a",
+      "start": "0",
+      "end": "0",
+      "type": "SPR frame",
+      "name": "100 Year Old Man"
+    },
+    {
+      "content": "518db77f72a0bb5f",
+      "start": "0",
+      "end": "0",
+      "type": "SPR frame",
+      "name": "100 Year Old Man"
+    },
+    {
+      "content": "813b81e76c6e5481",
+      "start": "0",
+      "end": "0",
+      "type": "SPR frame",
+      "name": "100 Year Old Man"
+    },
+    {
+      "content": "175aeedda36e7813",
+      "start": "0",
+      "end": "0",
+      "type": "SPR frame",
+      "name": "100 Year Old Man"
+    },
+    {
+      "content": "bc45c9173d2eca8b",
+      "start": "0",
+      "end": "0",
+      "type": "SPR frame",
+      "name": "100 Year Old Man"
+    },
+    {
+      "content": "95b175b9714f99bc",
+      "start": "0",
+      "end": "0",
+      "type": "SPR frame",
+      "name": "100 Year Old Man"
+    },
+    {
+      "content": "c20cd58195151ee5",
+      "start": "0",
+      "end": "0",
+      "type": "SPR frame",
+      "name": "100 Year Old Man"
+    },
+    {
+      "content": "cd7c7d27e1828fa4",
+      "start": "0",
+      "end": "0",
+      "type": "SPR frame",
+      "name": "100 Year Old Man"
+    },
+    {
+      "content": "80689ffddbc38d56",
+      "start": "0",
+      "end": "0",
+      "type": "SPR frame",
+      "name": "100 Year Old Man"
+    },
+    {
+      "content": "f20a05897354b49a",
+      "start": "0",
+      "end": "0",
+      "type": "SPR frame",
+      "name": "100 Year Old Man"
+    },
+    {
+      "content": "157bb3a3df9ea1f1",
+      "start": "0",
+      "end": "0",
+      "type": "SPR frame",
+      "name": "100 Year Old Man"
+    },
+    {
+      "content": "9637d6bc75fc5359",
+      "start": "0",
+      "end": "0",
+      "type": "SPR frame",
+      "name": "100 Year Old Man"
+    },
+    {
+      "content": "6058c77c133239e4",
+      "start": "0",
+      "end": "0",
+      "type": "SPR frame",
+      "name": "100 Year Old Man"
+    },
+    {
+      "content": "bcf645a4b631b318",
+      "start": "0",
+      "end": "0",
+      "type": "SPR frame",
+      "name": "100 Year Old Man"
+    },
+    {
+      "content": "ba1fa78742267a35",
+      "start": "0",
+      "end": "0",
+      "type": "SPR frame",
+      "name": "100 Year Old Man"
+    },
+    {
+      "content": "4342b3525c4c037d",
+      "start": "0",
+      "end": "0",
+      "type": "SPR frame",
+      "name": "100 Year Old Man"
+    },
+    {
+      "content": "54103dbfda642f6a",
+      "start": "0",
+      "end": "0",
+      "type": "SPR frame",
+      "name": "100 Year Old Man"
+    },
+    {
+      "content": "598e327c4ffa535c",
+      "start": "0",
+      "end": "0",
+      "type": "SPR frame",
+      "name": "100 Year Old Man"
+    },
+    {
+      "content": "1d438d8777083223",
+      "start": "0",
+      "end": "0",
+      "type": "SPR frame",
+      "name": "100 Year Old Man"
+    },
+    {
+      "content": "223211b88f8e1d1f",
+      "start": "0",
+      "end": "0",
+      "type": "SPR frame",
+      "name": "100 Year Old Man Shocked"
+    },
+    {
+      "content": "6798033e163313f1",
+      "start": "0",
+      "end": "0",
+      "type": "SPR frame",
+      "name": "100 Year Old Man hut overlay sprite"
+    },
+    {
+      "content": "dd1492e33e1a9001",
+      "start": "0",
+      "end": "0",
+      "type": "SPR frame",
+      "name": "100 Year Old Man hut overlay sprite"
+    },
+    {
+      "content": "881f8afafd09d0f6",
+      "start": "0",
+      "end": "0",
+      "type": "SPR frame",
+      "name": "Tree stub"
+    },
+    {
+      "content": "7c2348091f32a7ea",
+      "start": "0",
+      "end": "0",
+      "type": "SPR frame",
+      "name": "Fish"
+    },
+    {
+      "content": "07f5d5dc992b939f",
+      "start": "0",
+      "end": "0",
+      "type": "SPR frame",
+      "name": "Fish"
+    },
+    {
+      "content": "42e41eaecee89223",
+      "start": "0",
+      "end": "0",
+      "type": "SPR frame",
+      "name": "Fish"
+    },
+    {
+      "content": "436135518c4d2463",
+      "start": "0",
+      "end": "0",
+      "type": "SPR frame",
+      "name": "Fish"
+    },
+    {
+      "content": "791465ac6b066f2d",
+      "start": "0",
+      "end": "0",
+      "type": "SPR frame",
+      "name": "Spiky plant"
+    },
+    {
+      "content": "032f0ecb4e5e42be",
+      "start": "0",
+      "end": "0",
+      "type": "SPR frame",
+      "name": "Spiky plant"
+    },
+    {
+      "content": "4c6d4214fb2aba71",
+      "start": "0",
+      "end": "0",
+      "type": "SPR frame",
+      "name": "Spiky plant"
+    },
+    {
+      "content": "17090e8355fedc3e",
+      "start": "0",
+      "end": "0",
+      "type": "SPR frame",
+      "name": "Spiky plant"
     }
   ],
   "builds": {
