@@ -49,6 +49,7 @@ class ImageView(QWidget):
         tools.addWidget(self.dimensions)
         tools.addStretch()
         tools.addWidget(save)
+        self.tools = tools
         layout.addLayout(tools)
         self.canvas = PixelCanvas()
         self.view = QScrollArea()

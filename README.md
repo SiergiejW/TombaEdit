@@ -236,9 +236,14 @@ instance, come from a controller).
   Masakari River, four versions of one row, one every eight updates; the
   flickering sky of area 4, from a backdrop object) are recorded by running
   that code for a few hundred updates. The stats line counts them.
-  **Save GIF** writes one cycle of the selected object: a sprite's frames, or
-  for such a model its texture, either cropped to the moving UVs or as the
-  whole page with them outlined.
+  **Save GIF** saves the whole view as drawn, at the view's size, half of it
+  or 640 x 480, 1280 x 720 or 1920 x 1080; the selected sprites where they
+  stand in the level; or the selected model's texture as its UVs move,
+  cropped to them or as the whole page with them outlined (the UV panel's
+  **GIF...** button opens the same choice). It covers one cycle of every
+  animation shown, cut at 3,000 updates, or any run of updates from a given
+  one. At 60 updates a second every other update becomes a GIF frame, since
+  players stretch frames shorter than 20 ms.
 - **Background** draws the section's backdrop sprites, the sky, clouds and
   distant scenery, behind the level. The game positions them on the screen
   from the camera, each following a fraction of its movement. Here they

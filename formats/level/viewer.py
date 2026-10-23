@@ -87,9 +87,15 @@ class LevelView(ModelView):
         self.canvas.highlight = False
         self.canvas.selection_outline = True
         gif = QAction(self.style().standardIcon(QStyle.StandardPixmap.SP_DialogSaveButton), 'Save GIF', self)
-        gif.setToolTip('Save one pass of the selected sprite\'s animation as a GIF.')
+        gif.setToolTip('Save a GIF of the whole view, the selected sprites or a model\'s moving texture, '
+                       'over one cycle of every animation or a chosen run of updates.')
         gif.triggered.connect(self.save_gif)
         self.toolbar.addAction(gif)
+        # The UV panel saves the selected model's moving texture the same way.
+        uv_gif = QPushButton('GIF...')
+        uv_gif.setToolTip('Save the selected model\'s texture as its UVs move, as a GIF.')
+        uv_gif.clicked.connect(lambda: self.save_gif(prefer='uv'))
+        self.uv.tools.addWidget(uv_gif)
         self.collision_action = self.toggle_action(
             QStyle.StandardPixmap.SP_FileDialogListView, 'Collision', self.toggle_collision, False,
             'Draw WHM boundaries: green floors, blue ceilings, magenta side boundaries '
@@ -332,30 +338,127 @@ class LevelView(ModelView):
         else:
             super().frame_current()
 
-    def save_gif(self):
-        """One cycle of the selected object's animation as a GIF: a sprite's
-        frames, or the texture of a model whose texture coordinates move."""
+    def save_gif(self, prefer='view'):
+        """Save a GIF of the whole view, the selected sprites, or the texture
+        of the selected model whose UVs move, over one cycle of every
+        animation in it or a chosen run of updates."""
         from PyQt6.QtWidgets import QFileDialog, QMessageBox
         from gui.widgets.image_view import file_stem
-        row = self.objects.currentRow()
-        entry = self.scene.entries[row] if self.scene and 0 <= row < len(self.scene.entries) else None
-        if entry is None or not entry.frames:
-            QMessageBox.information(self, 'Save GIF', 'Select an animated sprite or model in the scene list first. '
-                                    'The stats line shows how many the section has.')
+        from formats.level.gif_export import GifDialog, cycle_length
+        if self.scene is None:
             return
-        name = file_stem(f'{self.export_name} - {entry.name}', 'animation')
-        textured = entry.frames[0][0].image is None
-        kinds = ('GIF, cropped to the UVs (*.gif);;GIF, whole texture page (*.gif)' if textured else 'GIF (*.gif)')
-        path, kind = QFileDialog.getSaveFileName(self, 'Save GIF', name + '.gif', kinds)
+        entries = self.scene.entries
+        row = self.objects.currentRow()
+        entry = entries[row] if 0 <= row < len(entries) else None
+        sprites = [r for r in self.selected_rows() if r < len(entries) and entries[r].mesh.image is not None
+                   and r in self.canvas.visible]
+        subjects = [('Whole view', 'view')]
+        if sprites:
+            subjects.append((f'Selected sprites ({len(sprites)})', 'sprites'))
+        if entry is not None and entry.frames and entry.frames[0][0].image is None:
+            subjects += [('Texture of the selected model, cropped to the moving UVs', 'uv'),
+                         ('Texture of the selected model, whole page', 'page')]
+        totals = [sum(t for _, t in e.frames) for e in entries if e.frames]
+        totals += [sum(t for _, t in cycle) for *_, cycle in self.scene.palettes]
+        dialog = GifDialog(self, subjects, (self.canvas.width(), self.canvas.height()),
+                           cycle_length(totals), self.scene.rate)
+        keys = [key for _, key in subjects]
+        if prefer in keys:
+            dialog.subject.setCurrentIndex(keys.index(prefer))
+        if not dialog.exec():
+            return
+        subject, size, first, count = dialog.choice()
+        if dialog.whole.isChecked() and subject != 'view':
+            chosen = sprites if subject == 'sprites' else [row]
+            count = cycle_length([sum(t for _, t in entries[r].frames) for r in chosen if entries[r].frames])
+        named = entry.name if subject != 'view' and entry is not None else ''
+        path, _ = QFileDialog.getSaveFileName(self, 'Save GIF', file_stem(
+            f'{self.export_name} - {named}' if named else self.export_name, 'level') + '.gif', 'GIF (*.gif)')
         if not path:
             return
-        images = self.texture_steps(row, entry, 'whole' in kind) if textured else self.sprite_steps(entry)
-        if not images:
-            QMessageBox.information(self, 'Save GIF', 'The texture coordinates of this model do not change.')
-            return
-        images[0].save(path, save_all=True, append_images=images[1:], loop=0, disposal=2,
-                       duration=[max(20, round(ticks * 1000 / self.scene.rate)) for _, ticks in entry.frames[:len(images)]])
-        print(f'wrote {path}: {len(images)} steps')
+        from formats.level.gif_export import gif_ticks
+        shown, durations = gif_ticks(first, count, self.scene.rate)
+        if subject == 'view':
+            try:
+                images = self.view_steps(shown, size)
+            except RuntimeError as exc:
+                QMessageBox.warning(self, 'Save GIF', str(exc))
+                return
+        elif subject == 'sprites':
+            images = self.selection_steps(sprites, shown)
+        else:
+            steps = self.texture_steps(row, entry, subject == 'page')
+            if not steps:
+                QMessageBox.information(self, 'Save GIF', 'The texture coordinates of this model do not change.')
+                return
+            from formats.level.gif_export import step_at
+            images = [steps[min(step_at(entry.frames, tick), len(steps) - 1)] for tick in shown]
+        images[0].save(path, save_all=True, append_images=images[1:], loop=0, disposal=2, duration=durations)
+        print(f'wrote {path}: {len(images)} frames, {count} updates')
+
+    def pose_at(self, tick):
+        """Show every animation, and every cycled palette, as it is `tick`
+        updates after the section starts."""
+        from formats.level.gif_export import step_at
+        for state in self.animated:
+            frames = self.scene.entries[state[0]].frames
+            self.canvas.set_mesh(state[0], frames[step_at(frames, tick)][0])
+        for x, y, width, height, cycle in self.scene.palettes:
+            self.canvas.set_palette(x, y, width, height, cycle[step_at(cycle, tick)][0])
+
+    def view_steps(self, ticks, size):
+        """The view as drawn at each of these updates, at `size`."""
+        from PIL import Image
+        from PyQt6.QtGui import QImage
+        running = self.timer.isActive()
+        self.timer.stop()
+        images = []
+        try:
+            for tick in ticks:
+                self.pose_at(tick)
+                grabbed = self.canvas.grabFramebuffer().convertToFormat(QImage.Format.Format_RGBA8888)
+                if grabbed.isNull():
+                    raise RuntimeError('The 3D view could not be read back.')
+                pixels = grabbed.constBits()
+                pixels.setsize(grabbed.sizeInBytes())
+                image = Image.frombuffer('RGBA', (grabbed.width(), grabbed.height()), bytes(pixels),
+                                         'raw', 'RGBA', grabbed.bytesPerLine(), 1).convert('RGB')
+                if image.size != tuple(size):
+                    image = image.resize(size, Image.LANCZOS)
+                images.append(image)
+        finally:
+            # Playback carries on from the start of every animation.
+            self.pose_at(0)
+            self.animated = [[i, 0, self.scene.entries[i].frames[0][1]] for i, _, _ in self.animated]
+            self.palette_steps = [[k, 0, cycle[0][1]] for k, (*_, cycle) in enumerate(self.scene.palettes)]
+            if running:
+                self.timer.start()
+        return images
+
+    def selection_steps(self, rows, ticks):
+        """The selected sprites at each of these updates, where they stand
+        in the level, on one canvas."""
+        from PIL import Image
+        from formats.level.gif_export import step_at
+        placed = []
+        for tick in ticks:
+            pictures = []
+            for row in rows:
+                entry = self.scene.entries[row]
+                mesh = entry.frames[step_at(entry.frames, tick)][0] if entry.frames else entry.mesh
+                corners = mesh.polygons[0]['vertices']
+                pictures.append((min(c[0] for c in corners), min(-c[1] for c in corners), mesh.image))
+            placed.append(pictures)
+        boxes = [(x, y, x + image.width, y + image.height) for pictures in placed for x, y, image in pictures]
+        left, top = min(b[0] for b in boxes), min(b[1] for b in boxes)
+        width, height = int(max(b[2] for b in boxes) - left), int(max(b[3] for b in boxes) - top)
+        images = []
+        for pictures in placed:
+            canvas = Image.new('RGBA', (max(1, width), max(1, height)))
+            for x, y, image in pictures:
+                canvas.alpha_composite(image.convert('RGBA'), (int(x - left), int(y - top)))
+            images.append(canvas)
+        return images
 
     @staticmethod
     def sprite_steps(entry):
