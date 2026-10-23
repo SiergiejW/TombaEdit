@@ -474,6 +474,9 @@ def build_scene(project, path, index):
     # Classes are named by the area whose code runs them.
     runtime = getattr(resolver, 'area', area)
     overlay_base = resolver.build.overlay if resolver.available else 0
+    # A town's overlay (INFO, INFO2, INFO3) draws its objects its own way.
+    from formats.level.draw import town_of
+    in_town = bool(resolver.available and town_of(resolver.town))
     overlay_size = resources['INS', 0].size if ('INS', 0) in resources else 0
     slots = resolver.placement_slots(area, index-1) if resolver.available and index else None
     notes.append(resolver.reason)
@@ -671,7 +674,10 @@ def build_scene(project, path, index):
                     where = (where[0], where[1] - 240, where[2] + 1)
                 # Most sprites are drawn here by the game's own draw routine
                 # (formats.level.draw); the rest from their SPR parts.
-                assembled = placement.layer != 7 and not visual.get('anchored')
+                # Banks whose pixels a WPP bank supplies (Tomba, the Kokka
+                # bird) are not in VRAM until the game uploads the frame on
+                # screen, so they are drawn from the pictures.
+                assembled = placement.layer != 7 and not visual.get('anchored') and bank not in pictures
                 drawn = 0
                 for frame, ticks in visual['frames']:
                     parts = sprites[bank][frame] if frame < len(sprites[bank]) else None
@@ -701,7 +707,7 @@ def build_scene(project, path, index):
                     if visual.get('animation_preview'):
                         note += (f' Handler animation preview 0x{visual["animation_preview"]:08X}; '
                                  'initialization holds a pose. AI transitions and movement are not simulated.')
-                    elif assembled and resolver.town and visual.get('shade') == 0:
+                    elif assembled and in_town and visual.get('shade') == 0:
                         category = 'Event previews'
                         note += (' Its shade +6B is 0, so the town does not draw it yet; shown from its'
                                  ' SPR parts only with Event previews enabled.')
@@ -768,6 +774,11 @@ def build_scene(project, path, index):
                     note = f'Fixed picture of {len(pieces)} rectangles, {image.width} x {image.height}, drawn behind the section.'
             if mesh is None:
                 mesh = marker(placement.position, placement.offset, class_color(placement))
+                if category == 'Unresolved' and active and resolver.available                         and (placement.raw, placement.position) in resolver.no_visual:
+                    # As the Room of Tribulation's fountain spouts are in
+                    # the running game.
+                    note = ('Its routine sets it up with no sprite bank and no model: it draws nothing itself. '
+                            'Position comes from APD.')
             if placement.origin:
                 name = f'Spawned {placement.layer}:{placement.kind:02X} / {placement.variant:02X}'
                 category = 'Spawned' if category in ('Sprites', 'Models', 'Unresolved') else category
@@ -843,7 +854,12 @@ def build_scene(project, path, index):
     # not stored with the section, so the top edge of the highest piece of
     # scenery stands in for it.
     sky = None
-    if backdrops:
+    # The colour the game clears the screen to in this section, where the
+    # executable says; otherwise the top edge of the scenery stands in.
+    clear = resolver.clear_colour(area, index - 1) if resolver.available and index else None
+    if clear is not None:
+        sky = tuple(c / 255 for c in clear)
+    elif backdrops:
         highest = min((b for _, b in backdrops), key=lambda b: b.screen[1] + b.top)
         sky = edge_colour(highest.image)
     else:

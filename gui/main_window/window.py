@@ -375,10 +375,18 @@ def _prepare_preview(project, node, context=None, delegated=False):
                     origins[frame] = 'texture and palette uploads'
             # What is left may be shown by objects nothing places: effects
             # other objects create. Their routines are run to find out.
-            if screen is None and any(frame and i not in result['sprite_pages'] for i, frame in enumerate(frames)):
+            # Upload pairing names a frame's page but not its palette; a
+            # routine that shows the frame on that page with a palette of
+            # its own says which (area 00's swirling stars, 34FF C7-D1).
+            uploaded = [i for i in result['sprite_pages'] if origins.get(i) == 'texture and palette uploads'
+                        and i not in result['sprite_cluts']]
+            if screen is None and (uploaded or any(frame and i not in result['sprite_pages'] for i, frame in enumerate(frames))):
                 from formats.level.scene import sprite_routines
                 for frame, (page, word) in sprite_routines(project, node.ldar, context).get(slot, {}).items():
-                    if frame not in result['sprite_pages']:
+                    if frame in uploaded and page == result['sprite_pages'][frame] and word is not None:
+                        result['sprite_cluts'][frame] = word
+                        origins[frame] = 'texture and palette uploads, routine palette'
+                    elif frame not in result['sprite_pages']:
                         result['sprite_pages'][frame] = page
                         origins[frame] = 'routine'
                         if word is not None:

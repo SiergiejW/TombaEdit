@@ -254,8 +254,10 @@ instance, come from a controller).
   camera is near or past them are measured from there. Interiors and
   other sections with a fixed picture behind them show it in place, with
   their foreground pieces over it. Behind all of it the view is cleared to
-  the colour at the top edge of the scenery, standing in for the game's own
-  sky colour, which is not stored with the section.
+  the colour the game clears the screen to in that section, read from the
+  executable's table of one colour per section (black in most of Deep
+  Jungle, blue once it is purified); where an executable has no such table,
+  the colour at the top edge of the scenery stands in.
 - **Collision** overlays the section's WHM data (opening the Collision page
   of the side panel turns it on): green walkable surfaces,
   magenta surfaces with special attributes, and orange outlines around solid
@@ -296,7 +298,17 @@ instance, come from a controller).
   resource the group loads.
 
 The scene is the state right after loading, with a new game's flags.
-Conditions and movement are not simulated.
+Conditions and movement are not simulated, with two exceptions:
+
+- An object whose routine removes it in a new game is run again with each
+  byte of the game's state it read set to other values. When one makes it
+  stay, it is listed as an event preview with that condition (Baccus
+  Village's Cowboy stays once byte 8009C3E9 is 06).
+- An object set up with neither a sprite bank nor a model says in its
+  details that it draws nothing itself, instead of reading as unresolved.
+
+Sprite banks paired with a WPP picture bank (Tomba, the Kokka bird) are
+drawn from its pictures; the game uploads only the frame on screen to VRAM.
 
 ### Sprites
 

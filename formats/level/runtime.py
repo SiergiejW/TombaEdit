@@ -22,6 +22,11 @@ NUDGE = 64
 # banks by slot, and the camera position.
 SPR_TABLE, WMD_TABLE, APD_TABLE = 0x1F8002C8, 0x1F800330, 0x1F800358
 CAMERA_X, CAMERA_Y = 0x1F800176, 0x1F800186
+# The part of the game's state, about the area word, whose bytes an object's
+# routine may wait on (event progress), and the values tried for them.
+STATE_BEFORE, STATE_AFTER = 0x400, 0x1000
+EVENT_BYTES = 4
+EVENT_VALUES = tuple(range(1, 17)) + (0x20, 0x40, 0x80, 0xFF)
 EMPTY_LIST = 0x803E0000         # a list with no entries, for routines that take one
 # Where the resolver keeps its one object and the banks it loads.
 OBJECT, SPR_MEMORY, WMD_MEMORY, BANK_SPACING = 0x80300000, 0x80400000, 0x80800000, 0x40000
@@ -86,6 +91,7 @@ class InitialPoseResolver:
         self.reason = "This executable's object routines have not been located."
         self.cache = {}
         self.object_states = {}
+        self.no_visual = set()      # (raw, position) of objects set up to draw nothing
         self.queued = set()
         self.stop_at_animation = False
         self.measure_backdrops = True
@@ -163,6 +169,20 @@ class InitialPoseResolver:
         for address in services:
             if any(start <= address < end for start, end in regions):
                 self.u.hook_add(UC_HOOK_CODE, self.hook, begin=address, end=address)
+        # Reads of the game's state, noted while state_reads is a list (see
+        # event_pose). Hooked from the start: code translated before a hook
+        # is added does not report to it.
+        from unicorn import UC_HOOK_MEM_READ
+        self.state_reads = None
+        low, high = build.area - STATE_BEFORE, build.area + STATE_AFTER
+
+        def note(uc, access, address, size, value, user):
+            if self.state_reads is not None:
+                for byte in range(address | 0x80000000, (address | 0x80000000) + size):
+                    if low <= byte < high and byte not in self.state_reads:
+                        self.state_reads.append(byte)
+
+        self.u.hook_add(UC_HOOK_MEM_READ, note, begin=low & 0x1FFFFFFF, end=(high - 1) & 0x1FFFFFFF)
         self.cpu_context = self.u.context_save()
         # What the game's own draw routines make of a traced object.
         self.town = Path(overlay.source.path).name.upper() if overlay and overlay.source else ''
@@ -235,6 +255,42 @@ class InitialPoseResolver:
         except Exception:
             pass
         return []
+
+    def clear_colour(self, area, section):
+        """(r, g, b) the game clears the screen to in a section, or None.
+
+        US routine 8005AF9C reads the area word, takes that area's list of
+        colours from the table at 8007F938 and the section's three bytes
+        from it (area 10's jungle: black for sections 0 to 3, 60 97 FF for
+        4 to 7). Area 4 uses another list (8007F968) while bit 3 of a flag
+        byte is set, which a new game leaves clear. The table is found by
+        the code that reads it: sll v0,v1,2; lui at; addu at,at,v0;
+        lw a1,(at); addiu v0,zero,4; bne v1,v0."""
+        if not self.available or self.build.legacy8:
+            return None
+        if not hasattr(self, '_clear_table'):
+            words = np.frombuffer(bytes(self.exe[0x800:len(self.exe) // 4 * 4]), '<u4')
+            low = lambda word: (int(word) & 0xFFFF) - (0x10000 if word & 0x8000 else 0)
+            self._clear_table = None
+            for i in np.nonzero(words[:-6] == 0x00031080)[0]:
+                w = words[i:i + 6]
+                if (w[1] >> 16 == 0x3C01 and w[2] == 0x00220821 and w[3] >> 16 == 0x8C25
+                        and w[4] == 0x24020004 and w[5] >> 16 == 0x1462):
+                    self._clear_table = ((int(w[1]) & 0xFFFF) << 16) + low(w[3])
+                    break
+        table = self._clear_table
+        if table is None:
+            return None
+        area = runtime_area(area, section, self.build.early)
+        try:
+            colours = self.exe_word(table + 4 * area)
+            # Every list lies just before the table; anything else is not one.
+            if not table - 0x400 <= colours < table or not 0 <= section < 32:
+                return None
+            r, g, b = self.exe[colours + 4 * section - self.base + 0x800:][:3]
+        except (struct.error, IndexError, ValueError):
+            return None
+        return r, g, b
 
     def area_routine(self):
         """(routine, state, copy) of the area's own update, or None.
@@ -387,7 +443,10 @@ class InitialPoseResolver:
         pc = self.read_word(self.build.tables[8] + placement.kind * 4)
         x, y = placement.position[:2]
         found = []
-        for camera in ((x - 160, y - 120), (0, 0), (x + 200, y - 120), (x - 500, y - 120)):
+        # Some wait for the camera to come far enough along the level, as
+        # area 10's water does in its type 0 (camera X 0AC9 and on).
+        for camera in ((x - 160, y - 120), (0, 0), (x + 200, y - 120), (x - 500, y - 120),
+                       (4096, y - 120), (8192, y - 120)):
             self.write(0x80000000, self.baseline)
             self.write(0x1F800000, self.scratch)
             self.write(address, original)
@@ -869,7 +928,45 @@ class InitialPoseResolver:
                 if result:
                     result['condition'] = 'Event effect: only visible when event bytes BCA8/BCA9 select state 7E.'
                     self.cache[key] = result
+            if not self.cache[key] and not self.build.early and not placement.origin:
+                self.cache[key] = self.event_pose(placement)
         return self.cache[key]
+
+    def event_pose(self, placement):
+        """The pose of an object its routine removes in a new game, shown
+        with one byte of the game's state set otherwise. The Cowboy of
+        Baccus Village's section 3 (2:2F) is freed while byte 8009C3E9 (US)
+        is 00 and stays, drawn, once it is 06. The bytes the routine reads
+        from the game's state are tried in turn with a few values; the
+        first that leaves a pose is kept, with what it took."""
+        read = self.state_reads = []
+        try:
+            self.attempt(placement, False)
+        except OSError:
+            return {}
+        finally:
+            self.state_reads = None
+        baseline = self.baseline
+        try:
+            for byte in read[:EVENT_BYTES]:
+                for value in EVENT_VALUES:
+                    if baseline[byte & 0x1FFFFF] == value:
+                        continue
+                    changed = bytearray(baseline)
+                    changed[byte & 0x1FFFFF] = value
+                    self.baseline = bytes(changed)
+                    try:
+                        result = self.attempt(placement, False) or self.attempt(placement, True)
+                    except OSError:
+                        result = {}
+                    if result and 'sprite' in result or result and 'model' in result:
+                        result['condition'] = (f'The game only keeps it when byte {byte:08X} of its state is '
+                                               f'{value:02X} (a new game has {baseline[byte & 0x1FFFFF]:02X}). '
+                                               'Enable Event previews to inspect it.')
+                        return result
+        finally:
+            self.baseline = baseline
+        return {}
 
     def spawn(self, obj, placement):
         """Fill a cleared object from a placement record as the record
@@ -1037,6 +1134,12 @@ class InitialPoseResolver:
                             # screen position, one to one with the camera.
                             result['anchored'] = True
                         break
+            else:
+                # Still running after its updates with neither a sprite bank
+                # nor a model: an object that draws nothing itself.
+                state = self.read(obj, 0x200)
+                if state[0] in (1, 2) and not any(state[0x3C:0x40]) and not any(state[0xA0:0xA4]):
+                    self.no_visual.add((raw, placement.position))
         except UcError:
             pass
         if result:

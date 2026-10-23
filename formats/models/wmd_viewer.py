@@ -197,10 +197,12 @@ class MeshCanvas(CameraEventMixin, QOpenGLWidget):
         # Until the camera is moved by hand, a resize keeps everything framed.
         self.auto_fit = indices is None
         if indices is not None:
-            # Framing one object must not pull the clip planes in around it.
+            # Framing one object must not pull the clip planes in around it,
+            # nor slow the camera down to its size.
             whole = self.bounds()
             if whole:
                 self.radius = max(self.radius, whole[1])
+                camera.set_scene_radius(whole[1])
         self.update()
 
     def orbit_target(self):
