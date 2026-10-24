@@ -3463,7 +3463,7 @@
       "start": "0",
       "end": "0",
       "type": "Object class",
-      "name": "Sea backgorund"
+      "name": "Backgorund"
     },
     {
       "content": "da7b8f0b504c5c97",
@@ -7468,6 +7468,76 @@
       "end": "0",
       "type": "Object class",
       "name": "Hut"
+    },
+    {
+      "content": "e27e2ead26b3752b",
+      "start": "0",
+      "end": "0",
+      "type": "Object class",
+      "name": "Water"
+    },
+    {
+      "content": "a8a8759991a69adb",
+      "start": "0",
+      "end": "0",
+      "type": "Object class",
+      "name": "Empty"
+    },
+    {
+      "content": "0cc8320a098e8be3",
+      "start": "0",
+      "end": "0",
+      "type": "Object class",
+      "name": "Forest backgorund"
+    },
+    {
+      "content": "e9f62945c3ef77b3",
+      "start": "0",
+      "end": "0",
+      "type": "Object class",
+      "name": "Thief"
+    },
+    {
+      "content": "246fa89b3d21ea6d",
+      "start": "0",
+      "end": "0",
+      "type": "Object class",
+      "name": "Keyhole"
+    },
+    {
+      "content": "22c836d2896f011f",
+      "start": "0",
+      "end": "0",
+      "type": "Object class",
+      "name": "Sprite"
+    },
+    {
+      "content": "d403260ddda08b7a",
+      "start": "0",
+      "end": "0",
+      "type": "Object class",
+      "name": "Seaweed"
+    },
+    {
+      "content": "cde61e02cb577593",
+      "start": "0",
+      "end": "0",
+      "type": "Object class",
+      "name": "Lava"
+    },
+    {
+      "content": "9cd5c71382705075",
+      "start": "0",
+      "end": "0",
+      "type": "Object class",
+      "name": "Background"
+    },
+    {
+      "content": "8c745ead4985e5d5",
+      "start": "0",
+      "end": "0",
+      "type": "Object class",
+      "name": "Round obstacle"
     }
   ],
   "builds": {

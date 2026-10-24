@@ -92,6 +92,10 @@ class InitialPoseResolver:
         self.cache = {}
         self.object_states = {}
         self.no_visual = set()      # (raw, position) of objects set up to draw nothing
+        # Whether an object a new game removes is also traced as the game
+        # keeps it (event_pose). The level editor lists those; the analyses
+        # of what a bank looks like count only what the game shows.
+        self.event_poses = True
         self.queued = set()
         self.stop_at_animation = False
         self.measure_backdrops = True
@@ -928,7 +932,7 @@ class InitialPoseResolver:
                 if result:
                     result['condition'] = 'Event effect: only visible when event bytes BCA8/BCA9 select state 7E.'
                     self.cache[key] = result
-            if not self.cache[key] and not self.build.early and not placement.origin:
+            if not self.cache[key] and self.event_poses and not self.build.early and not placement.origin:
                 self.cache[key] = self.event_pose(placement)
         return self.cache[key]
 

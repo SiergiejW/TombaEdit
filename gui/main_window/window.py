@@ -399,31 +399,29 @@ def _prepare_preview(project, node, context=None, delegated=False):
             # A bank nothing of this area shows, only loaded, and whose
             # palettes the area does not load either, is drawn as the area
             # whose objects or routines show it draws it.
-            from psx.graphics import palette_missing
+            from psx.graphics import palette_missing, guess_page
             delegate = None
-            if not delegated and slot and not any(origins.get(i, 'object') != 'item table'
-                                                  for i in result['sprite_pages']) \
-                    and sum(any(palette_missing(result['vram'], part[2]) for part in frame)
-                            for frame in frames if frame) * 2 > sum(1 for frame in frames if frame):
-                from formats.sprites.shared import showing_area
-                delegate = showing_area(project, node, data)
-            # A bank no object of this area shows, placed or spawned, is
-            # drawn as the section whose objects show it draws it: this
-            # area's VRAM may hold none or only part of its art.
-            if not delegated and slot and delegate is None and not any(
+            starts_here = [a.rect[0] // 64 + a.rect[1] // 256 * 16
+                           for i in dict.fromkeys((node.group, context)) for a in groups[i].assets
+                           if a.rect and a.rect[3] >= 128]
+            if not delegated and slot and not any(
                     origins.get(i, 'object').startswith(('object', 'section')) for i in result['sprite_pages']):
-                from formats.sprites.shared import object_home
-                home = object_home(project, node, data)
+                from formats.sprites.shared import showing_area, object_home
+                found = None
+                if not any(origins.get(i, 'object') != 'item table' for i in result['sprite_pages'])                         and sum(any(palette_missing(result['vram'], part[2]) for part in frame)
+                                for frame in frames if frame) * 2 > sum(1 for frame in frames if frame):
+                    found = showing_area(project, node, data)
+                if found is None:
+                    found = object_home(project, node, data)
                 # Only where the objects that show it put it on pages this
                 # area does not use for it: the same page with other art
-                # (area 03's 38FF) is this area's own.
-                from psx.graphics import guess_page
-                starts_here = [a.rect[0] // 64 + a.rect[1] // 256 * 16
-                               for i in dict.fromkeys((node.group, context)) for a in groups[i].assets
-                               if a.rect and a.rect[3] >= 128]
-                here = set(result['sprite_pages'].values()) | {guess_page(frames, result['vram'], starts_here)}
-                if home is not None and not home[2] & here:
-                    delegate = home[:2]
+                # (area 03's 38FF) is this area's own, as are banks whose
+                # frames its objects place themselves.
+                table = table_pages(project, node.ldar).get(slot)
+                here = set(result['sprite_pages'].values()) | {
+                    guess_page(frames, result['vram'], starts_here) if table is None else table}
+                if found is not None and not found[2] & here:
+                    delegate = found[:2]
             if delegate is not None:
                 other, section = delegate
                 shown = _prepare_preview(project, other, section, delegated=True)

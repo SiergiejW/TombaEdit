@@ -966,6 +966,7 @@ def sprite_pages(project, path, index):
     if (path, index) not in cache and not restore_section(project, 'pages', path, index, PAGE_CACHES):
         resources = loaded_resources(project, path, index)
         resolver = InitialPoseResolver(project, area_of(path), max(0, index - 1), resources)
+        resolver.event_poses = False
         # Bank inspection needs pages, palettes and animation links, not
         # repeated camera-motion measurements of every placed sprite.
         resolver.measure_backdrops = False
@@ -1132,6 +1133,7 @@ def sprite_routines(project, path, index):
     from formats.level.apd import Placement
     resources = loaded_resources(project, path, index)
     resolver = InitialPoseResolver(project, area_of(path), max(0, index - 1), resources)
+    resolver.event_poses = False
     found = {}
     resolver.measure_backdrops = False
     if resolver.available:

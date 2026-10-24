@@ -30,15 +30,17 @@ def sections_elsewhere(project, node, data):
 
 
 def showing_area(project, node, data):
-    """(asset, load group) of another area's section that loads this bank
-    and whose objects or routines show the most of it, or None."""
+    """(asset, load group, {pages its objects place frames on}) of another
+    area's section that loads this bank and whose objects or routines show
+    the most of it, or None."""
     best, most = None, 0
     for rank, (path, section, slot) in enumerate(sections_elsewhere(project, node, data)):
-        shown = set(sprite_pages(project, path, section).get(slot, {}))
+        pages = sprite_pages(project, path, section).get(slot, {})
+        shown = set(pages)
         if rank < ROUTINE_SECTIONS:
             shown |= set(sprite_routines(project, path, section).get(slot, {}))
         if len(shown) > most:
-            best, most = (loaded_resources(project, path, section)[('SPR', slot)], section), len(shown)
+            best, most = (loaded_resources(project, path, section)[('SPR', slot)], section, set(pages.values())), len(shown)
     return best
 
 
