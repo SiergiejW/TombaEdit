@@ -400,20 +400,28 @@ def _prepare_preview(project, node, context=None, delegated=False):
             # palettes the area does not load either, is drawn as the area
             # whose objects or routines show it draws it.
             from psx.graphics import palette_missing
+            delegate = None
             if not delegated and slot and not any(origins.get(i, 'object') != 'item table'
                                                   for i in result['sprite_pages']) \
                     and sum(any(palette_missing(result['vram'], part[2]) for part in frame)
                             for frame in frames if frame) * 2 > sum(1 for frame in frames if frame):
                 from formats.sprites.shared import showing_area
-                found = showing_area(project, node, data)
-                if found is not None:
-                    other, section = found
-                    shown = _prepare_preview(project, other, section, delegated=True)
-                    shown.update(node=node, data=data, size=len(data), preview_context=context)
-                    shown['notes'].insert(0, f'Nothing in this area shows this bank. It is drawn as '
-                                             f'{other.ldar} section {section - 1:02d}, which loads the same bank, '
-                                             'shows it.')
-                    return shown
+                delegate = showing_area(project, node, data)
+            # A bank no object of this area shows, placed or spawned, is
+            # drawn as the section whose objects show it draws it: this
+            # area's VRAM may hold none or only part of its art.
+            if not delegated and slot and delegate is None and not any(
+                    origins.get(i, 'object').startswith(('object', 'section')) for i in result['sprite_pages']):
+                from formats.sprites.shared import object_home
+                delegate = object_home(project, node, data)
+            if delegate is not None:
+                other, section = delegate
+                shown = _prepare_preview(project, other, section, delegated=True)
+                shown.update(node=node, data=data, size=len(data), preview_context=context)
+                shown['notes'].insert(0, f'Nothing in this area shows this bank. It is drawn as '
+                                         f'{other.ldar} section {section - 1:02d}, which loads the same bank, '
+                                         'shows it.')
+                return shown
             # A frame this section does not place may be placed, with a
             # palette of its object's own, in another section of the area.
             from psx.graphics import palette_missing
@@ -487,7 +495,10 @@ def _prepare_preview(project, node, context=None, delegated=False):
             columns = {word & 63 for words in drawn.values() for word in words}
             unknown = [i for i, frame in enumerate(frames) if frame and i not in result['sprite_pages']
                        and not placed & {part[2] & 0x7FFF for part in frame}]
-            if unknown and slot:
+            # A bank drawn as the section that shows it keeps that section's
+            # own pages: other areas' routines run made-up objects of
+            # classes that never meet this bank there.
+            if unknown and slot and not delegated:
                 from formats.sprites.shared import other_areas
                 # Pages a section group uploads along with the bank hold the
                 # bank's own art in this area.
@@ -498,6 +509,13 @@ def _prepare_preview(project, node, context=None, delegated=False):
                 elsewhere = other_areas(project, node, data, frames, unknown, result['vram'],
                                         [i for i in unknown if columns & {part[2] & 63 for part in frames[i]}],
                                         own_pages)
+                # Where what objects here place sits on one page only, another
+                # area's frame on some other page is a made-up object's.
+                placed_pages = {page for i, page in result['sprite_pages'].items()
+                                if origins.get(i, 'object').startswith(('object', 'section'))}
+                if len(placed_pages) == 1:
+                    elsewhere = {frame: found for frame, found in elsewhere.items()
+                                 if found[0] in placed_pages}
                 for frame, (page, word, vram, origin, names) in elsewhere.items():
                     result['sprite_pages'][frame] = page
                     origins[frame] = origin
@@ -781,6 +799,11 @@ class MainWindow(QMainWindow):
         self.pool.setMaxThreadCount(1)
         self.label_pool = QThreadPool(self)
         self.label_pool.setMaxThreadCount(1)
+        # Idle work: tracing what every section shows, so that opening a
+        # sprite bank finds it already worked out (see warm_analysis).
+        self.warm_pool = QThreadPool(self)
+        self.warm_pool.setMaxThreadCount(1)
+        self.warm_epoch = 0
         self.label_index_epoch = 0
         self.label_index_running = False
         self.labels_indexed.connect(self.apply_label_index)
@@ -1157,6 +1180,7 @@ class MainWindow(QMainWindow):
         self.refresh_review_status()
         if self.labels.entries:
             self.index_labels()
+        self.warm_analysis()
         self.statusBar().showMessage("Disc ready" + (f" | {len(project.warnings)} diagnostic(s); see overview" if project.warnings else ""))
 
     def item(self, parent, label, node, size=None):
@@ -1979,6 +2003,41 @@ class MainWindow(QMainWindow):
                     self.tabs.widget(index).reload_labels()
         except (OSError, ValueError) as exc:
             QMessageBox.warning(self, 'Cannot import labels', str(exc))
+
+    def warm_analysis(self):
+        """Work out, in the background, what every section's objects show:
+        the slow part of opening a sprite bank, kept in the disc cache. Runs
+        on a copy of the project, so the window never waits for it, and
+        stops when another disc is opened."""
+        project = self.project
+        self.warm_epoch += 1
+        epoch = self.warm_epoch
+        from copy import copy
+        from collections import OrderedDict
+        worker = copy(project)
+        worker.cache, worker.cache_bytes = OrderedDict(), 0
+
+        def collect():
+            from formats.level.scene import sprite_pages, sprite_routines, area_of
+            sections = [(path, group.index) for path, groups in worker.ldars.items()
+                        if area_of(path) >= 0 for group in groups[1:] if group.assets]
+            for tracer in (sprite_pages, sprite_routines):
+                for path, index in sections:
+                    if epoch != self.warm_epoch or project is not self.project:
+                        return None
+                    try:
+                        tracer(worker, path, index)
+                    except Exception as exc:
+                        print(f'Warm-up {tracer.__name__} {path} {index}: {type(exc).__name__}: {exc}', flush=True)
+            return len(sections)
+
+        def ready(generation, result, error):
+            if error:
+                print(f'Warm-up: {error}', flush=True)
+            elif result is not None and epoch == self.warm_epoch:
+                print(f'Warm-up done: {result} sections traced.', flush=True)
+
+        self.warm_pool.start(Job(epoch, collect, ready))
 
     def index_labels(self):
         # Hash all small logical files/resources off the UI thread. Exact content

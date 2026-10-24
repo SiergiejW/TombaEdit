@@ -7356,6 +7356,118 @@
       "end": "000000",
       "type": "SPR frame",
       "name": "Koma Pig"
+    },
+    {
+      "content": "2c9629ac7947c81e",
+      "start": "0",
+      "end": "0",
+      "type": "Object class",
+      "name": "Palm Tree"
+    },
+    {
+      "content": "5407f810dd20c461",
+      "start": "0",
+      "end": "0",
+      "type": "Object class",
+      "name": "Fruit Platform"
+    },
+    {
+      "content": "c181340872a73307",
+      "start": "0",
+      "end": "0",
+      "type": "Object class",
+      "name": "Funga Drum"
+    },
+    {
+      "content": "4453113fce48371f",
+      "start": "0",
+      "end": "0",
+      "type": "Object class",
+      "name": "Cage"
+    },
+    {
+      "content": "78d16364c1e5e84f",
+      "start": "0",
+      "end": "0",
+      "type": "Object class",
+      "name": "Water"
+    },
+    {
+      "content": "c996a9c37f283c45",
+      "start": "0",
+      "end": "0",
+      "type": "Object class",
+      "name": "Torch"
+    },
+    {
+      "content": "27ee65e93c1ced93",
+      "start": "0",
+      "end": "0",
+      "type": "Object class",
+      "name": "Jungle background"
+    },
+    {
+      "content": "2ef60445591bf7fd",
+      "start": "0",
+      "end": "0",
+      "type": "Object class",
+      "name": "Bridge"
+    },
+    {
+      "content": "48dcdf414a50878a",
+      "start": "0",
+      "end": "0",
+      "type": "Object class",
+      "name": "Empty"
+    },
+    {
+      "content": "ad2d8912318e4890",
+      "start": "0",
+      "end": "0",
+      "type": "Object class",
+      "name": "Miner"
+    },
+    {
+      "content": "b5ebd075cbc395ec",
+      "start": "0",
+      "end": "0",
+      "type": "Object class",
+      "name": "Wooden platform"
+    },
+    {
+      "content": "0f8782826e9f981b",
+      "start": "0",
+      "end": "0",
+      "type": "Object class",
+      "name": "Chest"
+    },
+    {
+      "content": "d72a551fc0ec7047",
+      "start": "0",
+      "end": "0",
+      "type": "Object class",
+      "name": "Fish"
+    },
+    {
+      "content": "609f6e9862b24fdc",
+      "start": "0",
+      "end": "0",
+      "type": "Object class",
+      "name": "Pink platform"
+    },
+    {
+      "content": "2972f3f016f6de72",
+      "start": "0",
+      "end": "0",
+      "type": "Object class",
+      "name": "Cedar background"
+    },
+    {
+      "content": "fb9d8482062301dd",
+      "start": "0",
+      "end": "0",
+      "type": "Object class",
+      "name": "Hut"
     }
   ],
   "builds": {
