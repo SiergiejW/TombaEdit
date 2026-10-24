@@ -3414,7 +3414,7 @@
       "start": "0",
       "end": "0",
       "type": "Object class",
-      "name": "Cottage"
+      "name": "Signpost"
     },
     {
       "content": "0be773449a2e7128",
@@ -3463,7 +3463,7 @@
       "start": "0",
       "end": "0",
       "type": "Object class",
-      "name": "Backgorund"
+      "name": "Background"
     },
     {
       "content": "da7b8f0b504c5c97",
@@ -7425,7 +7425,7 @@
       "start": "0",
       "end": "0",
       "type": "Object class",
-      "name": "Miner"
+      "name": "Sprite"
     },
     {
       "content": "b5ebd075cbc395ec",
@@ -7538,6 +7538,125 @@
       "end": "0",
       "type": "Object class",
       "name": "Round obstacle"
+    },
+    {
+      "content": "a6bb9014712b1942",
+      "start": "0",
+      "end": "0",
+      "type": "Object class",
+      "name": "Wind"
+    },
+    {
+      "content": "5324aa065acf2e6c",
+      "start": "0",
+      "end": "0",
+      "type": "Object class",
+      "name": "Mist"
+    },
+    {
+      "content": "c209518c426e862a",
+      "start": "0",
+      "end": "0",
+      "type": "Object class",
+      "name": "Mini biting plant"
+    },
+    {
+      "content": "3373e5852b3dc456",
+      "start": "0",
+      "end": "0",
+      "type": "Object class",
+      "name": "Pitcher plant"
+    },
+    {
+      "content": "cfe4cb20ea782f45",
+      "start": "0",
+      "end": "0",
+      "type": "Object class",
+      "name": "Pitcher plant"
+    },
+    {
+      "content": "cefeda9a41d117c0",
+      "start": "0",
+      "end": "0",
+      "type": "Object class",
+      "name": "Baccus Villager"
+    },
+    {
+      "content": "a734d281bcc195a6",
+      "start": "0",
+      "end": "0",
+      "type": "Object class",
+      "name": "Stone grabpoint"
+    },
+    {
+      "content": "9767b4205c94396f",
+      "start": "0",
+      "end": "0",
+      "type": "Object class",
+      "name": "Foreground"
+    },
+    {
+      "content": "50ebb8d2ba0b5391",
+      "start": "0",
+      "end": "0",
+      "type": "Object class",
+      "name": "Chest"
+    },
+    {
+      "content": "dc07581be20c5ed2",
+      "start": "0",
+      "end": "0",
+      "type": "Object class",
+      "name": "Stone blockage"
+    },
+    {
+      "content": "287b7984540ee728",
+      "start": "0",
+      "end": "0",
+      "type": "Object class",
+      "name": "Sprite"
+    },
+    {
+      "content": "c01528eadb10129b",
+      "start": "0",
+      "end": "0",
+      "type": "Object class",
+      "name": "Million Year Old Man"
+    },
+    {
+      "content": "9f72143c9390549b",
+      "start": "0",
+      "end": "0",
+      "type": "Object class",
+      "name": "Statue"
+    },
+    {
+      "content": "f01a0bd73ae5a0a7",
+      "start": "0",
+      "end": "0",
+      "type": "Object class",
+      "name": "Sprite asset"
+    },
+    {
+      "content": "c8c4638516ae09c1",
+      "start": "0",
+      "end": "0",
+      "type": "Object class",
+      "name": "Petal"
+    },
+    {
+      "content": "136f962e2adddf25",
+      "start": "0",
+      "end": "0",
+      "type": "Object class",
+      "name": "Puffball"
+    },
+    {
+      "content": "13aa104f8c84efd7",
+      "start": "0",
+      "end": "0",
+      "type": "Object class",
+      "name": "Gate"
     }
   ],
   "builds": {
