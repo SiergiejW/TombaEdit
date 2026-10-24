@@ -413,7 +413,17 @@ def _prepare_preview(project, node, context=None, delegated=False):
             if not delegated and slot and delegate is None and not any(
                     origins.get(i, 'object').startswith(('object', 'section')) for i in result['sprite_pages']):
                 from formats.sprites.shared import object_home
-                delegate = object_home(project, node, data)
+                home = object_home(project, node, data)
+                # Only where the objects that show it put it on pages this
+                # area does not use for it: the same page with other art
+                # (area 03's 38FF) is this area's own.
+                from psx.graphics import guess_page
+                starts_here = [a.rect[0] // 64 + a.rect[1] // 256 * 16
+                               for i in dict.fromkeys((node.group, context)) for a in groups[i].assets
+                               if a.rect and a.rect[3] >= 128]
+                here = set(result['sprite_pages'].values()) | {guess_page(frames, result['vram'], starts_here)}
+                if home is not None and not home[2] & here:
+                    delegate = home[:2]
             if delegate is not None:
                 other, section = delegate
                 shown = _prepare_preview(project, other, section, delegated=True)
@@ -509,13 +519,14 @@ def _prepare_preview(project, node, context=None, delegated=False):
                 elsewhere = other_areas(project, node, data, frames, unknown, result['vram'],
                                         [i for i in unknown if columns & {part[2] & 63 for part in frames[i]}],
                                         own_pages)
-                # Where what objects here place sits on one page only, another
-                # area's frame on some other page is a made-up object's.
+                # Where what objects here place sits on one page only, a frame
+                # another area's routines give on some other page is a
+                # made-up object's.
                 placed_pages = {page for i, page in result['sprite_pages'].items()
                                 if origins.get(i, 'object').startswith(('object', 'section'))}
                 if len(placed_pages) == 1:
                     elsewhere = {frame: found for frame, found in elsewhere.items()
-                                 if found[0] in placed_pages}
+                                 if found[0] in placed_pages or not found[3].endswith('routine')}
                 for frame, (page, word, vram, origin, names) in elsewhere.items():
                     result['sprite_pages'][frame] = page
                     origins[frame] = origin

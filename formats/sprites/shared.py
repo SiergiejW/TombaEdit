@@ -43,8 +43,8 @@ def showing_area(project, node, data):
 
 
 def object_home(project, node, data):
-    """(asset, load group) of the section of another area whose objects,
-    placed or spawned, show the most of this bank, or None. A character
+    """(asset, load group, {pages}) of the section of another area whose
+    objects, placed or spawned, show the most of this bank, or None. A character
     every area loads but only one meets, such as Baron (3FFF, area 02
     section 05 only), is drawn there with all its art in place."""
     here = area_of(node.ldar)
@@ -55,9 +55,9 @@ def object_home(project, node, data):
         for g in project.ldars[path][1:]:
             if not g.assets or loaded_resources(project, path, g.index).get(('SPR', copy.slot)) is not copy:
                 continue
-            shown = len(sprite_pages(project, path, g.index).get(copy.slot, {}))
-            if shown > most:
-                best, most = (copy, g.index), shown
+            pages = sprite_pages(project, path, g.index).get(copy.slot, {})
+            if len(pages) > most:
+                best, most = (copy, g.index, set(pages.values())), len(pages)
     return best
 
 

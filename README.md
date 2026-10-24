@@ -80,8 +80,18 @@ the selection does not interrupt it.
 
 SPR previews reuse decoded texture pages and retain their resolved load context
 in a bounded disk cache between runs. Changing the ROM or rebuilding the decoder
-invalidates that cache. The first visit to an uncached bank still resolves its
-native pages, palettes and animation links.
+invalidates that cache. After a disc opens, a background pass traces what the
+objects of every section show and fills the cache (a few minutes the first
+time; the window stays responsive), so banks open in about a second. A bank
+visited before the pass reaches it is resolved on the spot, which can take
+longer, up to a couple of minutes for a bank every area loads.
+
+A bank that no object of the open area shows, while one section of another
+area does, is drawn as that section draws it, with its textures and
+palettes: Baron (3FFF, loaded by every area, met only in section 05 of
+Dwarf Village) takes its page 17 and palette 0x7E48 from there, which is what
+the game uploads for him. Where objects place a bank's frames on one page
+only, another area's frame on a different page is not taken.
 
 Standalone sprite and animation previews show raw palette colours without game
 blending against the preview background.
