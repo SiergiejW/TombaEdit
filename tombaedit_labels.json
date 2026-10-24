@@ -7657,6 +7657,1497 @@
       "end": "0",
       "type": "Object class",
       "name": "Gate"
+    },
+    {
+      "content": "381997887a2a0101",
+      "start": "000000",
+      "end": "000000",
+      "type": "SPR frame",
+      "name": "stand back 5"
+    },
+    {
+      "content": "3d3c43f5aa0b241d",
+      "start": "000000",
+      "end": "000000",
+      "type": "SPR frame",
+      "name": "stang back"
+    },
+    {
+      "content": "0ac2ca729fd95591",
+      "start": "000000",
+      "end": "000000",
+      "type": "SPR frame",
+      "name": "stand front"
+    },
+    {
+      "content": "29b2cc136d1836f4",
+      "start": "000000",
+      "end": "000000",
+      "type": "SPR frame",
+      "name": "stand back 4"
+    },
+    {
+      "content": "1805a794636dae46",
+      "start": "000000",
+      "end": "000000",
+      "type": "SPR frame",
+      "name": "stand back 6"
+    },
+    {
+      "content": "c44db7e92cbbb153",
+      "start": "000000",
+      "end": "000000",
+      "type": "SPR frame",
+      "name": "running 8"
+    },
+    {
+      "content": "f70a25f454aab984",
+      "start": "000000",
+      "end": "000000",
+      "type": "SPR frame",
+      "name": "walk side faster 16"
+    },
+    {
+      "content": "1532cbad37227919",
+      "start": "000000",
+      "end": "000000",
+      "type": "SPR frame",
+      "name": "running 6"
+    },
+    {
+      "content": "b67a86d2c41e1919",
+      "start": "000000",
+      "end": "000000",
+      "type": "SPR frame",
+      "name": "running 11"
+    },
+    {
+      "content": "285f4f0225713c4e",
+      "start": "000000",
+      "end": "000000",
+      "type": "SPR frame",
+      "name": "running 4"
+    },
+    {
+      "content": "001c895baa3f4742",
+      "start": "000000",
+      "end": "000000",
+      "type": "SPR frame",
+      "name": "walk side faster 14"
+    },
+    {
+      "content": "6ce71fef9083d608",
+      "start": "000000",
+      "end": "000000",
+      "type": "SPR frame",
+      "name": "running 14"
+    },
+    {
+      "content": "de2d5e6cc42f1de8",
+      "start": "000000",
+      "end": "000000",
+      "type": "SPR frame",
+      "name": "running 10"
+    },
+    {
+      "content": "e3965479cda3cde8",
+      "start": "000000",
+      "end": "000000",
+      "type": "SPR frame",
+      "name": "running 12"
+    },
+    {
+      "content": "fbf0ccab0dcf6470",
+      "start": "000000",
+      "end": "000000",
+      "type": "SPR frame",
+      "name": "flip over side 4"
+    },
+    {
+      "content": "88770f5abd0daf07",
+      "start": "000000",
+      "end": "000000",
+      "type": "SPR frame",
+      "name": "walk side faster 10"
+    },
+    {
+      "content": "80840e0bb8f69af7",
+      "start": "000000",
+      "end": "000000",
+      "type": "SPR frame",
+      "name": "walk side faster 11"
+    },
+    {
+      "content": "fecc7954a48d98de",
+      "start": "000000",
+      "end": "000000",
+      "type": "SPR frame",
+      "name": "walk side faster 13"
+    },
+    {
+      "content": "e9ef85da8c7773f6",
+      "start": "000000",
+      "end": "000000",
+      "type": "SPR frame",
+      "name": "walk side faster 7"
+    },
+    {
+      "content": "0c0973e15fd4b4c7",
+      "start": "000000",
+      "end": "000000",
+      "type": "SPR frame",
+      "name": "walk side faster 15"
+    },
+    {
+      "content": "7b00282732f53584",
+      "start": "000000",
+      "end": "000000",
+      "type": "SPR frame",
+      "name": "brace 1"
+    },
+    {
+      "content": "2eaabe9b9937b9a1",
+      "start": "000000",
+      "end": "000000",
+      "type": "SPR frame",
+      "name": "brace 2"
+    },
+    {
+      "content": "e61da3802379ad3f",
+      "start": "000000",
+      "end": "000000",
+      "type": "SPR frame",
+      "name": "burned roll frame"
+    },
+    {
+      "content": "e21fabb0aa83f0be",
+      "start": "000000",
+      "end": "000000",
+      "type": "SPR frame",
+      "name": "burned lying on back 1"
+    },
+    {
+      "content": "97c66b6311f98ef9",
+      "start": "000000",
+      "end": "000000",
+      "type": "SPR frame",
+      "name": "burned lying on back 2"
+    },
+    {
+      "content": "f9081fe40e42ecae",
+      "start": "000000",
+      "end": "000000",
+      "type": "SPR frame",
+      "name": "lay face forward, get up 1"
+    },
+    {
+      "content": "e3fc150061d91650",
+      "start": "000000",
+      "end": "000000",
+      "type": "SPR frame",
+      "name": "lay face forward, get up 2"
+    },
+    {
+      "content": "c020a517c5f7a8d9",
+      "start": "000000",
+      "end": "000000",
+      "type": "SPR frame",
+      "name": "lay face forward, get up 3"
+    },
+    {
+      "content": "c4d42b4b858aeaa6",
+      "start": "000000",
+      "end": "000000",
+      "type": "SPR frame",
+      "name": "lay face forward, get up 4"
+    },
+    {
+      "content": "60094cc886dc4715",
+      "start": "000000",
+      "end": "000000",
+      "type": "SPR frame",
+      "name": "lay face forward, get up 6"
+    },
+    {
+      "content": "43c533e53782e79b",
+      "start": "000000",
+      "end": "000000",
+      "type": "SPR frame",
+      "name": "lay face forward, get up 5"
+    },
+    {
+      "content": "235b4acdde015da5",
+      "start": "000000",
+      "end": "000000",
+      "type": "SPR frame",
+      "name": "lay face forward, get up 7"
+    },
+    {
+      "content": "10dbd439b1e44ff3",
+      "start": "000000",
+      "end": "000000",
+      "type": "SPR frame",
+      "name": "burned lying on back 3"
+    },
+    {
+      "content": "13c09f22e97d27d5",
+      "start": "000000",
+      "end": "000000",
+      "type": "SPR frame",
+      "name": "falling 1"
+    },
+    {
+      "content": "88fab7fc029e189d",
+      "start": "000000",
+      "end": "000000",
+      "type": "SPR frame",
+      "name": "falling 2"
+    },
+    {
+      "content": "af8ae211a0dc71f0",
+      "start": "000000",
+      "end": "000000",
+      "type": "SPR frame",
+      "name": "falling 3"
+    },
+    {
+      "content": "35a72fc40d03c778",
+      "start": "000000",
+      "end": "000000",
+      "type": "SPR frame",
+      "name": "falling 4"
+    },
+    {
+      "content": "fc481bc97a584733",
+      "start": "000000",
+      "end": "000000",
+      "type": "SPR frame",
+      "name": "scared sitting 1"
+    },
+    {
+      "content": "b7152713df19299c",
+      "start": "000000",
+      "end": "000000",
+      "type": "SPR frame",
+      "name": "scared sitting 2"
+    },
+    {
+      "content": "6e54ba3e6188859f",
+      "start": "000000",
+      "end": "000000",
+      "type": "SPR frame",
+      "name": "scared sitting 3"
+    },
+    {
+      "content": "25e5916521a363d4",
+      "start": "000000",
+      "end": "000000",
+      "type": "SPR frame",
+      "name": "upward ascend 1"
+    },
+    {
+      "content": "5ea08129faed60eb",
+      "start": "000000",
+      "end": "000000",
+      "type": "SPR frame",
+      "name": "upward ascend 2"
+    },
+    {
+      "content": "8f9d34ecec8d537b",
+      "start": "000000",
+      "end": "000000",
+      "type": "SPR frame",
+      "name": "upward ascend 3"
+    },
+    {
+      "content": "d527f65afa944f6f",
+      "start": "000000",
+      "end": "000000",
+      "type": "SPR frame",
+      "name": "upward ascend 4"
+    },
+    {
+      "content": "e1b5a5a1d153fe37",
+      "start": "000000",
+      "end": "000000",
+      "type": "SPR frame",
+      "name": "grab 1"
+    },
+    {
+      "content": "5dedb5745500305e",
+      "start": "000000",
+      "end": "000000",
+      "type": "SPR frame",
+      "name": "grab 2"
+    },
+    {
+      "content": "42ba98a7287e3073",
+      "start": "000000",
+      "end": "000000",
+      "type": "SPR frame",
+      "name": "throw 360 1"
+    },
+    {
+      "content": "ae2ee7dd8d4d768e",
+      "start": "000000",
+      "end": "000000",
+      "type": "SPR frame",
+      "name": "throw 360 2"
+    },
+    {
+      "content": "e942c543cae991ca",
+      "start": "000000",
+      "end": "000000",
+      "type": "SPR frame",
+      "name": "throw 360 3"
+    },
+    {
+      "content": "bfe6502ccff2b10d",
+      "start": "000000",
+      "end": "000000",
+      "type": "SPR frame",
+      "name": "throw 360 4"
+    },
+    {
+      "content": "8f488dc481574278",
+      "start": "000000",
+      "end": "000000",
+      "type": "SPR frame",
+      "name": "throw 360 5"
+    },
+    {
+      "content": "1bf84cb503685972",
+      "start": "000000",
+      "end": "000000",
+      "type": "SPR frame",
+      "name": "throw 360 6"
+    },
+    {
+      "content": "bef92860f487c379",
+      "start": "000000",
+      "end": "000000",
+      "type": "SPR frame",
+      "name": "throw 360 7"
+    },
+    {
+      "content": "060b422da8aeb225",
+      "start": "000000",
+      "end": "000000",
+      "type": "SPR frame",
+      "name": "throw 360 8"
+    },
+    {
+      "content": "59ba009cf2967d98",
+      "start": "000000",
+      "end": "000000",
+      "type": "SPR frame",
+      "name": "throw 360 9"
+    },
+    {
+      "content": "0a55f6e084f2aa45",
+      "start": "000000",
+      "end": "000000",
+      "type": "SPR frame",
+      "name": "throw 360 10"
+    },
+    {
+      "content": "8994b2d4d730e19b",
+      "start": "000000",
+      "end": "000000",
+      "type": "SPR frame",
+      "name": "throw 360 11"
+    },
+    {
+      "content": "ed7852b6a84e9e6d",
+      "start": "000000",
+      "end": "000000",
+      "type": "SPR frame",
+      "name": "throw downward 12"
+    },
+    {
+      "content": "58c2729fb7391080",
+      "start": "000000",
+      "end": "000000",
+      "type": "SPR frame",
+      "name": "hold grab"
+    },
+    {
+      "content": "8572c9f6ae0fa091",
+      "start": "000000",
+      "end": "000000",
+      "type": "SPR frame",
+      "name": "ledge grabbed 3"
+    },
+    {
+      "content": "13fcb7a92e6ac326",
+      "start": "000000",
+      "end": "000000",
+      "type": "SPR frame",
+      "name": "ledge grabbed legs move 3"
+    },
+    {
+      "content": "a7594b04bdef0971",
+      "start": "000000",
+      "end": "000000",
+      "type": "SPR frame",
+      "name": "ledge grabbed legs move 4"
+    },
+    {
+      "content": "d52ac8a1d2f8c388",
+      "start": "000000",
+      "end": "000000",
+      "type": "SPR frame",
+      "name": "ledge grabbed legs move 1"
+    },
+    {
+      "content": "ad5c2ad0fc7e5468",
+      "start": "000000",
+      "end": "000000",
+      "type": "SPR frame",
+      "name": "ledge grabbed legs move 5"
+    },
+    {
+      "content": "948d0bfcdf65fdb0",
+      "start": "000000",
+      "end": "000000",
+      "type": "SPR frame",
+      "name": "jump done 1"
+    },
+    {
+      "content": "2eac4267ab23c98c",
+      "start": "000000",
+      "end": "000000",
+      "type": "SPR frame",
+      "name": "jump done 2"
+    },
+    {
+      "content": "01abab2cfc5a696a",
+      "start": "000000",
+      "end": "000000",
+      "type": "SPR frame",
+      "name": "mid roll frame"
+    },
+    {
+      "content": "50df0a21b8d916d3",
+      "start": "000000",
+      "end": "000000",
+      "type": "SPR frame",
+      "name": "jump done 4"
+    },
+    {
+      "content": "e91d25b4e01c67d9",
+      "start": "000000",
+      "end": "000000",
+      "type": "SPR frame",
+      "name": "jump done 5"
+    },
+    {
+      "content": "7042fd6f10b2c7e2",
+      "start": "000000",
+      "end": "000000",
+      "type": "SPR frame",
+      "name": "jump done back 1"
+    },
+    {
+      "content": "0030bbd4c67dcde9",
+      "start": "000000",
+      "end": "000000",
+      "type": "SPR frame",
+      "name": "jump done back 2"
+    },
+    {
+      "content": "4a8abef4b3c8f7d7",
+      "start": "000000",
+      "end": "000000",
+      "type": "SPR frame",
+      "name": "jump done back 3"
+    },
+    {
+      "content": "d0f946403356733e",
+      "start": "000000",
+      "end": "000000",
+      "type": "SPR frame",
+      "name": "jump done back 4"
+    },
+    {
+      "content": "a131d1a048645b98",
+      "start": "000000",
+      "end": "000000",
+      "type": "SPR frame",
+      "name": "jump done back 5"
+    },
+    {
+      "content": "3d3e1f6fa60f8933",
+      "start": "000000",
+      "end": "000000",
+      "type": "SPR frame",
+      "name": "climb animation 3"
+    },
+    {
+      "content": "4f441006e5a67e8d",
+      "start": "000000",
+      "end": "000000",
+      "type": "SPR frame",
+      "name": "climb animation 4"
+    },
+    {
+      "content": "8ef83b2e30f0e347",
+      "start": "000000",
+      "end": "000000",
+      "type": "SPR frame",
+      "name": "climb down frames 1"
+    },
+    {
+      "content": "09f92926036edbd3",
+      "start": "000000",
+      "end": "000000",
+      "type": "SPR frame",
+      "name": "climb down frames 2"
+    },
+    {
+      "content": "b74c74d555789f1a",
+      "start": "000000",
+      "end": "000000",
+      "type": "SPR frame",
+      "name": "grab side animation 1"
+    },
+    {
+      "content": "a88e35910cf9accc",
+      "start": "000000",
+      "end": "000000",
+      "type": "SPR frame",
+      "name": "ready to jump back"
+    },
+    {
+      "content": "45bd661960a09baa",
+      "start": "000000",
+      "end": "000000",
+      "type": "SPR frame",
+      "name": "jumps back frame"
+    },
+    {
+      "content": "226761eb7e54af1f",
+      "start": "000000",
+      "end": "000000",
+      "type": "SPR frame",
+      "name": "climb back frame"
+    },
+    {
+      "content": "30a2116f0e93dc32",
+      "start": "000000",
+      "end": "000000",
+      "type": "SPR frame",
+      "name": "climb back animation 1"
+    },
+    {
+      "content": "bd007e2ae5dab8d8",
+      "start": "000000",
+      "end": "000000",
+      "type": "SPR frame",
+      "name": "climb back animation 2"
+    },
+    {
+      "content": "5ebb921b052b0280",
+      "start": "000000",
+      "end": "000000",
+      "type": "SPR frame",
+      "name": "climb back animation 3"
+    },
+    {
+      "content": "18c16ef9a5aab13a",
+      "start": "000000",
+      "end": "000000",
+      "type": "SPR frame",
+      "name": "climb back animation 4"
+    },
+    {
+      "content": "89d6cd6cbf7c2558",
+      "start": "000000",
+      "end": "000000",
+      "type": "SPR frame",
+      "name": "laugh front 1"
+    },
+    {
+      "content": "53dc4dfb6d5f2aa2",
+      "start": "000000",
+      "end": "000000",
+      "type": "SPR frame",
+      "name": "jumping front 1"
+    },
+    {
+      "content": "09eb8185fb3711dd",
+      "start": "000000",
+      "end": "000000",
+      "type": "SPR frame",
+      "name": "jumping front 2"
+    },
+    {
+      "content": "0b77818b1b69eed1",
+      "start": "000000",
+      "end": "000000",
+      "type": "SPR frame",
+      "name": "jumping front 3"
+    },
+    {
+      "content": "af159dbbffeacd24",
+      "start": "000000",
+      "end": "000000",
+      "type": "SPR frame",
+      "name": "jumping front 4"
+    },
+    {
+      "content": "740114c1a68ec696",
+      "start": "000000",
+      "end": "000000",
+      "type": "SPR frame",
+      "name": "jumping front 5"
+    },
+    {
+      "content": "f1b8c2b13f66472b",
+      "start": "000000",
+      "end": "000000",
+      "type": "SPR frame",
+      "name": "grab side animation 2"
+    },
+    {
+      "content": "0d241540dfd8c2cf",
+      "start": "000000",
+      "end": "000000",
+      "type": "SPR frame",
+      "name": "grab side animation 3"
+    },
+    {
+      "content": "8b2b8e55b6f71f83",
+      "start": "000000",
+      "end": "000000",
+      "type": "SPR frame",
+      "name": "one hand hang 2"
+    },
+    {
+      "content": "096f027df8472391",
+      "start": "000000",
+      "end": "000000",
+      "type": "SPR frame",
+      "name": "one hand hang 3"
+    },
+    {
+      "content": "dfdbd8f73fc1edd6",
+      "start": "000000",
+      "end": "000000",
+      "type": "SPR frame",
+      "name": "one hand hang 1"
+    },
+    {
+      "content": "a04e52c7f8fe68b1",
+      "start": "000000",
+      "end": "000000",
+      "type": "SPR frame",
+      "name": "one hand hang 4"
+    },
+    {
+      "content": "f9c17c96bc201588",
+      "start": "000000",
+      "end": "000000",
+      "type": "SPR frame",
+      "name": "one hand hang 5"
+    },
+    {
+      "content": "71f68c5edbbbd4eb",
+      "start": "000000",
+      "end": "000000",
+      "type": "SPR frame",
+      "name": "one hand hang 6"
+    },
+    {
+      "content": "c6d87fe9cff4f4e0",
+      "start": "000000",
+      "end": "000000",
+      "type": "SPR frame",
+      "name": "one hand hang 7"
+    },
+    {
+      "content": "bf88ba58e3556171",
+      "start": "000000",
+      "end": "000000",
+      "type": "SPR frame",
+      "name": "one hand hang 8"
+    },
+    {
+      "content": "7cc70f5ce9ac6b6f",
+      "start": "000000",
+      "end": "000000",
+      "type": "SPR frame",
+      "name": "one hand hang 9"
+    },
+    {
+      "content": "a4c17dd46afb2696",
+      "start": "000000",
+      "end": "000000",
+      "type": "SPR frame",
+      "name": "one hand hang 10"
+    },
+    {
+      "content": "27bdb6e4f8b5531a",
+      "start": "000000",
+      "end": "000000",
+      "type": "SPR frame",
+      "name": "mechanism 1"
+    },
+    {
+      "content": "9e5c788651eea562",
+      "start": "000000",
+      "end": "000000",
+      "type": "SPR frame",
+      "name": "mechanism 3"
+    },
+    {
+      "content": "05ad6a9090a8ea4b",
+      "start": "000000",
+      "end": "000000",
+      "type": "SPR frame",
+      "name": "one hang swing 1"
+    },
+    {
+      "content": "e5c3118ef1eec425",
+      "start": "000000",
+      "end": "000000",
+      "type": "SPR frame",
+      "name": "one hang swing 2"
+    },
+    {
+      "content": "7f1651d088baa3ce",
+      "start": "000000",
+      "end": "000000",
+      "type": "SPR frame",
+      "name": "one hand hanging legs move 3"
+    },
+    {
+      "content": "bc749654203862e5",
+      "start": "000000",
+      "end": "000000",
+      "type": "SPR frame",
+      "name": "one hand hanging legs move 2"
+    },
+    {
+      "content": "eb3cba09cbded367",
+      "start": "000000",
+      "end": "000000",
+      "type": "SPR frame",
+      "name": "emptying stomach 1"
+    },
+    {
+      "content": "544723151b56b4de",
+      "start": "000000",
+      "end": "000000",
+      "type": "SPR frame",
+      "name": "emptying stomach 2"
+    },
+    {
+      "content": "fbf2d44bdf1ff27f",
+      "start": "000000",
+      "end": "000000",
+      "type": "SPR frame",
+      "name": "emptying stomach 3"
+    },
+    {
+      "content": "18c9f7f9a97ce548",
+      "start": "000000",
+      "end": "000000",
+      "type": "SPR frame",
+      "name": "laugh front 2"
+    },
+    {
+      "content": "54491e1556d5aba2",
+      "start": "000000",
+      "end": "000000",
+      "type": "SPR frame",
+      "name": "push side 4"
+    },
+    {
+      "content": "12cd25e9dcdc7c27",
+      "start": "000000",
+      "end": "000000",
+      "type": "SPR frame",
+      "name": "sit frame side"
+    },
+    {
+      "content": "2d88a37cae4a1195",
+      "start": "000000",
+      "end": "000000",
+      "type": "SPR frame",
+      "name": "standing up side 1"
+    },
+    {
+      "content": "195ab32f9f55d19a",
+      "start": "000000",
+      "end": "000000",
+      "type": "SPR frame",
+      "name": "standing up side 2"
+    },
+    {
+      "content": "06b6ef3282316852",
+      "start": "000000",
+      "end": "000000",
+      "type": "SPR frame",
+      "name": "standing up side 3"
+    },
+    {
+      "content": "1025c45f294bc641",
+      "start": "000000",
+      "end": "000000",
+      "type": "SPR frame",
+      "name": "letting go of hanging side 1"
+    },
+    {
+      "content": "cf287e5e57ee6ab3",
+      "start": "000000",
+      "end": "000000",
+      "type": "SPR frame",
+      "name": "letting go of hanging side 2"
+    },
+    {
+      "content": "7c35f15dc3f5daea",
+      "start": "000000",
+      "end": "000000",
+      "type": "SPR frame",
+      "name": "letting go of hanging side 3"
+    },
+    {
+      "content": "58338cfc5673ff7a",
+      "start": "000000",
+      "end": "000000",
+      "type": "SPR frame",
+      "name": "rotating over 1"
+    },
+    {
+      "content": "044216161a1387b7",
+      "start": "000000",
+      "end": "000000",
+      "type": "SPR frame",
+      "name": "climbing rope side 2"
+    },
+    {
+      "content": "568d9d20e5344d68",
+      "start": "000000",
+      "end": "000000",
+      "type": "SPR frame",
+      "name": "climbing rope side 3"
+    },
+    {
+      "content": "f2e6036d85e31827",
+      "start": "000000",
+      "end": "000000",
+      "type": "SPR frame",
+      "name": "climbing rope side 6"
+    },
+    {
+      "content": "f0604130d8c9c8ab",
+      "start": "000000",
+      "end": "000000",
+      "type": "SPR frame",
+      "name": "sliding down rotating 1"
+    },
+    {
+      "content": "3e44a89df0225fd9",
+      "start": "000000",
+      "end": "000000",
+      "type": "SPR frame",
+      "name": "sliding down rotating 2"
+    },
+    {
+      "content": "7a9de93f32842042",
+      "start": "000000",
+      "end": "000000",
+      "type": "SPR frame",
+      "name": "sliding down rotating 3"
+    },
+    {
+      "content": "8d4beb6ebb1e68a8",
+      "start": "000000",
+      "end": "000000",
+      "type": "SPR frame",
+      "name": "sliding down rotating 4"
+    },
+    {
+      "content": "3143467bdfe98b95",
+      "start": "000000",
+      "end": "000000",
+      "type": "SPR frame",
+      "name": "flip over side 1"
+    },
+    {
+      "content": "dd9f07602226d0b0",
+      "start": "000000",
+      "end": "000000",
+      "type": "SPR frame",
+      "name": "flip over side 2"
+    },
+    {
+      "content": "3f853b4567878d53",
+      "start": "000000",
+      "end": "000000",
+      "type": "SPR frame",
+      "name": "flip over side 3"
+    },
+    {
+      "content": "df7a923604e51835",
+      "start": "000000",
+      "end": "000000",
+      "type": "SPR frame",
+      "name": "animal dash 1"
+    },
+    {
+      "content": "855262597d636d79",
+      "start": "000000",
+      "end": "000000",
+      "type": "SPR frame",
+      "name": "animal dash 2"
+    },
+    {
+      "content": "11b73c8411e682ec",
+      "start": "000000",
+      "end": "000000",
+      "type": "SPR frame",
+      "name": "animal dash 3"
+    },
+    {
+      "content": "7989477ed557a5f0",
+      "start": "000000",
+      "end": "000000",
+      "type": "SPR frame",
+      "name": "animal dash 4"
+    },
+    {
+      "content": "2deca3ecc9ca426b",
+      "start": "000000",
+      "end": "000000",
+      "type": "SPR frame",
+      "name": "animal dash 5"
+    },
+    {
+      "content": "615364eef3be7c53",
+      "start": "000000",
+      "end": "000000",
+      "type": "SPR frame",
+      "name": "animal dash 6"
+    },
+    {
+      "content": "f7713f28e9c920cf",
+      "start": "000000",
+      "end": "000000",
+      "type": "SPR frame",
+      "name": "animal dash 7"
+    },
+    {
+      "content": "29775861c08daa26",
+      "start": "000000",
+      "end": "000000",
+      "type": "SPR frame",
+      "name": "animal dash 8"
+    },
+    {
+      "content": "30eb69c0dd2c450b",
+      "start": "000000",
+      "end": "000000",
+      "type": "SPR frame",
+      "name": "crying side 3"
+    },
+    {
+      "content": "08b5f15330d5910f",
+      "start": "000000",
+      "end": "000000",
+      "type": "SPR frame",
+      "name": "crying side 2"
+    },
+    {
+      "content": "3543b6f5f4cf520f",
+      "start": "000000",
+      "end": "000000",
+      "type": "SPR frame",
+      "name": "walk front 5"
+    },
+    {
+      "content": "0f6cd422cfbe80c0",
+      "start": "000000",
+      "end": "000000",
+      "type": "SPR frame",
+      "name": "walk front 8"
+    },
+    {
+      "content": "7e32fe88bd9ea695",
+      "start": "000000",
+      "end": "000000",
+      "type": "SPR frame",
+      "name": "walk back 3"
+    },
+    {
+      "content": "6f1f166549c77ef0",
+      "start": "000000",
+      "end": "000000",
+      "type": "SPR frame",
+      "name": "walk back 7"
+    },
+    {
+      "content": "43ca71addfd86a02",
+      "start": "000000",
+      "end": "000000",
+      "type": "SPR frame",
+      "name": "walk front 2"
+    },
+    {
+      "content": "aa239f04aa1656e5",
+      "start": "000000",
+      "end": "000000",
+      "type": "SPR frame",
+      "name": "walk front 3"
+    },
+    {
+      "content": "b3549b63ff985611",
+      "start": "000000",
+      "end": "000000",
+      "type": "SPR frame",
+      "name": "walk front 6"
+    },
+    {
+      "content": "277e06cfc07f7eb0",
+      "start": "000000",
+      "end": "000000",
+      "type": "SPR frame",
+      "name": "walk front 7"
+    },
+    {
+      "content": "ec0d1118fe237347",
+      "start": "000000",
+      "end": "000000",
+      "type": "SPR frame",
+      "name": "falling side 1"
+    },
+    {
+      "content": "af222fe9a0b28ce7",
+      "start": "000000",
+      "end": "000000",
+      "type": "SPR frame",
+      "name": "falling side 2"
+    },
+    {
+      "content": "f63b57589faf1e71",
+      "start": "000000",
+      "end": "000000",
+      "type": "SPR frame",
+      "name": "falling side 3"
+    },
+    {
+      "content": "c280662a6bd1b52f",
+      "start": "000000",
+      "end": "000000",
+      "type": "SPR frame",
+      "name": "crying walk side 16"
+    },
+    {
+      "content": "0baeeee113a34872",
+      "start": "000000",
+      "end": "000000",
+      "type": "SPR frame",
+      "name": "jumping back side 4"
+    },
+    {
+      "content": "8406c8fcb8d040f1",
+      "start": "000000",
+      "end": "000000",
+      "type": "SPR frame",
+      "name": "crying walk side 14"
+    },
+    {
+      "content": "013cf787f4cf6391",
+      "start": "000000",
+      "end": "000000",
+      "type": "SPR frame",
+      "name": "crying walk side 13"
+    },
+    {
+      "content": "dd988dc0e32cca62",
+      "start": "000000",
+      "end": "000000",
+      "type": "SPR frame",
+      "name": "crying walk side 7"
+    },
+    {
+      "content": "11596dad9508fca7",
+      "start": "000000",
+      "end": "000000",
+      "type": "SPR frame",
+      "name": "crying walk side 15"
+    },
+    {
+      "content": "e2ca2e442c7dc298",
+      "start": "000000",
+      "end": "000000",
+      "type": "SPR frame",
+      "name": "stand side 2"
+    },
+    {
+      "content": "484743ec2e04d97a",
+      "start": "000000",
+      "end": "000000",
+      "type": "SPR frame",
+      "name": "stand side 3"
+    },
+    {
+      "content": "bf0e76a776b104e8",
+      "start": "000000",
+      "end": "000000",
+      "type": "SPR frame",
+      "name": "stand side 5"
+    },
+    {
+      "content": "a202d2f14efef6fe",
+      "start": "000000",
+      "end": "000000",
+      "type": "SPR frame",
+      "name": "stand side 8"
+    },
+    {
+      "content": "3040427810b9960f",
+      "start": "000000",
+      "end": "000000",
+      "type": "SPR frame",
+      "name": "stand side 7"
+    },
+    {
+      "content": "7d18aa29fdbf41c2",
+      "start": "000000",
+      "end": "000000",
+      "type": "SPR frame",
+      "name": "hurray hops 1"
+    },
+    {
+      "content": "0234512185c4af02",
+      "start": "000000",
+      "end": "000000",
+      "type": "SPR frame",
+      "name": "hurray hops 2"
+    },
+    {
+      "content": "5f1d3c84ae6bfd67",
+      "start": "000000",
+      "end": "000000",
+      "type": "SPR frame",
+      "name": "hurray hops 3"
+    },
+    {
+      "content": "eab180ec77c7fc63",
+      "start": "000000",
+      "end": "000000",
+      "type": "SPR frame",
+      "name": "hurray hops 4"
+    },
+    {
+      "content": "7b17bb7039ee7d4b",
+      "start": "000000",
+      "end": "000000",
+      "type": "SPR frame",
+      "name": "hurray hops 5"
+    },
+    {
+      "content": "923398e5a9fd8113",
+      "start": "000000",
+      "end": "000000",
+      "type": "SPR frame",
+      "name": "burned shocked 1"
+    },
+    {
+      "content": "c08aadb1c07654e8",
+      "start": "000000",
+      "end": "000000",
+      "type": "SPR frame",
+      "name": "burned shocked 2"
+    },
+    {
+      "content": "386c09e3657f4f4a",
+      "start": "000000",
+      "end": "000000",
+      "type": "SPR frame",
+      "name": "burned shocked falling over 1"
+    },
+    {
+      "content": "181b9b64cab4134a",
+      "start": "000000",
+      "end": "000000",
+      "type": "SPR frame",
+      "name": "burned shocked falling over 2"
+    },
+    {
+      "content": "c4005057dab68b27",
+      "start": "000000",
+      "end": "000000",
+      "type": "SPR frame",
+      "name": "burned shocked falling frame"
+    },
+    {
+      "content": "b320ef77f90bd0ab",
+      "start": "000000",
+      "end": "000000",
+      "type": "SPR frame",
+      "name": "burned shocked lying on back 1"
+    },
+    {
+      "content": "5c2833f18be7cfcc",
+      "start": "000000",
+      "end": "000000",
+      "type": "SPR frame",
+      "name": "burned shocked lying on back 2"
+    },
+    {
+      "content": "bb7d676b5d3ff9d7",
+      "start": "000000",
+      "end": "000000",
+      "type": "SPR frame",
+      "name": "jumping back side 1"
+    },
+    {
+      "content": "b97016cac35a75d2",
+      "start": "000000",
+      "end": "000000",
+      "type": "SPR frame",
+      "name": "jumping back side 2"
+    },
+    {
+      "content": "8b5e1e73829b63d5",
+      "start": "000000",
+      "end": "000000",
+      "type": "SPR frame",
+      "name": "jumping back side 3"
+    },
+    {
+      "content": "87bf1131bb96cdd3",
+      "start": "000000",
+      "end": "000000",
+      "type": "SPR frame",
+      "name": "shocked tomba side 1"
+    },
+    {
+      "content": "935c3409dab75e5c",
+      "start": "000000",
+      "end": "000000",
+      "type": "SPR frame",
+      "name": "looking around cautiously 1"
+    },
+    {
+      "content": "f4e0666f7d542977",
+      "start": "000000",
+      "end": "000000",
+      "type": "SPR frame",
+      "name": "looking around cautiously 2"
+    },
+    {
+      "content": "1197f5eb9e504f27",
+      "start": "000000",
+      "end": "000000",
+      "type": "SPR frame",
+      "name": "looking around cautiously 3"
+    },
+    {
+      "content": "3cc9abb591cb9f44",
+      "start": "000000",
+      "end": "000000",
+      "type": "SPR frame",
+      "name": "swimming 5"
+    },
+    {
+      "content": "727ff8813dd30229",
+      "start": "000000",
+      "end": "000000",
+      "type": "SPR frame",
+      "name": "swimming 2"
+    },
+    {
+      "content": "e78ceb611ec96fe3",
+      "start": "000000",
+      "end": "000000",
+      "type": "SPR frame",
+      "name": "swimming 9"
+    },
+    {
+      "content": "e04cd6bcb76451c2",
+      "start": "000000",
+      "end": "000000",
+      "type": "SPR frame",
+      "name": "swimming 4"
+    },
+    {
+      "content": "307e41d7189a5ffd",
+      "start": "000000",
+      "end": "000000",
+      "type": "SPR frame",
+      "name": "swimming 12"
+    },
+    {
+      "content": "affee31da597906c",
+      "start": "000000",
+      "end": "000000",
+      "type": "SPR frame",
+      "name": "swimming 7"
+    },
+    {
+      "content": "d61542199ab15047",
+      "start": "000000",
+      "end": "000000",
+      "type": "SPR frame",
+      "name": "swimming 8"
+    },
+    {
+      "content": "f6acea2b9a22201b",
+      "start": "000000",
+      "end": "000000",
+      "type": "SPR frame",
+      "name": "swimming 10"
+    },
+    {
+      "content": "81d36fc20347af92",
+      "start": "000000",
+      "end": "000000",
+      "type": "SPR frame",
+      "name": "propelling diving forward 6"
+    },
+    {
+      "content": "28417bf7c1448623",
+      "start": "000000",
+      "end": "000000",
+      "type": "SPR frame",
+      "name": "propelling diving forward 1"
+    },
+    {
+      "content": "8e36c7ffea48cb0c",
+      "start": "000000",
+      "end": "000000",
+      "type": "SPR frame",
+      "name": "propelling diving forward 3"
+    },
+    {
+      "content": "32fe6c4a3bf851eb",
+      "start": "000000",
+      "end": "000000",
+      "type": "SPR frame",
+      "name": "propelling diving forward 4"
+    },
+    {
+      "content": "7dd1730102ca64bc",
+      "start": "000000",
+      "end": "000000",
+      "type": "SPR frame",
+      "name": "propelling diving forward 5"
+    },
+    {
+      "content": "0175cbc28b9ddbd1",
+      "start": "000000",
+      "end": "000000",
+      "type": "SPR frame",
+      "name": "crying back 1"
+    },
+    {
+      "content": "774ded15f34c8f80",
+      "start": "000000",
+      "end": "000000",
+      "type": "SPR frame",
+      "name": "crying back 2"
+    },
+    {
+      "content": "6aa236c5df123c96",
+      "start": "000000",
+      "end": "000000",
+      "type": "SPR frame",
+      "name": "crying back 3"
+    },
+    {
+      "content": "05266d185ad66a8e",
+      "start": "000000",
+      "end": "000000",
+      "type": "SPR frame",
+      "name": "lauginh back 1"
+    },
+    {
+      "content": "582cb01e84f3bca2",
+      "start": "000000",
+      "end": "000000",
+      "type": "SPR frame",
+      "name": "lauginh back 2"
+    },
+    {
+      "content": "4c2237f0646a0581",
+      "start": "000000",
+      "end": "000000",
+      "type": "SPR frame",
+      "name": "sliding down looking down 2"
+    },
+    {
+      "content": "b69aa7cf8056cf8c",
+      "start": "000000",
+      "end": "000000",
+      "type": "SPR frame",
+      "name": "sliding down looking down 3"
+    },
+    {
+      "content": "2f9a551ed1768084",
+      "start": "000000",
+      "end": "000000",
+      "type": "SPR frame",
+      "name": "talking 2"
+    },
+    {
+      "content": "2318645fce740564",
+      "start": "000000",
+      "end": "000000",
+      "type": "SPR frame",
+      "name": "nodding side 1"
+    },
+    {
+      "content": "e6c3f8eac4be26c7",
+      "start": "000000",
+      "end": "000000",
+      "type": "SPR frame",
+      "name": "getting shocked electricity 1"
+    },
+    {
+      "content": "45afa3fd7be0398c",
+      "start": "000000",
+      "end": "000000",
+      "type": "SPR frame",
+      "name": "getting shocked electricity 2"
+    },
+    {
+      "content": "dc29e2c3661aee26",
+      "start": "000000",
+      "end": "000000",
+      "type": "SPR frame",
+      "name": "shaking off water 3"
+    },
+    {
+      "content": "b749164fd6ac9330",
+      "start": "000000",
+      "end": "000000",
+      "type": "SPR frame",
+      "name": "shaking off water frame 1"
+    },
+    {
+      "content": "ce4af151c166d4c8",
+      "start": "000000",
+      "end": "000000",
+      "type": "SPR frame",
+      "name": "shaking off water frame 2"
+    },
+    {
+      "content": "def46a441d2b8aac",
+      "start": "000000",
+      "end": "000000",
+      "type": "SPR frame",
+      "name": "shaking off water frame 3"
+    },
+    {
+      "content": "84f2528a7b6e3b34",
+      "start": "000000",
+      "end": "000000",
+      "type": "SPR frame",
+      "name": "burned lying on back 4"
     }
   ],
   "builds": {

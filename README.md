@@ -187,8 +187,11 @@ tilted slightly downwards.
 | `F`, or double-click a row | Frame the selected model |
 | Left click | Select a polygon; its texture page opens with the UVs outlined and in view |
 
-With **Orbit Selection** on, a middle drag circles the selected model rather
-than the middle of the view. In the model viewer the selection is
+With **Orbit Selection** on, a middle drag circles the picked triangle or quad
+(the middle of the selected model when none is picked) rather than the middle
+of the view. In the level editor the UV panel follows a picked polygon of a
+model whose texture coordinates move, such as water, step by step as it
+plays, at the zoom it is set to. In the model viewer the selection is
 highlighted by dimming the other models; **Show all** clears it. The level
 editor does not dim. **Texture Mode** switches between textures and
 bare vertex colours, **Spread Parts** lays a bank of models out on a grid,

@@ -546,6 +546,9 @@ class LevelView(ModelView):
             step = (step + 1) % len(frames)
             state[1], state[2] = step, frames[step][1]
             self.canvas.set_mesh(index, frames[step][0])
+            # The UV panel follows a picked polygon of a model whose UVs move.
+            if self.canvas.selected is not None and self.canvas.selected[0] == index                     and frames[step][0].image is None:
+                self.show_polygon(self.canvas.selected, announce=False)
         for state in self.palette_steps:
             state[2] -= 1
             if state[2] > 0:

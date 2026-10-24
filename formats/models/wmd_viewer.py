@@ -207,7 +207,14 @@ class MeshCanvas(CameraEventMixin, QOpenGLWidget):
 
     def orbit_target(self):
         """Centre of the selected model while Orbit selection is on."""
-        if not self.orbit_selection or self.selected_model is None:
+        if not self.orbit_selection:
+            return None
+        if self.selected is not None and self.selected[0] < len(self.meshes):
+            # The picked triangle or quad, where it is drawn now.
+            index, polygon = self.selected
+            points = np.asarray(self.displayed_vertices(self.meshes[index], polygon['vertices']), np.float64)                 + np.asarray(self.offset_for(index), np.float64)
+            return tuple(float(v) for v in points.mean(axis=0))
+        if self.selected_model is None:
             return None
         found = self.bounds({self.selected_model})
         return tuple(float(v) for v in found[0]) if found else None
@@ -1014,7 +1021,9 @@ class ModelView(QWidget):
         image = texture_page(self.canvas.vram, p['page'], p['clut']).copy() if p['page'] >= 0 else Image.new('RGBA', (256, 256), (32, 32, 32, 255))
         order = [0, 1, 3, 2, 0] if len(texels) == 4 else [0, 1, 2, 0]
         ImageDraw.Draw(image).line([texels[i] for i in order], fill='yellow', width=1)
-        self.uv.set_image(image)
+        # The same polygon shown again, as an animation moves its UVs, keeps
+        # the zoom it is being looked at with.
+        self.uv.set_image(image, subject=('polygon', index, p['page'], p['clut']))
         # Bring the outlined texels into view.
         xs, ys = [t[0] for t in texels], [t[1] for t in texels]
         self.uv.show_area(min(xs), min(ys), max(xs), max(ys))
