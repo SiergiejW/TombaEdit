@@ -22,11 +22,14 @@ SAMPLERS = {'032d6f371b31085098b86aebbce465d30599293a': {'alternate_origin': Non
                                               'pages': 2148178116,
                                               'picture_record': 16,
                                               'picture_top': 0,
-                                              'pictures': None,
+                                              # Fixed-picture table read by 800653D4.
+                                              'pictures': 0x800A99BC,
                                               'plane_limits': (2148145760, 12, 2),
                                               'script_tail': ('Yield',),
                                               'set_animation': 2147582084,
-                                              'silent': (2147585572,),
+                                              # Event-banner rendering and sound playback do
+                                              # not change the inspected object's appearance.
+                                              'silent': (2147585572, 0x80021928, 0x80022F5C),
                                               'slot_tables': 2148200620,
                                               'tables': {2: 2148145836,
                                                          3: 2148149088,

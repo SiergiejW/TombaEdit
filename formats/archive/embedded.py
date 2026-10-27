@@ -55,7 +55,12 @@ def embedded_groups(disc, catalog):
         if len(groups) < 2 or not any(rows for _, rows in groups):
             continue
         assets = [row for _, rows in groups for row in rows]
-        if not any(row[2] >> 12 in (5, 6, 7, 15) for row in assets):
+        # PrePre 8's system lists contain only textures and sound. They
+        # still belong to the pointer table: its first group uploads the
+        # persistent item page at (320, 256), absent from every area's art.
+        system_art = (assets and '/SYSTEM/SYS000.GAM' in assets[0][4].path
+                      and any(row[7] is not None for row in assets))
+        if not system_art and not any(row[2] >> 12 in (5, 6, 7, 15) for row in assets):
             continue
         area = re.search(r'(?:^|/)AREA(\d+)(?:/)', assets[0][4].path)
         path = f'SYS/LDAR{int(area[1]):02d}.BIN' if area else 'SYS/LDSYS.BIN'

@@ -188,11 +188,14 @@ def tomba_palettes(vram):
     return [row for row in rows if row.any()]
 
 
-def part_palettes(vram, parts, tomba, clut=None):
+def part_palettes(vram, parts, tomba, clut=None, player_clut=None):
     """{part number: palette} for the parts of a frame whose palette is
     known: Tomba's parts the hair and shorts rows of the first outfit as his
     draw routine hands them out, other parts the row their CLUT word (or
     `clut`) names when VRAM holds it."""
+    if tomba and player_clut is not None:
+        row = vram[(player_clut >> 6) & 511, (player_clut & 63) * 16:(player_clut & 63) * 16 + 16]
+        return {n: row for n in range(len(parts))}
     x, y = TOMBA_CLUT
     hair, shorts = (vram[y + row, x:x + 16] for row in TOMBA_OUTFIT)
     if tomba and hair.any() and shorts.any():
@@ -228,12 +231,15 @@ def frame_image(picture, parts, palette, part_palettes=None):
     return image
 
 
-def bank_palettes(vram, frames=None, tomba=True):
+def bank_palettes(vram, frames=None, tomba=True, player_clut=None):
     """Palettes to offer for a picture bank, best first: [(name, words)].
 
     The palettes the matching SPR bank names come first when VRAM holds
     them, as it does for the phoenix bank. Tomba is drawn through the rows
     of the outfit block whatever his parts name, so his bank gets those."""
+    if tomba and player_clut is not None:
+        row = vram[(player_clut >> 6) & 511, (player_clut & 63) * 16:(player_clut & 63) * 16 + 16]
+        return [('Tomba palette', row)]
     found = []
     if not tomba:
         for clut in sorted({part[2] & 0x7FFF for frame in frames or [] for part in frame}):
@@ -246,18 +252,18 @@ def bank_palettes(vram, frames=None, tomba=True):
     return found
 
 
-def renderer(frames, pictures, vram, tomba):
+def renderer(frames, pictures, vram, tomba, player_clut=None):
     """Frame drawing callback for a SPR bank whose pixels live in `pictures`,
     using the first palette bank_palettes() offers; Tomba's parts take the
     palettes his draw routine gives them (part_palettes())."""
-    palettes = bank_palettes(vram, frames, tomba)
+    palettes = bank_palettes(vram, frames, tomba, player_clut)
     palette = palettes[0][1] if palettes else None
 
     def render(index, overrides=None):
         parts = frames[index]
         if not parts or index >= len(pictures):
             return Image.new('RGBA', (1, 1))
-        rows = part_palettes(vram, parts, True) if tomba else {}
+        rows = part_palettes(vram, parts, True, player_clut=player_clut) if tomba else {}
         rows.update({part: vram[(clut >> 6) & 511, (clut & 63) * 16:(clut & 63) * 16 + 16]
                      for part, clut in (overrides or {}).items()})
         return frame_image(pictures[index], parts, palette, rows)

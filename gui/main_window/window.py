@@ -244,6 +244,10 @@ def _prepare_preview(project, node, context=None, delegated=False):
             if node.kind in ('SPR', 'WPP') and context == 0 and len(project.ldars[node.ldar]) > 1 and screen is None:
                 context = 1
             result["vram"] = project.vram(node.ldar, context, screen)
+            found = executable(project, node.ldar)
+            if found is not None and found.build.legacy8:
+                from formats.level.prepre8 import PLAYER_CLUT
+                result['player_clut'] = PLAYER_CLUT
             # Resources loaded next to this one: its own group, the base and
             # the section chosen for VRAM.
             loaded = [a for i in dict.fromkeys((node.group, 0, context)) for a in groups[i].assets]
@@ -1377,7 +1381,7 @@ class MainWindow(QMainWindow):
                 if 'pictures' in result:
                     from formats.sprites.wpp import renderer as picture_renderer
                     renderer = picture_renderer(result['sprites'], result['pictures'], result['vram'],
-                                                (node.code >> 8) & 15 == 0)
+                                                (node.code >> 8) & 15 == 0, result.get('player_clut'))
                 view = SpriteView(result['sprites'], result['vram'], result.get('sprite_pages'), renderer,
                                   result.get('sprite_default'), result.get('sprite_cluts'),
                                   styles=result.get('sprite_styles'), origins=result.get('sprite_origins'),
@@ -1423,6 +1427,7 @@ class MainWindow(QMainWindow):
                 self.tabs.addTab(placements, 'Placements')
                 if 'placement_scene' in result:
                     scene = result['placement_scene']
+                    placements.map.set_scene(scene, node)
                     self.level_view.set_labels(self.labels, self.persist_labels)
                     self.level_view.set_scene(scene)
                     self.tabs.addTab(self.level_view, 'Placements in level')
@@ -1448,13 +1453,15 @@ class MainWindow(QMainWindow):
                 kind, pictures = result['wpp']
                 from formats.sprites.wpp import bank_palettes
                 pictures_view = WppView(kind, pictures, bank_palettes(
-                    result['vram'], result.get('paired_sprites'), result.get('paired_tomba', True))
+                    result['vram'], result.get('paired_sprites'), result.get('paired_tomba', True),
+                    result.get('player_clut'))
                     if kind == 'frames' else (), result['vram'])
                 self.tabs.addTab(pictures_view, 'Pictures')
                 pictures_view.set_labels(self.labels, self.persist_labels)
                 if 'paired_sprites' in result:
                     view = SpriteView(result['paired_sprites'], result['vram'], renderer=picture_renderer(
-                        result['paired_sprites'], pictures, result['vram'], result['paired_tomba']))
+                        result['paired_sprites'], pictures, result['vram'], result['paired_tomba'],
+                        result.get('player_clut')))
                     pictures_view.table.currentCellChanged.connect(
                         lambda row, col, old_row, old_col, sprite=view:
                             sprite.bank.setCurrentCell(row, 0) if 0 <= row < sprite.bank.rowCount() else None)

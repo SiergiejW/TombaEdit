@@ -200,6 +200,8 @@ def dwarf_graphics(project, resources, area, section):
         return None
     data = project.asset_data(resources['INS', 0])
     base = found.build.overlay
+    if found.build.early:
+        return early_dwarf_graphics(project, resources, data, base)
     # The scenery table opens with the style every house uses: page 2, CLUT
     # 7FC8, bank 11. The NPC record follows 0x74 bytes on (800EDB2C).
     at = bytes(data).find(struct.pack('<3H', 2, 0x7FC8, 11))
@@ -259,6 +261,64 @@ def dwarf_graphics(project, resources, area, section):
         return profile
     except (struct.error, IndexError):
         return None
+
+
+def early_dwarf_graphics(project, resources, data, base):
+    """PrePre 9's smaller town bank and its native animation tables.
+
+    INFO has one scenery style, two full descriptors immediately before
+    it, and a compact NPC descriptor 0x68 bytes after it. The retail town
+    has three styles, 437 frames and its NPC descriptor at +0x74.
+    """
+    from psx.graphics import sprite_frames
+    from formats.sprites.animations import Memory, read_script
+    frames = sprite_frames(project.asset_data(resources['SPR', 11]))
+    at = bytes(data).find(struct.pack('<3H', 2, 0x7FC8, 11))
+    if at < 24 or at % 4 or at + 0x70 > len(data):
+        return None
+    memory = Memory([('overlay', base, data)])
+    profile = TownGraphics()
+
+    def scripts(table):
+        result = []
+        end = base + len(data)
+        for cell in range(table, min(table + 1024, end - 3), 4):
+            if not base <= cell < end - 3:
+                break
+            pointer = struct.unpack_from('<I', data, cell - base)[0]
+            script = read_script(memory, pointer, len(frames))
+            if script is None:
+                break
+            result.append(script)
+        return result
+
+    page, clut, bank, _, table = struct.unpack_from('<4HI', data, at)
+    scenery = scripts(table)
+    npc_page, npc_bank, npc_table = struct.unpack_from('<HHI', data, at + 0x68)
+    if npc_bank != 11 or npc_page >= 32 or not scenery:
+        return None
+    # Both full records describe animated characters; the first can use a
+    # different bank and is deliberately left to that bank's own preview.
+    for pos in (at - 24, at - 12):
+        page, _, bank, _, table = struct.unpack_from('<4HI', data, pos)
+        if bank != 11 or page >= 32:
+            continue
+        for script in scripts(table):
+            profile.animations[script.address] = ['Town character animation']
+            for frame in script.frames:
+                profile.pages[frame] = page
+    for script in scripts(npc_table):
+        profile.animations[script.address] = ['Town NPC animation']
+        for frame in script.frames:
+            profile.pages[frame] = npc_page
+    page, clut, bank, _, _ = struct.unpack_from('<4HI', data, at)
+    for script in scenery:
+        if any(step.box != 0 for step in script.steps):
+            return None
+        profile.animations[script.address] = ['Town scenery animation']
+        for frame in script.frames:
+            profile.pages[frame], profile.cluts[frame] = page, clut
+    return profile if profile.pages else None
 
 
 def shared_bank_preview(project, asset, context, frames):

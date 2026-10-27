@@ -38,7 +38,10 @@ class DialogueView(QWidget):
         right.addWidget(self.script)
         right.setSizes([400, 160])
         split.addWidget(right)
-        split.setSizes([330, 650])
+        from formats.text.translation_view import TranslationPane
+        self.translation = TranslationPane()
+        split.addWidget(self.translation)
+        split.setSizes([260, 550, 350])
         layout.addWidget(split, 1)
         layout.addWidget(QLabel("Glyph IDs are font-local, not ASCII. Control words are preserved below the preview."))
         self.entries.currentRowChanged.connect(self.select)
@@ -67,8 +70,10 @@ class DialogueView(QWidget):
         try:
             self.rendered.set_image(self.wfm.render(index))
             self.script.setPlainText(self.wfm.dialogues[index].script())
+            self.translation.set_text(export.plain(self.wfm.dialogues[index]))
         except ValueError as exc:
             self.script.setPlainText(str(exc))
+            self.translation.set_text('')
 
     def filter(self, text):
         for i, dialogue in enumerate(self.wfm.dialogues):

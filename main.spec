@@ -29,7 +29,7 @@ app_icon = ROOT / 'icons' / 'tomba' / ('tomba1.png' if sys.platform == 'darwin' 
 a = Analysis(
     ['main.py'],
     pathex=[str(ROOT)],
-    binaries=collect_dynamic_libs('unicorn'),
+    binaries=collect_dynamic_libs('unicorn') + collect_dynamic_libs('ctranslate2'),
     datas=icon_files + text_files + multimedia + label_files + notices + default_files,
     hiddenimports=['PyQt6.QtMultimedia', 'formats.movie.movie_panel',
                    'formats.audio.audio_viewer', 'formats.images.clut_viewer',

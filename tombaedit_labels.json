@@ -9172,6 +9172,14 @@
       },
       "areas": {},
       "entries": []
+    },
+    "SLPM_801.65:aa0c3d85c7e310c3": {
+      "name": "Ore! Tomba [Taikenban] [Demo]",
+      "build": "SLPM_801.65:aa0c3d85c7e310c3",
+      "serial": "SLPM_801.65",
+      "bins": {},
+      "areas": {},
+      "entries": []
     }
   },
   "migrated_settings": [

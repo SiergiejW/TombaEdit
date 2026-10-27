@@ -100,6 +100,24 @@ def sprite_frame_key(parts):
     return content_key(repr([tuple(part) for part in parts]).encode()) if parts else ''
 
 
+def inherit_animation_labels(label_set, frames, named_animations):
+    """Fill unnamed frames from verified animations, preserving existing names."""
+    names = {}
+    for name, indices in named_animations:
+        name = name.strip()
+        if not name:
+            continue
+        for index in set(indices):
+            if not 0 <= index < len(frames):
+                continue
+            key = sprite_frame_key(frames[index])
+            if key and not label_set.label_for(key):
+                names.setdefault(key, set()).add(name)
+    for key, choices in names.items():
+        label_set.rename(key, ' / '.join(sorted(choices)), kind='SPR frame')
+    return len(names)
+
+
 def class_key(area, layer, kind, shared):
     """What an object class's label is kept under. A class whose routine
     every area shares is one entry; an area's own class is one per area."""

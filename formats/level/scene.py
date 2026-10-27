@@ -216,6 +216,24 @@ def placed_sprite(image, left, top, position, offset):
     return mesh
 
 
+def custom_sprite(parts, vram, visual, position, offset):
+    """Early mode-6 sprites use an object's complete world-space quad."""
+    from psx.graphics import part_page, sprite_part_image
+    part = parts[0]
+    page = part_page(part, visual.get('tpage', 0))
+    clut = visual.get('clut')
+    if clut is None:
+        clut = part[2]
+    def picture(flagged=None):
+        return sprite_part_image(texture_page(vram, page, clut, flagged=flagged), part)
+    vertices = (np.asarray(visual['quad']) + position) * (1, -1, -1)
+    mesh = quad(vertices, picture(), offset=offset)
+    if visual.get('blend'):
+        mesh.solid_image = picture(False)
+        mesh.blend_layers = [(page >> 5 & 3, picture(True))]
+    return mesh
+
+
 def edge_colour(image):
     """Most common colour along the first row of an image that has any
     pixels: the sky a backdrop was painted to fade into."""
@@ -499,6 +517,8 @@ def build_scene(project, path, index):
     images = {}
     from formats.sprites.wpp import parse_wpp, frame_image, bank_palettes, part_palettes
     pictures = {}
+    from formats.level.prepre8 import PLAYER_CLUT
+    player_clut = PLAYER_CLUT if resolver.available and resolver.build.legacy8 else None
     for (family, slot), asset in resources.items():
         if family != 'WPP':
             continue
@@ -535,9 +555,9 @@ def build_scene(project, path, index):
             try:
                 parts = sprites[bank][frame]
                 if bank in pictures:
-                    palettes = bank_palettes(vram, sprites[bank], bank == 0)
+                    palettes = bank_palettes(vram, sprites[bank], bank == 0, player_clut)
                     fallback = palettes[0][1] if palettes else None
-                    rows = part_palettes(vram, parts, bank == 0, visual.get('clut'))
+                    rows = part_palettes(vram, parts, bank == 0, visual.get('clut'), player_clut)
                     image = frame_image(pictures[bank][frame], parts, fallback, rows)
                 else:
                     image = render_sprite(parts, vram, tpage=visual.get('tpage', 0),
@@ -632,7 +652,7 @@ def build_scene(project, path, index):
                 bank, model = model_ref
                 if bank in models and model < len(models[bank]):
                     source_mesh, neutral = model_preview(models[bank][model], visual)
-                    mesh = placed_model(source_mesh, placement.position, visual)
+                    mesh = placed_model(source_mesh, visual.get('position', placement.position), visual)
                     category, note = 'Geometry' if bank == 0 else 'Models', (f'WMD bank {bank}, model {model}. '
                         f'Initial scale {visual.get("scale", (4096, 4096, 4096))}, '
                         f'rotation {visual.get("rotation", (0, 0, 0))} (4096 units per turn).')
@@ -654,7 +674,7 @@ def build_scene(project, path, index):
                             except FormatError:
                                 model_frames = []
                                 break
-                            model_frames.append((placed_model(edited, placement.position, visual), ticks))
+                            model_frames.append((placed_model(edited, visual.get('position', placement.position), visual), ticks))
                         if len(model_frames) > 1:
                             mesh = model_frames[0][0]
                             note = (f'WMD bank {bank}, model {model}, rewritten by its handler: '
@@ -681,6 +701,9 @@ def build_scene(project, path, index):
                 drawn = 0
                 for frame, ticks in visual['frames']:
                     parts = sprites[bank][frame] if frame < len(sprites[bank]) else None
+                    if parts and 'quad' in visual:
+                        frames.append((custom_sprite(parts, vram, visual, where, placement.offset), ticks))
+                        continue
                     picture = drawn_picture(placement, frame) if assembled and parts else None
                     if picture is not None:
                         image, left, top, layers = picture
@@ -704,6 +727,8 @@ def build_scene(project, path, index):
                                if len(frames) > 1 else 'Single-frame pose.'))
                     if drawn:
                         note += ' Assembled by the game\'s own draw routine.'
+                    if 'quad' in visual:
+                        note += ' Uses the handler\'s four-corner shape and per-texel PSX blending.'
                     if visual.get('animation_preview'):
                         note += (f' Handler animation preview 0x{visual["animation_preview"]:08X}; '
                                  'initialization holds a pose. AI transitions and movement are not simulated.')
@@ -765,7 +790,8 @@ def build_scene(project, path, index):
                     # the bottom of the 240-line screen, while their own Y
                     # counts from its top, so the picture sits a screen higher
                     # than its placement reads.
-                    y -= 240
+                    if not (resolver.available and resolver.build.legacy8):
+                        y -= 240
                     # Anchored to the level and drawn behind what stands in it.
                     corners = [(x + left, -(y + top), -z - 2), (x + left + image.width, -(y + top), -z - 2),
                                (x + left, -(y + top) - image.height, -z - 2),

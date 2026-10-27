@@ -118,7 +118,10 @@ def apply_model_palettes(resolver, vram, models):
                 rows.setdefault((x, y + n, width), set()).add(data[n * width * 2:(n + 1) * width * 2])
     applied = 0
     for (x, y, width), choices in rows.items():
-        if len(choices) == 1:
+        # Only rows the section has not loaded: an upload in the overlay may
+        # serve another purpose later, and a loaded palette is already right
+        # (Mushroom Forest's flowers, row 496 at x 176).
+        if len(choices) == 1 and not vram[y, x + 1:x + width].any():
             vram[y, x:x + width] = np.frombuffer(next(iter(choices)), '<u2')
             applied += 1
     return applied

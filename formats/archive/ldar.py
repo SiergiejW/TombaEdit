@@ -334,6 +334,8 @@ class Project:
                 vram[y:y + h, x:x + w] = pixels
         self.effects_picture(vram, [group for group, _ in wanted])
         self.town_palette(vram, [group for group, _ in wanted])
+        from formats.level.prepre8 import upload_player_palette
+        upload_player_palette(self, path, vram)
         return vram
 
     def effects_picture(self, vram, groups):

@@ -1,7 +1,7 @@
 """Read-only APD placements and WHM word explorer."""
 import struct
-from PyQt6.QtCore import Qt, pyqtSignal
-from PyQt6.QtGui import QColor, QPainter, QPen
+from PyQt6.QtCore import Qt, QPointF, pyqtSignal
+from PyQt6.QtGui import QColor, QPainter, QPainterPath, QPen, QImage, QPolygonF, QTransform
 from PyQt6.QtWidgets import (QWidget, QVBoxLayout, QHBoxLayout, QLabel,
     QTableWidget, QTableWidgetItem, QAbstractItemView, QHeaderView, QSplitter, QSizePolicy)
 
@@ -12,7 +12,60 @@ class PlacementMap(QWidget):
         super().__init__()
         self.records = records
         self.selected = -1
+        self.visuals = []
+        self.visual_cache = None
         self.setMinimumSize(280, 260)
+
+    def set_scene(self, scene, source):
+        """Record the loaded objects in APD X/Y coordinates, behind the dots."""
+        import numpy as np
+        from PIL.ImageQt import ImageQt
+        from psx.graphics import texture_page
+        from disc.reader import FormatError
+        textures = {}
+        self.visuals = []
+        self.visual_cache = None
+        images = {}
+        positions = {e.placement.offset: e.placement.position for e in scene.entries
+                     if e.source is source and e.placement is not None}
+        # Relative APD records use their resolved parent position, just as
+        # the overlaid object does. Preserve record order for row selection.
+        self.records = [r[:6] + tuple(positions.get(i * 16, r[6:9])) + r[9:]
+                        for i, r in enumerate(self.records)]
+        entries = [e for e in scene.entries if e.source is source and e.placement is not None
+                   and e.category in ('Models', 'Sprites', 'Spawned')]
+        # Farther objects first; the placement map looks straight along Z.
+        entries.sort(key=lambda e: e.placement.position[2], reverse=True)
+        for entry in entries:
+            for (page, clut, _), (vertices, uv, colors) in entry.mesh.batches.items():
+                image = entry.mesh.image
+                if image is None and page >= 0:
+                    key = (page, clut)
+                    if key not in textures:
+                        try:
+                            textures[key] = texture_page(scene.vram, page, clut)
+                        except FormatError:
+                            textures[key] = None
+                    image = textures[key]
+                if image is not None and id(image) not in images:
+                    images[id(image)] = ImageQt(image.convert('RGBA')).copy()
+                qimage = images.get(id(image))
+                for start in range(0, len(vertices), 3):
+                    target = np.asarray(vertices[start:start + 3, :2], dtype=float) * (1, -1)
+                    if len(target) != 3:
+                        continue
+                    triangle = QPolygonF([QPointF(*p) for p in target])
+                    if qimage is None:
+                        color = np.clip(np.mean(colors[start:start + 3], axis=0), 0, 1)
+                        self.visuals.append((triangle, QColor.fromRgbF(*map(float, color)), None))
+                        continue
+                    pixels = np.asarray(uv[start:start + 3], dtype=float) * (image.width, image.height)
+                    try:
+                        affine = np.linalg.solve(np.column_stack((pixels, np.ones(3))), target)
+                    except np.linalg.LinAlgError:
+                        continue
+                    self.visuals.append((triangle, qimage, QTransform(*affine.ravel())))
+        self.update()
 
     def points(self):
         if not self.records:
@@ -42,6 +95,34 @@ class PlacementMap(QWidget):
         ys = [r[7] for r in self.records]
         low_x, high_x = min(xs), max(xs)
         low_y, high_y = min(ys), max(ys)
+        if self.visuals:
+            scale = min((self.width() - 48) / max(1, high_x - low_x),
+                        (self.height() - 48) / max(1, high_y - low_y))
+            if self.visual_cache is None or self.visual_cache.size() != self.size():
+                self.visual_cache = QImage(self.size(), QImage.Format.Format_ARGB32_Premultiplied)
+                self.visual_cache.fill(Qt.GlobalColor.transparent)
+                overlay = QPainter(self.visual_cache)
+                overlay.setPen(Qt.PenStyle.NoPen)
+                overlay.translate(self.width() / 2, self.height() / 2)
+                overlay.scale(scale, scale)
+                overlay.translate(-(low_x + high_x) / 2, -(low_y + high_y) / 2)
+                for triangle, image, transform in self.visuals:
+                    if transform is None:
+                        overlay.setBrush(image)
+                        overlay.drawPolygon(triangle)
+                    else:
+                        overlay.save()
+                        clip = QPainterPath()
+                        clip.addPolygon(triangle)
+                        overlay.setClipPath(clip)
+                        overlay.setWorldTransform(transform, combine=True)
+                        overlay.drawImage(QPointF(0, 0), image)
+                        overlay.restore()
+                overlay.end()
+            painter.save()
+            painter.setOpacity(.5)
+            painter.drawImage(0, 0, self.visual_cache)
+            painter.restore()
         for i, (x, y) in enumerate(self.points()):
             painter.setPen(QPen(QColor('#ff6060' if i == self.selected else '#a7c653'),
                                 5 if i == self.selected else 2))

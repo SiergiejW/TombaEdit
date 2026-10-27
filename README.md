@@ -8,6 +8,25 @@ anything first.
 
 TombaEdit is read-only: it exports assets but does not rebuild discs.
 
+## Offline Japanese translation
+
+The dialogue viewer includes decoded text and an English machine translation
+beside the game preview. Enable **Translate Japanese to English offline** and
+use **Choose model...** to select an extracted Argos Japanese-to-English model
+folder containing `metadata.json`, `sentencepiece.model` and `model/model.bin`.
+When running from Python, install `requirements-translation.txt` if those
+components are not already installed. Translation runs locally on the CPU,
+updates when you select another dialogue, and caches previous results. No
+dialogue is sent online and the viewer does not download models automatically.
+Unknown glyphs must be assigned characters in the Glyphs tab first. Machine
+translation can misread names and short game messages; keep the original text
+visible when interpreting it.
+
+The APD **Placements** map overlays resolved objects and sprites at 50% opacity.
+Its placement points remain fully visible and selectable above the pictures.
+Unresolved objects retain their points. The **Placements in level** tab provides
+the full scene for inspecting depth and animation.
+
 ## Version 0.0.2
 
 Change `version = "0.0.2"` in `version.py` to update the title, About dialog,

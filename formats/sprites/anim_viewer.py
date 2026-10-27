@@ -157,6 +157,7 @@ class AnimationView(QWidget):
                 script.found.add('list')
                 self.scripts[address] = script
                 self.listed[address] = start
+        self.inherit_sprite_labels()
         self.relist()
         self.note.setText(f'{len(self.users)} animation starts linked to this bank by object handlers or '
                           f'loaded animation tables, and {len(self.listed)} more from the same animation lists. '
@@ -241,6 +242,20 @@ class AnimationView(QWidget):
 
     def set_labels(self, label_set, save, bank_key):
         self.label_set, self.save_labels, self.bank_key = label_set, save, bank_key
+        self.inherit_sprite_labels()
+
+    def inherit_sprite_labels(self):
+        """Fill unnamed frames from named, verified animations only."""
+        sprites = self.palette_source
+        if sprites is None or self.label_set is None or self.scripts is None:
+            return
+        from game.labels import inherit_animation_labels
+        named = [(self.animation_label(self.scripts[address]), self.scripts[address].frames)
+                 for address in sorted(self.related())]
+        if inherit_animation_labels(self.label_set, sprites.frames, named):
+            sprites.reload_labels()
+            if self.save_labels:
+                self.save_labels()
 
     def set_check_target(self, target, store):
         from formats.sprites.check_view import SpriteCheckBar
@@ -260,6 +275,7 @@ class AnimationView(QWidget):
         return (self.label_set.label_for(self.animation_key(script)) or '') if self.label_set is not None else ''
 
     def reload_labels(self):
+        self.inherit_sprite_labels()
         self.table.blockSignals(True)
         for row, address in enumerate(self.shown):
             if self.table.item(row, 8) is not None:
@@ -273,6 +289,7 @@ class AnimationView(QWidget):
                                        text=self.animation_label(self.script))
         if ok:
             self.label_set.rename(self.animation_key(self.script), name.strip(), kind='SPR animation')
+            self.inherit_sprite_labels()
             if self.save_labels:
                 self.save_labels()
             row = self.table.currentRow()
@@ -282,6 +299,10 @@ class AnimationView(QWidget):
     def set_palette_source(self, sprites):
         """The SpriteView whose palette overrides the frames are drawn with."""
         self.palette_source = sprites
+        if self.scripts is None:
+            self.search()
+        else:
+            self.inherit_sprite_labels()
         self.cluts.setVisible(sprites is not None and sprites.renderer is None)
 
     def open_cluts(self):
