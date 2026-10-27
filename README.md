@@ -62,7 +62,9 @@ The entry list contains the full decoded or translated message; scroll sideways
 to read long rows. PrePre 8 also has a native text-usage audit. Entries marked
 **No in-game use found** have no selection through the checked message-window
 calls or signpost subtype table. Use the entry filter to isolate them, and hover
-for the evidence. Dynamic conversation selections remain potentially used;
+for the evidence. These entries are purple; their text resource and source file
+show a purple **(x unused)** count in the tree when the count is above zero.
+Dynamic conversation selections remain potentially used;
 absence from the audit is an unused candidate, not proof of unreachability.
 The status and evidence are included in original and bilingual JSON dumps.
 Other builds currently say **Usage not checked**. Missing glyphs alone do not

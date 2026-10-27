@@ -8,15 +8,16 @@ COUNT_ROLE = Qt.ItemDataRole.UserRole + 50
 UNUSED_ROLE = Qt.ItemDataRole.UserRole + 51
 
 
-def purple(palette):
-    return QColor('#bc80ed' if palette.color(QPalette.ColorRole.Base).lightness() < 128 else '#8535b1')
+def purple(palette, selected=False):
+    background = QPalette.ColorRole.Highlight if selected else QPalette.ColorRole.Base
+    return QColor('#bc80ed' if palette.color(background).lightness() < 128 else '#8535b1')
 
 
 class TextEntryDelegate(QStyledItemDelegate):
     def initStyleOption(self, option, index):
         super().initStyleOption(option, index)
         if index.data(UNUSED_ROLE):
-            color = purple(option.palette)
+            color = purple(option.palette, bool(option.state & QStyle.StateFlag.State_Selected))
             option.palette.setColor(QPalette.ColorRole.Text, color)
             option.palette.setColor(QPalette.ColorRole.HighlightedText, color)
 
@@ -48,9 +49,9 @@ class UsageTreeDelegate(ViewportElideDelegate):
         painter.setPen(color)
         layout = QTextLayout(text, visible.font)
         accent = QTextCharFormat()
-        accent.setForeground(purple(visible.palette))
+        accent.setForeground(purple(visible.palette, bool(visible.state & QStyle.StateFlag.State_Selected)))
         span = QTextLayout.FormatRange()
-        span.start, span.length, span.format = len(base), len(suffix), accent
+        span.start, span.length, span.format = len(base.encode('utf-16-le')) // 2, len(suffix), accent
         layout.setFormats([span])
         layout.beginLayout()
         line = layout.createLine()
