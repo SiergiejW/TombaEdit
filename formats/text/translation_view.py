@@ -46,18 +46,23 @@ class TranslationPane(QWidget):
     def set_text(self, text):
         self.text = text
         self.source.setPlainText(text)
-        self.refresh()
+        self.session.request_text(text)
 
     def refresh(self):
         self.enabled.blockSignals(True)
         self.enabled.setChecked(self.session.enabled)
         self.enabled.blockSignals(False)
         self.progress.setText(self.session.status())
-        value = self.session.lookup(self.text)
+        value = self.session.translations.get(self.text)
         if value is None:
             try:
-                translatable(self.text)
-                value = self.session.error or 'Waiting for background translation... The model loads on first use.'
+                needs_translation = translatable(self.text)
+                if not needs_translation:
+                    value = self.text
+                elif not self.session.folder:
+                    value = 'Choose a local model to translate this entry.'
+                else:
+                    value = self.session.error or 'Waiting for translation... The selected entry is prioritised; the model loads on first use.'
             except TranslationError as exc:
                 value = str(exc)
         if self.output.toPlainText() != value:

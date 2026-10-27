@@ -77,7 +77,7 @@ class DialogueView(QWidget):
         self.entries.blockSignals(True)
         self.entries.clear()
         for i, d in enumerate(wfm.dialogues):
-            preview = export.plain(d, '?').replace('\n', ' ')
+            preview = export.plain(d).replace('\n', ' ')
             self.entries.addItem(f'{getattr(d, "name", f"{i:03d}")} | {preview}')
         self.entries.blockSignals(False)
         self.translation.session.register(self.bank)
@@ -117,7 +117,7 @@ class DialogueView(QWidget):
         for i, dialogue in enumerate(self.wfm.dialogues):
             original = export.plain(dialogue)
             preview = self.translation.session.lookup(original)
-            preview = (preview if preview is not None else export.plain(dialogue, '?')).replace('\n', ' ')
+            preview = (preview if preview is not None else original).replace('\n', ' ')
             item = self.entries.item(i)
             if item is not None:
                 marker = '[No in-game use found] ' if (usage.entry(dialogue) or {}).get('status') == 'not_found' else ''

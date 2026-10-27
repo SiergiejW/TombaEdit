@@ -38,6 +38,7 @@ class TranslationSession(QObject):
         self.busy = self.reading = self.discovered = self.closed = False
         self.error = self.discovery_error = ''
         self.active = None
+        self.selected = ''
         self.pool = QThreadPool.globalInstance()
         self.timer = QTimer(self)
         self.timer.setSingleShot(True)
@@ -99,12 +100,19 @@ class TranslationSession(QObject):
     def originals(self):
         return dict.fromkeys(text for texts in self.texts.values() for text in texts)
 
+    def request_text(self, text):
+        """Prioritise the selected entry even while whole-disc preloading is off."""
+        self.selected = text
+        self.rebuild_queue()
+        self.changed.emit()
+
     def rebuild_queue(self):
         self.timer.stop()
         self.queue.clear()
-        if self.closed or not self.enabled or not self.folder or self.error:
+        if self.closed or not self.folder or self.error:
             return
-        for text in self.originals():
+        wanted = dict.fromkeys([self.selected] + (list(self.originals()) if self.enabled else []))
+        for text in wanted:
             if text in self.translations or text in self.failures or self.active == (self.folder, text):
                 continue
             try:
@@ -116,7 +124,7 @@ class TranslationSession(QObject):
             self.timer.start(0)
 
     def start(self):
-        if self.closed or self.busy or not self.enabled or not self.queue or self.error:
+        if self.closed or self.busy or not self.queue or self.error:
             return
         self.busy = True
         folder, text = self.folder, self.queue.popleft()
@@ -124,6 +132,7 @@ class TranslationSession(QObject):
         self.request = Task(lambda: (folder, text, worker.translate(folder, text)))
         self.request.signals.ready.connect(self.ready)
         self.pool.start(self.request)
+        self.changed.emit()
 
     def ready(self, response):
         active = self.active
@@ -141,7 +150,7 @@ class TranslationSession(QObject):
         else:
             self.results.setdefault(folder, {})[text] = result
         self.changed.emit()
-        if self.enabled and not self.error and self.queue:
+        if not self.error and self.queue:
             self.timer.start(0)
 
     def lookup(self, text):
@@ -158,7 +167,11 @@ class TranslationSession(QObject):
 
     def status(self):
         if not self.enabled:
-            return 'Automatic translation is off. Original entries are shown.'
+            if self.error:
+                return self.error
+            if self.busy or self.queue:
+                return 'Translating the selected entry... The model loads on first use. Bulk preloading is off.'
+            return 'Bulk preloading is off. Selecting an entry translates it; list previews stay original.'
         if not self.folder:
             return 'Choose a local model to preload English for all WFM banks.'
         if self.error:
