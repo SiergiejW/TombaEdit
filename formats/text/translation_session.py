@@ -169,6 +169,8 @@ class TranslationSession(QObject):
         if not self.enabled:
             if self.error:
                 return self.error
+            if self.busy and self.active and self.active[1] != self.selected:
+                return 'Finishing the current translation; your selected entry is next. Bulk preloading is off.'
             if self.busy or self.queue:
                 return 'Translating the selected entry... The model loads on first use. Bulk preloading is off.'
             return 'Bulk preloading is off. Selecting an entry translates it; list previews stay original.'

@@ -1,0 +1,378 @@
+{
+ "font_address": "800A4060",
+ "method": "reconstructed-reading",
+ "artwork_available": false,
+ "evidence": "Surviving kana and sentence context; repeated glyph identities; strictly increasing Shift-JIS order of the core kanji; matching PrePre 9 phrases and place names. These are recovered readings, not recovered font bitmaps.",
+ "characters": {
+  "prepre8-font-800A4060-glyph-09E": {
+   "text": "一",
+   "glyph": "19E",
+   "basis": "sentence context and JIS order"
+  },
+  "prepre8-font-800A4060-glyph-09F": {
+   "text": "員",
+   "glyph": "19F",
+   "basis": "sentence context and JIS order"
+  },
+  "prepre8-font-800A4060-glyph-0A0": {
+   "text": "栄",
+   "glyph": "1A0",
+   "basis": "sentence context and JIS order"
+  },
+  "prepre8-font-800A4060-glyph-0A2": {
+   "text": "奥",
+   "glyph": "1A2",
+   "basis": "sentence context and JIS order"
+  },
+  "prepre8-font-800A4060-glyph-0A4": {
+   "text": "下",
+   "glyph": "1A4",
+   "basis": "sentence context and JIS order"
+  },
+  "prepre8-font-800A4060-glyph-0A5": {
+   "text": "何",
+   "glyph": "1A5",
+   "basis": "sentence context and JIS order"
+  },
+  "prepre8-font-800A4060-glyph-0A6": {
+   "text": "花",
+   "glyph": "1A6",
+   "basis": "sentence context and JIS order"
+  },
+  "prepre8-font-800A4060-glyph-0A7": {
+   "text": "解",
+   "glyph": "1A7",
+   "basis": "sentence context and JIS order"
+  },
+  "prepre8-font-800A4060-glyph-0AB": {
+   "text": "開",
+   "glyph": "1AB",
+   "basis": "sentence context and JIS order"
+  },
+  "prepre8-font-800A4060-glyph-0AD": {
+   "text": "間",
+   "glyph": "1AD",
+   "basis": "sentence context and JIS order"
+  },
+  "prepre8-font-800A4060-glyph-0AE": {
+   "text": "気",
+   "glyph": "1AE",
+   "basis": "sentence context and JIS order"
+  },
+  "prepre8-font-800A4060-glyph-0B0": {
+   "text": "救",
+   "glyph": "1B0",
+   "basis": "sentence context and JIS order"
+  },
+  "prepre8-font-800A4060-glyph-0B3": {
+   "text": "強",
+   "glyph": "1B3",
+   "basis": "sentence context and JIS order"
+  },
+  "prepre8-font-800A4060-glyph-0B6": {
+   "text": "恵",
+   "glyph": "1B6",
+   "basis": "sentence context and JIS order"
+  },
+  "prepre8-font-800A4060-glyph-0B8": {
+   "text": "件",
+   "glyph": "1B8",
+   "basis": "sentence context and JIS order"
+  },
+  "prepre8-font-800A4060-glyph-0BA": {
+   "text": "見",
+   "glyph": "1BA",
+   "basis": "sentence context and JIS order"
+  },
+  "prepre8-font-800A4060-glyph-0BC": {
+   "text": "言",
+   "glyph": "1BC",
+   "basis": "sentence context and JIS order"
+  },
+  "prepre8-font-800A4060-glyph-0BD": {
+   "text": "口",
+   "glyph": "1BD",
+   "basis": "sentence context and JIS order"
+  },
+  "prepre8-font-800A4060-glyph-0C1": {
+   "text": "今",
+   "glyph": "1C1",
+   "basis": "sentence context and JIS order"
+  },
+  "prepre8-font-800A4060-glyph-0C4": {
+   "text": "咲",
+   "glyph": "1C4",
+   "basis": "sentence context and JIS order"
+  },
+  "prepre8-font-800A4060-glyph-0C6": {
+   "text": "使",
+   "glyph": "1C6",
+   "basis": "sentence context and JIS order"
+  },
+  "prepre8-font-800A4060-glyph-0CB": {
+   "text": "自",
+   "glyph": "1CB",
+   "basis": "sentence context and JIS order"
+  },
+  "prepre8-font-800A4060-glyph-0CC": {
+   "text": "実",
+   "glyph": "1CC",
+   "basis": "sentence context and JIS order"
+  },
+  "prepre8-font-800A4060-glyph-0CD": {
+   "text": "者",
+   "glyph": "1CD",
+   "basis": "sentence context and JIS order"
+  },
+  "prepre8-font-800A4060-glyph-0CE": {
+   "text": "種",
+   "glyph": "1CE",
+   "basis": "sentence context and JIS order"
+  },
+  "prepre8-font-800A4060-glyph-0D0": {
+   "text": "出",
+   "glyph": "1D0",
+   "basis": "sentence context and JIS order"
+  },
+  "prepre8-font-800A4060-glyph-0D2": {
+   "text": "書",
+   "glyph": "1D2",
+   "basis": "sentence context and JIS order"
+  },
+  "prepre8-font-800A4060-glyph-0D3": {
+   "text": "助",
+   "glyph": "1D3",
+   "basis": "sentence context and JIS order"
+  },
+  "prepre8-font-800A4060-glyph-0D6": {
+   "text": "少",
+   "glyph": "1D6",
+   "basis": "sentence context and JIS order"
+  },
+  "prepre8-font-800A4060-glyph-0D8": {
+   "text": "条",
+   "glyph": "1D8",
+   "basis": "sentence context and JIS order"
+  },
+  "prepre8-font-800A4060-glyph-0DB": {
+   "text": "森",
+   "glyph": "1DB",
+   "basis": "sentence context and JIS order"
+  },
+  "prepre8-font-800A4060-glyph-0DD": {
+   "text": "人",
+   "glyph": "1DD",
+   "basis": "sentence context and JIS order"
+  },
+  "prepre8-font-800A4060-glyph-0E1": {
+   "text": "前",
+   "glyph": "1E1",
+   "basis": "sentence context and JIS order"
+  },
+  "prepre8-font-800A4060-glyph-0E2": {
+   "text": "全",
+   "glyph": "1E2",
+   "basis": "sentence context and JIS order"
+  },
+  "prepre8-font-800A4060-glyph-0E3": {
+   "text": "足",
+   "glyph": "1E3",
+   "basis": "sentence context and JIS order"
+  },
+  "prepre8-font-800A4060-glyph-0E4": {
+   "text": "族",
+   "glyph": "1E4",
+   "basis": "sentence context and JIS order"
+  },
+  "prepre8-font-800A4060-glyph-0E7": {
+   "text": "貸",
+   "glyph": "1E7",
+   "basis": "sentence context and JIS order"
+  },
+  "prepre8-font-800A4060-glyph-0E8": {
+   "text": "大",
+   "glyph": "1E8",
+   "basis": "sentence context and JIS order"
+  },
+  "prepre8-font-800A4060-glyph-0EC": {
+   "text": "壇",
+   "glyph": "1EC",
+   "basis": "sentence context and JIS order"
+  },
+  "prepre8-font-800A4060-glyph-0ED": {
+   "text": "知",
+   "glyph": "1ED",
+   "basis": "sentence context and JIS order"
+  },
+  "prepre8-font-800A4060-glyph-0EE": {
+   "text": "地",
+   "glyph": "1EE",
+   "basis": "sentence context and JIS order"
+  },
+  "prepre8-font-800A4060-glyph-0EF": {
+   "text": "中",
+   "glyph": "1EF",
+   "basis": "sentence context and JIS order"
+  },
+  "prepre8-font-800A4060-glyph-0F0": {
+   "text": "仲",
+   "glyph": "1F0",
+   "basis": "sentence context and JIS order"
+  },
+  "prepre8-font-800A4060-glyph-0F1": {
+   "text": "長",
+   "glyph": "1F1",
+   "basis": "sentence context and JIS order"
+  },
+  "prepre8-font-800A4060-glyph-0F6": {
+   "text": "塔",
+   "glyph": "1F6",
+   "basis": "sentence context and JIS order"
+  },
+  "prepre8-font-800A4060-glyph-0F8": {
+   "text": "当",
+   "glyph": "1F8",
+   "basis": "sentence context and JIS order"
+  },
+  "prepre8-font-800A4060-glyph-0FA": {
+   "text": "同",
+   "glyph": "1FA",
+   "basis": "sentence context and JIS order"
+  },
+  "prepre8-font-800A4060-glyph-0FD": {
+   "text": "入",
+   "glyph": "1FD",
+   "basis": "sentence context and JIS order"
+  },
+  "prepre8-font-800A4060-glyph-0FF": {
+   "text": "年",
+   "glyph": "1FF",
+   "basis": "sentence context and JIS order"
+  },
+  "prepre8-font-800A4060-glyph-101": {
+   "text": "箱",
+   "glyph": "201",
+   "basis": "sentence context and JIS order"
+  },
+  "prepre8-font-800A4060-glyph-104": {
+   "text": "秘",
+   "glyph": "204",
+   "basis": "sentence context and JIS order"
+  },
+  "prepre8-font-800A4060-glyph-105": {
+   "text": "百",
+   "glyph": "205",
+   "basis": "sentence context and JIS order"
+  },
+  "prepre8-font-800A4060-glyph-110": {
+   "text": "本",
+   "glyph": "210",
+   "basis": "sentence context and JIS order"
+  },
+  "prepre8-font-800A4060-glyph-111": {
+   "text": "魔",
+   "glyph": "211",
+   "basis": "sentence context and JIS order"
+  },
+  "prepre8-font-800A4060-glyph-114": {
+   "text": "密",
+   "glyph": "214",
+   "basis": "sentence context and JIS order"
+  },
+  "prepre8-font-800A4060-glyph-115": {
+   "text": "無",
+   "glyph": "215",
+   "basis": "sentence context and JIS order"
+  },
+  "prepre8-font-800A4060-glyph-117": {
+   "text": "迷",
+   "glyph": "217",
+   "basis": "sentence context and JIS order"
+  },
+  "prepre8-font-800A4060-glyph-11C": {
+   "text": "勇",
+   "glyph": "21C",
+   "basis": "sentence context and JIS order"
+  },
+  "prepre8-font-800A4060-glyph-11D": {
+   "text": "由",
+   "glyph": "21D",
+   "basis": "sentence context and JIS order"
+  },
+  "prepre8-font-800A4060-glyph-120": {
+   "text": "葉",
+   "glyph": "220",
+   "basis": "sentence context and JIS order"
+  },
+  "prepre8-font-800A4060-glyph-121": {
+   "text": "養",
+   "glyph": "221",
+   "basis": "sentence context and JIS order"
+  },
+  "prepre8-font-800A4060-glyph-122": {
+   "text": "欲",
+   "glyph": "222",
+   "basis": "sentence context and JIS order"
+  },
+  "prepre8-font-800A4060-glyph-124": {
+   "text": "理",
+   "glyph": "224",
+   "basis": "sentence context and JIS order"
+  },
+  "prepre8-font-800A4060-glyph-125": {
+   "text": "力",
+   "glyph": "225",
+   "basis": "sentence context and JIS order"
+  },
+  "prepre8-font-800A4060-glyph-126": {
+   "text": "礼",
+   "glyph": "226",
+   "basis": "sentence context and JIS order"
+  },
+  "prepre8-font-800A4060-glyph-128": {
+   "text": "老",
+   "glyph": "228",
+   "basis": "sentence context and JIS order"
+  },
+  "prepre8-font-800A4060-glyph-129": {
+   "text": "吊",
+   "glyph": "229",
+   "basis": "place name and matching later text"
+  },
+  "prepre8-font-800A4060-glyph-12A": {
+   "text": "橋",
+   "glyph": "22A",
+   "basis": "place name and matching later text"
+  },
+  "prepre8-font-800A4060-glyph-12B": {
+   "text": "路",
+   "glyph": "22B",
+   "basis": "place name and matching later text"
+  },
+  "prepre8-font-800A4060-glyph-12C": {
+   "text": "高",
+   "glyph": "22C",
+   "basis": "place name and matching later text"
+  },
+  "prepre8-font-800A4060-glyph-12D": {
+   "text": "集",
+   "glyph": "22D",
+   "basis": "place name and matching later text"
+  },
+  "prepre8-font-800A4060-glyph-12E": {
+   "text": "落",
+   "glyph": "22E",
+   "basis": "place name and matching later text"
+  },
+  "prepre8-font-800A4060-glyph-12F": {
+   "text": "広",
+   "glyph": "22F",
+   "basis": "place name and matching later text"
+  },
+  "prepre8-font-800A4060-glyph-130": {
+   "text": "場",
+   "glyph": "230",
+   "basis": "place name and matching later text"
+  }
+ }
+}

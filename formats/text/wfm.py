@@ -74,13 +74,33 @@ class Dialogue:
     # An event title's (column, row, flags) per letter, from the overlays
     # (formats.text.titles); None for other text.
     layout: list = None
+    # Some prototype lettering is sliced into tiles through the middle of
+    # letters. Decode the complete verified run, not invented tile letters.
+    glyph_runs: dict = field(default_factory=dict, repr=False)
+
+    def text_tokens(self, unknown='[g{:03X}]'):
+        index = 0
+        while index < len(self.tokens):
+            for sequence, text in self.glyph_runs.items():
+                words = self.tokens[index:index + len(sequence)]
+                if (len(words) == len(sequence)
+                        and tuple(word for word, args in words) == sequence
+                        and all((word & 0xFFF) < len(self.characters)
+                                and self.characters[word & 0xFFF] is None for word in sequence)):
+                    yield sequence[0], (), text
+                    index += len(sequence)
+                    break
+            else:
+                word, args = self.tokens[index]
+                yield word, args, self.letter(word, unknown) if word < 0xFF00 else ''
+                index += 1
 
     def script(self):
         if self.layout:
             from formats.text.titles import text
             return composed(text(self, self.layout, self.letter))
         parts = []
-        for word, args in self.tokens:
+        for word, args, letter in self.text_tokens():
             if word >= 0xFF00:
                 if word == 0xFFF6 and args == (0, 0):
                     continue
@@ -90,9 +110,7 @@ class Dialogue:
             else:
                 if corner(word):
                     continue
-                gid = word & 0xFFF
-                char = self.characters[gid] if gid < len(self.characters) else None
-                parts.append(char if char is not None else f'[g{gid:03X}]')
+                parts.append(letter)
         return composed("".join(parts)).strip() + (f"\n\n{self.warning}" if self.warning else "")
 
     def letter(self, word, unknown='[g{:03X}]'):

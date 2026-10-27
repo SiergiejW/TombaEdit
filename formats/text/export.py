@@ -44,7 +44,7 @@ def plain(dialogue, unknown='[g{:03X}]'):
         from formats.text.titles import text
         return composed(text(dialogue, dialogue.layout, lambda word: dialogue.letter(word, unknown)))
     out = []
-    for word, _ in dialogue.tokens:
+    for word, _, letter in dialogue.text_tokens(unknown):
         names = getattr(dialogue, 'controls', None) or NAMES
         name = names.get(word, ('', 0))[0]
         if name == 'NEWLINE':
@@ -52,9 +52,7 @@ def plain(dialogue, unknown='[g{:03X}]'):
         elif name == 'CLEAR':
             out.append('\n\n')
         elif word < 0xFF00 and not corner(word):
-            number = word & 0xFFF
-            character = dialogue.characters[number] if number < len(dialogue.characters) else None
-            out.append(character if character is not None else unknown.format(number))
+            out.append(letter)
     return composed(''.join(out)).strip('\n')
 
 
@@ -182,6 +180,11 @@ def entries(bank, controls=True, unknown='[g{:03X}]', raw=False):
             item['warning'] = dialogue.warning
         if getattr(dialogue, 'usage', None):
             item['usage'] = dialogue.usage
+        if getattr(bank.wfm, 'recovered_glyphs', None):
+            decoded = {f'{word & 0xFFF:03X}': bank.wfm.recovered_glyphs[word & 0xFFF]
+                       for word, _ in dialogue.tokens if word < 0xFF00 and word & 0xFFF in bank.wfm.recovered_glyphs}
+            if decoded:
+                item['recovered_readings'] = decoded
         yield item
 
 
@@ -189,6 +192,9 @@ def describe(bank):
     """What says which bank this is, as a dictionary."""
     out = {'name': bank.name, 'file': bank.source, 'offset': f'{bank.offset:X}', 'format': bank.version,
            'entries': len(bank.wfm.dialogues), 'glyphs': len(bank.wfm.glyphs), 'unknown_glyphs': bank.unknown}
+    if getattr(bank.wfm, 'recovered_glyphs', None):
+        out['decoding_note'] = ('Some readings are reconstructed from sentence context and cross-build evidence; '
+                                'their original font artwork is absent. Per-entry JSON records preserve the evidence.')
     if bank.table:
         out.update(load_table=bank.table, load_group=bank.group)
     if bank.area >= 0:
@@ -218,6 +224,8 @@ def render(banks, kind, title='', controls=True, unknown='[g{:03X}]', raw=False)
     for bank in banks:
         head = f'{bank.place} | {bank.name} | {bank.source} +{bank.offset:06X} | {len(bank.wfm.dialogues)} entries'
         parts.append('=' * 78 + f'\n{head}\n' + '=' * 78)
+        if 'decoding_note' in describe(bank):
+            parts.append(describe(bank)['decoding_note'])
         for item in entries(bank, kind == 'script', unknown):
             parts.append(f'[{item["index"]:03d} @ {item["offset"]}]\n' + (item['script'] if kind == 'script' else item['text']))
     return '\n\n'.join(parts) + '\n'
@@ -271,6 +279,8 @@ def render_translated(banks, translations, model='', kind='json'):
     parts = [f'English machine translation | Model: {model}']
     for bank in output:
         parts.append(f'\n{bank["name"]} | {bank["file"]} +{bank["offset"]}')
+        if bank.get('decoding_note'):
+            parts.append(bank['decoding_note'])
         for item in bank['text']:
             parts.append(f'[{item["index"]:03d} @ {item["offset"]}]\nOriginal:\n{item["original"]}'
                          f'\nEnglish:\n{item["translation"] if item["translation"] is not None else "[" + item["status"] + "]"}')

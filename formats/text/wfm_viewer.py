@@ -85,7 +85,9 @@ class DialogueView(QWidget):
         known = sum(c is not None for c in wfm.characters)
         candidates = sum((usage.entry(d) or {}).get('status') == 'not_found' for d in wfm.dialogues)
         audited = any(usage.entry(d) for d in wfm.dialogues)
-        self.summary.setText(f'{len(wfm.dialogues)} entries | {known}/{len(wfm.glyphs)} recognized glyphs | '
+        recovered = len(getattr(wfm, 'recovered_glyphs', {}))
+        self.summary.setText(f'{len(wfm.dialogues)} entries | {known}/{len(wfm.glyphs)} decoded glyphs'
+                             + (f' ({recovered} reconstructed readings)' if recovered else '') + ' | '
                              + (f'{candidates} with no in-game use found' if audited else 'In-game usage not checked'))
         self.summary.setToolTip(getattr(wfm, 'usage_summary', 'Native display analysis is not available for this build.'))
         if row >= 0:
@@ -98,7 +100,8 @@ class DialogueView(QWidget):
         try:
             self.rendered.set_image(self.wfm.render(index))
             self.script.setPlainText(self.wfm.dialogues[index].script())
-            self.translation.set_text(export.plain(self.wfm.dialogues[index]))
+            dialogue = self.wfm.dialogues[index]
+            self.translation.set_text(export.plain(dialogue), dialogue.warning)
         except ValueError as exc:
             self.script.setPlainText(str(exc))
             self.translation.set_text('')
@@ -220,8 +223,14 @@ class GlyphView(QWidget):
                       wfm.characters[number] or '']
             for column, value in enumerate(values):
                 self.table.setItem(row, column, value if column == 0 else QTableWidgetItem(value))
+            recovered = getattr(wfm, 'recovered_glyphs', {}).get(number)
+            if recovered:
+                self.table.item(row, 4).setToolTip(recovered['evidence'])
         known = sum(c is not None for c in wfm.characters)
         self.summary.setText(f'{known} of {len(wfm.glyphs)} glyphs have a character')
+        recovered = len(getattr(wfm, 'recovered_glyphs', {}))
+        if recovered:
+            self.summary.setText(self.summary.text() + f' | {recovered} reconstructed readings; artwork absent')
 
     def selected(self):
         return [self.rows[row] for row in sorted({item.row() for item in self.table.selectedItems()})]

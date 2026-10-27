@@ -37,12 +37,29 @@ class EmbeddedBank(Wfm):
         from formats.text.wfm import USER_GLYPHS
         super().recognise()
         names = json.loads(Path(__file__).with_name('glyphs_prepre8.json').read_text(encoding='utf8'))
+        recovered = json.loads(Path(__file__).with_name('glyphs_prepre8_recovered.json').read_text(encoding='utf8'))
+        self.recovered_glyphs = {}
         for number, key in enumerate(self.keys):
             if number in self.missing_font:
-                self.characters[number] = USER_GLYPHS.get(key, names.get(key))
+                reading = recovered['characters'].get(key)
+                self.characters[number] = USER_GLYPHS.get(key, names.get(key, reading['text'] if reading else None))
+                if reading and key not in USER_GLYPHS:
+                    self.recovered_glyphs[number] = dict(reading, method=recovered['method'], artwork_available=False,
+                                                        evidence=recovered['evidence'])
                 continue
             if key not in USER_GLYPHS and key in names:
                 self.characters[number] = names[key]
+        for dialogue in self.dialogues:
+            if getattr(dialogue, 'alternate_font', False):
+                dialogue.warning = self.decoding_note(dialogue)
+
+    def decoding_note(self, dialogue):
+        if dialogue.name in ('05:00', '05:01'):
+            return ('This entry contains dwarf-language symbols rather than readable Japanese. '
+                    'Some symbol artwork is absent; its original glyph IDs are preserved.')
+        return ('Area-1 kanji artwork is absent from this disc. Kanji readings are reconstructed from '
+                'the surviving sentences, repeated glyphs, JIS ordering and matching later text; '
+                'they are not recovered font bitmaps. See glyph tooltips and JSON decoding evidence.')
 
     def render(self, index, page=None):
         normal = Wfm.__new__(Wfm)
@@ -135,9 +152,12 @@ def bank(project):
                 raise ValueError('Unterminated prototype message')
             dialogue = Dialogue(start - found.base + 0x800, tokens, characters=result.characters)
             dialogue.controls = CONTROLS
+            dialogue.glyph_runs = {tuple(range(0xF3, 0xF8)): 'Thank You',
+                                   tuple(range(0xF9, 0xFE)): 'Bye-Bye...'}
             dialogue.name = f'{group:02X}:{line:02X}'
             if fonts[group] != 0x800A2BCC:
-                dialogue.warning = 'Area-1 kanji artwork is absent from this disc. Shared kana are decoded; unresolved glyph IDs remain in the text.'
+                dialogue.alternate_font = True
+                dialogue.warning = result.decoding_note(dialogue)
             result.dialogues.append(dialogue)
     from formats.text.usage import prepre8
     prepre8(found, result)

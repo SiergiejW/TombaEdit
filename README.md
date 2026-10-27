@@ -20,6 +20,8 @@ WFM banks you have not opened yet. English previews appear in the entry lists as
 the background queue finishes; the progress line shows how much is ready.
 Turning it off immediately restores original previews. Completed translations
 are reused during the current disc session, including after toggling it back on.
+With bulk preloading off, selecting an entry still translates it in the English
+pane. The selected entry takes priority over the remaining background queue.
 The rendered game glyphs and control-code script stay available beside English.
 
 Use **Export translations...** to save the current bank or all discovered banks
@@ -55,8 +57,15 @@ first be assigned characters in the Glyphs tab.
 **PrePre 8 text** is embedded in `TOMBA.EXE`, rather than WFM files. Open
 `SYS/LDSYS.BIN` → group 0 → **WFM | Embedded prototype dialogue (TOMBA.EXE)**,
 or open `TOMBA/TOMBA.EXE` directly and use its Dialogue/Glyphs tabs. Text export
-also includes this bank. The unused area-1 messages are retained with a warning
-because their font texture is absent from this demo disc.
+also includes this bank. The alternate area-1 font shares 149 verified punctuation
+and kana glyphs with the loaded font. Its separate kanji artwork is absent;
+74 readings are reconstructed from the surviving Japanese sentences, repeated
+glyphs, Shift-JIS ordering and matching text in later builds. Those readings are
+identified in the viewer and JSON exports. The two dwarf-language symbol entries
+retain unknown glyph IDs. Tiled English lettering is decoded as complete phrases.
+
+PrePre 9's four WFM banks now decode all 413 entries without unknown glyph IDs.
+Unknown glyphs in other banks are shown as **[gXXX]**, rather than question marks.
 
 The entry list contains the full decoded or translated message; scroll sideways
 to read long rows. PrePre 8 also has a native text-usage audit. Entries marked

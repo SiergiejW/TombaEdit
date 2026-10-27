@@ -834,8 +834,20 @@ PrePre 8 dialogue has no WFM header or separate text file. Message table
 pointers at 800A5DE4 and font pointers at 800A5E14 are selected by 80035B84
 and 80035C1C. Font descriptors contain five bytes (U, V, width, height,
 palette). The available 256-glyph font uses texture page 13. The second
-305-glyph font belongs to area-1 messages and its texture is absent
-from this disc. Those messages remain listed with unknown glyphs.
+305-glyph font belongs to area-1 messages. Its first 149 descriptors exactly
+match the loaded font's punctuation/kana. The remaining artwork is absent.
+`glyphs_prepre8_recovered.json` records 74 reconstructed kanji readings from
+surviving sentence context, repeated glyphs, matching PrePre 9 phrases and
+place names, and the strictly increasing Shift-JIS order of the 66 core
+readings (the final eight place-name characters were appended separately).
+The viewer and JSON distinguish these readings from bitmap recognition.
+Missing-font glyphs have independent font/index keys, so user assignments
+do not accidentally rename every blank bitmap of the same size. The only
+entries retaining unresolved IDs are 05:00 and 05:01, dwarf-language symbols.
+The loaded font also corrects B7 to 枝 and D4 to 盗. English lettering spans
+five 12-pixel tiles per phrase, cutting through letters: F3–F7 is "Thank You"
+and F9–FD is "Bye-Bye...". `Dialogue.text_tokens` joins those verified runs;
+raw tokens and native rendering remain unchanged.
 The control dispatch at 800358C8 gives FFFF END_CLOSE, FFFE NEXT,
 FFFD NEWLINE, FFFC CLEAR, FFFB BUBBLE (three words), FFFA EVENT_SET
 (two), FFF9 EVENT_COMPLETE (one), FFF8 PAUSE (one), and FFF7 END.

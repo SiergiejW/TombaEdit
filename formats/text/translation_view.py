@@ -25,6 +25,10 @@ class TranslationPane(QWidget):
         self.source = text_view('')
         self.output = text_view('')
         layout.addWidget(QLabel('Decoded original text'))
+        self.decoding = QLabel()
+        self.decoding.setWordWrap(True)
+        self.decoding.hide()
+        layout.addWidget(self.decoding)
         layout.addWidget(self.source, 1)
         layout.addWidget(QLabel('English · machine translation'))
         layout.addWidget(self.output, 1)
@@ -41,11 +45,13 @@ class TranslationPane(QWidget):
         except TranslationError as exc:
             self.output.setPlainText(str(exc))
             return
-        self.session.configure(enabled=True, folder=folder)
+        self.session.configure(folder=folder)
 
-    def set_text(self, text):
+    def set_text(self, text, note=''):
         self.text = text
         self.source.setPlainText(text)
+        self.decoding.setText(note)
+        self.decoding.setVisible(bool(note))
         self.session.request_text(text)
 
     def refresh(self):

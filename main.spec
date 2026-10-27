@@ -10,7 +10,8 @@ icon_files = [(str(path), str(path.parent.relative_to(ROOT)))
               for path in (ROOT / 'icons').rglob('*') if path.is_file()
               and path.suffix.lower() in ('.png', '.ico')]
 text_files = [(str(ROOT / 'formats' / 'text' / name), 'formats/text')
-              for name in ('glyph_dictionary.json', 'glyphs_us.json', 'glyphs_prepre8.json')]
+              for name in ('glyph_dictionary.json', 'glyphs_us.json', 'glyphs_prepre8.json',
+                           'glyphs_prepre8_recovered.json')]
 import PyQt6
 import _soundfile_data
 plugins = Path(PyQt6.__file__).parent / 'Qt6' / 'plugins' / 'multimedia'
