@@ -21,7 +21,7 @@ Supported model folders:
   the original Transformers **safetensors** format, with `config.json`, the four
   weight shards, `model.safetensors.index.json`, tokenizer files and chat template.
   Install `requirements-translation-cat.txt` in the Python environment, or into
-  `roms/trnslator/runtime` beside the application. CUDA-enabled PyTorch uses a
+  a `runtime` folder alongside the selected model folder. CUDA-enabled PyTorch uses a
   compatible NVIDIA GPU; CPU inference needs considerably more RAM and time.
   When GPU memory cannot hold the original weights, the backend uses local NF4
   4-bit inference through bitsandbytes; the downloaded safetensors stay unchanged.

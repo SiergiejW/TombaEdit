@@ -122,7 +122,9 @@ class CatTranslator:
                 except ImportError as exc:
                     raise TranslationError('Free more GPU memory, or install bitsandbytes for low-memory GPU translation.') from exc
                 if free < 5 * 1024 ** 3:
-                    raise TranslationError('Free at least 5 GB of GPU memory before loading CAT-Translate-7b.')
+                    raise TranslationError(f'CAT-Translate-7b needs about 5 GB of free GPU memory; '
+                        f'{free / 1024 ** 3:.1f} GB is currently free. Close a GPU-heavy application '
+                        'or project, then select this entry again to retry.')
                 options['quantization_config'] = BitsAndBytesConfig(load_in_4bit=True,
                     bnb_4bit_quant_type='nf4', bnb_4bit_use_double_quant=True,
                     bnb_4bit_compute_dtype=torch.float16)
@@ -189,8 +191,14 @@ def _serve(connection):
                 if model_metadata(folder).get('backend') == 'cat':
                     import sys
                     root = Path(sys.executable).parent if getattr(sys, 'frozen', False) else Path(__file__).resolve().parents[2]
-                    runtime = root / 'roms' / 'trnslator' / 'runtime'
-                    if (runtime / 'torch' / '__init__.py').is_file() and str(runtime) not in sys.path:
+                    # Keep the optional runtime portable with the selected
+                    # model, rather than tying it to one ROM folder spelling.
+                    candidates = (Path(folder).resolve().parent / 'runtime',
+                                  root / 'rom' / 'translator' / 'runtime',
+                                  root / 'roms' / 'trnslator' / 'runtime')
+                    runtime = next((path for path in candidates
+                                    if (path / 'torch' / '__init__.py').is_file()), None)
+                    if runtime is not None and str(runtime) not in sys.path:
                         sys.path.insert(0, str(runtime))
                 result = translate(folder, text)
             except Exception as exc:
