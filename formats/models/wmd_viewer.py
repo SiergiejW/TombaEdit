@@ -1007,7 +1007,7 @@ class ModelView(QWidget):
         self.objects.blockSignals(False)
         self.canvas.update()
 
-    def show_polygon(self, selected, announce=True):
+    def show_polygon(self, selected, announce=True, center=True):
         if selected is None:
             self.details.setPlainText('Click a triangle or quad to inspect its UVs.\n\nGLB exports visible models with embedded textures and vertex colours.\nPSX blend equations and overbright colours are approximated in glTF.')
             self.uv.set_image(Image.new('RGBA', (1, 1)))
@@ -1026,7 +1026,8 @@ class ModelView(QWidget):
         self.uv.set_image(image, subject=('polygon', index, p['page'], p['clut']))
         # Bring the outlined texels into view.
         xs, ys = [t[0] for t in texels], [t[1] for t in texels]
-        self.uv.show_area(min(xs), min(ys), max(xs), max(ys))
+        if center:
+            self.uv.show_area(min(xs), min(ys), max(xs), max(ys))
 
     def screenshot(self):
         """Save what the 3D view shows, and copy it to the clipboard."""

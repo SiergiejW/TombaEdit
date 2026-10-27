@@ -54,7 +54,7 @@ class TranslationPane(QWidget):
         self.enabled.toggled.connect(self.toggle)
 
     def choose_model(self):
-        folder = QFileDialog.getExistingDirectory(self, 'Extracted Japanese-to-English Argos model', self.folder)
+        folder = QFileDialog.getExistingDirectory(self, 'Local Japanese-to-English model (CAT safetensors or Argos)', self.folder)
         if not folder:
             return
         try:
@@ -88,9 +88,9 @@ class TranslationPane(QWidget):
         if not japanese:
             self.output.setPlainText(text)
         elif not self.folder:
-            self.output.setPlainText('Choose an extracted Japanese-to-English model folder to translate offline.')
+            self.output.setPlainText('Choose a local CAT-Translate safetensors model or an extracted Argos model folder.')
         else:
-            self.output.setPlainText('Translating offline...')
+            self.output.setPlainText('Translating offline... The model loads on first use.')
             self.pending = (self.serial, self.folder, text)
             self.timer.start()
 

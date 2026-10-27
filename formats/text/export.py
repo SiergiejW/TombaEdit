@@ -45,9 +45,11 @@ def plain(dialogue, unknown='[g{:03X}]'):
         return composed(text(dialogue, dialogue.layout, lambda word: dialogue.letter(word, unknown)))
     out = []
     for word, _ in dialogue.tokens:
-        if word == 0xFFFD:
+        names = getattr(dialogue, 'controls', None) or NAMES
+        name = names.get(word, ('', 0))[0]
+        if name == 'NEWLINE':
             out.append('\n')
-        elif word == 0xFFFB:
+        elif name == 'CLEAR':
             out.append('\n\n')
         elif word < 0xFF00 and not corner(word):
             number = word & 0xFFF
@@ -62,7 +64,8 @@ def tokens(dialogue):
     out = []
     for word, args in dialogue.tokens:
         if word >= 0xFF00:
-            out.append({'control': NAMES.get(word, (f'UNKNOWN_{word:04X}', 0))[0], 'word': f'{word:04X}',
+            names = getattr(dialogue, 'controls', None) or NAMES
+            out.append({'control': names.get(word, (f'UNKNOWN_{word:04X}', 0))[0], 'word': f'{word:04X}',
                         'arguments': [f'{a:04X}' for a in args]})
         else:
             number = word & 0xFFF
@@ -125,11 +128,19 @@ def collect(project, area=None, language=None, progress=None):
         if progress:
             progress(done, len(wanted))
         try:
-            wfm = Wfm(project.asset_data(asset))
+            data = project.asset_data(asset)
+            if data.startswith(b'PS-X EXE'):
+                from formats.text.prepre8 import bank
+                wfm = bank(project)
+                if wfm is None:
+                    continue
+            else:
+                wfm = Wfm(data)
         except (FormatError, ValueError):
             continue
         from formats.text.titles import attach
-        attach(wfm, project, tongue)
+        if wfm.version != b'PP8':
+            attach(wfm, project, tongue)
         banks.append(Bank(f'WFM {asset.code:04X}', asset.source.path, asset.offset, path, group, number, tongue,
                           wfm.version.decode('ascii', 'replace'), wfm))
     if area is None:

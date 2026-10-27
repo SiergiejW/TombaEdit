@@ -550,7 +550,7 @@ def build_scene(project, path, index):
         return drawn_pictures[key]
 
     def sprite_image(bank, frame, visual):
-        key = (bank, frame, visual.get('tpage'), visual.get('clut'))
+        key = (bank, frame, visual.get('tpage'), visual.get('clut'), visual.get('blend', False))
         if key not in images:
             try:
                 parts = sprites[bank][frame]
@@ -629,6 +629,12 @@ def build_scene(project, path, index):
             active = (created is not None or bool(placement.origin) or slots is None or slot == slots[0] or (
                 placement.section in shared and placement.raw not in own_records if retail else
                 slot == slots[1] and placement.section in shared[:2]))
+            if (resolver.available and resolver.build.legacy8 and slots and slot == slots[0] - 1
+                    and placement.section < 0 and placement.raw not in own_records):
+                # Native transition loader 800831A4 / 800833F0 retains the
+                # preceding list's negative-section records. These include
+                # the hut entrance's backdrop, absent from its own APD.
+                active = True
             name = f'Object {placement.layer}:{placement.kind:02X} / {placement.variant:02X}'
             model_frames = []
             mesh, category, note = None, 'Unresolved', 'Visual link is unresolved; position comes from APD.'
@@ -717,7 +723,20 @@ def build_scene(project, path, index):
                     image = sprite_image(bank, frame, visual) if parts else None
                     if image is not None:
                         frames_first = frames_first or (parts, image)
-                        frames.append((sprite_mesh(image, parts, where, flip, placement.offset), ticks))
+                        card = sprite_mesh(image, parts, where, flip, placement.offset)
+                        if visual.get('blend') and bank not in pictures:
+                            from psx.graphics import part_page
+                            modes = {part_page(part, visual.get('tpage', 0)) >> 5 & 3 for part in parts}
+                            if len(modes) == 1:
+                                # Keep STP texels separate instead of baking
+                                # the effect against a black framebuffer.
+                                layers = [render_sprite(parts, vram, tpage=visual.get('tpage', 0),
+                                    clut=visual.get('clut'), flagged=flag) for flag in (False, True)]
+                                if flip:
+                                    layers = [ImageOps.mirror(layer) for layer in layers]
+                                card.solid_image = layers[0]
+                                card.blend_layers = [(next(iter(modes)), layers[1])]
+                        frames.append((card, ticks))
                 if frames and any(mesh.image.getbbox() for mesh, _ in frames):
                     mesh = frames[0][0]
                     category = 'Sprites'

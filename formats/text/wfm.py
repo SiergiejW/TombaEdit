@@ -84,7 +84,8 @@ class Dialogue:
             if word >= 0xFF00:
                 if word == 0xFFF6 and args == (0, 0):
                     continue
-                name = {**EARLY_CONTROLS, **CONTROLS}.get(word, (f"UNKNOWN_{word:04X}", 0))[0]
+                names = getattr(self, 'controls', None) or {**EARLY_CONTROLS, **CONTROLS}
+                name = names.get(word, (f"UNKNOWN_{word:04X}", 0))[0]
                 parts.append(f"\n<{name}{''.join(f' {a:04X}' for a in args)}>")
             else:
                 if corner(word):

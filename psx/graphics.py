@@ -151,7 +151,7 @@ def guess_page(frames, vram, preferred=()):
 
 
 def render_sprite(parts, vram, page_base=0, shard=None, tpage=None, clut=None, grey_missing=False, blend=False,
-                  texture_cache=None):
+                  texture_cache=None, flagged=None):
     """Composite one frame. With `tpage` the parts are read from VRAM the way
     the game draws them: the value is added to each part's page word and
     `clut` replaces the part palette. Without it the older page guesses
@@ -183,11 +183,11 @@ def render_sprite(parts, vram, page_base=0, shard=None, tpage=None, clut=None, g
                 # Art whose palette the game only supplies while running can
                 # still be shown, in grey.
                 stand_in = GREY_RAMP if grey_missing and palette_missing(vram, palette) else None
-                pages[key] = decoded(part_page(p, tpage), palette, stand_in)
+                pages[key] = decoded(part_page(p, tpage), palette, stand_in, flagged)
             elif shard:
                 pages[key] = sprite_texture_page(shard, page, vram, palette)
             else:
-                pages[key] = decoded((page & ~31) | (((page & 31) + page_base) & 31), palette)
+                pages[key] = decoded((page & ~31) | (((page & 31) + page_base) & 31), palette, flagged=flagged)
         tile = sprite_part_image(pages[key], p)
         if blend and tpage is not None:
             marked = sprite_part_image(decoded(part_page(p, tpage), palette, flagged=True), p)

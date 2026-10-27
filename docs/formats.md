@@ -811,7 +811,7 @@ geometry/backdrop/secondary model roles. Layer 7 names WMD slot 0; layer 9
 names slot 2. Layer 2 retains its enemy role.
 
 800834D0 copies APD fields. Object state is at +04, animation +24, SPR +3C,
-model +9C and model lighting +A0. The early model scale vector starts at +70; its three signed rotation angles are at +7C.
+model +9C and model lighting +A0. The early model draw matrix has unit scale. Fields +6C..72 are the collision box; rotated models read three 32-bit angles at +84/+88/+8C (80063E28).
 The pointer lists at 800AF0AC and common indices at 800A111C select section
 APD banks. 8001B480 uses inline collision origins at 800A1940 (24 bytes per
 area), plane limits at 800A1A60 (12 bytes per area) and WHM slot 0.
@@ -829,6 +829,30 @@ Psy-Q note2pitch indexes a 192-entry table using shift/8, clamped to 15,
 then applies the note octave. The computed table was compared with every
 entry of the US executable table. A zero animation timer wraps to 65536
 updates; it is not a one-update frame.
+
+PrePre 8 dialogue has no WFM header or separate text file. Message table
+pointers at 800A5DE4 and font pointers at 800A5E14 are selected by 80035B84
+and 80035C1C. Font descriptors contain five bytes (U, V, width, height,
+palette). The available 256-glyph font uses texture page 13. The second
+305-glyph font belongs to unused area-1 messages and its texture is absent
+from this disc. Those messages remain listed with unknown glyphs.
+The control dispatch at 800358C8 gives FFFF END_CLOSE, FFFE NEXT,
+FFFD NEWLINE, FFFC CLEAR, FFFB BUBBLE (three words), FFFA EVENT_SET
+(two), FFF9 EVENT_COMPLETE (one), FFF8 PAUSE (one), and FFF7 END.
+The virtual WFM resource exposes this bank without changing the disc.
+
+PrePre 8 mode-6 mist uses four SVECTOR corners at object offsets 98,
+A0, A8 and B0; 80061D5C maps the first SPR part over those corners.
+Its page word selects blend mode 3, B + F/4. STP and opaque texels are
+kept separately so the level view blends against the scene underneath.
+The hut's bank-3 frame 145 also requires separate STP texels in the
+fallback sprite path. Previous-list negative-section APD records retained
+by 800831A4/800833F0 supply scenery absent from the hut entrance's own list.
+
+Level playback durations count game updates (60 per second for these
+Japanese samplers, 50 for European builds). The editor measures elapsed
+time rather than assuming every UI timer callback arrives on schedule.
+Initial-state animation previews still do not reproduce all AI transitions.
 
 ## Sources
 

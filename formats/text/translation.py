@@ -1,7 +1,7 @@
-"""Japanese-to-English translation from a local Argos model directory.
+"""Japanese-to-English translation with user-selected CAT or Argos models.
 
-Only CTranslate2 and SentencePiece are used. No package manager, remote
-service or automatic resource download runs while translating dialogue.
+Inference uses local files in a separate process, without remote services
+or automatic resource downloads.
 """
 import json
 import re
@@ -18,6 +18,18 @@ class TranslationError(ValueError):
 
 def model_metadata(folder):
     root = Path(folder)
+    if (root / 'config.json').is_file():
+        try:
+            config = json.loads((root / 'config.json').read_text(encoding='utf8'))
+            index = root / 'model.safetensors.index.json'
+            shards = set(json.loads(index.read_text(encoding='utf8'))['weight_map'].values()) if index.is_file() else {'model.safetensors'}
+            if not shards or any(Path(name).name != name or not (root / name).is_file() for name in shards):
+                raise ValueError('missing safetensors weights')
+            if not (root / 'tokenizer.json').is_file() or config.get('model_type') != 'mistral':
+                raise ValueError('expected a CAT-Translate-7b tokenizer and Mistral model')
+            return dict(backend='cat', config=config)
+        except (OSError, ValueError, KeyError, TypeError) as exc:
+            raise TranslationError(f'The local CAT-Translate folder is incomplete: {exc}.') from exc
     try:
         metadata = json.loads((root / 'metadata.json').read_text(encoding='utf-8'))
     except (OSError, ValueError) as exc:
@@ -81,12 +93,74 @@ class LocalTranslator:
         return result
 
 
+class CatTranslator:
+    """User-selected, local safetensors CAT-Translate-7b; never fetch code."""
+    def __init__(self, folder):
+        model_metadata(folder)
+        try:
+            import torch
+            from transformers import AutoTokenizer, AutoModelForCausalLM
+        except ImportError as exc:
+            raise TranslationError('Install requirements-translation-cat.txt to use a CAT-Translate safetensors model.') from exc
+        torch.set_num_threads(2)
+        self.torch = torch
+        weights = sum(path.stat().st_size for path in Path(folder).glob('*.safetensors'))
+        self.tokenizer = AutoTokenizer.from_pretrained(folder, local_files_only=True, trust_remote_code=False)
+        options = dict(local_files_only=True, trust_remote_code=False, use_safetensors=True,
+                       low_cpu_mem_usage=True, dtype=torch.float16 if torch.cuda.is_available() else torch.float32)
+        if torch.cuda.is_available():
+            # Leave space for generation and other applications. Accelerate
+            # can keep the remaining layers in system RAM when necessary.
+            free, _ = torch.cuda.mem_get_info()
+            import psutil
+            options.update(device_map='auto', max_memory={0: max(0, free - 1024 ** 3),
+                           'cpu': int(psutil.virtual_memory().available * .6)})
+            if free < weights + 1024 ** 3:
+                try:
+                    import bitsandbytes
+                    from transformers import BitsAndBytesConfig
+                except ImportError as exc:
+                    raise TranslationError('Free more GPU memory, or install bitsandbytes for low-memory GPU translation.') from exc
+                if free < 5 * 1024 ** 3:
+                    raise TranslationError('Free at least 5 GB of GPU memory before loading CAT-Translate-7b.')
+                options['quantization_config'] = BitsAndBytesConfig(load_in_4bit=True,
+                    bnb_4bit_quant_type='nf4', bnb_4bit_use_double_quant=True,
+                    bnb_4bit_compute_dtype=torch.float16)
+                options['device_map'] = {'': 0}
+        else:
+            import psutil
+            if weights * 2 > psutil.virtual_memory().available * .85:
+                raise TranslationError('Not enough free RAM for CPU translation. Install CUDA-enabled PyTorch '
+                                       'for your GPU, or free memory before loading this model.')
+        self.model = AutoModelForCausalLM.from_pretrained(folder, **options).eval()
+        self.cache = OrderedDict()
+
+    def translate(self, text):
+        if text in self.cache:
+            self.cache.move_to_end(text)
+            return self.cache[text]
+        prompt = 'Translate the following Japanese text into English.\n\n' + text
+        inputs = self.tokenizer.apply_chat_template([dict(role='user', content=prompt)],
+                    add_generation_prompt=True, return_tensors='pt', return_dict=True)
+        if inputs['input_ids'].shape[1] > 4096:
+            raise TranslationError('Select a shorter dialogue entry (up to 4096 input tokens).')
+        inputs = {key: value.to(self.model.device) for key, value in inputs.items()}
+        with self.torch.inference_mode():
+            result = self.model.generate(**inputs, max_new_tokens=1024, do_sample=False, use_cache=True,
+                         pad_token_id=self.tokenizer.pad_token_id or self.tokenizer.eos_token_id)
+        value = self.tokenizer.decode(result[0, inputs['input_ids'].shape[1]:], skip_special_tokens=True).strip()
+        self.cache[text] = value
+        if len(self.cache) > 1024:
+            self.cache.popitem(last=False)
+        return value
+
+
 _lock = threading.Lock()
 
 
 @lru_cache(maxsize=1)
 def _translator(folder):
-    return LocalTranslator(folder)
+    return CatTranslator(folder) if model_metadata(folder).get('backend') == 'cat' else LocalTranslator(folder)
 
 
 def translate(folder, text):
@@ -98,10 +172,26 @@ def translate(folder, text):
 
 def _serve(connection):
     """Keep native language libraries out of Qt's Windows DLL environment."""
+    import os
+    import sys
+    os.environ.setdefault('OMP_NUM_THREADS', '2')
+    os.environ.setdefault('MKL_NUM_THREADS', '2')
+    if sys.platform == 'win32':
+        import ctypes
+        kernel = ctypes.windll.kernel32
+        kernel.GetCurrentProcess.restype = ctypes.c_void_p
+        kernel.SetPriorityClass.argtypes = (ctypes.c_void_p, ctypes.c_ulong)
+        kernel.SetPriorityClass(kernel.GetCurrentProcess(), 0x4000)  # BELOW_NORMAL_PRIORITY_CLASS
     try:
         while True:
             folder, text = connection.recv()
             try:
+                if model_metadata(folder).get('backend') == 'cat':
+                    import sys
+                    root = Path(sys.executable).parent if getattr(sys, 'frozen', False) else Path(__file__).resolve().parents[2]
+                    runtime = root / 'roms' / 'trnslator' / 'runtime'
+                    if (runtime / 'torch' / '__init__.py').is_file() and str(runtime) not in sys.path:
+                        sys.path.insert(0, str(runtime))
                 result = translate(folder, text)
             except Exception as exc:
                 result = f'Translation unavailable: {exc}'
@@ -115,6 +205,7 @@ def _serve(connection):
 class TranslationWorker:
     def __init__(self):
         self.process = self.connection = None
+        self.folder = None
         self.lock = threading.Lock()
         atexit.register(self.close)
 
@@ -127,20 +218,24 @@ class TranslationWorker:
                 self.process.terminate()
             if self.process.pid is not None:
                 self.process.join(timeout=1)
-            self.process.close()
+            if not self.process.is_alive():
+                self.process.close()
             self.process = None
+        self.folder = None
 
     def translate(self, folder, text):
         import multiprocessing
         import time
         with self.lock:
-            if self.process is None or not self.process.is_alive():
+            folder = str(Path(folder).resolve())
+            if self.process is None or not self.process.is_alive() or self.folder != folder:
                 self.close()
                 context = multiprocessing.get_context('spawn')
                 self.connection, child = context.Pipe()
                 self.process = context.Process(target=_serve, args=(child,), daemon=True)
                 try:
                     self.process.start()
+                    self.folder = folder
                 except Exception:
                     self.close()
                     raise
@@ -148,7 +243,7 @@ class TranslationWorker:
                     child.close()
             try:
                 self.connection.send((folder, text))
-                deadline = time.monotonic() + 60
+                deadline = time.monotonic() + 300
                 while not self.connection.poll(.1):
                     if not self.process.is_alive():
                         raise TranslationError('The local translation process stopped. Select the entry again to retry.')

@@ -3,7 +3,7 @@ import struct
 from PyQt6.QtCore import Qt, QPointF, pyqtSignal
 from PyQt6.QtGui import QColor, QPainter, QPainterPath, QPen, QImage, QPolygonF, QTransform
 from PyQt6.QtWidgets import (QWidget, QVBoxLayout, QHBoxLayout, QLabel,
-    QTableWidget, QTableWidgetItem, QAbstractItemView, QHeaderView, QSplitter, QSizePolicy)
+    QTableWidget, QTableWidgetItem, QAbstractItemView, QHeaderView, QSplitter, QSizePolicy, QPushButton)
 
 
 class PlacementMap(QWidget):
@@ -14,6 +14,10 @@ class PlacementMap(QWidget):
         self.selected = -1
         self.visuals = []
         self.visual_cache = None
+        self.zoom = 1.
+        self.pan = QPointF()
+        self.drag = None
+        self.setFocusPolicy(Qt.FocusPolicy.StrongFocus)
         self.setMinimumSize(280, 260)
 
     def set_scene(self, scene, source):
@@ -33,7 +37,7 @@ class PlacementMap(QWidget):
         self.records = [r[:6] + tuple(positions.get(i * 16, r[6:9])) + r[9:]
                         for i, r in enumerate(self.records)]
         entries = [e for e in scene.entries if e.source is source and e.placement is not None
-                   and e.category in ('Models', 'Sprites', 'Spawned')]
+                   and e.category in ('Models', 'Sprites', 'Spawned', 'Geometry', 'Backgrounds')]
         # Farther objects first; the placement map looks straight along Z.
         entries.sort(key=lambda e: e.placement.position[2], reverse=True)
         for entry in entries:
@@ -70,14 +74,50 @@ class PlacementMap(QWidget):
     def points(self):
         if not self.records:
             return []
+        transform = self.view_transform()
+        return [(point.x(), point.y()) for point in
+                (transform.map(QPointF(r[6], r[7])) for r in self.records)]
+
+    def view_transform(self):
         xs, ys = [r[6] for r in self.records], [r[7] for r in self.records]
         scale = min((self.width() - 48) / max(1, max(xs) - min(xs)),
                     (self.height() - 48) / max(1, max(ys) - min(ys)))
         cx, cy = (max(xs) + min(xs)) / 2, (max(ys) + min(ys)) / 2
-        return [(self.width() / 2 + (r[6] - cx) * scale,
-                 self.height() / 2 + (r[7] - cy) * scale) for r in self.records]
+        transform = QTransform()
+        transform.translate(self.width() / 2 + self.pan.x(), self.height() / 2 + self.pan.y())
+        transform.scale(scale * self.zoom, scale * self.zoom)
+        transform.translate(-cx, -cy)
+        return transform
+
+    def fit(self):
+        self.zoom, self.pan = 1., QPointF()
+        self.visual_cache = None
+        self.update()
+
+    def zoom_by(self, factor, anchor=None):
+        if not self.records:
+            return
+        anchor = anchor if anchor is not None else QPointF(self.width() / 2, self.height() / 2)
+        world = self.view_transform().inverted()[0].map(anchor)
+        self.zoom = max(.1, min(64., self.zoom * factor))
+        self.pan += anchor - self.view_transform().map(world)
+        self.visual_cache = None
+        self.update()
+
+    def wheelEvent(self, event):
+        self.zoom_by(1.2 ** (event.angleDelta().y() / 120), event.position())
+        event.accept()
+
+    def keyPressEvent(self, event):
+        if event.key() == Qt.Key.Key_F:
+            self.fit()
+        else:
+            super().keyPressEvent(event)
 
     def mousePressEvent(self, event):
+        if event.button() in (Qt.MouseButton.MiddleButton, Qt.MouseButton.RightButton):
+            self.drag = event.position()
+            return
         points = self.points()
         if points:
             pos = event.position()
@@ -85,6 +125,16 @@ class PlacementMap(QWidget):
                                                        (points[i][1] - pos.y()) ** 2)
             if (points[row][0] - pos.x()) ** 2 + (points[row][1] - pos.y()) ** 2 <= 225:
                 self.picked.emit(row)
+
+    def mouseMoveEvent(self, event):
+        if self.drag is not None:
+            self.pan += event.position() - self.drag
+            self.drag = event.position()
+            self.visual_cache = None
+            self.update()
+
+    def mouseReleaseEvent(self, event):
+        self.drag = None
 
     def paintEvent(self, event):
         painter = QPainter(self)
@@ -96,16 +146,12 @@ class PlacementMap(QWidget):
         low_x, high_x = min(xs), max(xs)
         low_y, high_y = min(ys), max(ys)
         if self.visuals:
-            scale = min((self.width() - 48) / max(1, high_x - low_x),
-                        (self.height() - 48) / max(1, high_y - low_y))
             if self.visual_cache is None or self.visual_cache.size() != self.size():
                 self.visual_cache = QImage(self.size(), QImage.Format.Format_ARGB32_Premultiplied)
                 self.visual_cache.fill(Qt.GlobalColor.transparent)
                 overlay = QPainter(self.visual_cache)
                 overlay.setPen(Qt.PenStyle.NoPen)
-                overlay.translate(self.width() / 2, self.height() / 2)
-                overlay.scale(scale, scale)
-                overlay.translate(-(low_x + high_x) / 2, -(low_y + high_y) / 2)
+                overlay.setWorldTransform(self.view_transform())
                 for triangle, image, transform in self.visuals:
                     if transform is None:
                         overlay.setBrush(image)
@@ -143,7 +189,8 @@ class StructuredView(QWidget):
             from formats.level.apd import parse_apd
             self.placements = parse_apd(data)
             self.records = [struct.unpack('<6B3h2H', placement.raw) for placement in self.placements]
-            header = QLabel(f'{len(self.records)} placements | X/Y map | Click a point or row to inspect')
+            header = QLabel(f'{len(self.records)} placements | X/Y map | Objects: 50% opacity | '
+                            'Scroll: zoom | Middle/right-drag: pan | F: fit')
             header.setSizePolicy(QSizePolicy.Policy.Preferred, QSizePolicy.Policy.Fixed)
             header.setTextInteractionFlags(Qt.TextInteractionFlag.TextSelectableByMouse)
             layout.addWidget(header)
@@ -159,6 +206,14 @@ class StructuredView(QWidget):
                 for column, value in enumerate(values):
                     self.table.setItem(i, column, QTableWidgetItem(value))
             self.map = PlacementMap(self.records)
+            controls = QHBoxLayout()
+            for label, callback in (('−', lambda: self.map.zoom_by(1 / 1.2)),
+                                    ('+', lambda: self.map.zoom_by(1.2)), ('Fit', self.map.fit)):
+                button = QPushButton(label)
+                button.clicked.connect(callback)
+                controls.addWidget(button)
+            controls.addStretch()
+            layout.addLayout(controls)
             split = QSplitter(Qt.Orientation.Vertical)
             split.addWidget(self.map)
             split.addWidget(self.table)

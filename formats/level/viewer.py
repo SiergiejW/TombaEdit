@@ -1,6 +1,6 @@
 """Section scene inspection using the standard model viewer controls."""
 from gui.console import announce
-from PyQt6.QtCore import Qt, QTimer, pyqtSignal
+from PyQt6.QtCore import Qt, QTimer, QElapsedTimer, pyqtSignal
 from PyQt6.QtGui import QAction, QColor, QIcon, QPixmap
 from PyQt6.QtWidgets import QHBoxLayout, QLabel, QComboBox, QPushButton, QStyle, QTabWidget, QMenu, QInputDialog
 from formats.models.wmd_viewer import ModelView
@@ -116,8 +116,11 @@ class LevelView(ModelView):
             QStyle.StandardPixmap.SP_FileDialogInfoView, 'Event previews', self.apply_filter, False,
             'Show decoded poses of effects whose event conditions are not active in the initial state.')
         self.timer = QTimer(self)
+        self.timer.setTimerType(Qt.TimerType.PreciseTimer)
         self.timer.setInterval(TICK_MS)
         self.timer.timeout.connect(self.advance)
+        self.animation_clock = QElapsedTimer()
+        self.clock_ticks = 0
 
     def toggle_action(self, icon, title, callback, checked, tip):
         action = QAction(self.style().standardIcon(icon), title, self)
@@ -432,6 +435,8 @@ class LevelView(ModelView):
             self.animated = [[i, 0, self.scene.entries[i].frames[0][1]] for i, _, _ in self.animated]
             self.palette_steps = [[k, 0, cycle[0][1]] for k, (*_, cycle) in enumerate(self.scene.palettes)]
             if running:
+                self.animation_clock.start()
+                self.clock_ticks = 0
                 self.timer.start()
         return images
 
@@ -532,32 +537,59 @@ class LevelView(ModelView):
 
     def toggle_animation(self, value):
         if value and (self.animated or self.palette_steps) and self.isVisible():
+            if not self.timer.isActive():
+                self.animation_clock.start()
+                self.clock_ticks = 0
             self.timer.start(max(1, round(1000 / self.scene.rate)))
         else:
             self.timer.stop()
 
-    def advance(self):
+    def advance(self, ticks=None):
+        if ticks is None:
+            elapsed = self.animation_clock.elapsed() if self.animation_clock.isValid() else 0
+            now = elapsed * self.scene.rate // 1000
+            ticks, self.clock_ticks = max(0, now - self.clock_ticks), now
+        if ticks <= 0:
+            return
+        changed = set()
+        palette_changed = False
         for state in self.animated:
-            state[2] -= 1
+            state[2] -= ticks
             if state[2] > 0:
                 continue
             index, step, _ = state
             frames = self.scene.entries[index].frames
-            step = (step + 1) % len(frames)
-            state[1], state[2] = step, frames[step][1]
+            cycle = sum(duration for _, duration in frames)
+            if -state[2] >= cycle:
+                state[2] += (-state[2] // cycle) * cycle
+            while state[2] <= 0:
+                step = (step + 1) % len(frames)
+                state[2] += frames[step][1]
+            state[1] = step
             self.canvas.set_mesh(index, frames[step][0])
-            # The UV panel follows a picked polygon of a model whose UVs move.
-            if self.canvas.selected is not None and self.canvas.selected[0] == index                     and frames[step][0].image is None:
-                self.show_polygon(self.canvas.selected, announce=False)
+            changed.add(index)
         for state in self.palette_steps:
-            state[2] -= 1
+            state[2] -= ticks
             if state[2] > 0:
                 continue
             index, step, _ = state
             x, y, width, height, cycle = self.scene.palettes[index]
-            step = (step + 1) % len(cycle)
-            state[1], state[2] = step, cycle[step][1]
+            duration = sum(length for _, length in cycle)
+            if -state[2] >= duration:
+                state[2] += (-state[2] // duration) * duration
+            while state[2] <= 0:
+                step = (step + 1) % len(cycle)
+                state[2] += cycle[step][1]
+            state[1] = step
             self.canvas.set_palette(x, y, width, height, cycle[step][0])
+            palette_changed = True
+        row = self.canvas.selected_model
+        if row is not None and 0 <= row < len(self.canvas.meshes):
+            mesh = self.canvas.meshes[row]
+            if mesh.image is not None and row in changed:
+                self.uv.set_image(mesh.image, subject=('level-sprite', row))
+            elif self.canvas.selected is not None and (row in changed or palette_changed):
+                self.show_polygon(self.canvas.selected, announce=False, center=False)
 
     def showEvent(self, event):
         super().showEvent(event)
@@ -613,8 +645,9 @@ class LevelView(ModelView):
         if self.canvas.flat_mode:
             text += f'\n\nDrawing order bucket: {e.draw_bucket:g} (higher draws behind)'
         self.details.setPlainText(text)
-        if e.mesh.image is not None:
-            self.uv.set_image(e.mesh.image)
+        mesh = self.canvas.meshes[row]
+        if mesh.image is not None:
+            self.uv.set_image(mesh.image, subject=('level-sprite', row))
 
     def model_selected(self, row, column, old_row, old_column):
         super().model_selected(row, column, old_row, old_column)

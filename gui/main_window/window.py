@@ -723,6 +723,11 @@ def _prepare_preview(project, node, context=None, delegated=False):
             result['notes'].append(f'WSS script: {exc}')
     # WFM can also be embedded in instruction binaries and standalone GAMs.
     wfms = []
+    if data.startswith(b'PS-X EXE'):
+        from formats.text.prepre8 import bank
+        embedded = bank(project)
+        if embedded is not None:
+            wfms.append((0, embedded))
     from formats.text.wfm import MAGICS
     starts = sorted(at for magic in MAGICS for at in find_all(data, magic))
     from formats.text.titles import attach, language_of
@@ -814,8 +819,7 @@ class MainWindow(QMainWindow):
         self.label_pool.setMaxThreadCount(1)
         # Idle work: tracing what every section shows, so that opening a
         # sprite bank finds it already worked out (see warm_analysis).
-        self.warm_pool = QThreadPool(self)
-        self.warm_pool.setMaxThreadCount(1)
+        self.warm_process = None
         self.warm_epoch = 0
         self.label_index_epoch = 0
         self.label_index_running = False
@@ -2020,40 +2024,32 @@ class MainWindow(QMainWindow):
         except (OSError, ValueError) as exc:
             QMessageBox.warning(self, 'Cannot import labels', str(exc))
 
+    def stop_warm_analysis(self):
+        if self.warm_process is not None:
+            if self.warm_process.is_alive():
+                self.warm_process.terminate()
+            if self.warm_process.pid is not None:
+                self.warm_process.join(timeout=.2)
+            if not self.warm_process.is_alive():
+                self.warm_process.close()
+            self.warm_process = None
+
     def warm_analysis(self):
-        """Work out, in the background, what every section's objects show:
-        the slow part of opening a sprite bank, kept in the disc cache. Runs
-        on a copy of the project, so the window never waits for it, and
-        stops when another disc is opened."""
-        project = self.project
-        self.warm_epoch += 1
-        epoch = self.warm_epoch
-        from copy import copy
-        from collections import OrderedDict
-        worker = copy(project)
-        worker.cache, worker.cache_bytes = OrderedDict(), 0
-
-        def collect():
-            from formats.level.scene import sprite_pages, sprite_routines, area_of
-            sections = [(path, group.index) for path, groups in worker.ldars.items()
-                        if area_of(path) >= 0 for group in groups[1:] if group.assets]
-            for tracer in (sprite_pages, sprite_routines):
-                for path, index in sections:
-                    if epoch != self.warm_epoch or project is not self.project:
-                        return None
-                    try:
-                        tracer(worker, path, index)
-                    except Exception as exc:
-                        print(f'Warm-up {tracer.__name__} {path} {index}: {type(exc).__name__}: {exc}', flush=True)
-            return len(sections)
-
-        def ready(generation, result, error):
-            if error:
-                print(f'Warm-up: {error}', flush=True)
-            elif result is not None and epoch == self.warm_epoch:
-                print(f'Warm-up done: {result} sections traced.', flush=True)
-
-        self.warm_pool.start(Job(epoch, collect, ready))
+        """Populate the same disc cache without competing for the UI's GIL."""
+        from multiprocessing import get_context
+        from formats.level.warm import warm_disc
+        from formats.level.disc_cache import folder
+        self.stop_warm_analysis()
+        if self.project is None:
+            return
+        cache = folder(self.project)
+        self.warm_process = get_context('spawn').Process(target=warm_disc,
+            args=(str(self.project.disc.path), str(cache) if cache else None), daemon=True)
+        try:
+            self.warm_process.start()
+        except (OSError, RuntimeError):
+            self.stop_warm_analysis()
+            # Normal asset loading remains available without precomputation.
 
     def index_labels(self):
         # Hash all small logical files/resources off the UI thread. Exact content
@@ -2143,6 +2139,7 @@ class MainWindow(QMainWindow):
             return
         self.generation += 1
         self.label_index_epoch += 1
+        self.stop_warm_analysis()
         self.label_pool.clear()
         self.pool.clear()
         self.settings.setValue("geometry", self.saveGeometry())

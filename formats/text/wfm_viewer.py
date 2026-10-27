@@ -56,7 +56,7 @@ class DialogueView(QWidget):
         self.entries.clear()
         for i, d in enumerate(wfm.dialogues):
             preview = export.plain(d, '?').replace('\n', ' ')
-            self.entries.addItem(f'{i:03d} | {preview[:70]}')
+            self.entries.addItem(f'{getattr(d, "name", f"{i:03d}")} | {preview[:70]}')
         self.entries.blockSignals(False)
         known = sum(c is not None for c in wfm.characters)
         self.summary.setText(f'{len(wfm.dialogues)} entries | {known}/{len(wfm.glyphs)} recognized glyphs')

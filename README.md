@@ -10,22 +10,46 @@ TombaEdit is read-only: it exports assets but does not rebuild discs.
 
 ## Offline Japanese translation
 
-The dialogue viewer includes decoded text and an English machine translation
-beside the game preview. Enable **Translate Japanese to English offline** and
-use **Choose model...** to select an extracted Argos Japanese-to-English model
-folder containing `metadata.json`, `sentencepiece.model` and `model/model.bin`.
-When running from Python, install `requirements-translation.txt` if those
-components are not already installed. Translation runs locally on the CPU,
-updates when you select another dialogue, and caches previous results. No
-dialogue is sent online and the viewer does not download models automatically.
-Unknown glyphs must be assigned characters in the Glyphs tab first. Machine
-translation can misread names and short game messages; keep the original text
-visible when interpreting it.
+The dialogue viewer shows decoded text and English machine translation beside
+its rendered preview. Translation is **off by default**. Choose your own local
+model folder and explicitly enable **Translate Japanese to English offline**.
+The app never downloads models or sends dialogue online.
 
-The APD **Placements** map overlays resolved objects and sprites at 50% opacity.
-Its placement points remain fully visible and selectable above the pictures.
-Unresolved objects retain their points. The **Placements in level** tab provides
-the full scene for inspecting depth and animation.
+Supported model folders:
+
+- **CAT-Translate-7b** from [CyberAgent](https://huggingface.co/cyberagent/CAT-Translate-7b):
+  the original Transformers **safetensors** format, with `config.json`, the four
+  weight shards, `model.safetensors.index.json`, tokenizer files and chat template.
+  Install `requirements-translation-cat.txt` in the Python environment, or into
+  `roms/trnslator/runtime` beside the application. CUDA-enabled PyTorch uses a
+  compatible NVIDIA GPU; CPU inference needs considerably more RAM and time.
+  When GPU memory cannot hold the original weights, the backend uses local NF4
+  4-bit inference through bitsandbytes; the downloaded safetensors stay unchanged.
+  Loading the model on first use can take about a minute. Later selections reuse it.
+  The worker runs below normal priority, although the initial load can still
+  cause brief pauses when system memory or storage is busy.
+  The backend uses the model's chat template and the publisher's Japanese-to-English
+  instruction. It loads local files only and never enables remote model code.
+- An extracted **Argos ja→en** folder with `metadata.json`, `sentencepiece.model`
+  and `model/model.bin`; its optional dependencies are in `requirements-translation.txt`.
+
+Model weights and optional CAT runtime components are not bundled with releases.
+`roms/` is ignored by Git. A local setup may put its chosen model in
+`roms/trnslator/CAT-Translate-7b`; merely placing it there does not select or enable it.
+The model is loaded in a separate local process and cached between selections.
+Names and short game messages can still be mistranslated. Unknown glyphs must
+first be assigned characters in the Glyphs tab.
+
+**PrePre 8 text** is embedded in `TOMBA.EXE`, rather than WFM files. Open
+`SYS/LDSYS.BIN` → group 0 → **WFM | Embedded prototype dialogue (TOMBA.EXE)**,
+or open `TOMBA/TOMBA.EXE` directly and use its Dialogue/Glyphs tabs. Text export
+also includes this bank. The unused area-1 messages are retained with a warning
+because their font texture is absent from this demo disc.
+
+The APD **Placements** map overlays objects and sprites at 50% opacity, with
+fully visible, selectable points above them. Scroll to zoom, middle/right-drag
+to pan, or use **−**, **+**, **Fit** and the **F** key. Unresolved objects keep
+their points. **Placements in level** provides the full scene and animation.
 
 ## Version 0.0.2
 

@@ -135,6 +135,8 @@ class Asset:
 
     @property
     def label(self):
+        if self.kind == 'WFM' and self.source and self.source.path.endswith('/TOMBA.EXE'):
+            return 'WFM | Embedded prototype dialogue (TOMBA.EXE)'
         source = self.source.path.split("/")[-1] if self.source else f"Unresolved {self.file_id:04X}"
         return f"{self.kind} {self.code:04X}  |  {source} +{self.offset:06X}"
 
@@ -232,6 +234,8 @@ class Project:
                 from formats.archive.embedded import embedded_groups
                 self.ldars = embedded_groups(self.disc, self.catalog)
         self.reclassify()
+        from formats.text.prepre8 import register
+        register(self)
         self.by_source = {}
         for groups in self.ldars.values():
             for group in groups:

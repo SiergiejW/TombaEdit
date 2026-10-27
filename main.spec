@@ -10,7 +10,7 @@ icon_files = [(str(path), str(path.parent.relative_to(ROOT)))
               for path in (ROOT / 'icons').rglob('*') if path.is_file()
               and path.suffix.lower() in ('.png', '.ico')]
 text_files = [(str(ROOT / 'formats' / 'text' / name), 'formats/text')
-              for name in ('glyph_dictionary.json', 'glyphs_us.json')]
+              for name in ('glyph_dictionary.json', 'glyphs_us.json', 'glyphs_prepre8.json')]
 import PyQt6
 import _soundfile_data
 plugins = Path(PyQt6.__file__).parent / 'Qt6' / 'plugins' / 'multimedia'
@@ -41,7 +41,8 @@ a = Analysis(
     hookspath=[],
     hooksconfig={},
     runtime_hooks=[],
-    excludes=['tkinter', 'matplotlib', 'scipy', 'pandas', 'PyQt6.QtQml',
+    excludes=['torch', 'transformers', 'accelerate', 'safetensors', 'bitsandbytes',
+              'tkinter', 'matplotlib', 'scipy', 'pandas', 'PyQt6.QtQml',
               'PyQt6.QtQuick', 'PyQt6.QtPdf', 'PyQt6.QtWebEngineWidgets'],
     noarchive=False,
 )
