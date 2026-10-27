@@ -38,8 +38,8 @@ class EmbeddedBank(Wfm):
         super().recognise()
         names = json.loads(Path(__file__).with_name('glyphs_prepre8.json').read_text(encoding='utf8'))
         for number, key in enumerate(self.keys):
-            if number >= 256:
-                self.characters[number] = None
+            if number in self.missing_font:
+                self.characters[number] = USER_GLYPHS.get(key, names.get(key))
                 continue
             if key not in USER_GLYPHS and key in names:
                 self.characters[number] = names[key]
@@ -87,6 +87,7 @@ def bank(project):
     result.groups, result.glyphs, result.indices = [], [], []
     result.keys, result.exact_keys, result.glyph_headers = [], [], []
     result.characters, result.dialogues = [], []
+    result.missing_font = set()
     offsets = {}
     for font in dict.fromkeys(fonts):
         offsets[font] = len(result.glyphs)
@@ -94,12 +95,19 @@ def bank(project):
             u, v, width, height, palette = read(font + number * 5, 5)
             if not (0 < width <= 32 and 0 < height <= 32):
                 raise ValueError('Invalid prototype font descriptor')
+            # The alternate area-1 font shares its first 149 descriptors
+            # (punctuation/kana) exactly with the loaded font. Its separate
+            # kanji region is absent; do not replace those with area-0 kanji.
+            available = font == 0x800A2BCC or (number < 149 and
+                read(font + number * 5, 5) == read(0x800A2BCC + number * 5, 5))
             image = (Image.fromarray(np.asarray(atlas)[np.ix_((v + np.arange(height)) % 256,
                                                              (u + np.arange(width)) % 256)])
-                     if font == 0x800A2BCC else Image.new('RGBA', (width, height)))
+                     if available else Image.new('RGBA', (width, height)))
+            if not available:
+                result.missing_font.add(len(result.glyphs))
             result.glyphs.append(image)
             result.indices.append([])
-            result.keys.append(glyph_key(image))
+            result.keys.append(glyph_key(image) if available else f'prepre8-font-{font:08X}-glyph-{number:03X}')
             result.exact_keys.append(hashlib.sha256(bytes(image.size) + image.tobytes()).hexdigest()[:24])
             result.glyph_headers.append((palette, width, height, 0))
             result.characters.append(None)
@@ -129,7 +137,7 @@ def bank(project):
             dialogue.controls = CONTROLS
             dialogue.name = f'{group:02X}:{line:02X}'
             if fonts[group] != 0x800A2BCC:
-                dialogue.warning = 'Area-1 font texture is not present on this demo disc.'
+                dialogue.warning = 'Area-1 kanji artwork is absent from this disc. Shared kana are decoded; unresolved glyph IDs remain in the text.'
             result.dialogues.append(dialogue)
     from formats.text.usage import prepre8
     prepre8(found, result)

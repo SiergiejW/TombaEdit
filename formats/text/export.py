@@ -145,9 +145,16 @@ def collect(project, area=None, language=None, progress=None):
                           wfm.version.decode('ascii', 'replace'), wfm))
     if area is None:
         # Banks that are files of their own and that no load table names.
-        named = {source for source, _ in seen}
+        # Include assets in excluded languages too: a language filter must
+        # not reintroduce those banks as supposedly standalone files.
+        named = {a.source.path for groups in project.ldars.values() for group in groups
+                 for a in group.assets if a.kind == 'WFM' and a.source is not None}
         for entry in project.disc.files:
             if entry.path in named or not entry.path.upper().endswith('.WFM'):
+                continue
+            from formats.text.titles import language_of
+            tongue = language_of(entry.path)
+            if language is not None and tongue not in (None, language):
                 continue
             try:
                 data = project.disc.read(entry)
@@ -158,7 +165,7 @@ def collect(project, area=None, language=None, progress=None):
                 continue
             from formats.text.titles import attach, language_of
             attach(wfm, project, language_of(entry.path))
-            banks.append(Bank(Path(entry.path).name, entry.path, 0, version=wfm.version.decode('ascii', 'replace'),
+            banks.append(Bank(Path(entry.path).name, entry.path, 0, language=tongue, version=wfm.version.decode('ascii', 'replace'),
                               wfm=wfm))
     return banks
 

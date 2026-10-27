@@ -6,6 +6,7 @@ from gui.widgets.columns import ViewportElideDelegate
 
 COUNT_ROLE = Qt.ItemDataRole.UserRole + 50
 UNUSED_ROLE = Qt.ItemDataRole.UserRole + 51
+UNCHECKED_ROLE = Qt.ItemDataRole.UserRole + 52
 
 
 def purple(palette, selected=False):
@@ -25,14 +26,15 @@ class TextEntryDelegate(QStyledItemDelegate):
 class UsageTreeDelegate(ViewportElideDelegate):
     def paint(self, painter, option, index):
         count = index.data(COUNT_ROLE) if index.column() == 0 else 0
-        if not count:
+        unchecked = index.data(UNCHECKED_ROLE) if index.column() == 0 else False
+        if not count and not unchecked:
             return super().paint(painter, option, index)
         visible = QStyleOptionViewItem(option)
         self.initStyleOption(visible, index)
         visible.rect.setRight(min(visible.rect.right(), self.parent().viewport().rect().right()))
         if visible.rect.width() <= 0:
             return
-        suffix = f' ({count} unused)'
+        suffix = f' ({count} unused)' if count else ' (usage not checked)'
         base = visible.text.removesuffix(suffix)
         style = visible.widget.style() if visible.widget else QApplication.style()
         rect = style.subElementRect(QStyle.SubElement.SE_ItemViewItemText, visible, visible.widget)
@@ -49,7 +51,8 @@ class UsageTreeDelegate(ViewportElideDelegate):
         painter.setPen(color)
         layout = QTextLayout(text, visible.font)
         accent = QTextCharFormat()
-        accent.setForeground(purple(visible.palette, bool(visible.state & QStyle.StateFlag.State_Selected)))
+        accent.setForeground(purple(visible.palette, bool(visible.state & QStyle.StateFlag.State_Selected))
+                             if count else visible.palette.color(QPalette.ColorGroup.Disabled, QPalette.ColorRole.Text))
         span = QTextLayout.FormatRange()
         span.start, span.length, span.format = len(base.encode('utf-16-le')) // 2, len(suffix), accent
         layout.setFormats([span])

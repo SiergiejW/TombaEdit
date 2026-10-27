@@ -35,8 +35,11 @@ def counts(banks):
         if key in by_bank:
             continue
         count = sum((entry(d) or {}).get('status') == 'not_found' for d in bank.wfm.dialogues)
+        if not count and any((entry(d) or {}).get('status', 'unknown') == 'unknown' for d in bank.wfm.dialogues):
+            count = None  # Unknown is not an audited zero.
         by_bank[key] = count
-        by_file[bank.source] = by_file.get(bank.source, 0) + count
+        previous = by_file.get(bank.source, 0)
+        by_file[bank.source] = None if previous is None or count is None else previous + count
     return by_bank, by_file
 
 

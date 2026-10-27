@@ -157,6 +157,6 @@ def attach(wfm, project, language=None):
 def language_of(name):
     """The language number of a CFNT999?.WFM file name, or None."""
     stem = name.upper().rsplit('/', 1)[-1].split('.')[0]
-    if stem.startswith('CFNT') and stem[-1:] in LANGUAGE_LETTERS:
+    if stem.startswith(('CFNT', 'MFNT')) and stem[-1:] in LANGUAGE_LETTERS:
         return LANGUAGE_LETTERS.index(stem[-1])
     return None

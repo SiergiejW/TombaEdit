@@ -1218,7 +1218,7 @@ class MainWindow(QMainWindow):
     def text_usage_ready(self, epoch, counts, error):
         if epoch != self.label_index_epoch or error or counts is None:
             return
-        from gui.widgets.text_usage import COUNT_ROLE
+        from gui.widgets.text_usage import COUNT_ROLE, UNCHECKED_ROLE
         from PyQt6.QtWidgets import QTreeWidgetItemIterator
         banks, files = counts
         iterator = QTreeWidgetItemIterator(self.disc_tree)
@@ -1226,17 +1226,28 @@ class MainWindow(QMainWindow):
             item = iterator.value()
             node = item.data(0, ROLE)
             count = 0
+            unchecked = False
             if isinstance(node, Asset) and node.kind == 'WFM' and node.source:
-                count = banks.get((node.source.path, node.offset), 0)
+                count = banks.get((node.source.path, node.offset))
+                unchecked = count is None
             elif isinstance(node, DiscEntry) and not node.directory:
                 count = files.get(node.path, 0)
+                unchecked = count is None
             item.setData(0, COUNT_ROLE, count or None)
+            item.setData(0, UNCHECKED_ROLE, unchecked or None)
             iterator += 1
         self.refresh_labels()
 
     def item(self, parent, label, node, size=None):
         item = QTreeWidgetItem(parent, [label, '', f"{size:,}" if size is not None else ""])
         item.setData(0, ROLE, node)
+        from gui.widgets.text_usage import UNCHECKED_ROLE
+        is_text = isinstance(node, Asset) and node.kind == 'WFM'
+        if isinstance(node, DiscEntry) and not node.directory:
+            is_text = node.path.upper().endswith('.WFM') or any(
+                a.kind == 'WFM' for a in self.project.by_source.get(node.path, ()))
+        if is_text:
+            item.setData(0, UNCHECKED_ROLE, True)
         if isinstance(node, Asset) and node.kind == 'SPR':
             self.review_items.setdefault((node.ldar, node.group, node.record_offset), []).append(item)
         folder = isinstance(node, tuple) or isinstance(node, DiscEntry) and node.directory
@@ -1891,10 +1902,12 @@ class MainWindow(QMainWindow):
                 folder = isinstance(node, tuple) or isinstance(node, DiscEntry) and node.directory
                 if item.childCount() or folder:
                     text += f' ({item.childCount()})'
-                from gui.widgets.text_usage import COUNT_ROLE
+                from gui.widgets.text_usage import COUNT_ROLE, UNCHECKED_ROLE
                 count = item.data(0, COUNT_ROLE)
                 if count:
                     text += f' ({count} unused)'
+                elif item.data(0, UNCHECKED_ROLE):
+                    text += ' (usage not checked)'
                 item.setText(0, text)
                 item.setText(1, name or '')
             for i in range(item.childCount()):
