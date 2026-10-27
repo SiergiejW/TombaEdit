@@ -657,7 +657,12 @@ def build_scene(project, path, index):
             if model_ref:
                 bank, model = model_ref
                 if bank in models and model < len(models[bank]):
-                    source_mesh, neutral = model_preview(models[bank][model], visual)
+                    original_mesh = models[bank][model]
+                    if (resolver.available and resolver.build.legacy8
+                            and (visual.get('lit') or placement.native_layer == 7)):
+                        from formats.level.prepre8 import light_mesh
+                        original_mesh = light_mesh(resolver, original_mesh)
+                    source_mesh, neutral = model_preview(original_mesh, visual)
                     mesh = placed_model(source_mesh, visual.get('position', placement.position), visual)
                     category, note = 'Geometry' if bank == 0 else 'Models', (f'WMD bank {bank}, model {model}. '
                         f'Initial scale {visual.get("scale", (4096, 4096, 4096))}, '

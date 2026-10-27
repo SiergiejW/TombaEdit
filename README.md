@@ -12,8 +12,20 @@ TombaEdit is read-only: it exports assets but does not rebuild discs.
 
 The dialogue viewer shows decoded text and English machine translation beside
 its rendered preview. Translation is **off by default**. Choose your own local
-model folder and explicitly enable **Translate Japanese to English offline**.
+model folder and explicitly enable **Auto-translate all WFM text**.
 The app never downloads models or sends dialogue online.
+
+Enabling translation queues every readable Japanese entry on the disc, including
+WFM banks you have not opened yet. English previews appear in the entry lists as
+the background queue finishes; the progress line shows how much is ready.
+Turning it off immediately restores original previews. Completed translations
+are reused during the current disc session, including after toggling it back on.
+The rendered game glyphs and control-code script stay available beside English.
+
+Use **Export translations...** to save the current bank or all discovered banks
+as bilingual JSON or TXT. Unfinished entries and unknown glyphs are marked in
+the dump. **Export text...** saves the original bank as TXT, JSON or CSV;
+the main text export also supports all banks. Exports do not alter the disc.
 
 Supported model folders:
 
@@ -34,8 +46,8 @@ Supported model folders:
   and `model/model.bin`; its optional dependencies are in `requirements-translation.txt`.
 
 Model weights and optional CAT runtime components are not bundled with releases.
-`roms/` is ignored by Git. A local setup may put its chosen model in
-`roms/trnslator/CAT-Translate-7b`; merely placing it there does not select or enable it.
+`rom/` is ignored by Git. A local setup may put its chosen model in
+`rom/translator/CAT-Translate-7b`; merely placing it there does not select or enable it.
 The model is loaded in a separate local process and cached between selections.
 Names and short game messages can still be mistranslated. Unknown glyphs must
 first be assigned characters in the Glyphs tab.
@@ -45,6 +57,16 @@ first be assigned characters in the Glyphs tab.
 or open `TOMBA/TOMBA.EXE` directly and use its Dialogue/Glyphs tabs. Text export
 also includes this bank. The unused area-1 messages are retained with a warning
 because their font texture is absent from this demo disc.
+
+The entry list contains the full decoded or translated message; scroll sideways
+to read long rows. PrePre 8 also has a native text-usage audit. Entries marked
+**No in-game use found** have no selection through the checked message-window
+calls or signpost subtype table. Use the entry filter to isolate them, and hover
+for the evidence. Dynamic conversation selections remain potentially used;
+absence from the audit is an unused candidate, not proof of unreachability.
+The status and evidence are included in original and bilingual JSON dumps.
+Other builds currently say **Usage not checked**. Missing glyphs alone do not
+make an entry unused.
 
 The APD **Placements** map overlays objects and sprites at 50% opacity, with
 fully visible, selectable points above them. Scroll to zoom, middle/right-drag

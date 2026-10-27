@@ -29,6 +29,7 @@ def upload_player_palette(project, path, vram):
 def attempt(resolver, placement, stop_at_animation):
     raw, obj = placement.raw, OBJECT
     resolver.stop_at_animation = stop_at_animation
+    resolver.queued.clear()
     parents, parent = [], placement.parent
     while parent is not None and len(parents) < 32:
         resolver.resolve(parent)
@@ -37,6 +38,7 @@ def attempt(resolver, placement, stop_at_animation):
             break
         parents.append((parent, state))
         parent = parent.parent
+    cached_pose = resolver.object_states.get((raw, placement.position)) if parents else None
     resolver.write(0x80000000, resolver.baseline)
     resolver.write(0x1F800000, resolver.scratch)
     prepare_pools(resolver)
@@ -49,6 +51,24 @@ def attempt(resolver, placement, stop_at_animation):
         resolver.write(obj + 0xA0, b'\x01')
     for offset, value in placement.extra:
         resolver.write(obj + offset, value)
+    articulated = resolver.handler_address(placement) == 0x8003832C
+    children = []
+    if articulated and placement.parent is None:
+        node, previous = placement.child, obj
+        while node is not None and len(children) < 32:
+            address = OBJECT + 0x8000 + len(children) * 0x400
+            resolver.spawn(address, node)
+            resolver.write(address + 0x1C, bytes((node.native_layer,)))
+            if node.model in resolver.model_spans:
+                resolver.word(address + 0x9C, resolver.model_spans[node.model][0])
+                resolver.write(address + 0xA0, b'\x01')
+            resolver.word(previous + 0x94, address)
+            resolver.word(address + 0x90, previous)
+            children.append((node, address))
+            previous, node = address, node.child
+    if articulated and cached_pose is not None:
+        for offset, size in ((0x10, 12), (0x84, 12), (0xA0, 1)):
+            resolver.write(obj + offset, cached_pose[offset:offset + size])
     # APD modes 2/3 use the same +90 parent pointer as the later engine.
     # Preserve the live parent and its coordinate pointers for attached props.
     for n, (parent, state) in enumerate(parents):
@@ -75,6 +95,10 @@ def attempt(resolver, placement, stop_at_animation):
         sprite, anim = struct.unpack_from('<I', state, 0x3C)[0], struct.unpack_from('<I', state, 0x24)[0]
         model = struct.unpack_from('<I', state, 0x9C)[0]
         if model in resolver.model_pointers:
+            if articulated and step == 0:
+                # Naming the model precedes the first articulated-pose update.
+                # That update enables normal lighting before submitting it.
+                continue
             result = dict(model=resolver.model_pointers[model], lit=bool(state[0xA0]),
                           # +6C..72 is the collision box, not model scale.
                           # Rotated-model draw routine 80063E28 reads three
@@ -107,12 +131,65 @@ def attempt(resolver, placement, stop_at_animation):
     if result:
         if parents:
             result['position'] = tuple(v / 65536 for v in struct.unpack_from('<3i', state, 0x10))
-        children = spawned(resolver)
-        if children:
-            result['spawned'] = children
+        for child, address in children:
+            resolver.object_states[child.raw, child.position] = resolver.read(address, 0x200)
+        made = spawned(resolver)
+        if made:
+            result['spawned'] = made
         resolver.object_states[(raw, placement.position)] = state
         if placement.layer == 7 and 'sprite' in result:
             result.update(resolver.backdrop_motion(obj, pc, placement))
+    return result
+
+
+def matrix_vector(resolver):
+    """Psy-Q ApplyMatrixLV: signed long vector through a 12-bit matrix."""
+    r, uc = resolver.reg, resolver.u
+    matrix, vector, target = (uc.reg_read(getattr(r, 'UC_MIPS_REG_' + name)) for name in ('A0', 'A1', 'A2'))
+    rows = struct.unpack('<9h', resolver.read(matrix, 18))
+    values = struct.unpack('<3i', resolver.read(vector, 12))
+    output = [sum(rows[j * 3 + k] * values[k] for k in range(3)) >> 12 for j in range(3)]
+    resolver.write(target, struct.pack('<3I', *(value & 0xFFFFFFFF for value in output)))
+    uc.reg_write(r.UC_MIPS_REG_V0, target)
+    uc.reg_write(r.UC_MIPS_REG_PC, uc.reg_read(r.UC_MIPS_REG_RA))
+
+
+def light_mesh(resolver, mesh):
+    """Native NCCS lighting of the early untextured F/G primitives."""
+    import numpy as np
+    from formats.models.four import rebuild_mesh
+    if not any(p.get('normals') for p in mesh.polygons):
+        return mesh
+    if not hasattr(resolver, '_model_light'):
+        from psx.mips.cpu import CPU
+        cpu = CPU()
+        cpu.write(resolver.base, resolver.exe[0x800:])
+        cpu.write(0x1F800268, struct.pack('<9hh3i', 4096, 0, 0, 0, 4096, 0, 0, 0, 4096, 0, 0, 0, 0))
+        # Default light setup: native direction, colour matrix and ambient.
+        cpu.call(0x8001AD2C, 0x803E1000, max_instr=20000, sp=0x803F8000)
+        for k, value in enumerate(struct.unpack('<5I', cpu.read(0x803E1000, 20))):
+            cpu.gte.write_ctrl(8 + k, value)
+        resolver._model_light = cpu.gte
+    gte = resolver._model_light
+    polygons = []
+    for p in mesh.polygons:
+        normals = p.get('normals')
+        if not normals:
+            polygons.append(p)
+            continue
+        colors = []
+        for x, y, z in normals:
+            gte.write_data(0, (x & 65535) | (y & 65535) << 16)
+            gte.write_data(1, z & 65535)
+            gte.write_data(6, p['material'])
+            gte.command(0x108041B)  # NCCS, as 8002B1C0 / 8002C2xx.
+            rgb = gte.read_data(22)
+            colors.append([(rgb >> shift & 255) / 255 for shift in (0, 8, 16)])
+        if len(colors) == 1:
+            colors *= len(p['vertices'])
+        polygons.append(dict(p, colors=np.asarray(colors, np.float32)))
+    result = rebuild_mesh(polygons, mesh.offset, mesh.image)
+    result.front_clockwise = getattr(mesh, 'front_clockwise', True)
     return result
 
 

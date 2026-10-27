@@ -111,9 +111,13 @@ def parse_wmd(data, layout=None):
                     cols = np.repeat(cols, nv, axis=0)
                 order = [0, 1, 2] if nv == 3 else [0, 1, 2, 3, 2, 1]
                 key = (page, clut, bool(cmd & 2))
-                polygons.append(dict(offset=pos, vertices=vertices, uv=uv,
-                                     colors=cols, page=page, clut=clut, command=cmd,
-                                     kind=KINDS[kind]))
+                polygon = dict(offset=pos, vertices=vertices, uv=uv, colors=cols,
+                               page=page, clut=clut, command=cmd, kind=KINDS[kind])
+                if not textured:
+                    normal_at = vp + nv * 8
+                    polygon['normals'] = [struct.unpack_from('<3h', data, normal_at + j * 8) for j in range(nc)]
+                    polygon['material'] = struct.unpack_from('<I', data, normal_at + nc * 8)[0]
+                polygons.append(polygon)
                 target = batches.setdefault(key, [[], [], []])
                 target[0].extend(vertices[j] for j in order)
                 target[1].extend(uv[j] for j in order)

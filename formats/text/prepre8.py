@@ -129,7 +129,9 @@ def bank(project):
             dialogue.controls = CONTROLS
             dialogue.name = f'{group:02X}:{line:02X}'
             if fonts[group] != 0x800A2BCC:
-                dialogue.warning = 'Unused area-1 text: its font texture is not present on this demo disc.'
+                dialogue.warning = 'Area-1 font texture is not present on this demo disc.'
             result.dialogues.append(dialogue)
+    from formats.text.usage import prepre8
+    prepre8(found, result)
     project._embedded_text_bank = result
     return result

@@ -20,6 +20,7 @@ class Placement:
     # What made it, for objects no record places: a description.
     origin: str = ''
     native_layer: int = 0
+    child: object = field(default=None, repr=False, compare=False)
 
     @property
     def layer(self): return self.raw[1] & 127
@@ -64,6 +65,8 @@ def parse_apd(data, legacy8=False):
         if linked is not None:
             position = tuple(a + b for a, b in zip(position, linked.position))
         placement = Placement(at, raw, position, relative, linked, native_layer=native)
+        if linked is not None:
+            linked.child = placement
         if mode in (1, 2) and raw[1] & 127 not in (6, 7):
             parent = placement
         placements.append(placement)

@@ -972,8 +972,9 @@ class MainWindow(QMainWindow):
             item_font.setPointSize(7)
             tree.headerItem().setFont(column, item_font)
         tree.setTreePosition(0)
-        from gui.widgets.columns import elide_at_view_edge
-        elide_at_view_edge(tree)
+        from gui.widgets.text_usage import UsageTreeDelegate
+        tree.setTextElideMode(Qt.TextElideMode.ElideRight)
+        tree.setItemDelegate(UsageTreeDelegate(tree))
         tree.setColumnWidth(0, 370)
         tree.setColumnWidth(1, 160)
         tree.setUniformRowHeights(True)
@@ -1098,6 +1099,8 @@ class MainWindow(QMainWindow):
             self.statusBar().showMessage("Could not open disc")
             QMessageBox.warning(self, "Cannot open disc", error)
             return
+        if self.project is not None and hasattr(self.project, '_translation_session'):
+            self.project._translation_session.shutdown()
         self.project = project
         self.map_action.setEnabled(any(item.ldar == 'SYS/LDSYS.BIN' and item.group == 7
                                        for item in project.by_source.get('SYSTEM/SUBMAP.WMD', [])))
@@ -1198,7 +1201,38 @@ class MainWindow(QMainWindow):
         if self.labels.entries:
             self.index_labels()
         self.warm_analysis()
+        from formats.text.translation_session import session_for
+        translation = session_for(project, self)
+        if translation.enabled and translation.folder:
+            translation.discover()
+        found = executable(project)
+        if found is not None and found.build.legacy8:
+            source = str(project.disc.source)
+            def text_counts():
+                from formats.text.export import collect
+                from formats.text.usage import counts
+                return counts(collect(Project(source)))
+            QThreadPool.globalInstance().start(Job(self.label_index_epoch, text_counts, self.text_usage_ready))
         self.statusBar().showMessage("Disc ready" + (f" | {len(project.warnings)} diagnostic(s); see overview" if project.warnings else ""))
+
+    def text_usage_ready(self, epoch, counts, error):
+        if epoch != self.label_index_epoch or error or counts is None:
+            return
+        from gui.widgets.text_usage import COUNT_ROLE
+        from PyQt6.QtWidgets import QTreeWidgetItemIterator
+        banks, files = counts
+        iterator = QTreeWidgetItemIterator(self.disc_tree)
+        while iterator.value():
+            item = iterator.value()
+            node = item.data(0, ROLE)
+            count = 0
+            if isinstance(node, Asset) and node.kind == 'WFM' and node.source:
+                count = banks.get((node.source.path, node.offset), 0)
+            elif isinstance(node, DiscEntry) and not node.directory:
+                count = files.get(node.path, 0)
+            item.setData(0, COUNT_ROLE, count or None)
+            iterator += 1
+        self.refresh_labels()
 
     def item(self, parent, label, node, size=None):
         item = QTreeWidgetItem(parent, [label, '', f"{size:,}" if size is not None else ""])
@@ -1526,8 +1560,10 @@ class MainWindow(QMainWindow):
             for offset, wfm in result.get("wfms", []):
                 suffix = f" @{offset:X}" if offset else ""
                 source = node.source.path if isinstance(node, Asset) and node.source else getattr(node, 'path', '')
+                from formats.text.translation_session import session_for
                 dialogue = DialogueView(wfm, self.export_stem(node) + suffix, source,
-                                        (node.offset if isinstance(node, Asset) else 0) + offset)
+                                        (node.offset if isinstance(node, Asset) else 0) + offset,
+                                        session_for(self.project, self))
                 glyphs = GlyphView(wfm)
                 # A character typed for a glyph is kept, and shows in the entries at once.
                 glyphs.changed.connect(dialogue.relist)
@@ -1855,6 +1891,10 @@ class MainWindow(QMainWindow):
                 folder = isinstance(node, tuple) or isinstance(node, DiscEntry) and node.directory
                 if item.childCount() or folder:
                     text += f' ({item.childCount()})'
+                from gui.widgets.text_usage import COUNT_ROLE
+                count = item.data(0, COUNT_ROLE)
+                if count:
+                    text += f' ({count} unused)'
                 item.setText(0, text)
                 item.setText(1, name or '')
             for i in range(item.childCount()):
@@ -2138,6 +2178,8 @@ class MainWindow(QMainWindow):
             event.ignore()
             return
         self.generation += 1
+        if self.project is not None and hasattr(self.project, '_translation_session'):
+            self.project._translation_session.shutdown()
         self.label_index_epoch += 1
         self.stop_warm_analysis()
         self.label_pool.clear()

@@ -173,6 +173,8 @@ def entries(bank, controls=True, unknown='[g{:03X}]', raw=False):
             item['tokens'] = tokens(dialogue)
         if dialogue.warning:
             item['warning'] = dialogue.warning
+        if getattr(dialogue, 'usage', None):
+            item['usage'] = dialogue.usage
         yield item
 
 
@@ -236,3 +238,33 @@ def write(banks, target, kind, layout='one', title='', controls=True, unknown='[
         path.write_text(render(group, kind, title, controls, unknown, raw), 'utf-8', newline='\n')
         written.append(path)
     return written
+
+
+def render_translated(banks, translations, model='', kind='json'):
+    """Export English alongside originals, including honest partial-job status."""
+    from formats.text.translation import translatable, TranslationError
+    output = []
+    for bank in banks:
+        messages = []
+        for item in entries(bank, controls=False):
+            original = item.pop('text')
+            translated = translations.get(original)
+            status = 'translated' if translated is not None else 'pending'
+            if translated is None:
+                try:
+                    if not translatable(original):
+                        translated, status = original, 'original'
+                except TranslationError:
+                    status = 'unknown glyphs'
+            messages.append({**item, 'original': original, 'translation': translated, 'status': status})
+        output.append({**describe(bank), 'text': messages})
+    document = dict(model=str(model), target_language='en', banks=output)
+    if kind == 'json':
+        return json.dumps(document, ensure_ascii=False, indent=1) + '\n'
+    parts = [f'English machine translation | Model: {model}']
+    for bank in output:
+        parts.append(f'\n{bank["name"]} | {bank["file"]} +{bank["offset"]}')
+        for item in bank['text']:
+            parts.append(f'[{item["index"]:03d} @ {item["offset"]}]\nOriginal:\n{item["original"]}'
+                         f'\nEnglish:\n{item["translation"] if item["translation"] is not None else "[" + item["status"] + "]"}')
+    return '\n\n'.join(parts) + '\n'

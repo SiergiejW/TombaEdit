@@ -834,12 +834,26 @@ PrePre 8 dialogue has no WFM header or separate text file. Message table
 pointers at 800A5DE4 and font pointers at 800A5E14 are selected by 80035B84
 and 80035C1C. Font descriptors contain five bytes (U, V, width, height,
 palette). The available 256-glyph font uses texture page 13. The second
-305-glyph font belongs to unused area-1 messages and its texture is absent
+305-glyph font belongs to area-1 messages and its texture is absent
 from this disc. Those messages remain listed with unknown glyphs.
 The control dispatch at 800358C8 gives FFFF END_CLOSE, FFFE NEXT,
 FFFD NEWLINE, FFFC CLEAR, FFFB BUBBLE (three words), FFFA EVENT_SET
 (two), FFF9 EVENT_COMPLETE (one), FFF8 PAUSE (one), and FFF7 END.
 The virtual WFM resource exposes this bank without changing the disc.
+
+The PrePre 8 text-usage profile follows all fourteen calls to message constructor
+80035ADC, the sole code reader of directory 800A5DE4. Thirteen calls select
+conversation groups 0–3 or the two group-11 messages. The remaining call,
+800405C4, loads group/line pairs from ten signpost subtype records at 800A7DDC.
+Runtime conversation counters conservatively retain their entire groups.
+The profile finds 32 unselected entries, including 04:04, groups 05–09, and
+seven entries of group 0A. They are labelled "No in-game use found", not proven
+unreachable. Group 0A's two table references remain referenced even though their
+object subtypes may not be reachable on this disc. Sprite notice constructor
+80035ED8 selects SPR animations rather than these message streams. Missing fonts
+are a separate warning. Negative results require the exact verified executable
+hash, the expected call sites, no extra materialised stream pointers and the
+expected directory reader. Other builds currently remain unchecked.
 
 PrePre 8 mode-6 mist uses four SVECTOR corners at object offsets 98,
 A0, A8 and B0; 80061D5C maps the first SPR part over those corners.
@@ -853,6 +867,20 @@ Level playback durations count game updates (60 per second for these
 Japanese samplers, 50 for European builds). The editor measures elapsed
 time rather than assuming every UI timer callback arrives on schedule.
 Initial-state animation previews still do not reproduce all AI transitions.
+
+PrePre 8's linked bamboo models (AREA00 section 00, APD 02A0 through 02D0,
+WMD bank 1 models 42–45) require the parent/next object chain while running
+8003832C. Otherwise its initializer treats the root as the final tip and clears
+the lighting flag at object +A0. The chain now runs through its first update,
+including Psy-Q ApplyMatrixLV at 8008F0A4. A 100-vector comparison against the
+native routine verified the signed matrix helper.
+
+Early untextured F/G primitives store normals and a material colour after their
+vertices. Lit models and geometry use the native default light setup (8001AD2C)
+and GTE NCCS, rather than the initial colour fields alone. The model-42 check
+captured 22 visible faces from native draw routine 800294E8: all emitted vertex
+colours matched. The remaining seven faces were clipped or side-on in that
+capture. The final bamboo tip retains its native unlit colours.
 
 ## Sources
 

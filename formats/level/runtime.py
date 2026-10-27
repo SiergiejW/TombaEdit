@@ -170,6 +170,8 @@ class InitialPoseResolver:
                 self.u.hook_add(UC_HOOK_CODE, self.hook, begin=cursor, end=start - 1)
             cursor = end
         services = {build.set_animation, build.get_clut, *build.visibility, *build.draw_queues, *build.silent}
+        if build.legacy8 and self.read(0x8008F0A4, 4) == bytes.fromhex('0000888c'):
+            services.add(0x8008F0A4)  # Psy-Q ApplyMatrixLV uses COP2.
         for address in services:
             if any(start <= address < end for start, end in regions):
                 self.u.hook_add(UC_HOOK_CODE, self.hook, begin=address, end=address)
@@ -889,6 +891,9 @@ class InitialPoseResolver:
         elif address in build.silent:
             uc.reg_write(r.UC_MIPS_REG_V0, 0)
             uc.reg_write(r.UC_MIPS_REG_PC, uc.reg_read(r.UC_MIPS_REG_RA))
+        elif build.legacy8 and address == 0x8008F0A4:
+            from formats.level.prepre8 import matrix_vector
+            matrix_vector(self)
         elif not any(start <= address < end for start, end in self.code):
             uc.emu_stop()
 

@@ -4,15 +4,18 @@ from PyQt6.QtCore import Qt, QSize, pyqtSignal
 from PyQt6.QtGui import QIcon, QPixmap
 from PyQt6.QtWidgets import (QWidget, QVBoxLayout, QHBoxLayout, QLabel, QPushButton, QSplitter, QListWidget,
     QFileDialog, QMessageBox, QLineEdit, QTableWidget, QTableWidgetItem, QAbstractItemView, QInputDialog,
-    QMenu)
+    QMenu, QComboBox)
 from gui.widgets.image_view import ImageView, text_view, qimage, file_stem
 from gui.widgets.columns import adjustable
 from formats.text import wfm as wfm_module
 from formats.text import export
+from formats.text import usage
+from gui.widgets.text_usage import TextEntryDelegate, UNUSED_ROLE, purple
+from PyQt6.QtGui import QBrush
 
 
 class DialogueView(QWidget):
-    def __init__(self, wfm, name='dialogue', source='', offset=0):
+    def __init__(self, wfm, name='dialogue', source='', offset=0, translation_session=None):
         super().__init__()
         self.wfm = wfm
         self.bank = export.Bank(name, source, offset, version=wfm.version.decode('ascii', 'replace'), wfm=wfm)
@@ -21,15 +24,33 @@ class DialogueView(QWidget):
         self.search = QLineEdit(); self.search.setPlaceholderText('Search dialogue...')
         self.search.textChanged.connect(self.filter)
         bar.addWidget(self.search)
+        self.usage_filter = QComboBox()
+        for label, status in [('All entries', ''), ('No in-game use found', 'not_found'),
+                              ('Display references', 'referenced'), ('Dynamic selection', 'dynamic'),
+                              ('Usage not checked', 'unknown')]:
+            self.usage_filter.addItem(label, status)
+        self.usage_filter.setToolTip('Filter by native text-display evidence. No use found means an unused candidate.')
+        self.usage_filter.currentIndexChanged.connect(lambda: self.filter(self.search.text()))
+        bar.addWidget(self.usage_filter)
         save = QPushButton('Export text...')
         save.setToolTip('Write this bank\'s entries to a file: with their control codes, as plain text, '
                         'as JSON with the raw words, or as a table.')
         save.clicked.connect(self.export_text)
-        bar.addWidget(save); layout.addLayout(bar)
+        bar.addWidget(save)
+        translated = QPushButton('Export translations...')
+        translated_menu = QMenu(translated)
+        translated_menu.addAction('This WFM bank...', lambda: self.export_translations(False))
+        self.export_all_translations = translated_menu.addAction('All WFM banks...', lambda: self.export_translations(True))
+        translated.setMenu(translated_menu)
+        bar.addWidget(translated)
+        layout.addLayout(bar)
         self.summary = QLabel()
         layout.addWidget(self.summary)
         split = QSplitter()
         self.entries = QListWidget()
+        self.entries.setTextElideMode(Qt.TextElideMode.ElideNone)
+        self.entries.setHorizontalScrollMode(QAbstractItemView.ScrollMode.ScrollPerPixel)
+        self.entries.setItemDelegate(TextEntryDelegate(self.entries))
         split.addWidget(self.entries)
         right = QSplitter(Qt.Orientation.Vertical)
         self.rendered = ImageView()
@@ -39,7 +60,8 @@ class DialogueView(QWidget):
         right.setSizes([400, 160])
         split.addWidget(right)
         from formats.text.translation_view import TranslationPane
-        self.translation = TranslationPane()
+        self.translation = TranslationPane(translation_session)
+        self.translation.session.changed.connect(self.refresh_translations)
         split.addWidget(self.translation)
         split.setSizes([260, 550, 350])
         layout.addWidget(split, 1)
@@ -56,10 +78,16 @@ class DialogueView(QWidget):
         self.entries.clear()
         for i, d in enumerate(wfm.dialogues):
             preview = export.plain(d, '?').replace('\n', ' ')
-            self.entries.addItem(f'{getattr(d, "name", f"{i:03d}")} | {preview[:70]}')
+            self.entries.addItem(f'{getattr(d, "name", f"{i:03d}")} | {preview}')
         self.entries.blockSignals(False)
+        self.translation.session.register(self.bank)
+        self.refresh_translations()
         known = sum(c is not None for c in wfm.characters)
-        self.summary.setText(f'{len(wfm.dialogues)} entries | {known}/{len(wfm.glyphs)} recognized glyphs')
+        candidates = sum((usage.entry(d) or {}).get('status') == 'not_found' for d in wfm.dialogues)
+        audited = any(usage.entry(d) for d in wfm.dialogues)
+        self.summary.setText(f'{len(wfm.dialogues)} entries | {known}/{len(wfm.glyphs)} recognized glyphs | '
+                             + (f'{candidates} with no in-game use found' if audited else 'In-game usage not checked'))
+        self.summary.setToolTip(getattr(wfm, 'usage_summary', 'Native display analysis is not available for this build.'))
         if row >= 0:
             self.entries.setCurrentRow(row)
         self.filter(self.search.text())
@@ -77,7 +105,40 @@ class DialogueView(QWidget):
 
     def filter(self, text):
         for i, dialogue in enumerate(self.wfm.dialogues):
-            self.entries.item(i).setHidden(text.casefold() not in dialogue.script().casefold())
+            translated = self.translation.session.lookup(export.plain(dialogue)) or ''
+            wanted = self.usage_filter.currentData()
+            status = (usage.entry(dialogue) or {}).get('status', 'unknown')
+            self.entries.item(i).setHidden((bool(wanted) and status != wanted)
+                or text.casefold() not in (dialogue.script() + '\n' + translated).casefold())
+
+    def refresh_translations(self):
+        session = self.translation.session
+        self.export_all_translations.setEnabled(session.project is None or session.discovered)
+        for i, dialogue in enumerate(self.wfm.dialogues):
+            original = export.plain(dialogue)
+            preview = self.translation.session.lookup(original)
+            preview = (preview if preview is not None else export.plain(dialogue, '?')).replace('\n', ' ')
+            item = self.entries.item(i)
+            if item is not None:
+                marker = '[No in-game use found] ' if (usage.entry(dialogue) or {}).get('status') == 'not_found' else ''
+                item.setData(UNUSED_ROLE, bool(marker))
+                item.setData(Qt.ItemDataRole.ForegroundRole, QBrush(purple(self.entries.palette())) if marker else None)
+                item.setText(f'{getattr(dialogue, "name", f"{i:03d}")} | {marker}{preview}')
+                item.setToolTip(usage.explanation(dialogue) + '\n\n' + original)
+        self.filter(self.search.text())
+
+    def export_translations(self, all_banks=False):
+        session = self.translation.session
+        banks = list(session.banks.values()) if all_banks else [self.bank]
+        path, chosen = QFileDialog.getSaveFileName(self, 'Export English and original text',
+            file_stem(self.bank.name, 'dialogue') + '-translated.json',
+            'JSON with English and originals (*.json);;English and original text (*.txt)')
+        if path:
+            try:
+                Path(path).write_text(export.render_translated(banks, session.translations,
+                    session.folder, 'json' if 'JSON' in chosen else 'plain'), encoding='utf8')
+            except OSError as exc:
+                QMessageBox.warning(self, 'Export failed', str(exc))
 
     def export_text(self):
         filters = {f'{label} (*{suffix})': kind for kind, (label, suffix) in export.FORMATS.items()}

@@ -9180,6 +9180,14 @@
       "bins": {},
       "areas": {},
       "entries": []
+    },
+    "TOMBA.EXE:135e010c0b3f506c": {
+      "name": "PrePre Vol. 8 (Japan)",
+      "build": "TOMBA.EXE:135e010c0b3f506c",
+      "serial": "TOMBA.EXE",
+      "bins": {},
+      "areas": {},
+      "entries": []
     }
   },
   "migrated_settings": [
