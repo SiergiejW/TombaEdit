@@ -139,6 +139,8 @@ def collect(project, area=None, language=None, progress=None):
         from formats.text.titles import attach
         if wfm.version != b'PP8':
             attach(wfm, project, tongue)
+            from formats.text.usage import attach as attach_usage
+            attach_usage(wfm, project, asset.source.path, asset.offset)
         banks.append(Bank(f'WFM {asset.code:04X}', asset.source.path, asset.offset, path, group, number, tongue,
                           wfm.version.decode('ascii', 'replace'), wfm))
     if area is None:
@@ -163,6 +165,8 @@ def collect(project, area=None, language=None, progress=None):
                 continue
             from formats.text.titles import attach, language_of
             attach(wfm, project, language_of(entry.path))
+            from formats.text.usage import attach as attach_usage
+            attach_usage(wfm, project, entry.path, 0)
             banks.append(Bank(Path(entry.path).name, entry.path, 0, language=tongue, version=wfm.version.decode('ascii', 'replace'),
                               wfm=wfm))
     return banks

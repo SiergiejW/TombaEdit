@@ -1205,8 +1205,8 @@ class MainWindow(QMainWindow):
         translation = session_for(project, self)
         if translation.enabled and translation.folder:
             translation.discover()
-        found = executable(project)
-        if found is not None and found.build.legacy8:
+        from formats.text.usage import supported as usage_supported
+        if usage_supported(project):
             source = str(project.disc.source)
             def text_counts():
                 from formats.text.export import collect

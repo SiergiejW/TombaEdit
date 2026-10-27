@@ -18,6 +18,8 @@ class DialogueView(QWidget):
     def __init__(self, wfm, name='dialogue', source='', offset=0, translation_session=None):
         super().__init__()
         self.wfm = wfm
+        if translation_session is not None and translation_session.project is not None:
+            usage.attach(wfm, translation_session.project, source, offset)
         self.bank = export.Bank(name, source, offset, version=wfm.version.decode('ascii', 'replace'), wfm=wfm)
         layout = QVBoxLayout(self)
         bar = QHBoxLayout()
@@ -85,10 +87,12 @@ class DialogueView(QWidget):
         known = sum(c is not None for c in wfm.characters)
         candidates = sum((usage.entry(d) or {}).get('status') == 'not_found' for d in wfm.dialogues)
         audited = any(usage.entry(d) for d in wfm.dialogues)
+        unchecked = sum((usage.entry(d) or {}).get('status', 'unknown') == 'unknown' for d in wfm.dialogues)
         recovered = len(getattr(wfm, 'recovered_glyphs', {}))
         self.summary.setText(f'{len(wfm.dialogues)} entries | {known}/{len(wfm.glyphs)} decoded glyphs'
                              + (f' ({recovered} reconstructed readings)' if recovered else '') + ' | '
-                             + (f'{candidates} with no in-game use found' if audited else 'In-game usage not checked'))
+                             + (f'{candidates} with no in-game use found'
+                                + (f'; {unchecked} unchecked' if unchecked else '') if audited else 'In-game usage not checked'))
         self.summary.setToolTip(getattr(wfm, 'usage_summary', 'Native display analysis is not available for this build.'))
         if row >= 0:
             self.entries.setCurrentRow(row)

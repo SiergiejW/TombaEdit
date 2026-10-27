@@ -6,6 +6,90 @@ Profiles are build specific. Unsupported/incomplete coverage stays unknown.
 import struct
 import hashlib
 
+PREPRE9_EXES = {'36f830000f34ef6414afb020993806b4009e4ca1',
+               '72988193d496a3a9402399d04291997d57b4be45'}
+PREPRE9_CODE = {'2c67e33d098daaca2de4d98a400fe0148fc21f27',
+               'a38f0e77649d9a9e35ba788086baed9a93be4758',
+               '4a4f68771c049af9cc8822c63aa507f0b592ce14',
+               'b17867d4c7f64a5a1b0a64b16828de9709ebafc3',
+               '1ff5fb3943c2df020cdc3734843a5db1afce5433'}
+
+
+def supported(project):
+    from game.builds import executable
+    found = executable(project)
+    return found is not None and (found.build.legacy8 or hashlib.sha1(found.data).hexdigest() in PREPRE9_EXES)
+
+
+def attach(wfm, project, source, offset):
+    """Build-specific display evidence; never infer use from successful decoding."""
+    if wfm.version == b'PP8' or any(entry(d) for d in wfm.dialogues):
+        return
+    from game.builds import executable
+    from formats.archive.ldar import area_number
+    found = executable(project)
+    if found is None or hashlib.sha1(found.data).hexdigest() not in PREPRE9_EXES:
+        return
+    if '_prepre9_text_code_verified' not in project.__dict__:
+        seen, digests = set(), set()
+        for groups in project.ldars.values():
+            for group in groups:
+                for asset in group.assets:
+                    if asset.kind == 'INS' and asset.source and asset.source.path not in seen:
+                        seen.add(asset.source.path)
+                        digests.add(hashlib.sha1(project.asset_data(asset)).hexdigest())
+        project._prepre9_text_code_verified = digests == PREPRE9_CODE
+    if not project._prepre9_text_code_verified:
+        return
+    assets = [a for a in project.by_source.get(source, ()) if a.kind == 'WFM' and a.offset == offset]
+    contexts = {(area_number(a.ldar), a.slot) for a in assets if area_number(a.ldar) in (1, 2)}
+    if not contexts:
+        return
+    title = all(slot == 1 for area, slot in contexts)
+    references = {}
+    for area, slot in contexts:
+        if slot == 1 and len(wfm.dialogues) == 30:
+            # 8001F044 reads table[event][area], then the WFM dialogue
+            # directory. Completion still selects this same stream: the
+            # CLEAR banner uses sprites, not title entry zero.
+            for event in range(200):
+                pointer = found.word(0x8007113C + event * 4)
+                index = found.unpack('<B', pointer + area)[0]
+                if index < len(wfm.dialogues):
+                    references.setdefault(index, []).append(
+                        f'AREA{area:02d} event {event}: selector 8001F044, mapping at {pointer + area:08X}.')
+        elif slot == 0:
+            # The early info-notice routine adds two bytes selected by area;
+            # unlike WFM3, these are an absolute base plus a line, not a
+            # WFM header group lookup. Both item and event notices matter.
+            for table, count, kind in ((0x80072A00, 50, 'item'), (0x80072BD0, 22, 'event notice')):
+                for number in range(count):
+                    pointer = found.word(table + number * 4) + area * 2
+                    base, line = found.unpack('<2B', pointer)
+                    index = base + line
+                    if base != 255 and index < len(wfm.dialogues):
+                        references.setdefault(index, []).append(
+                            f'AREA{area:02d} {kind} {number}: info routine 80031A00, pair at {pointer:08X}.')
+    for index, dialogue in enumerate(wfm.dialogues):
+        evidence = references.get(index, [])
+        if evidence:
+            status = 'referenced'
+            evidence = evidence + ['A display-table reference is not proof that every corresponding event/item is reachable.']
+        elif title and len(wfm.dialogues) == 30:
+            status = 'not_found'
+            evidence = ['No event maps to this title entry in AREA01 or AREA02. '
+                        'Native selector 8001F044 was checked for all 116 valid area/event/completion combinations.',
+                        'The other bank-1 reader loads glyph images, not dialogue entries. '
+                        'DSPSUB\'s separate text window selects banks 2/3. '
+                        'This remains a static unused candidate, not a claim about arbitrary modified game states.']
+        else:
+            status = 'unknown'
+            evidence = ['Item/event notice tables were checked. Conversation state, object-supplied indices '
+                        'and script message paths are not yet fully traced for this entry; no unused conclusion.']
+        dialogue.usage = dict(status=status, evidence=evidence, method='prepre9-native-display-v1')
+    wfm.usage_summary = ('PrePre 9: event-title selection and item/event notice tables checked against native code. '
+                         'Remaining dialogue/script paths are explicitly unchecked. Decoding does not establish use.')
+
 
 LABELS = {'referenced': 'Display reference', 'dynamic': 'Dynamic display selection',
           'not_found': 'No in-game use found', 'unknown': 'Usage not checked'}
@@ -39,7 +123,8 @@ def counts(banks):
             count = None  # Unknown is not an audited zero.
         by_bank[key] = count
         previous = by_file.get(bank.source, 0)
-        by_file[bank.source] = None if previous is None or count is None else previous + count
+        total = (previous or 0) + (count or 0)
+        by_file[bank.source] = total if total else None if previous is None or count is None else 0
     return by_bank, by_file
 
 
