@@ -108,6 +108,8 @@ class DialogueView(QWidget):
                              + (f' ({recovered} reconstructed readings)' if recovered else '') + ' | '
                              + (f'{candidates} possibly unused'
                                 + (f'; {unchecked} unchecked' if unchecked else '') if audited else 'In-game usage not checked'))
+        if getattr(wfm, 'usage_checked', False):
+            self.summary.setText(self.summary.text() + ' | Usage checked (static selectors)')
         self.summary.setToolTip(getattr(wfm, 'usage_summary', 'Native display analysis is not available for this build.'))
         if row >= 0:
             self.entries.setCurrentRow(row)

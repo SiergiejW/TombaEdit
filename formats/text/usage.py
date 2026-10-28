@@ -70,6 +70,7 @@ def _attach_study(wfm, project, source, offset):
                       'for this entry. Computed indices and other display paths remain unchecked; '
                       'this does not establish that the entry is unused.'])
     wfm.usage_summary = record['coverage']
+    wfm.usage_checked = bool(record.get('coverage_complete'))
     return True
 
 
