@@ -18,16 +18,28 @@ The app never downloads models or sends dialogue online.
 Enabling translation queues every readable Japanese entry on the disc, including
 WFM banks you have not opened yet. English previews appear in the entry lists as
 the background queue finishes; the progress line shows how much is ready.
-Turning it off immediately restores original previews. Completed translations
+Turning it off immediately restores original entry-list previews. Completed translations
 are reused during the current disc session, including after toggling it back on.
 With bulk preloading off, selecting an entry still translates it in the English
 pane. The selected entry takes priority over the remaining background queue.
-The rendered game glyphs and control-code script stay available beside English.
+The display window switches to English as soon as a translation is ready, using
+saved Latin glyphs from the English ROM. **English display** switches it back to
+the original. The control-code script and decoded Japanese remain available.
+Missing font sizes/letters fall back to another saved Tomba font; Q/X and two
+punctuation marks are adapted from existing glyphs with their provenance recorded.
 
 Use **Export translations...** to save the current bank or all discovered banks
-as bilingual JSON or TXT. Unfinished entries and unknown glyphs are marked in
-the dump. **Export text...** saves the original bank as TXT, JSON or CSV;
-the main text export also supports all banks. Exports do not alter the disc.
+as bilingual JSON, plain TXT, script TXT or CSV. Unfinished entries and unknown
+glyphs are marked in the dump. Script exports retain the original control codes
+beside a reflowed English preview script; they are not ready for ROM insertion.
+**Export text...** also offers the current WFM or all WFM banks in those four
+formats. Exports do not alter the disc.
+
+**Search for text...**, beside the text export buttons or in File
+(**Ctrl+Shift+F**), searches every WFM bank in a small popup. Search originals,
+available translations or both, with optional case and whole-word matching.
+Double-click a result to open its exact bank and entry. Long results scroll
+horizontally; the popup stays open for following further matches.
 
 Supported model folders:
 

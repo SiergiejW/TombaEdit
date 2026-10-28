@@ -924,4 +924,7 @@ capture. The final bamboo tip retains its native unlit colours.
   emulator's room captures were used to check the objects of every room.
   Some reference descriptions conflict; real-disc validation takes precedence.
 
-No game data is included with the application.
+No ROM images or dialogue dumps are included with the application. The English
+translation preview includes saved Latin glyph atlases extracted from the US
+English WFM banks, with source bank hashes and adaptation notes in
+`formats/text/fonts/english.json`.
