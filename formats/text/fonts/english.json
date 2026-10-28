@@ -1,0 +1,2156 @@
+{
+  "schema": 1,
+  "source_exe_sha1": "81cbc79f0230aeb4252e058039f47ac95a777f5a",
+  "source_build": "Tomba! (USA), English retail",
+  "fonts": {
+    "8": {
+      "image": "english-8.png",
+      "glyphs": {
+        " ": {
+          "box": [
+            0,
+            0,
+            8,
+            8
+          ],
+          "source": "AREA19/D208.GAM",
+          "offset": 13748,
+          "bank_sha1": "a7b2161c0a1a49705421789d5d1cf570a11e323f"
+        },
+        "!": {
+          "box": [
+            8,
+            0,
+            16,
+            8
+          ],
+          "source": "AREA19/D208.GAM",
+          "offset": 13748,
+          "bank_sha1": "a7b2161c0a1a49705421789d5d1cf570a11e323f"
+        },
+        "'": {
+          "box": [
+            16,
+            0,
+            24,
+            8
+          ],
+          "source": "AREA19/D208.GAM",
+          "offset": 13748,
+          "bank_sha1": "a7b2161c0a1a49705421789d5d1cf570a11e323f"
+        },
+        "+": {
+          "box": [
+            24,
+            0,
+            32,
+            8
+          ],
+          "source": "AREA19/D208.GAM",
+          "offset": 13748,
+          "bank_sha1": "a7b2161c0a1a49705421789d5d1cf570a11e323f"
+        },
+        ",": {
+          "box": [
+            32,
+            0,
+            40,
+            8
+          ],
+          "source": "AREA19/D208.GAM",
+          "offset": 13748,
+          "bank_sha1": "a7b2161c0a1a49705421789d5d1cf570a11e323f"
+        },
+        ".": {
+          "box": [
+            40,
+            0,
+            48,
+            8
+          ],
+          "source": "AREA19/D208.GAM",
+          "offset": 13748,
+          "bank_sha1": "a7b2161c0a1a49705421789d5d1cf570a11e323f"
+        },
+        "/": {
+          "box": [
+            48,
+            0,
+            56,
+            8
+          ],
+          "source": "AREA19/D208.GAM",
+          "offset": 13748,
+          "bank_sha1": "a7b2161c0a1a49705421789d5d1cf570a11e323f"
+        },
+        "1": {
+          "box": [
+            56,
+            0,
+            64,
+            8
+          ],
+          "source": "AREA19/D208.GAM",
+          "offset": 13748,
+          "bank_sha1": "a7b2161c0a1a49705421789d5d1cf570a11e323f"
+        },
+        "2": {
+          "box": [
+            64,
+            0,
+            72,
+            8
+          ],
+          "source": "AREA19/D208.GAM",
+          "offset": 13748,
+          "bank_sha1": "a7b2161c0a1a49705421789d5d1cf570a11e323f"
+        },
+        "3": {
+          "box": [
+            72,
+            0,
+            80,
+            8
+          ],
+          "source": "AREA19/D208.GAM",
+          "offset": 13748,
+          "bank_sha1": "a7b2161c0a1a49705421789d5d1cf570a11e323f"
+        },
+        "4": {
+          "box": [
+            80,
+            0,
+            88,
+            8
+          ],
+          "source": "AREA19/D208.GAM",
+          "offset": 13748,
+          "bank_sha1": "a7b2161c0a1a49705421789d5d1cf570a11e323f"
+        },
+        "5": {
+          "box": [
+            88,
+            0,
+            96,
+            8
+          ],
+          "source": "AREA19/D208.GAM",
+          "offset": 13748,
+          "bank_sha1": "a7b2161c0a1a49705421789d5d1cf570a11e323f"
+        },
+        "6": {
+          "box": [
+            96,
+            0,
+            104,
+            8
+          ],
+          "source": "AREA19/D208.GAM",
+          "offset": 13748,
+          "bank_sha1": "a7b2161c0a1a49705421789d5d1cf570a11e323f"
+        },
+        "7": {
+          "box": [
+            104,
+            0,
+            112,
+            8
+          ],
+          "source": "AREA19/D208.GAM",
+          "offset": 13748,
+          "bank_sha1": "a7b2161c0a1a49705421789d5d1cf570a11e323f"
+        },
+        "8": {
+          "box": [
+            112,
+            0,
+            120,
+            8
+          ],
+          "source": "AREA19/D208.GAM",
+          "offset": 13748,
+          "bank_sha1": "a7b2161c0a1a49705421789d5d1cf570a11e323f"
+        },
+        "9": {
+          "box": [
+            120,
+            0,
+            128,
+            8
+          ],
+          "source": "AREA19/D208.GAM",
+          "offset": 13748,
+          "bank_sha1": "a7b2161c0a1a49705421789d5d1cf570a11e323f"
+        },
+        "A": {
+          "box": [
+            128,
+            0,
+            136,
+            8
+          ],
+          "source": "AREA19/D208.GAM",
+          "offset": 13748,
+          "bank_sha1": "a7b2161c0a1a49705421789d5d1cf570a11e323f"
+        },
+        "B": {
+          "box": [
+            136,
+            0,
+            144,
+            8
+          ],
+          "source": "AREA19/D208.GAM",
+          "offset": 13748,
+          "bank_sha1": "a7b2161c0a1a49705421789d5d1cf570a11e323f"
+        },
+        "C": {
+          "box": [
+            144,
+            0,
+            152,
+            8
+          ],
+          "source": "AREA19/D208.GAM",
+          "offset": 13748,
+          "bank_sha1": "a7b2161c0a1a49705421789d5d1cf570a11e323f"
+        },
+        "D": {
+          "box": [
+            152,
+            0,
+            160,
+            8
+          ],
+          "source": "AREA19/D208.GAM",
+          "offset": 13748,
+          "bank_sha1": "a7b2161c0a1a49705421789d5d1cf570a11e323f"
+        },
+        "E": {
+          "box": [
+            160,
+            0,
+            168,
+            8
+          ],
+          "source": "AREA19/D208.GAM",
+          "offset": 13748,
+          "bank_sha1": "a7b2161c0a1a49705421789d5d1cf570a11e323f"
+        },
+        "F": {
+          "box": [
+            168,
+            0,
+            176,
+            8
+          ],
+          "source": "AREA19/D208.GAM",
+          "offset": 13748,
+          "bank_sha1": "a7b2161c0a1a49705421789d5d1cf570a11e323f"
+        },
+        "G": {
+          "box": [
+            176,
+            0,
+            184,
+            8
+          ],
+          "source": "AREA19/D208.GAM",
+          "offset": 13748,
+          "bank_sha1": "a7b2161c0a1a49705421789d5d1cf570a11e323f"
+        },
+        "H": {
+          "box": [
+            184,
+            0,
+            192,
+            8
+          ],
+          "source": "AREA19/D208.GAM",
+          "offset": 13748,
+          "bank_sha1": "a7b2161c0a1a49705421789d5d1cf570a11e323f"
+        },
+        "I": {
+          "box": [
+            192,
+            0,
+            200,
+            8
+          ],
+          "source": "AREA19/D208.GAM",
+          "offset": 13748,
+          "bank_sha1": "a7b2161c0a1a49705421789d5d1cf570a11e323f"
+        },
+        "J": {
+          "box": [
+            200,
+            0,
+            208,
+            8
+          ],
+          "source": "AREA19/D208.GAM",
+          "offset": 13748,
+          "bank_sha1": "a7b2161c0a1a49705421789d5d1cf570a11e323f"
+        },
+        "K": {
+          "box": [
+            208,
+            0,
+            216,
+            8
+          ],
+          "source": "AREA19/D208.GAM",
+          "offset": 13748,
+          "bank_sha1": "a7b2161c0a1a49705421789d5d1cf570a11e323f"
+        },
+        "L": {
+          "box": [
+            216,
+            0,
+            224,
+            8
+          ],
+          "source": "AREA19/D208.GAM",
+          "offset": 13748,
+          "bank_sha1": "a7b2161c0a1a49705421789d5d1cf570a11e323f"
+        },
+        "M": {
+          "box": [
+            224,
+            0,
+            232,
+            8
+          ],
+          "source": "AREA19/D208.GAM",
+          "offset": 13748,
+          "bank_sha1": "a7b2161c0a1a49705421789d5d1cf570a11e323f"
+        },
+        "N": {
+          "box": [
+            232,
+            0,
+            240,
+            8
+          ],
+          "source": "AREA19/D208.GAM",
+          "offset": 13748,
+          "bank_sha1": "a7b2161c0a1a49705421789d5d1cf570a11e323f"
+        },
+        "O": {
+          "box": [
+            240,
+            0,
+            248,
+            8
+          ],
+          "source": "AREA19/D208.GAM",
+          "offset": 13748,
+          "bank_sha1": "a7b2161c0a1a49705421789d5d1cf570a11e323f"
+        },
+        "P": {
+          "box": [
+            248,
+            0,
+            256,
+            8
+          ],
+          "source": "AREA19/D208.GAM",
+          "offset": 13748,
+          "bank_sha1": "a7b2161c0a1a49705421789d5d1cf570a11e323f"
+        },
+        "R": {
+          "box": [
+            256,
+            0,
+            264,
+            8
+          ],
+          "source": "AREA19/D208.GAM",
+          "offset": 13748,
+          "bank_sha1": "a7b2161c0a1a49705421789d5d1cf570a11e323f"
+        },
+        "S": {
+          "box": [
+            264,
+            0,
+            272,
+            8
+          ],
+          "source": "AREA19/D208.GAM",
+          "offset": 13748,
+          "bank_sha1": "a7b2161c0a1a49705421789d5d1cf570a11e323f"
+        },
+        "T": {
+          "box": [
+            272,
+            0,
+            280,
+            8
+          ],
+          "source": "AREA19/D208.GAM",
+          "offset": 13748,
+          "bank_sha1": "a7b2161c0a1a49705421789d5d1cf570a11e323f"
+        },
+        "U": {
+          "box": [
+            280,
+            0,
+            288,
+            8
+          ],
+          "source": "AREA19/D208.GAM",
+          "offset": 13748,
+          "bank_sha1": "a7b2161c0a1a49705421789d5d1cf570a11e323f"
+        },
+        "V": {
+          "box": [
+            288,
+            0,
+            296,
+            8
+          ],
+          "source": "AREA19/D208.GAM",
+          "offset": 13748,
+          "bank_sha1": "a7b2161c0a1a49705421789d5d1cf570a11e323f"
+        },
+        "W": {
+          "box": [
+            296,
+            0,
+            304,
+            8
+          ],
+          "source": "AREA19/D208.GAM",
+          "offset": 13748,
+          "bank_sha1": "a7b2161c0a1a49705421789d5d1cf570a11e323f"
+        },
+        "X": {
+          "box": [
+            304,
+            0,
+            312,
+            8
+          ],
+          "source": "AREA13/D303.GAM",
+          "offset": 17868,
+          "bank_sha1": "caeffb3ff98e7bad19f722c3983ae3f68b121f08"
+        },
+        "Y": {
+          "box": [
+            312,
+            0,
+            320,
+            8
+          ],
+          "source": "AREA19/D208.GAM",
+          "offset": 13748,
+          "bank_sha1": "a7b2161c0a1a49705421789d5d1cf570a11e323f"
+        },
+        "a": {
+          "box": [
+            320,
+            0,
+            328,
+            8
+          ],
+          "source": "AREA19/D208.GAM",
+          "offset": 13748,
+          "bank_sha1": "a7b2161c0a1a49705421789d5d1cf570a11e323f"
+        },
+        "b": {
+          "box": [
+            328,
+            0,
+            336,
+            8
+          ],
+          "source": "AREA19/D208.GAM",
+          "offset": 13748,
+          "bank_sha1": "a7b2161c0a1a49705421789d5d1cf570a11e323f"
+        },
+        "c": {
+          "box": [
+            336,
+            0,
+            344,
+            8
+          ],
+          "source": "AREA19/D208.GAM",
+          "offset": 13748,
+          "bank_sha1": "a7b2161c0a1a49705421789d5d1cf570a11e323f"
+        },
+        "d": {
+          "box": [
+            344,
+            0,
+            352,
+            8
+          ],
+          "source": "AREA19/D208.GAM",
+          "offset": 13748,
+          "bank_sha1": "a7b2161c0a1a49705421789d5d1cf570a11e323f"
+        },
+        "e": {
+          "box": [
+            352,
+            0,
+            360,
+            8
+          ],
+          "source": "AREA19/D208.GAM",
+          "offset": 13748,
+          "bank_sha1": "a7b2161c0a1a49705421789d5d1cf570a11e323f"
+        },
+        "f": {
+          "box": [
+            360,
+            0,
+            368,
+            8
+          ],
+          "source": "AREA19/D208.GAM",
+          "offset": 13748,
+          "bank_sha1": "a7b2161c0a1a49705421789d5d1cf570a11e323f"
+        },
+        "g": {
+          "box": [
+            368,
+            0,
+            376,
+            8
+          ],
+          "source": "AREA19/D208.GAM",
+          "offset": 13748,
+          "bank_sha1": "a7b2161c0a1a49705421789d5d1cf570a11e323f"
+        },
+        "h": {
+          "box": [
+            376,
+            0,
+            384,
+            8
+          ],
+          "source": "AREA19/D208.GAM",
+          "offset": 13748,
+          "bank_sha1": "a7b2161c0a1a49705421789d5d1cf570a11e323f"
+        },
+        "i": {
+          "box": [
+            384,
+            0,
+            392,
+            8
+          ],
+          "source": "AREA19/D208.GAM",
+          "offset": 13748,
+          "bank_sha1": "a7b2161c0a1a49705421789d5d1cf570a11e323f"
+        },
+        "j": {
+          "box": [
+            392,
+            0,
+            400,
+            8
+          ],
+          "source": "AREA19/D208.GAM",
+          "offset": 13748,
+          "bank_sha1": "a7b2161c0a1a49705421789d5d1cf570a11e323f"
+        },
+        "k": {
+          "box": [
+            400,
+            0,
+            408,
+            8
+          ],
+          "source": "AREA19/D208.GAM",
+          "offset": 13748,
+          "bank_sha1": "a7b2161c0a1a49705421789d5d1cf570a11e323f"
+        },
+        "l": {
+          "box": [
+            408,
+            0,
+            416,
+            8
+          ],
+          "source": "AREA19/D208.GAM",
+          "offset": 13748,
+          "bank_sha1": "a7b2161c0a1a49705421789d5d1cf570a11e323f"
+        },
+        "m": {
+          "box": [
+            416,
+            0,
+            424,
+            8
+          ],
+          "source": "AREA19/D208.GAM",
+          "offset": 13748,
+          "bank_sha1": "a7b2161c0a1a49705421789d5d1cf570a11e323f"
+        },
+        "n": {
+          "box": [
+            424,
+            0,
+            432,
+            8
+          ],
+          "source": "AREA19/D208.GAM",
+          "offset": 13748,
+          "bank_sha1": "a7b2161c0a1a49705421789d5d1cf570a11e323f"
+        },
+        "o": {
+          "box": [
+            432,
+            0,
+            440,
+            8
+          ],
+          "source": "AREA19/D208.GAM",
+          "offset": 13748,
+          "bank_sha1": "a7b2161c0a1a49705421789d5d1cf570a11e323f"
+        },
+        "p": {
+          "box": [
+            440,
+            0,
+            448,
+            8
+          ],
+          "source": "AREA19/D208.GAM",
+          "offset": 13748,
+          "bank_sha1": "a7b2161c0a1a49705421789d5d1cf570a11e323f"
+        },
+        "q": {
+          "box": [
+            448,
+            0,
+            456,
+            8
+          ],
+          "source": "AREA19/D208.GAM",
+          "offset": 13748,
+          "bank_sha1": "a7b2161c0a1a49705421789d5d1cf570a11e323f"
+        },
+        "r": {
+          "box": [
+            456,
+            0,
+            464,
+            8
+          ],
+          "source": "AREA19/D208.GAM",
+          "offset": 13748,
+          "bank_sha1": "a7b2161c0a1a49705421789d5d1cf570a11e323f"
+        },
+        "s": {
+          "box": [
+            464,
+            0,
+            472,
+            8
+          ],
+          "source": "AREA19/D208.GAM",
+          "offset": 13748,
+          "bank_sha1": "a7b2161c0a1a49705421789d5d1cf570a11e323f"
+        },
+        "t": {
+          "box": [
+            472,
+            0,
+            480,
+            8
+          ],
+          "source": "AREA19/D208.GAM",
+          "offset": 13748,
+          "bank_sha1": "a7b2161c0a1a49705421789d5d1cf570a11e323f"
+        },
+        "u": {
+          "box": [
+            480,
+            0,
+            488,
+            8
+          ],
+          "source": "AREA19/D208.GAM",
+          "offset": 13748,
+          "bank_sha1": "a7b2161c0a1a49705421789d5d1cf570a11e323f"
+        },
+        "v": {
+          "box": [
+            488,
+            0,
+            496,
+            8
+          ],
+          "source": "AREA19/D208.GAM",
+          "offset": 13748,
+          "bank_sha1": "a7b2161c0a1a49705421789d5d1cf570a11e323f"
+        },
+        "w": {
+          "box": [
+            496,
+            0,
+            504,
+            8
+          ],
+          "source": "AREA19/D208.GAM",
+          "offset": 13748,
+          "bank_sha1": "a7b2161c0a1a49705421789d5d1cf570a11e323f"
+        },
+        "x": {
+          "box": [
+            504,
+            0,
+            512,
+            8
+          ],
+          "source": "AREA19/D208.GAM",
+          "offset": 13748,
+          "bank_sha1": "a7b2161c0a1a49705421789d5d1cf570a11e323f"
+        },
+        "y": {
+          "box": [
+            512,
+            0,
+            520,
+            8
+          ],
+          "source": "AREA19/D208.GAM",
+          "offset": 13748,
+          "bank_sha1": "a7b2161c0a1a49705421789d5d1cf570a11e323f"
+        },
+        "z": {
+          "box": [
+            520,
+            0,
+            528,
+            8
+          ],
+          "source": "AREA19/D208.GAM",
+          "offset": 13748,
+          "bank_sha1": "a7b2161c0a1a49705421789d5d1cf570a11e323f"
+        }
+      }
+    },
+    "16": {
+      "image": "english-16.png",
+      "glyphs": {
+        " ": {
+          "box": [
+            0,
+            0,
+            8,
+            16
+          ],
+          "source": "AREA19/D208.GAM",
+          "offset": 13748,
+          "bank_sha1": "a7b2161c0a1a49705421789d5d1cf570a11e323f"
+        },
+        "!": {
+          "box": [
+            8,
+            0,
+            16,
+            16
+          ],
+          "source": "AREA19/D208.GAM",
+          "offset": 13748,
+          "bank_sha1": "a7b2161c0a1a49705421789d5d1cf570a11e323f"
+        },
+        "\"": {
+          "box": [
+            16,
+            0,
+            24,
+            16
+          ],
+          "source": "AREA19/D208.GAM",
+          "offset": 13748,
+          "bank_sha1": "a7b2161c0a1a49705421789d5d1cf570a11e323f"
+        },
+        "'": {
+          "box": [
+            24,
+            0,
+            32,
+            16
+          ],
+          "source": "AREA19/D208.GAM",
+          "offset": 13748,
+          "bank_sha1": "a7b2161c0a1a49705421789d5d1cf570a11e323f"
+        },
+        "(": {
+          "box": [
+            32,
+            0,
+            40,
+            16
+          ],
+          "source": "AREA19/D109.GAM",
+          "offset": 7100,
+          "bank_sha1": "102c54213965d0c1be73bd3a4a41d599cecf2054"
+        },
+        ")": {
+          "box": [
+            40,
+            0,
+            48,
+            16
+          ],
+          "source": "AREA19/D109.GAM",
+          "offset": 7100,
+          "bank_sha1": "102c54213965d0c1be73bd3a4a41d599cecf2054"
+        },
+        "*": {
+          "box": [
+            48,
+            0,
+            56,
+            16
+          ],
+          "source": "AREA19/D208.GAM",
+          "offset": 13748,
+          "bank_sha1": "a7b2161c0a1a49705421789d5d1cf570a11e323f"
+        },
+        ",": {
+          "box": [
+            56,
+            0,
+            64,
+            16
+          ],
+          "source": "AREA19/D208.GAM",
+          "offset": 13748,
+          "bank_sha1": "a7b2161c0a1a49705421789d5d1cf570a11e323f"
+        },
+        "-": {
+          "box": [
+            64,
+            0,
+            72,
+            16
+          ],
+          "source": "AREA19/D208.GAM",
+          "offset": 13748,
+          "bank_sha1": "a7b2161c0a1a49705421789d5d1cf570a11e323f"
+        },
+        ".": {
+          "box": [
+            72,
+            0,
+            80,
+            16
+          ],
+          "source": "AREA19/D208.GAM",
+          "offset": 13748,
+          "bank_sha1": "a7b2161c0a1a49705421789d5d1cf570a11e323f"
+        },
+        "0": {
+          "box": [
+            80,
+            0,
+            88,
+            16
+          ],
+          "source": "AREA19/D208.GAM",
+          "offset": 13748,
+          "bank_sha1": "a7b2161c0a1a49705421789d5d1cf570a11e323f"
+        },
+        "1": {
+          "box": [
+            88,
+            0,
+            96,
+            16
+          ],
+          "source": "AREA19/D208.GAM",
+          "offset": 13748,
+          "bank_sha1": "a7b2161c0a1a49705421789d5d1cf570a11e323f"
+        },
+        "2": {
+          "box": [
+            96,
+            0,
+            104,
+            16
+          ],
+          "source": "AREA16/A003.GAM",
+          "offset": 37644,
+          "bank_sha1": "1c59c1de5624b2b0033fd96a0f66e57b2a968962"
+        },
+        "3": {
+          "box": [
+            104,
+            0,
+            112,
+            16
+          ],
+          "source": "AREA11/A002.GAM",
+          "offset": 43424,
+          "bank_sha1": "4ab38dd376922b1bf75de3e2b74da50243b5c620"
+        },
+        "4": {
+          "box": [
+            112,
+            0,
+            120,
+            16
+          ],
+          "source": "AREA07/A008.GAM",
+          "offset": 83120,
+          "bank_sha1": "0c8b8f2835fe25e835f6a397c91236fc58e5ecef"
+        },
+        "5": {
+          "box": [
+            120,
+            0,
+            128,
+            16
+          ],
+          "source": "AREA19/D109.GAM",
+          "offset": 7100,
+          "bank_sha1": "102c54213965d0c1be73bd3a4a41d599cecf2054"
+        },
+        "6": {
+          "box": [
+            128,
+            0,
+            136,
+            16
+          ],
+          "source": "AREA07/A008.GAM",
+          "offset": 83120,
+          "bank_sha1": "0c8b8f2835fe25e835f6a397c91236fc58e5ecef"
+        },
+        "7": {
+          "box": [
+            136,
+            0,
+            144,
+            16
+          ],
+          "source": "AREA19/D208.GAM",
+          "offset": 13748,
+          "bank_sha1": "a7b2161c0a1a49705421789d5d1cf570a11e323f"
+        },
+        "8": {
+          "box": [
+            144,
+            0,
+            152,
+            16
+          ],
+          "source": "AREA07/A008.GAM",
+          "offset": 83120,
+          "bank_sha1": "0c8b8f2835fe25e835f6a397c91236fc58e5ecef"
+        },
+        "9": {
+          "box": [
+            152,
+            0,
+            160,
+            16
+          ],
+          "source": "AREA07/A008.GAM",
+          "offset": 83120,
+          "bank_sha1": "0c8b8f2835fe25e835f6a397c91236fc58e5ecef"
+        },
+        "?": {
+          "box": [
+            160,
+            0,
+            168,
+            16
+          ],
+          "source": "AREA19/D208.GAM",
+          "offset": 13748,
+          "bank_sha1": "a7b2161c0a1a49705421789d5d1cf570a11e323f"
+        },
+        "A": {
+          "box": [
+            168,
+            0,
+            176,
+            16
+          ],
+          "source": "AREA19/D208.GAM",
+          "offset": 13748,
+          "bank_sha1": "a7b2161c0a1a49705421789d5d1cf570a11e323f"
+        },
+        "B": {
+          "box": [
+            176,
+            0,
+            184,
+            16
+          ],
+          "source": "AREA19/D208.GAM",
+          "offset": 13748,
+          "bank_sha1": "a7b2161c0a1a49705421789d5d1cf570a11e323f"
+        },
+        "C": {
+          "box": [
+            184,
+            0,
+            192,
+            16
+          ],
+          "source": "AREA19/D208.GAM",
+          "offset": 13748,
+          "bank_sha1": "a7b2161c0a1a49705421789d5d1cf570a11e323f"
+        },
+        "D": {
+          "box": [
+            192,
+            0,
+            200,
+            16
+          ],
+          "source": "AREA19/D208.GAM",
+          "offset": 13748,
+          "bank_sha1": "a7b2161c0a1a49705421789d5d1cf570a11e323f"
+        },
+        "E": {
+          "box": [
+            200,
+            0,
+            208,
+            16
+          ],
+          "source": "AREA19/D208.GAM",
+          "offset": 13748,
+          "bank_sha1": "a7b2161c0a1a49705421789d5d1cf570a11e323f"
+        },
+        "F": {
+          "box": [
+            208,
+            0,
+            216,
+            16
+          ],
+          "source": "AREA19/D208.GAM",
+          "offset": 13748,
+          "bank_sha1": "a7b2161c0a1a49705421789d5d1cf570a11e323f"
+        },
+        "G": {
+          "box": [
+            216,
+            0,
+            224,
+            16
+          ],
+          "source": "AREA19/D208.GAM",
+          "offset": 13748,
+          "bank_sha1": "a7b2161c0a1a49705421789d5d1cf570a11e323f"
+        },
+        "H": {
+          "box": [
+            224,
+            0,
+            232,
+            16
+          ],
+          "source": "AREA19/D208.GAM",
+          "offset": 13748,
+          "bank_sha1": "a7b2161c0a1a49705421789d5d1cf570a11e323f"
+        },
+        "I": {
+          "box": [
+            232,
+            0,
+            240,
+            16
+          ],
+          "source": "AREA19/D208.GAM",
+          "offset": 13748,
+          "bank_sha1": "a7b2161c0a1a49705421789d5d1cf570a11e323f"
+        },
+        "J": {
+          "box": [
+            240,
+            0,
+            248,
+            16
+          ],
+          "source": "AREA18/A003.GAM",
+          "offset": 37644,
+          "bank_sha1": "0a37bb8e522aa0f474d55caeb52210d4588f2fe9"
+        },
+        "K": {
+          "box": [
+            248,
+            0,
+            256,
+            16
+          ],
+          "source": "AREA19/D208.GAM",
+          "offset": 13748,
+          "bank_sha1": "a7b2161c0a1a49705421789d5d1cf570a11e323f"
+        },
+        "L": {
+          "box": [
+            256,
+            0,
+            264,
+            16
+          ],
+          "source": "AREA19/D208.GAM",
+          "offset": 13748,
+          "bank_sha1": "a7b2161c0a1a49705421789d5d1cf570a11e323f"
+        },
+        "M": {
+          "box": [
+            264,
+            0,
+            272,
+            16
+          ],
+          "source": "AREA19/D208.GAM",
+          "offset": 13748,
+          "bank_sha1": "a7b2161c0a1a49705421789d5d1cf570a11e323f"
+        },
+        "N": {
+          "box": [
+            272,
+            0,
+            280,
+            16
+          ],
+          "source": "AREA19/D208.GAM",
+          "offset": 13748,
+          "bank_sha1": "a7b2161c0a1a49705421789d5d1cf570a11e323f"
+        },
+        "O": {
+          "box": [
+            280,
+            0,
+            288,
+            16
+          ],
+          "source": "AREA19/D208.GAM",
+          "offset": 13748,
+          "bank_sha1": "a7b2161c0a1a49705421789d5d1cf570a11e323f"
+        },
+        "P": {
+          "box": [
+            288,
+            0,
+            296,
+            16
+          ],
+          "source": "AREA19/D208.GAM",
+          "offset": 13748,
+          "bank_sha1": "a7b2161c0a1a49705421789d5d1cf570a11e323f"
+        },
+        "R": {
+          "box": [
+            296,
+            0,
+            304,
+            16
+          ],
+          "source": "AREA19/D208.GAM",
+          "offset": 13748,
+          "bank_sha1": "a7b2161c0a1a49705421789d5d1cf570a11e323f"
+        },
+        "S": {
+          "box": [
+            304,
+            0,
+            312,
+            16
+          ],
+          "source": "AREA19/D208.GAM",
+          "offset": 13748,
+          "bank_sha1": "a7b2161c0a1a49705421789d5d1cf570a11e323f"
+        },
+        "T": {
+          "box": [
+            312,
+            0,
+            320,
+            16
+          ],
+          "source": "AREA19/D208.GAM",
+          "offset": 13748,
+          "bank_sha1": "a7b2161c0a1a49705421789d5d1cf570a11e323f"
+        },
+        "U": {
+          "box": [
+            320,
+            0,
+            328,
+            16
+          ],
+          "source": "AREA19/D208.GAM",
+          "offset": 13748,
+          "bank_sha1": "a7b2161c0a1a49705421789d5d1cf570a11e323f"
+        },
+        "V": {
+          "box": [
+            328,
+            0,
+            336,
+            16
+          ],
+          "source": "AREA19/D208.GAM",
+          "offset": 13748,
+          "bank_sha1": "a7b2161c0a1a49705421789d5d1cf570a11e323f"
+        },
+        "W": {
+          "box": [
+            336,
+            0,
+            344,
+            16
+          ],
+          "source": "AREA19/D208.GAM",
+          "offset": 13748,
+          "bank_sha1": "a7b2161c0a1a49705421789d5d1cf570a11e323f"
+        },
+        "Y": {
+          "box": [
+            344,
+            0,
+            352,
+            16
+          ],
+          "source": "AREA19/D208.GAM",
+          "offset": 13748,
+          "bank_sha1": "a7b2161c0a1a49705421789d5d1cf570a11e323f"
+        },
+        "Z": {
+          "box": [
+            352,
+            0,
+            360,
+            16
+          ],
+          "source": "AREA19/D208.GAM",
+          "offset": 13748,
+          "bank_sha1": "a7b2161c0a1a49705421789d5d1cf570a11e323f"
+        },
+        "a": {
+          "box": [
+            360,
+            0,
+            368,
+            16
+          ],
+          "source": "AREA19/D208.GAM",
+          "offset": 13748,
+          "bank_sha1": "a7b2161c0a1a49705421789d5d1cf570a11e323f"
+        },
+        "b": {
+          "box": [
+            368,
+            0,
+            376,
+            16
+          ],
+          "source": "AREA19/D208.GAM",
+          "offset": 13748,
+          "bank_sha1": "a7b2161c0a1a49705421789d5d1cf570a11e323f"
+        },
+        "c": {
+          "box": [
+            376,
+            0,
+            384,
+            16
+          ],
+          "source": "AREA19/D208.GAM",
+          "offset": 13748,
+          "bank_sha1": "a7b2161c0a1a49705421789d5d1cf570a11e323f"
+        },
+        "d": {
+          "box": [
+            384,
+            0,
+            392,
+            16
+          ],
+          "source": "AREA19/D208.GAM",
+          "offset": 13748,
+          "bank_sha1": "a7b2161c0a1a49705421789d5d1cf570a11e323f"
+        },
+        "e": {
+          "box": [
+            392,
+            0,
+            400,
+            16
+          ],
+          "source": "AREA19/D208.GAM",
+          "offset": 13748,
+          "bank_sha1": "a7b2161c0a1a49705421789d5d1cf570a11e323f"
+        },
+        "f": {
+          "box": [
+            400,
+            0,
+            408,
+            16
+          ],
+          "source": "AREA19/D208.GAM",
+          "offset": 13748,
+          "bank_sha1": "a7b2161c0a1a49705421789d5d1cf570a11e323f"
+        },
+        "g": {
+          "box": [
+            408,
+            0,
+            416,
+            16
+          ],
+          "source": "AREA19/D208.GAM",
+          "offset": 13748,
+          "bank_sha1": "a7b2161c0a1a49705421789d5d1cf570a11e323f"
+        },
+        "h": {
+          "box": [
+            416,
+            0,
+            424,
+            16
+          ],
+          "source": "AREA19/D208.GAM",
+          "offset": 13748,
+          "bank_sha1": "a7b2161c0a1a49705421789d5d1cf570a11e323f"
+        },
+        "i": {
+          "box": [
+            424,
+            0,
+            432,
+            16
+          ],
+          "source": "AREA19/D208.GAM",
+          "offset": 13748,
+          "bank_sha1": "a7b2161c0a1a49705421789d5d1cf570a11e323f"
+        },
+        "j": {
+          "box": [
+            432,
+            0,
+            440,
+            16
+          ],
+          "source": "AREA19/D208.GAM",
+          "offset": 13748,
+          "bank_sha1": "a7b2161c0a1a49705421789d5d1cf570a11e323f"
+        },
+        "k": {
+          "box": [
+            440,
+            0,
+            448,
+            16
+          ],
+          "source": "AREA19/D208.GAM",
+          "offset": 13748,
+          "bank_sha1": "a7b2161c0a1a49705421789d5d1cf570a11e323f"
+        },
+        "l": {
+          "box": [
+            448,
+            0,
+            456,
+            16
+          ],
+          "source": "AREA19/D208.GAM",
+          "offset": 13748,
+          "bank_sha1": "a7b2161c0a1a49705421789d5d1cf570a11e323f"
+        },
+        "m": {
+          "box": [
+            456,
+            0,
+            464,
+            16
+          ],
+          "source": "AREA19/D208.GAM",
+          "offset": 13748,
+          "bank_sha1": "a7b2161c0a1a49705421789d5d1cf570a11e323f"
+        },
+        "n": {
+          "box": [
+            464,
+            0,
+            472,
+            16
+          ],
+          "source": "AREA19/D208.GAM",
+          "offset": 13748,
+          "bank_sha1": "a7b2161c0a1a49705421789d5d1cf570a11e323f"
+        },
+        "o": {
+          "box": [
+            472,
+            0,
+            480,
+            16
+          ],
+          "source": "AREA19/D208.GAM",
+          "offset": 13748,
+          "bank_sha1": "a7b2161c0a1a49705421789d5d1cf570a11e323f"
+        },
+        "p": {
+          "box": [
+            480,
+            0,
+            488,
+            16
+          ],
+          "source": "AREA19/D208.GAM",
+          "offset": 13748,
+          "bank_sha1": "a7b2161c0a1a49705421789d5d1cf570a11e323f"
+        },
+        "q": {
+          "box": [
+            488,
+            0,
+            496,
+            16
+          ],
+          "source": "AREA19/D208.GAM",
+          "offset": 13748,
+          "bank_sha1": "a7b2161c0a1a49705421789d5d1cf570a11e323f"
+        },
+        "r": {
+          "box": [
+            496,
+            0,
+            504,
+            16
+          ],
+          "source": "AREA19/D208.GAM",
+          "offset": 13748,
+          "bank_sha1": "a7b2161c0a1a49705421789d5d1cf570a11e323f"
+        },
+        "s": {
+          "box": [
+            504,
+            0,
+            512,
+            16
+          ],
+          "source": "AREA19/D208.GAM",
+          "offset": 13748,
+          "bank_sha1": "a7b2161c0a1a49705421789d5d1cf570a11e323f"
+        },
+        "t": {
+          "box": [
+            512,
+            0,
+            520,
+            16
+          ],
+          "source": "AREA19/D208.GAM",
+          "offset": 13748,
+          "bank_sha1": "a7b2161c0a1a49705421789d5d1cf570a11e323f"
+        },
+        "u": {
+          "box": [
+            520,
+            0,
+            528,
+            16
+          ],
+          "source": "AREA19/D208.GAM",
+          "offset": 13748,
+          "bank_sha1": "a7b2161c0a1a49705421789d5d1cf570a11e323f"
+        },
+        "v": {
+          "box": [
+            528,
+            0,
+            536,
+            16
+          ],
+          "source": "AREA19/D208.GAM",
+          "offset": 13748,
+          "bank_sha1": "a7b2161c0a1a49705421789d5d1cf570a11e323f"
+        },
+        "w": {
+          "box": [
+            536,
+            0,
+            544,
+            16
+          ],
+          "source": "AREA19/D208.GAM",
+          "offset": 13748,
+          "bank_sha1": "a7b2161c0a1a49705421789d5d1cf570a11e323f"
+        },
+        "x": {
+          "box": [
+            544,
+            0,
+            552,
+            16
+          ],
+          "source": "AREA19/D208.GAM",
+          "offset": 13748,
+          "bank_sha1": "a7b2161c0a1a49705421789d5d1cf570a11e323f"
+        },
+        "y": {
+          "box": [
+            552,
+            0,
+            560,
+            16
+          ],
+          "source": "AREA19/D208.GAM",
+          "offset": 13748,
+          "bank_sha1": "a7b2161c0a1a49705421789d5d1cf570a11e323f"
+        }
+      }
+    },
+    "24": {
+      "image": "english-24.png",
+      "glyphs": {
+        "!": {
+          "box": [
+            0,
+            0,
+            16,
+            24
+          ],
+          "source": "AREA19/D208.GAM",
+          "offset": 70988,
+          "bank_sha1": "b334b1ce53f8f03f0082aef48c1db5460dd844b2"
+        },
+        "'": {
+          "box": [
+            16,
+            0,
+            32,
+            24
+          ],
+          "source": "AREA19/D208.GAM",
+          "offset": 70988,
+          "bank_sha1": "b334b1ce53f8f03f0082aef48c1db5460dd844b2"
+        },
+        "+": {
+          "box": [
+            32,
+            0,
+            48,
+            24
+          ],
+          "source": "AREA19/D208.GAM",
+          "offset": 70988,
+          "bank_sha1": "b334b1ce53f8f03f0082aef48c1db5460dd844b2"
+        },
+        ",": {
+          "box": [
+            48,
+            0,
+            64,
+            24
+          ],
+          "source": "AREA19/D208.GAM",
+          "offset": 70988,
+          "bank_sha1": "b334b1ce53f8f03f0082aef48c1db5460dd844b2"
+        },
+        ".": {
+          "box": [
+            64,
+            0,
+            80,
+            24
+          ],
+          "source": "AREA19/D208.GAM",
+          "offset": 70988,
+          "bank_sha1": "b334b1ce53f8f03f0082aef48c1db5460dd844b2"
+        },
+        "0": {
+          "box": [
+            80,
+            0,
+            96,
+            24
+          ],
+          "source": "AREA19/D208.GAM",
+          "offset": 70988,
+          "bank_sha1": "b334b1ce53f8f03f0082aef48c1db5460dd844b2"
+        },
+        "1": {
+          "box": [
+            96,
+            0,
+            112,
+            24
+          ],
+          "source": "AREA19/D208.GAM",
+          "offset": 70988,
+          "bank_sha1": "b334b1ce53f8f03f0082aef48c1db5460dd844b2"
+        },
+        "5": {
+          "box": [
+            112,
+            0,
+            128,
+            24
+          ],
+          "source": "AREA19/D208.GAM",
+          "offset": 70988,
+          "bank_sha1": "b334b1ce53f8f03f0082aef48c1db5460dd844b2"
+        },
+        "8": {
+          "box": [
+            128,
+            0,
+            144,
+            24
+          ],
+          "source": "AREA19/D208.GAM",
+          "offset": 70988,
+          "bank_sha1": "b334b1ce53f8f03f0082aef48c1db5460dd844b2"
+        },
+        "=": {
+          "box": [
+            144,
+            0,
+            160,
+            24
+          ],
+          "source": "AREA19/D208.GAM",
+          "offset": 70988,
+          "bank_sha1": "b334b1ce53f8f03f0082aef48c1db5460dd844b2"
+        },
+        "?": {
+          "box": [
+            160,
+            0,
+            176,
+            24
+          ],
+          "source": "AREA19/D208.GAM",
+          "offset": 70988,
+          "bank_sha1": "b334b1ce53f8f03f0082aef48c1db5460dd844b2"
+        },
+        "A": {
+          "box": [
+            176,
+            0,
+            192,
+            24
+          ],
+          "source": "AREA19/D208.GAM",
+          "offset": 70988,
+          "bank_sha1": "b334b1ce53f8f03f0082aef48c1db5460dd844b2"
+        },
+        "B": {
+          "box": [
+            192,
+            0,
+            208,
+            24
+          ],
+          "source": "AREA19/D208.GAM",
+          "offset": 70988,
+          "bank_sha1": "b334b1ce53f8f03f0082aef48c1db5460dd844b2"
+        },
+        "C": {
+          "box": [
+            208,
+            0,
+            224,
+            24
+          ],
+          "source": "AREA19/D208.GAM",
+          "offset": 70988,
+          "bank_sha1": "b334b1ce53f8f03f0082aef48c1db5460dd844b2"
+        },
+        "D": {
+          "box": [
+            224,
+            0,
+            240,
+            24
+          ],
+          "source": "AREA19/D208.GAM",
+          "offset": 70988,
+          "bank_sha1": "b334b1ce53f8f03f0082aef48c1db5460dd844b2"
+        },
+        "E": {
+          "box": [
+            240,
+            0,
+            256,
+            24
+          ],
+          "source": "AREA19/D208.GAM",
+          "offset": 70988,
+          "bank_sha1": "b334b1ce53f8f03f0082aef48c1db5460dd844b2"
+        },
+        "F": {
+          "box": [
+            256,
+            0,
+            272,
+            24
+          ],
+          "source": "AREA19/D208.GAM",
+          "offset": 70988,
+          "bank_sha1": "b334b1ce53f8f03f0082aef48c1db5460dd844b2"
+        },
+        "G": {
+          "box": [
+            272,
+            0,
+            288,
+            24
+          ],
+          "source": "AREA19/D208.GAM",
+          "offset": 70988,
+          "bank_sha1": "b334b1ce53f8f03f0082aef48c1db5460dd844b2"
+        },
+        "H": {
+          "box": [
+            288,
+            0,
+            304,
+            24
+          ],
+          "source": "AREA19/D208.GAM",
+          "offset": 70988,
+          "bank_sha1": "b334b1ce53f8f03f0082aef48c1db5460dd844b2"
+        },
+        "I": {
+          "box": [
+            304,
+            0,
+            320,
+            24
+          ],
+          "source": "AREA19/D208.GAM",
+          "offset": 70988,
+          "bank_sha1": "b334b1ce53f8f03f0082aef48c1db5460dd844b2"
+        },
+        "J": {
+          "box": [
+            320,
+            0,
+            336,
+            24
+          ],
+          "source": "AREA19/D208.GAM",
+          "offset": 70988,
+          "bank_sha1": "b334b1ce53f8f03f0082aef48c1db5460dd844b2"
+        },
+        "K": {
+          "box": [
+            336,
+            0,
+            352,
+            24
+          ],
+          "source": "AREA19/D208.GAM",
+          "offset": 70988,
+          "bank_sha1": "b334b1ce53f8f03f0082aef48c1db5460dd844b2"
+        },
+        "L": {
+          "box": [
+            352,
+            0,
+            368,
+            24
+          ],
+          "source": "AREA19/D208.GAM",
+          "offset": 70988,
+          "bank_sha1": "b334b1ce53f8f03f0082aef48c1db5460dd844b2"
+        },
+        "M": {
+          "box": [
+            368,
+            0,
+            384,
+            24
+          ],
+          "source": "AREA19/D208.GAM",
+          "offset": 70988,
+          "bank_sha1": "b334b1ce53f8f03f0082aef48c1db5460dd844b2"
+        },
+        "N": {
+          "box": [
+            384,
+            0,
+            400,
+            24
+          ],
+          "source": "AREA19/D208.GAM",
+          "offset": 70988,
+          "bank_sha1": "b334b1ce53f8f03f0082aef48c1db5460dd844b2"
+        },
+        "O": {
+          "box": [
+            400,
+            0,
+            416,
+            24
+          ],
+          "source": "AREA19/D208.GAM",
+          "offset": 70988,
+          "bank_sha1": "b334b1ce53f8f03f0082aef48c1db5460dd844b2"
+        },
+        "P": {
+          "box": [
+            416,
+            0,
+            432,
+            24
+          ],
+          "source": "AREA19/D208.GAM",
+          "offset": 70988,
+          "bank_sha1": "b334b1ce53f8f03f0082aef48c1db5460dd844b2"
+        },
+        "R": {
+          "box": [
+            432,
+            0,
+            448,
+            24
+          ],
+          "source": "AREA19/D208.GAM",
+          "offset": 70988,
+          "bank_sha1": "b334b1ce53f8f03f0082aef48c1db5460dd844b2"
+        },
+        "S": {
+          "box": [
+            448,
+            0,
+            464,
+            24
+          ],
+          "source": "AREA19/D208.GAM",
+          "offset": 70988,
+          "bank_sha1": "b334b1ce53f8f03f0082aef48c1db5460dd844b2"
+        },
+        "T": {
+          "box": [
+            464,
+            0,
+            480,
+            24
+          ],
+          "source": "AREA19/D208.GAM",
+          "offset": 70988,
+          "bank_sha1": "b334b1ce53f8f03f0082aef48c1db5460dd844b2"
+        },
+        "U": {
+          "box": [
+            480,
+            0,
+            496,
+            24
+          ],
+          "source": "AREA19/D208.GAM",
+          "offset": 70988,
+          "bank_sha1": "b334b1ce53f8f03f0082aef48c1db5460dd844b2"
+        },
+        "V": {
+          "box": [
+            496,
+            0,
+            512,
+            24
+          ],
+          "source": "AREA19/D208.GAM",
+          "offset": 70988,
+          "bank_sha1": "b334b1ce53f8f03f0082aef48c1db5460dd844b2"
+        },
+        "W": {
+          "box": [
+            512,
+            0,
+            528,
+            24
+          ],
+          "source": "AREA19/D208.GAM",
+          "offset": 70988,
+          "bank_sha1": "b334b1ce53f8f03f0082aef48c1db5460dd844b2"
+        },
+        "Y": {
+          "box": [
+            528,
+            0,
+            544,
+            24
+          ],
+          "source": "AREA19/D208.GAM",
+          "offset": 70988,
+          "bank_sha1": "b334b1ce53f8f03f0082aef48c1db5460dd844b2"
+        },
+        "Z": {
+          "box": [
+            544,
+            0,
+            560,
+            24
+          ],
+          "source": "AREA19/D208.GAM",
+          "offset": 70988,
+          "bank_sha1": "b334b1ce53f8f03f0082aef48c1db5460dd844b2"
+        },
+        "a": {
+          "box": [
+            560,
+            0,
+            576,
+            24
+          ],
+          "source": "AREA19/D208.GAM",
+          "offset": 70988,
+          "bank_sha1": "b334b1ce53f8f03f0082aef48c1db5460dd844b2"
+        },
+        "b": {
+          "box": [
+            576,
+            0,
+            592,
+            24
+          ],
+          "source": "AREA19/D208.GAM",
+          "offset": 70988,
+          "bank_sha1": "b334b1ce53f8f03f0082aef48c1db5460dd844b2"
+        },
+        "c": {
+          "box": [
+            592,
+            0,
+            608,
+            24
+          ],
+          "source": "AREA19/D208.GAM",
+          "offset": 70988,
+          "bank_sha1": "b334b1ce53f8f03f0082aef48c1db5460dd844b2"
+        },
+        "d": {
+          "box": [
+            608,
+            0,
+            624,
+            24
+          ],
+          "source": "AREA19/D208.GAM",
+          "offset": 70988,
+          "bank_sha1": "b334b1ce53f8f03f0082aef48c1db5460dd844b2"
+        },
+        "e": {
+          "box": [
+            624,
+            0,
+            640,
+            24
+          ],
+          "source": "AREA19/D208.GAM",
+          "offset": 70988,
+          "bank_sha1": "b334b1ce53f8f03f0082aef48c1db5460dd844b2"
+        },
+        "f": {
+          "box": [
+            640,
+            0,
+            656,
+            24
+          ],
+          "source": "AREA19/D208.GAM",
+          "offset": 70988,
+          "bank_sha1": "b334b1ce53f8f03f0082aef48c1db5460dd844b2"
+        },
+        "g": {
+          "box": [
+            656,
+            0,
+            672,
+            24
+          ],
+          "source": "AREA19/D208.GAM",
+          "offset": 70988,
+          "bank_sha1": "b334b1ce53f8f03f0082aef48c1db5460dd844b2"
+        },
+        "h": {
+          "box": [
+            672,
+            0,
+            688,
+            24
+          ],
+          "source": "AREA19/D208.GAM",
+          "offset": 70988,
+          "bank_sha1": "b334b1ce53f8f03f0082aef48c1db5460dd844b2"
+        },
+        "i": {
+          "box": [
+            688,
+            0,
+            704,
+            24
+          ],
+          "source": "AREA19/D208.GAM",
+          "offset": 70988,
+          "bank_sha1": "b334b1ce53f8f03f0082aef48c1db5460dd844b2"
+        },
+        "k": {
+          "box": [
+            704,
+            0,
+            720,
+            24
+          ],
+          "source": "AREA19/D208.GAM",
+          "offset": 70988,
+          "bank_sha1": "b334b1ce53f8f03f0082aef48c1db5460dd844b2"
+        },
+        "l": {
+          "box": [
+            720,
+            0,
+            736,
+            24
+          ],
+          "source": "AREA19/D208.GAM",
+          "offset": 70988,
+          "bank_sha1": "b334b1ce53f8f03f0082aef48c1db5460dd844b2"
+        },
+        "m": {
+          "box": [
+            736,
+            0,
+            752,
+            24
+          ],
+          "source": "AREA19/D208.GAM",
+          "offset": 70988,
+          "bank_sha1": "b334b1ce53f8f03f0082aef48c1db5460dd844b2"
+        },
+        "n": {
+          "box": [
+            752,
+            0,
+            768,
+            24
+          ],
+          "source": "AREA19/D208.GAM",
+          "offset": 70988,
+          "bank_sha1": "b334b1ce53f8f03f0082aef48c1db5460dd844b2"
+        },
+        "o": {
+          "box": [
+            768,
+            0,
+            784,
+            24
+          ],
+          "source": "AREA19/D208.GAM",
+          "offset": 70988,
+          "bank_sha1": "b334b1ce53f8f03f0082aef48c1db5460dd844b2"
+        },
+        "p": {
+          "box": [
+            784,
+            0,
+            800,
+            24
+          ],
+          "source": "AREA19/D208.GAM",
+          "offset": 70988,
+          "bank_sha1": "b334b1ce53f8f03f0082aef48c1db5460dd844b2"
+        },
+        "r": {
+          "box": [
+            800,
+            0,
+            816,
+            24
+          ],
+          "source": "AREA19/D208.GAM",
+          "offset": 70988,
+          "bank_sha1": "b334b1ce53f8f03f0082aef48c1db5460dd844b2"
+        },
+        "s": {
+          "box": [
+            816,
+            0,
+            832,
+            24
+          ],
+          "source": "AREA19/D208.GAM",
+          "offset": 70988,
+          "bank_sha1": "b334b1ce53f8f03f0082aef48c1db5460dd844b2"
+        },
+        "t": {
+          "box": [
+            832,
+            0,
+            848,
+            24
+          ],
+          "source": "AREA19/D208.GAM",
+          "offset": 70988,
+          "bank_sha1": "b334b1ce53f8f03f0082aef48c1db5460dd844b2"
+        },
+        "u": {
+          "box": [
+            848,
+            0,
+            864,
+            24
+          ],
+          "source": "AREA19/D208.GAM",
+          "offset": 70988,
+          "bank_sha1": "b334b1ce53f8f03f0082aef48c1db5460dd844b2"
+        },
+        "v": {
+          "box": [
+            864,
+            0,
+            880,
+            24
+          ],
+          "source": "AREA19/D208.GAM",
+          "offset": 70988,
+          "bank_sha1": "b334b1ce53f8f03f0082aef48c1db5460dd844b2"
+        },
+        "w": {
+          "box": [
+            880,
+            0,
+            896,
+            24
+          ],
+          "source": "AREA19/D208.GAM",
+          "offset": 70988,
+          "bank_sha1": "b334b1ce53f8f03f0082aef48c1db5460dd844b2"
+        },
+        "x": {
+          "box": [
+            896,
+            0,
+            912,
+            24
+          ],
+          "source": "AREA19/D208.GAM",
+          "offset": 70988,
+          "bank_sha1": "b334b1ce53f8f03f0082aef48c1db5460dd844b2"
+        },
+        "y": {
+          "box": [
+            912,
+            0,
+            928,
+            24
+          ],
+          "source": "AREA19/D208.GAM",
+          "offset": 70988,
+          "bank_sha1": "b334b1ce53f8f03f0082aef48c1db5460dd844b2"
+        }
+      }
+    }
+  }
+}

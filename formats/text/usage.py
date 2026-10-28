@@ -143,8 +143,15 @@ def attach(wfm, project, source, offset):
     for area, slot in contexts:
         if slot == 1 and len(wfm.dialogues) == 30:
             # 8001F044 reads table[event][area], then the WFM dialogue
-            # directory. Completion still selects this same stream: the
-            # CLEAR banner uses sprites, not title entry zero.
+            # directory. The completion banner also uses the first seven
+            # glyphs directly, matching title entry zero's CLEAR! sequence.
+            if index_zero := wfm.dialogues[0]:
+                glyphs = [word & 0xFFF for word, _ in index_zero.tokens if word < 0xFF00]
+                if glyphs == list(found.unpack('<7H', 0x800705A0)):
+                    references.setdefault(0, []).append(
+                        'Event banner fixed glyph table 800705A0 displays this entry\'s seven glyphs '
+                        'directly. Native object construction checked in AREA01 and AREA02; '
+                        'no event-title directory selection is needed.')
             for event in range(200):
                 pointer = found.word(0x8007113C + event * 4)
                 index = found.unpack('<B', pointer + area)[0]
@@ -169,12 +176,12 @@ def attach(wfm, project, source, offset):
             status = 'referenced'
             evidence = evidence + ['A display-table reference is not proof that every corresponding event/item is reachable.']
         elif title and len(wfm.dialogues) == 30:
-            status = 'not_found'
+            status = 'unknown'
             evidence = ['No event maps to this title entry in AREA01 or AREA02. '
                         'Native selector 8001F044 was checked for all 116 valid area/event/completion combinations.',
                         'The other bank-1 reader loads glyph images, not dialogue entries. '
                         'DSPSUB\'s separate text window selects banks 2/3. '
-                        'This remains a static unused candidate, not a claim about arbitrary modified game states.']
+                        'Other direct glyph paths need checking; a mapping gap alone is not an unused candidate.']
         else:
             status = 'unknown'
             evidence = ['Item/event notice tables were checked. Conversation state, object-supplied indices '

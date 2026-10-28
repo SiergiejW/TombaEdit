@@ -868,6 +868,7 @@ class MainWindow(QMainWindow):
         self.export_action = self.action(file_menu, "Export decoded &file (binary)...", self.export_payload, "Ctrl+E")
         self.raw_action = self.action(file_menu, "Export original disc &file...", self.export_raw)
         self.action(file_menu, "Export &text...", self.export_text, "Ctrl+T")
+        self.action(file_menu, "Search for text...", self.search_text, "Ctrl+Shift+F")
         file_menu.addSeparator()
         self.action(file_menu, "E&xit", self.close, "Alt+F4")
         view = self.menuBar().addMenu("&View")
@@ -1722,6 +1723,38 @@ class MainWindow(QMainWindow):
         item = self.asset_items[(asset.ldar, asset.record_offset)]
         self.area_tree.setCurrentItem(item)
         self.area_tree.scrollToItem(item)
+
+    def search_text(self):
+        if self.project is None:
+            return
+        from formats.text.translation_session import session_for
+        from gui.text_search import TextSearchDialog
+        session = session_for(self.project, self)
+        for popup in self.findChildren(TextSearchDialog):
+            if popup.session is session:
+                popup.show(); popup.raise_(); popup.activateWindow()
+                popup.phrase.setFocus()
+                return
+        popup = TextSearchDialog(self, session, self.open_text_entry)
+        popup.show()
+
+    def open_text_entry(self, bank, index):
+        """Open the exact decoded bank; no section reload or ambiguous filename lookup."""
+        from formats.text.translation_session import session_for
+        for i in range(self.tabs.count()):
+            widget = self.tabs.widget(i)
+            if isinstance(widget, DialogueView) and (widget.bank.source, widget.bank.offset) == (bank.source, bank.offset):
+                viewer = widget
+                break
+        else:
+            viewer = DialogueView(bank.wfm, bank.name, bank.source, bank.offset, session_for(self.project, self))
+            i = self.tabs.addTab(viewer, 'Text · ' + bank.name)
+            self.tabs.setTabToolTip(i, f'{bank.source} @0x{bank.offset:X}')
+        viewer.search.clear()
+        viewer.usage_filter.setCurrentIndex(0)
+        viewer.entries.setCurrentRow(index)
+        viewer.entries.scrollToItem(viewer.entries.item(index))
+        self.tabs.setCurrentIndex(i)
 
     def filter_tree(self, text):
         needle = text.casefold().strip()

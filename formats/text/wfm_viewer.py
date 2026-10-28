@@ -4,7 +4,7 @@ from PyQt6.QtCore import Qt, QSize, pyqtSignal
 from PyQt6.QtGui import QIcon, QPixmap
 from PyQt6.QtWidgets import (QWidget, QVBoxLayout, QHBoxLayout, QLabel, QPushButton, QSplitter, QListWidget,
     QFileDialog, QMessageBox, QLineEdit, QTableWidget, QTableWidgetItem, QAbstractItemView, QInputDialog,
-    QMenu, QComboBox)
+    QMenu, QComboBox, QCheckBox)
 from gui.widgets.image_view import ImageView, text_view, qimage, file_stem
 from gui.widgets.columns import adjustable
 from formats.text import wfm as wfm_module
@@ -39,6 +39,10 @@ class DialogueView(QWidget):
                         'as JSON with the raw words, or as a table.')
         save.clicked.connect(self.export_text)
         bar.addWidget(save)
+        search_all = QPushButton('Search for text...')
+        search_all.setToolTip('Search phrases across every WFM bank on this disc.')
+        search_all.clicked.connect(self.search_all_text)
+        bar.addWidget(search_all)
         translated = QPushButton('Export translations...')
         translated_menu = QMenu(translated)
         translated_menu.addAction('This WFM bank...', lambda: self.export_translations(False))
@@ -56,6 +60,12 @@ class DialogueView(QWidget):
         split.addWidget(self.entries)
         right = QSplitter(Qt.Orientation.Vertical)
         self.rendered = ImageView()
+        self.english_display = QCheckBox('English display')
+        self.english_display.setChecked(True)
+        self.english_display.setToolTip('Show the translation in Tomba lettering as soon as it is available. Uncheck to inspect the original.')
+        self.english_display.toggled.connect(self.refresh_display)
+        self.rendered.tools.addWidget(self.english_display)
+        self._display_key = None
         self.script = text_view("")
         right.addWidget(self.rendered)
         right.addWidget(self.script)
@@ -76,6 +86,7 @@ class DialogueView(QWidget):
     def relist(self):
         """Fill the list of entries from the characters as they are known now."""
         wfm, row = self.wfm, self.entries.currentRow()
+        self._display_key = None
         self.entries.blockSignals(True)
         self.entries.clear()
         for i, d in enumerate(wfm.dialogues):
@@ -102,7 +113,7 @@ class DialogueView(QWidget):
         if index < 0:
             return
         try:
-            self.rendered.set_image(self.wfm.render(index))
+            self.refresh_display()
             self.script.setPlainText(self.wfm.dialogues[index].script())
             dialogue = self.wfm.dialogues[index]
             self.translation.set_text(export.plain(dialogue), dialogue.warning)
@@ -133,6 +144,40 @@ class DialogueView(QWidget):
                 item.setText(f'{getattr(dialogue, "name", f"{i:03d}")} | {marker}{preview}')
                 item.setToolTip(usage.explanation(dialogue) + '\n\n' + original)
         self.filter(self.search.text())
+        self.refresh_display()
+
+    def refresh_display(self):
+        index = self.entries.currentRow()
+        if not 0 <= index < len(self.wfm.dialogues):
+            return
+        original = export.plain(self.wfm.dialogues[index])
+        translated = self.translation.session.translations.get(original) if self.english_display.isChecked() else None
+        key = index, translated
+        if key == self._display_key:
+            return
+        if translated is not None and translated != original:
+            from formats.text.english_preview import render
+            try:
+                image, missing = render(self.wfm, index, translated)
+                self.rendered.setToolTip('English machine translation · Tomba lettering'
+                    + ('\nNo recognised glyph for: ' + ' '.join(sorted(missing)) + ' (shown as ?).' if missing else ''))
+            except (OSError, ValueError, KeyError) as exc:
+                image = self.wfm.render(index)
+                self.rendered.setToolTip('English preview unavailable: ' + str(exc))
+        else:
+            image = self.wfm.render(index)
+            self.rendered.setToolTip('Original text · awaiting translation' if self.english_display.isChecked() else 'Original text')
+        self.rendered.set_image(image, subject=index)
+        self._display_key = key
+
+    def search_all_text(self):
+        host = self.window()
+        if hasattr(host, 'search_text'):
+            host.search_text()
+            return
+        from gui.text_search import TextSearchDialog
+        self.text_search = TextSearchDialog(self, self.translation.session)
+        self.text_search.show()
 
     def export_translations(self, all_banks=False):
         session = self.translation.session

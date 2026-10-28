@@ -1,0 +1,97 @@
+"""English display previews using saved, recognised Tomba ROM glyphs."""
+from collections import Counter
+from functools import lru_cache
+from pathlib import Path
+import json
+import unicodedata
+from PIL import Image, ImageDraw
+
+
+@lru_cache(maxsize=1)
+def fonts():
+    root = Path(__file__).with_name('fonts')
+    metadata = json.loads((root / 'english.json').read_text(encoding='utf8'))
+    result = {}
+    for height, font in metadata['fonts'].items():
+        with Image.open(root / font['image']) as image:
+            result[int(height)] = {char: image.crop(record['box']).convert('RGBA')
+                                   for char, record in font['glyphs'].items()}
+    return result
+
+
+def render(wfm, index, text):
+    """Reflow a translation; never borrow Japanese character positions/control timing.
+
+    Prefer Latin glyphs in this bank, then the closest saved English font.
+    Return the image and characters for which a Tomba question mark was needed.
+    """
+    dialogue = wfm.dialogues[index]
+    heights = Counter(im.height for im in wfm.glyphs if im.height >= 10)
+    target = heights.most_common(1)[0][0] if heights else 16
+    saved = fonts()
+    preferred = min(saved, key=lambda h: abs(h - target))
+    glyphs = dict(saved[preferred])
+    for height in sorted(saved, key=lambda h: abs(h - target)):
+        for char, image in saved[height].items():
+            if char not in glyphs:
+                glyphs[char] = image.resize((max(1, round(image.width * preferred / height)), preferred), Image.Resampling.NEAREST)
+    for char, image in zip(wfm.characters, wfm.glyphs):
+        if char and len(char) == 1 and char.isascii() and image.height == preferred:
+            glyphs[char] = image
+    aliases = str.maketrans({'’': "'", '‘': "'", '“': '"', '”': '"', '–': '-', '—': '-', '…': '...'})
+    text = unicodedata.normalize('NFKC', text).translate(aliases).replace('\r\n', '\n').replace('\r', '\n')
+    bubble = next((args for word, args in dialogue.tokens if word == 0xFFFA), (256, 48))
+    width = max(96, min(1024, bubble[0]))
+    space = max(4, preferred // 3)
+    missing = set()
+
+    def glyph(char):
+        if char.isspace():
+            return Image.new('RGBA', (space, preferred))
+        if char in glyphs:
+            return glyphs[char]
+        # Diacritics can fall back to the corresponding Tomba base letter.
+        base = ''.join(c for c in unicodedata.normalize('NFKD', char) if not unicodedata.combining(c))
+        if base in glyphs:
+            return glyphs[base]
+        missing.add(char)
+        return glyphs['?']
+
+    # Preserve all translated characters and paragraph breaks, wrapping long words too.
+    lines, line, used = [], [], 0
+    import re
+    for token in re.findall(r'\n|[^\S\n]+|[^\s]+', text):
+        if token == '\n':
+            lines.append(line); line, used = [], 0
+            continue
+        images = [glyph(c) for c in token]
+        token_width = sum(im.width for im in images)
+        if line and used + token_width > width and not token.isspace():
+            lines.append(line); line, used = [], 0
+        for image in images:
+            if used + image.width > width and line:
+                lines.append(line); line, used = [], 0
+            line.append(image); used += image.width
+    lines.append(line)
+    # Translation length can differ from the source; paginate at three lines.
+    panels = []
+    for start in range(0, len(lines), 3):
+        page = lines[start:start + 3]
+        height = max(min(bubble[1], 512) + 8, len(page) * (preferred + 2) + 16)
+        panel = Image.new('RGBA', (width + 16, height), (220, 216, 194, 255))
+        draw = ImageDraw.Draw(panel)
+        draw.rectangle((0, 0, panel.width - 1, height - 1), outline=(32, 24, 16), width=2)
+        draw.rectangle((3, 3, panel.width - 4, height - 4), outline=(255, 252, 230))
+        for row, images in enumerate(page):
+            x = 8
+            for image in images:
+                panel.alpha_composite(image, (x, 8 + row * (preferred + 2))); x += image.width
+        panels.append(panel)
+    total_height = sum(p.height for p in panels) + 8 * (len(panels) - 1)
+    if total_height > 16384:
+        raise ValueError('Translated display exceeds preview size limit; the full translation is in the text pane.')
+    result = Image.new('RGBA', (width + 16, total_height))
+    y = 0
+    for panel in panels:
+        result.alpha_composite(panel, (0, y)); y += panel.height + 8
+    return result, missing
