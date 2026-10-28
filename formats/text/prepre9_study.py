@@ -128,6 +128,25 @@ def complete(project, profile):
     if set(scripts) != set(SCRIPTS) or script_hashes != profile.get('scripts_sha1'):
         raise ValueError('The script inventory is incomplete')
 
+    # Neither script-actor class is placed by an APD on this disc. They are
+    # created through the checked scripts. Preserve that premise in the
+    # shipped evidence: editing a placement list must invalidate negatives.
+    from formats.level.apd import parse_apd
+    apd_hashes = {}
+    for groups in project.ldars.values():
+        for group in groups:
+            for asset in group.assets:
+                if asset.kind != 'APD' or not asset.source:
+                    continue
+                data = project.asset_data(asset)
+                apd_hashes[f'{asset.source.path}@{asset.offset:X}'] = hashlib.sha1(data).hexdigest()
+                for placement in parse_apd(data):
+                    if placement.layer == 2 and placement.kind in (0x18, 0x19):
+                        raise ValueError('An APD places an actor outside the checked script initialization paths')
+                    if (placement.layer == 4 and placement.kind == 0x1A
+                            and placement.variant not in {*range(19), 99}):
+                        raise ValueError('A placed signpost uses an untraced selector record')
+
     # Use a conservative union of all loaded script/overlay contexts. This
     # retains more entries than a scene-specific reachability analysis could;
     # a future context restriction must not create a false unused candidate.
@@ -177,7 +196,51 @@ def complete(project, profile):
             'signpost, item/event, script and event-title paths accounted for. Dynamic bounds are conservative. '
             'Possibly unused does not prove game-state unreachability.')
     result['audit_revision'] = 'pure9-complete-selector-audit-v2'
+    result['apd_sha1'] = apd_hashes
     return result
+
+
+def candidate_report(project, profile):
+    """Separate unmatched bank copies from text also selected in another bank.
+
+    Exact decoded-text equality is supporting evidence only: it neither proves
+    the candidate copy is selected nor proves any trigger is reachable in play.
+    """
+    from collections import Counter
+    from formats.text.export import collect, plain
+    from formats.text.usage import _bank_study
+    entries, by_text = [], defaultdict(list)
+    for bank in collect(project):
+        study = _bank_study(project, profile, bank.source, bank.offset)
+        if study is None:
+            raise ValueError('Candidate report bank does not match the checked profile')
+        for index, dialogue in enumerate(bank.wfm.dialogues):
+            usage = study['text'][str(index)]
+            item = dict(source=bank.source, bank_offset=bank.offset, index=index,
+                        text=plain(dialogue), status=usage['status'])
+            entries.append((item, usage))
+            by_text[item['text']].append(item)
+    candidates, counts, unmatched = [], Counter(), set()
+    for item, usage in entries:
+        if item['status'] != 'not_found':
+            continue
+        matches = [other for other in by_text[item['text']]
+                   if other['status'] in ('referenced', 'dynamic')]
+        category = ('referenced_duplicate' if any(m['status'] == 'referenced' for m in matches)
+                    else 'dynamic_duplicate' if matches else 'unmatched_text')
+        counts[category] += 1
+        if not matches:
+            unmatched.add(item['text'])
+        candidates.append(dict(**item, classification='Possibly unused',
+                               comparison=category, matching_entries=matches,
+                               evidence=usage['evidence']))
+    return dict(audit_revision=profile['audit_revision'],
+                entry_numbers='Zero-based, matching the text viewer',
+                proof='Static selector candidates; no entry is confirmed never shown in-game',
+                comparison='Exact decoded original text; control codes and presentation may differ',
+                summary=dict(candidates=len(candidates), confirmed_unused=0,
+                             **counts, distinct_unmatched_texts=len(unmatched)),
+                candidates=candidates)
 
 
 def main():
@@ -191,6 +254,7 @@ def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('image', help='Pure Pure 09 CUE/BIN image, read only')
     parser.add_argument('--write-index', action='store_true', help='Update this exact build in native_text_usage.json')
+    parser.add_argument('--candidate-report', type=Path, help='Write per-entry candidate and duplicate evidence as UTF-8 JSON')
     args = parser.parse_args()
     path = Path(__file__).with_name('native_text_usage.json')
     document = json.loads(path.read_text(encoding='utf8'))
@@ -203,6 +267,10 @@ def main():
     result = complete(project, profile)
     for name, bank in result['banks'].items():
         print(name, dict(Counter(item['status'] for item in bank['text'].values())))
+    if args.candidate_report:
+        report = candidate_report(project, result)
+        args.candidate_report.write_text(json.dumps(report, ensure_ascii=False, indent=2) + '\n', encoding='utf8')
+        print('Candidate evidence:', report['summary'])
     if args.write_index:
         document['builds'][digest] = result
         path.write_text(json.dumps(document, ensure_ascii=False, separators=(',', ':')) + '\n', encoding='utf8')

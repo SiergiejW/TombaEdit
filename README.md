@@ -82,19 +82,32 @@ Unknown glyphs in other banks are shown as **[gXXX]**, rather than question mark
 The entry list contains the full decoded or translated message; scroll sideways
 to read long rows. A native reference study covers the local English/Japanese
 demo, preview and retail builds. Entries marked **Possibly unused** are scoped
-research candidates, including gaps in event-title mappings. PrePre 8 also checks
+research candidates supported by checked display paths. PrePre 8 also checks
 its message-window calls and signpost subtype table. Use the entry filter and hover
 for the evidence. These entries are purple; their text resource and source file
 show a purple **(x possibly unused)** count in the tree when the count is above zero.
-Dynamic conversation selections remain potentially used;
-absence from the audit is an unused candidate, not proof of unreachability.
+Dynamic conversation selections remain potentially used. Only a checked selector
+gap becomes a candidate; missing evidence in a partial audit stays unchecked.
 The status and evidence are included in original and bilingual JSON dumps.
 Computed dialogue indices and other unresolved paths remain **Usage not checked**;
 they are not automatically marked possibly unused. No count is a claim that
-every entry is used. The study validates the executable, code overlays, text bank
-bytes and load bindings before applying its metadata. Changed or unsupported
+every entry is used. The study validates the executable, code overlays, scripts,
+text bank bytes and load bindings before applying its metadata; Pure 9's complete
+audit also validates the APD placement lists. Changed or unsupported
 data stays unchecked. Missing glyphs alone do not make an entry unused.
 See [the local ROM study](docs/text-usage-study.md) for counts and coverage.
+
+**Pure Pure 09 / PrePre 9:** all 413 entries now have static selector results:
+160 display references, 115 conservative dynamic selections and 138 possibly
+unused candidates (29 in AREA01, 109 in AREA02). Both title banks, including
+`CLEAR!`, have display references. The viewer says **Usage checked (static
+selectors)**; this does not assert that every retained trigger is reachable.
+Reproduce the audit with `python -m formats.text.prepre9_study "path/to/Pure Pure 09.cue"`.
+Add `--candidate-report work/pure9-candidate-evidence.json` for per-entry text,
+selector evidence and duplicates. Of the 138 candidate copies, 33 share decoded
+text with a display reference and 3 with a dynamic selection elsewhere; the
+remaining 102 copies contain 92 distinct messages. None is confirmed never
+shown in-game.
 
 The APD **Placements** map overlays objects and sprites at 50% opacity, with
 fully visible, selectable points above them. Scroll to zoom, middle/right-drag

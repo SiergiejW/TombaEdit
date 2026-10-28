@@ -34,6 +34,14 @@ def _study_for(project):
                 for item in project.disc.files if item.path.upper().endswith('.WSS')}
         if project._text_usage_scripts_sha1 != profile['scripts_sha1']:
             return None
+    if 'apd_sha1' in profile:
+        if '_text_usage_apd_sha1' not in project.__dict__:
+            project._text_usage_apd_sha1 = {
+                f'{a.source.path}@{a.offset:X}': hashlib.sha1(project.asset_data(a)).hexdigest()
+                for groups in project.ldars.values() for group in groups for a in group.assets
+                if a.kind == 'APD' and a.source}
+        if project._text_usage_apd_sha1 != profile['apd_sha1']:
+            return None
     if '_text_usage_code_sha1' not in project.__dict__:
         seen, digests = set(), set()
         for groups in project.ldars.values():
