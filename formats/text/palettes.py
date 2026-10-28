@@ -17,7 +17,7 @@ def attach(wfm, project, source, offset):
         return
     title = all(im.height == 20 for im in wfm.glyphs)
     # spawnEventTitle writes CLUT 7D16 to its objects; drawMessageGlyphs
-    # uses GetClut(160,1E3). The header's first short is texture word width,
+    # uses GetClut(0x160,0x1E3). The header's first short is texture word width,
     # not a palette ID. Title CLUT is loaded with the section, after group 0.
     y = 500 if title else 483
     cache = project.__dict__.setdefault('_native_text_palettes', {})
@@ -26,7 +26,10 @@ def attach(wfm, project, source, offset):
         for group in ([asset.group] if asset.group else range(1, len(groups))):
             key = asset.ldar, group, y
             if key not in cache:
-                vram = project.vram(asset.ldar, group)
+                try:
+                    vram = project.vram(asset.ldar, group)
+                except (OSError, ValueError, IndexError, KeyError):
+                    continue  # An unavailable picture must not prevent text export.
                 cache[key] = tuple(int(c) for c in vram[y, 352:368])
             words = cache[key]
             if not any(words):

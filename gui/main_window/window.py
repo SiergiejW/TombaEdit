@@ -1744,6 +1744,9 @@ class MainWindow(QMainWindow):
 
     def open_text_entry(self, bank, index):
         """Open the exact decoded bank; no section reload or ambiguous filename lookup."""
+        # A pending resource preview must not replace the user's search jump
+        # when its background decoding finishes a moment later.
+        self.generation = getattr(self, 'generation', 0) + 1
         from formats.text.translation_session import session_for
         for i in range(self.tabs.count()):
             widget = self.tabs.widget(i)
