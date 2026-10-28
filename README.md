@@ -68,16 +68,21 @@ PrePre 9's four WFM banks now decode all 413 entries without unknown glyph IDs.
 Unknown glyphs in other banks are shown as **[gXXX]**, rather than question marks.
 
 The entry list contains the full decoded or translated message; scroll sideways
-to read long rows. PrePre 8 also has a native text-usage audit. Entries marked
-**No in-game use found** have no selection through the checked message-window
-calls or signpost subtype table. Use the entry filter to isolate them, and hover
+to read long rows. A native reference study covers the local English/Japanese
+demo, preview and retail builds. Entries marked **Possibly unused** are scoped
+research candidates, including gaps in event-title mappings. PrePre 8 also checks
+its message-window calls and signpost subtype table. Use the entry filter and hover
 for the evidence. These entries are purple; their text resource and source file
-show a purple **(x unused)** count in the tree when the count is above zero.
+show a purple **(x possibly unused)** count in the tree when the count is above zero.
 Dynamic conversation selections remain potentially used;
 absence from the audit is an unused candidate, not proof of unreachability.
 The status and evidence are included in original and bilingual JSON dumps.
-Other builds currently say **Usage not checked**. Missing glyphs alone do not
-make an entry unused.
+Computed dialogue indices and other unresolved paths remain **Usage not checked**;
+they are not automatically marked possibly unused. No count is a claim that
+every entry is used. The study validates the executable, code overlays, text bank
+bytes and load bindings before applying its metadata. Changed or unsupported
+data stays unchecked. Missing glyphs alone do not make an entry unused.
+See [the local ROM study](docs/text-usage-study.md) for counts and coverage.
 
 The APD **Placements** map overlays objects and sprites at 50% opacity, with
 fully visible, selectable points above them. Scroll to zoom, middle/right-drag

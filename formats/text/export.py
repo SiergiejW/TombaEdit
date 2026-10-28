@@ -183,7 +183,8 @@ def entries(bank, controls=True, unknown='[g{:03X}]', raw=False):
         if dialogue.warning:
             item['warning'] = dialogue.warning
         if getattr(dialogue, 'usage', None):
-            item['usage'] = dialogue.usage
+            from formats.text.usage import label
+            item['usage'] = dict(dialogue.usage, label=label(dialogue))
         if getattr(bank.wfm, 'recovered_glyphs', None):
             decoded = {f'{word & 0xFFF:03X}': bank.wfm.recovered_glyphs[word & 0xFFF]
                        for word, _ in dialogue.tokens if word < 0xFF00 and word & 0xFFF in bank.wfm.recovered_glyphs}

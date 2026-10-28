@@ -7,6 +7,7 @@ from gui.widgets.columns import ViewportElideDelegate
 COUNT_ROLE = Qt.ItemDataRole.UserRole + 50
 UNUSED_ROLE = Qt.ItemDataRole.UserRole + 51
 UNCHECKED_ROLE = Qt.ItemDataRole.UserRole + 52
+USAGE_TOOLTIP_ROLE = Qt.ItemDataRole.UserRole + 53
 
 
 def purple(palette, selected=False):
@@ -34,7 +35,7 @@ class UsageTreeDelegate(ViewportElideDelegate):
         visible.rect.setRight(min(visible.rect.right(), self.parent().viewport().rect().right()))
         if visible.rect.width() <= 0:
             return
-        suffix = f' ({count} unused)' if count else ' (usage not checked)'
+        suffix = f' ({count} possibly unused)' if count else ' (usage not checked)'
         base = visible.text.removesuffix(suffix)
         style = visible.widget.style() if visible.widget else QApplication.style()
         rect = style.subElementRect(QStyle.SubElement.SE_ItemViewItemText, visible, visible.widget)

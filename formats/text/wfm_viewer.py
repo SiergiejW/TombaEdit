@@ -27,11 +27,11 @@ class DialogueView(QWidget):
         self.search.textChanged.connect(self.filter)
         bar.addWidget(self.search)
         self.usage_filter = QComboBox()
-        for label, status in [('All entries', ''), ('No in-game use found', 'not_found'),
+        for label, status in [('All entries', ''), ('Possibly unused', 'not_found'),
                               ('Display references', 'referenced'), ('Dynamic selection', 'dynamic'),
                               ('Usage not checked', 'unknown')]:
             self.usage_filter.addItem(label, status)
-        self.usage_filter.setToolTip('Filter by native text-display evidence. No use found means an unused candidate.')
+        self.usage_filter.setToolTip('Filter by native text-display evidence. Possibly unused is not proof that an entry is unreachable.')
         self.usage_filter.currentIndexChanged.connect(lambda: self.filter(self.search.text()))
         bar.addWidget(self.usage_filter)
         save = QPushButton('Export text...')
@@ -91,7 +91,7 @@ class DialogueView(QWidget):
         recovered = len(getattr(wfm, 'recovered_glyphs', {}))
         self.summary.setText(f'{len(wfm.dialogues)} entries | {known}/{len(wfm.glyphs)} decoded glyphs'
                              + (f' ({recovered} reconstructed readings)' if recovered else '') + ' | '
-                             + (f'{candidates} with no in-game use found'
+                             + (f'{candidates} possibly unused'
                                 + (f'; {unchecked} unchecked' if unchecked else '') if audited else 'In-game usage not checked'))
         self.summary.setToolTip(getattr(wfm, 'usage_summary', 'Native display analysis is not available for this build.'))
         if row >= 0:
@@ -127,7 +127,7 @@ class DialogueView(QWidget):
             preview = (preview if preview is not None else original).replace('\n', ' ')
             item = self.entries.item(i)
             if item is not None:
-                marker = '[No in-game use found] ' if (usage.entry(dialogue) or {}).get('status') == 'not_found' else ''
+                marker = '[Possibly unused] ' if (usage.entry(dialogue) or {}).get('status') == 'not_found' else ''
                 item.setData(UNUSED_ROLE, bool(marker))
                 item.setData(Qt.ItemDataRole.ForegroundRole, QBrush(purple(self.entries.palette())) if marker else None)
                 item.setText(f'{getattr(dialogue, "name", f"{i:03d}")} | {marker}{preview}')

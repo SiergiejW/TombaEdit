@@ -5,6 +5,91 @@ Profiles are build specific. Unsupported/incomplete coverage stays unknown.
 """
 import struct
 import hashlib
+import json
+from pathlib import Path
+from functools import lru_cache
+
+
+@lru_cache(maxsize=1)
+def _study_index():
+    try:
+        data = json.loads(Path(__file__).with_name('native_text_usage.json').read_text(encoding='utf8'))
+        return data['builds'] if data.get('schema') == 1 else {}
+    except (OSError, ValueError, KeyError):
+        return {}
+
+
+def _study_for(project):
+    from game.builds import executable
+    found = executable(project)
+    if found is None:
+        return None
+    profile = _study_index().get(hashlib.sha1(found.data).hexdigest())
+    if profile is None:
+        return None
+    if '_text_usage_code_sha1' not in project.__dict__:
+        seen, digests = set(), set()
+        for groups in project.ldars.values():
+            for group in groups:
+                for asset in group.assets:
+                    if asset.kind == 'INS' and asset.source and asset.source.path not in seen:
+                        seen.add(asset.source.path)
+                        digests.add(hashlib.sha1(project.asset_data(asset)).hexdigest())
+        project._text_usage_code_sha1 = digests
+    return profile if project._text_usage_code_sha1 == set(profile['code_sha1']) else None
+
+
+def _bank_study(project, profile, source, offset):
+    record = profile['banks'].get(f'{source}@{offset:X}')
+    if record is None:
+        return None
+    assets = [a for a in project.by_source.get(source, ()) if a.kind == 'WFM' and a.offset == offset]
+    contexts = sorted({(a.ldar, a.slot) for a in assets})
+    if not assets or contexts != [tuple(c) for c in record['contexts']]:
+        return None
+    raw = project.asset_data(assets[0])
+    return record if hashlib.sha1(raw).hexdigest() == record['sha1'] else None
+
+
+def _attach_study(wfm, project, source, offset):
+    profile = _study_for(project)
+    record = _bank_study(project, profile, source, offset) if profile else None
+    if record is None or record['entries'] != len(wfm.dialogues):
+        return False
+    for index, dialogue in enumerate(wfm.dialogues):
+        evidence = record['text'].get(str(index))
+        dialogue.usage = evidence or dict(status='unknown', method='partial-native-reference-study',
+            evidence=['Literal display calls and scripts were studied, but no resolved selection is recorded '
+                      'for this entry. Computed indices and other display paths remain unchecked; '
+                      'this does not establish that the entry is unused.'])
+    wfm.usage_summary = record['coverage']
+    return True
+
+
+def project_counts(project):
+    """Tree counts from verified metadata, without decoding every font bitmap."""
+    from game.builds import executable
+    found = executable(project)
+    if found is not None and found.build.legacy8:
+        from formats.text.export import collect
+        return counts(collect(project))
+    profile = _study_for(project)
+    if profile is None:
+        return {}, {}
+    banks, files = {}, {}
+    for key, data in profile['banks'].items():
+        source, offset = key.rsplit('@', 1)
+        record = _bank_study(project, profile, source, int(offset, 16))
+        if record is None:
+            continue
+        count = sum(item['status'] == 'not_found' for item in record['text'].values())
+        if not count and len(record['text']) < record['entries']:
+            count = None
+        banks[source, int(offset, 16)] = count
+        previous = files.get(source, 0)
+        total = (previous or 0) + (count or 0)
+        files[source] = total if total else None if previous is None or count is None else 0
+    return banks, files
 
 PREPRE9_EXES = {'36f830000f34ef6414afb020993806b4009e4ca1',
                '72988193d496a3a9402399d04291997d57b4be45'}
@@ -18,12 +103,20 @@ PREPRE9_CODE = {'2c67e33d098daaca2de4d98a400fe0148fc21f27',
 def supported(project):
     from game.builds import executable
     found = executable(project)
-    return found is not None and (found.build.legacy8 or hashlib.sha1(found.data).hexdigest() in PREPRE9_EXES)
+    return found is not None and (found.build.legacy8
+        or hashlib.sha1(found.data).hexdigest() in PREPRE9_EXES
+        or hashlib.sha1(found.data).hexdigest() in _study_index())
 
 
 def attach(wfm, project, source, offset):
     """Build-specific display evidence; never infer use from successful decoding."""
     if wfm.version == b'PP8' or any(entry(d) for d in wfm.dialogues):
+        return
+    try:
+        if _attach_study(wfm, project, source, offset):
+            return
+    except (OSError, ValueError):
+        wfm.usage_summary = 'Usage not checked: the native study could not validate this disc data.'
         return
     from game.builds import executable
     from formats.archive.ldar import area_number
@@ -92,7 +185,7 @@ def attach(wfm, project, source, offset):
 
 
 LABELS = {'referenced': 'Display reference', 'dynamic': 'Dynamic display selection',
-          'not_found': 'No in-game use found', 'unknown': 'Usage not checked'}
+          'not_found': 'Possibly unused', 'unknown': 'Usage not checked'}
 
 
 def entry(dialogue):

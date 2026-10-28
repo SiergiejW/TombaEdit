@@ -745,6 +745,11 @@ def _prepare_preview(project, node, context=None, delegated=False):
         if laid:
             result["notes"].append(f"{laid} event titles are spaced and broken into lines as the "
                                    "game lays them out; the bank itself holds only their letters.")
+        # Hash/profile validation belongs in the preview job, keeping the
+        # UI thread free when the DialogueView is constructed afterward.
+        from formats.text.usage import attach as attach_usage
+        source = node.source.path if isinstance(node, Asset) and node.source else getattr(node, 'path', '')
+        attach_usage(wfm, project, source, (node.offset if isinstance(node, Asset) else 0) + start)
         wfms.append((start, wfm))
     result["wfms"] = wfms
     return result
@@ -1209,16 +1214,15 @@ class MainWindow(QMainWindow):
         if usage_supported(project):
             source = str(project.disc.source)
             def text_counts():
-                from formats.text.export import collect
-                from formats.text.usage import counts
-                return counts(collect(Project(source)))
+                from formats.text.usage import project_counts
+                return project_counts(Project(source))
             QThreadPool.globalInstance().start(Job(self.label_index_epoch, text_counts, self.text_usage_ready))
         self.statusBar().showMessage("Disc ready" + (f" | {len(project.warnings)} diagnostic(s); see overview" if project.warnings else ""))
 
     def text_usage_ready(self, epoch, counts, error):
         if epoch != self.label_index_epoch or error or counts is None:
             return
-        from gui.widgets.text_usage import COUNT_ROLE, UNCHECKED_ROLE
+        from gui.widgets.text_usage import COUNT_ROLE, UNCHECKED_ROLE, USAGE_TOOLTIP_ROLE
         from PyQt6.QtWidgets import QTreeWidgetItemIterator
         banks, files = counts
         iterator = QTreeWidgetItemIterator(self.disc_tree)
@@ -1235,6 +1239,16 @@ class MainWindow(QMainWindow):
                 unchecked = count is None
             item.setData(0, COUNT_ROLE, count or None)
             item.setData(0, UNCHECKED_ROLE, unchecked or None)
+            if isinstance(node, Asset) and node.kind == 'WFM' or isinstance(node, DiscEntry) and node.path in files:
+                original_tip = item.data(0, USAGE_TOOLTIP_ROLE)
+                if original_tip is None:
+                    original_tip = item.toolTip(0)
+                    item.setData(0, USAGE_TOOLTIP_ROLE, original_tip)
+                note = (f'{count} possibly unused entries. The study is partial; inspect the bank\'s evidence.'
+                        if count else 'Usage remains unresolved; this does not mean every entry is used.'
+                        if unchecked else 'No possibly-unused candidates found by this study. '
+                        'Display references do not prove that every entry is reachable.')
+                item.setToolTip(0, original_tip + '\n' + note)
             iterator += 1
         self.refresh_labels()
 
@@ -1905,7 +1919,7 @@ class MainWindow(QMainWindow):
                 from gui.widgets.text_usage import COUNT_ROLE, UNCHECKED_ROLE
                 count = item.data(0, COUNT_ROLE)
                 if count:
-                    text += f' ({count} unused)'
+                    text += f' ({count} possibly unused)'
                 elif item.data(0, UNCHECKED_ROLE):
                     text += ' (usage not checked)'
                 item.setText(0, text)

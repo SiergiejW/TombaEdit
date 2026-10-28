@@ -859,13 +859,25 @@ conversation groups 0–3 or the two group-11 messages. The remaining call,
 800405C4, loads group/line pairs from ten signpost subtype records at 800A7DDC.
 Runtime conversation counters conservatively retain their entire groups.
 The profile finds 32 unselected entries, including 04:04, groups 05–09, and
-seven entries of group 0A. They are labelled "No in-game use found", not proven
+seven entries of group 0A. They are labelled "Possibly unused", not proven
 unreachable. Group 0A's two table references remain referenced even though their
 object subtypes may not be reachable on this disc. Sprite notice constructor
 80035ED8 selects SPR animations rather than these message streams. Missing fonts
 are a separate warning. Negative results require the exact verified executable
 hash, the expected call sites, no extra materialised stream pointers and the
-expected directory reader. Other builds currently remain unchecked.
+expected directory reader.
+
+`native_text_usage.json` extends the conservative study to fourteen additional
+local build/asset sets (244 banks). It records literal native message-window
+calls and their delay slots, WSS talk actions, and event-title selector tables.
+The index contains reference metadata and hashes, not game strings or artwork.
+The exact executable SHA-1, set of code-overlay SHA-1s, WFM SHA-1 and load-table
+bindings must match. Unlisted entries remain unknown. Unmapped event titles are
+only **Possibly unused**, with the restricted event-selector scope in their
+evidence; computed dialogue/item/menu selectors still need further tracing.
+Tree counts use this verified metadata without decoding all font bitmaps, and
+preview-job validation keeps it off the GUI thread. The local 2026-10-28 report
+separates candidates, display references, dynamic selections and unresolved use.
 
 PrePre 8 mode-6 mist uses four SVECTOR corners at object offsets 98,
 A0, A8 and B0; 80061D5C maps the first SPR part over those corners.
