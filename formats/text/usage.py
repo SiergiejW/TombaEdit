@@ -27,6 +27,13 @@ def _study_for(project):
     profile = _study_index().get(hashlib.sha1(found.data).hexdigest())
     if profile is None:
         return None
+    if 'scripts_sha1' in profile:
+        if '_text_usage_scripts_sha1' not in project.__dict__:
+            project._text_usage_scripts_sha1 = {
+                item.path: hashlib.sha1(project.payload(item)).hexdigest()
+                for item in project.disc.files if item.path.upper().endswith('.WSS')}
+        if project._text_usage_scripts_sha1 != profile['scripts_sha1']:
+            return None
     if '_text_usage_code_sha1' not in project.__dict__:
         seen, digests = set(), set()
         for groups in project.ldars.values():

@@ -139,6 +139,8 @@ def collect(project, area=None, language=None, progress=None):
         from formats.text.titles import attach
         if wfm.version != b'PP8':
             attach(wfm, project, tongue)
+            from formats.text.palettes import attach as attach_palette
+            attach_palette(wfm, project, asset.source.path, asset.offset)
             from formats.text.usage import attach as attach_usage
             attach_usage(wfm, project, asset.source.path, asset.offset)
         banks.append(Bank(f'WFM {asset.code:04X}', asset.source.path, asset.offset, path, group, number, tongue,
@@ -266,7 +268,7 @@ def render_translated(banks, translations, model='', kind='json'):
     output = []
     for bank in banks:
         messages = []
-        for item in entries(bank, controls=False):
+        for item in entries(bank, controls=True):
             original = item.pop('text')
             translated = translations.get(original)
             status = 'translated' if translated is not None else 'pending'
@@ -281,12 +283,35 @@ def render_translated(banks, translations, model='', kind='json'):
     document = dict(model=str(model), target_language='en', banks=output)
     if kind == 'json':
         return json.dumps(document, ensure_ascii=False, indent=1) + '\n'
+    if kind == 'csv':
+        stream = io.StringIO(newline='')
+        fields = ['file', 'bank_offset', 'bank', 'index', 'offset', 'original', 'translation', 'status', 'script', 'usage', 'model']
+        writer = csv.DictWriter(stream, fieldnames=fields)
+        writer.writeheader()
+        for bank in output:
+            for item in bank['text']:
+                writer.writerow(dict(file=bank['file'], bank_offset=bank['offset'], bank=bank['name'],
+                    **{k: item.get(k, '') for k in ('index', 'offset', 'original', 'translation', 'status', 'script')},
+                    usage=json.dumps(item.get('usage'), ensure_ascii=False) if item.get('usage') else '', model=str(model)))
+        return stream.getvalue()
+    if kind not in ('plain', 'script'):
+        raise ValueError('Unknown translation export format: ' + kind)
     parts = [f'English machine translation | Model: {model}']
+    if kind == 'script':
+        parts.append('Original scripts preserve native control codes. English is a reflowed preview script; '
+                     'timing and control positions require editing before ROM insertion.')
     for bank in output:
         parts.append(f'\n{bank["name"]} | {bank["file"]} +{bank["offset"]}')
         if bank.get('decoding_note'):
             parts.append(bank['decoding_note'])
         for item in bank['text']:
+            if kind == 'script':
+                value = item['translation']
+                english = ('\n<CLEAR>\n'.join(p.replace('\n', '\n<NEWLINE>\n') for p in value.split('\n\n'))
+                           if value is not None else '[' + item['status'] + ']')
+                parts.append(f'[{item["index"]:03d} @ {item["offset"]}]\nOriginal script:\n{item.get("script", item["original"])}'
+                             f'\nEnglish preview script:\n{english}\n<END>')
+                continue
             parts.append(f'[{item["index"]:03d} @ {item["offset"]}]\nOriginal:\n{item["original"]}'
                          f'\nEnglish:\n{item["translation"] if item["translation"] is not None else "[" + item["status"] + "]"}')
     return '\n\n'.join(parts) + '\n'

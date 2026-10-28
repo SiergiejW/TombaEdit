@@ -1506,6 +1506,42 @@
           "source": "AREA19/D208.GAM",
           "offset": 13748,
           "bank_sha1": "a7b2161c0a1a49705421789d5d1cf570a11e323f"
+        },
+        "Q": {
+          "derivation": "Adapted from the English O with a diagonal tail; this glyph is reconstructed, not an extracted Q.",
+          "box": [
+            560,
+            0,
+            568,
+            16
+          ]
+        },
+        "X": {
+          "derivation": "Adapted from the extracted small Tomba x to uppercase O metrics.",
+          "box": [
+            568,
+            0,
+            576,
+            16
+          ]
+        },
+        ":": {
+          "derivation": "Composed from extracted Tomba period/comma marks.",
+          "box": [
+            576,
+            0,
+            584,
+            16
+          ]
+        },
+        ";": {
+          "derivation": "Composed from extracted Tomba period/comma marks.",
+          "box": [
+            584,
+            0,
+            592,
+            16
+          ]
         }
       }
     },

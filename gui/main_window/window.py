@@ -749,6 +749,8 @@ def _prepare_preview(project, node, context=None, delegated=False):
         # UI thread free when the DialogueView is constructed afterward.
         from formats.text.usage import attach as attach_usage
         source = node.source.path if isinstance(node, Asset) and node.source else getattr(node, 'path', '')
+        from formats.text.palettes import attach as attach_palette
+        attach_palette(wfm, project, source, (node.offset if isinstance(node, Asset) else 0) + start)
         attach_usage(wfm, project, source, (node.offset if isinstance(node, Asset) else 0) + start)
         wfms.append((start, wfm))
     result["wfms"] = wfms
@@ -1735,7 +1737,9 @@ class MainWindow(QMainWindow):
                 popup.show(); popup.raise_(); popup.activateWindow()
                 popup.phrase.setFocus()
                 return
-        popup = TextSearchDialog(self, session, self.open_text_entry)
+        project = self.project
+        popup = TextSearchDialog(self, session,
+            lambda bank, index: self.open_text_entry(bank, index) if self.project is project else None)
         popup.show()
 
     def open_text_entry(self, bank, index):

@@ -29,7 +29,7 @@ def render(wfm, index, text):
     heights = Counter(im.height for im in wfm.glyphs if im.height >= 10)
     target = heights.most_common(1)[0][0] if heights else 16
     saved = fonts()
-    preferred = min(saved, key=lambda h: abs(h - target))
+    preferred = min(saved, key=lambda h: (abs(h - target), -h))
     glyphs = dict(saved[preferred])
     for height in sorted(saved, key=lambda h: abs(h - target)):
         for char, image in saved[height].items():

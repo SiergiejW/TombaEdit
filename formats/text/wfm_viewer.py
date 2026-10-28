@@ -37,7 +37,10 @@ class DialogueView(QWidget):
         save = QPushButton('Export text...')
         save.setToolTip('Write this bank\'s entries to a file: with their control codes, as plain text, '
                         'as JSON with the raw words, or as a table.')
-        save.clicked.connect(self.export_text)
+        original_menu = QMenu(save)
+        original_menu.addAction('This WFM bank...', lambda: self.export_text(False))
+        self.export_all_originals = original_menu.addAction('All WFM banks...', lambda: self.export_text(True))
+        save.setMenu(original_menu)
         bar.addWidget(save)
         search_all = QPushButton('Search for text...')
         search_all.setToolTip('Search phrases across every WFM bank on this disc.')
@@ -82,6 +85,7 @@ class DialogueView(QWidget):
         self.relist()
         if wfm.dialogues:
             self.entries.setCurrentRow(0)
+        self.translation.session.discover()
 
     def relist(self):
         """Fill the list of entries from the characters as they are known now."""
@@ -132,6 +136,7 @@ class DialogueView(QWidget):
     def refresh_translations(self):
         session = self.translation.session
         self.export_all_translations.setEnabled(session.project is None or session.discovered)
+        self.export_all_originals.setEnabled(session.project is None or session.discovered)
         for i, dialogue in enumerate(self.wfm.dialogues):
             original = export.plain(dialogue)
             preview = self.translation.session.lookup(original)
@@ -166,7 +171,8 @@ class DialogueView(QWidget):
                 self.rendered.setToolTip('English preview unavailable: ' + str(exc))
         else:
             image = self.wfm.render(index)
-            self.rendered.setToolTip('Original text · awaiting translation' if self.english_display.isChecked() else 'Original text')
+            self.rendered.setToolTip(('Original text · awaiting translation' if self.english_display.isChecked() else 'Original text')
+                                    + ('\n' + self.wfm.palette_source if hasattr(self.wfm, 'palette_source') else ''))
         self.rendered.set_image(image, subject=index)
         self._display_key = key
 
@@ -182,23 +188,25 @@ class DialogueView(QWidget):
     def export_translations(self, all_banks=False):
         session = self.translation.session
         banks = list(session.banks.values()) if all_banks else [self.bank]
+        filters = {f'{label} (*{suffix})': kind for kind, (label, suffix) in export.FORMATS.items()}
         path, chosen = QFileDialog.getSaveFileName(self, 'Export English and original text',
             file_stem(self.bank.name, 'dialogue') + '-translated.json',
-            'JSON with English and originals (*.json);;English and original text (*.txt)')
+            ';;'.join(filters))
         if path:
             try:
                 Path(path).write_text(export.render_translated(banks, session.translations,
-                    session.folder, 'json' if 'JSON' in chosen else 'plain'), encoding='utf8')
-            except OSError as exc:
+                    session.folder, filters.get(chosen, 'json')), encoding='utf8')
+            except (OSError, ValueError) as exc:
                 QMessageBox.warning(self, 'Export failed', str(exc))
 
-    def export_text(self):
+    def export_text(self, all_banks=False):
         filters = {f'{label} (*{suffix})': kind for kind, (label, suffix) in export.FORMATS.items()}
         path, chosen = QFileDialog.getSaveFileName(self, 'Export text', file_stem(self.bank.name, 'dialogue') + '.txt',
                                                    ';;'.join(filters), 'Script with control codes (*.txt)')
         if path:
             try:
-                export.write([self.bank], path, filters.get(chosen, 'script'), raw=True)
+                banks = list(self.translation.session.banks.values()) if all_banks else [self.bank]
+                export.write(banks, path, filters.get(chosen, 'script'), raw=True)
             except OSError as exc:
                 QMessageBox.warning(self, 'Export failed', str(exc))
 

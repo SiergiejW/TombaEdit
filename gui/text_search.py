@@ -6,6 +6,13 @@ from PyQt6.QtWidgets import (QDialog, QVBoxLayout, QHBoxLayout, QLineEdit, QChec
 from formats.text import export
 
 
+def searchable(text):
+    # Japanese dialogue can wrap halfway through a word. English wraps
+    # separate words; keep a space there so phrases remain searchable.
+    text = re.sub(r'(?<=[\u3040-\u30ff\u3400-\u9fff])\r?\n(?=[\u3040-\u30ff\u3400-\u9fff])', '', text)
+    return ' '.join(text.split())
+
+
 class TextSearchDialog(QDialog):
     def __init__(self, parent, session, open_entry=None):
         super().__init__(parent)
@@ -64,7 +71,7 @@ class TextSearchDialog(QDialog):
         self.timer.start()
 
     def search(self):
-        phrase = ' '.join(self.phrase.text().split())
+        phrase = searchable(self.phrase.text())
         self.results.clear()
         if self.session.reading:
             loading = ' · reading remaining banks…'
@@ -89,7 +96,7 @@ class TextSearchDialog(QDialog):
             for index, original in enumerate(texts):
                 translated = self.session.translations.get(original)
                 options = ([original] if where != 'translated' else []) + ([translated] if translated is not None and where != 'original' else [])
-                match = next((text for text in options if pattern.search(' '.join(text.split()))), None)
+                match = next((text for text in options if pattern.search(searchable(text))), None)
                 if match is None:
                     continue
                 total += 1
