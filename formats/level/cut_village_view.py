@@ -192,6 +192,7 @@ def view(preview, english=None, request=None, changed=None):
     layout.addWidget(note)
     split = QSplitter(Qt.Orientation.Horizontal)
     picture = ImageView()
+    picture.zoom.setCurrentIndex(0)     # Fit: the plan is larger than its pane at 200%
     picture.set_image(preview.image)
     split.addWidget(picture)
     headers = ['#', 'Where', 'Behaviour', 'Drawing', 'Case', 'Says (Japanese)'] + (['English'] if english else [])
@@ -225,7 +226,10 @@ def view(preview, english=None, request=None, changed=None):
             item.setToolTip(text)
             table.setItem(r, c, item)
     table.resizeColumnsToContents()
-    table.setColumnWidth(5, min(table.columnWidth(5), 520))
+    table.setColumnWidth(5, min(table.columnWidth(5), 300))     # the Japanese is the shorter column
+    if english:
+        table.setColumnWidth(6, 560)
+        table.horizontalHeader().setStretchLastSection(True)
     if english and changed is not None:
         def refresh():
             try:
@@ -242,7 +246,7 @@ def view(preview, english=None, request=None, changed=None):
         table.itemSelectionChanged.connect(selected)
         selected()      # opening the tab already queues every line of the village
     split.addWidget(table)
-    split.setSizes([520, 760])
+    split.setSizes([480, 900])
     layout.addWidget(split, 1)
     layout.addWidget(QLabel('Red: resident outdoors. Purple: resident inside a house. Blue: house. '
                             'Green: where a patrolling resident walks. Yellow: prop. Numbers are the rows of the table.'))
