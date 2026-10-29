@@ -106,6 +106,11 @@ later. A glyph's rows each start on a 16-bit word, so a row of ten pixels
 takes six bytes where WFM3 packs the pixels end to end. Control FFF4 appears
 inside running text and takes no arguments.
 
+The Japanese retail release uses WFM2: WFM3's 144-byte header, with the
+group table, and WFM1's glyph rows and FFF4. The offset of the dialogue table
+is a 16-bit value; the event-title banks (D1FF) leave FFFF in the top half of
+the word. Glyph words also have 8000 set, apart from the flags of WFM1.
+
 A WFM1 glyph word carries more in its top bits. A kana that is voiced is
 two words: the kana with 1000 set, then the mark (dakuten or handakuten)
 with 2000 set, drawn over the same cell; both also have 4000. In WFM3 a

@@ -121,8 +121,11 @@ class Dialogue:
 
 # Where the glyph pointer table starts. WFM1, used by the builds from 1997,
 # has the same 16-byte header as WFM3 without the 128 reserved bytes after it.
-GLYPH_TABLE = {b"WFM1": 16, b"WFM3": 144}
-# WFM1 text uses FFF4 inside running text with nothing after it.
+# WFM2, the Japanese release, has WFM3's header and WFM1's glyph rows.
+GLYPH_TABLE = {b"WFM1": 16, b"WFM2": 144, b"WFM3": 144}
+# Versions whose glyph rows each start on a 16-bit word and whose text uses
+# FFF4 inside running text with nothing after it.
+EARLY = (b"WFM1", b"WFM2")
 EARLY_CONTROLS = {0xFFF4: ("UNKNOWN_F4", 0)}
 MAGICS = tuple(GLYPH_TABLE)
 
@@ -134,6 +137,9 @@ class Wfm:
         if glyph_table is None or len(data) < glyph_table:
             raise FormatError("Not a WFM font/dialogue resource")
         reserved, table, nd, ng = struct.unpack_from("<IIHH", data, 4)
+        if self.version == b"WFM2":
+            # The title banks keep 0xFFFF in the top half of the offset.
+            table &= 0xFFFF
         if reserved or glyph_table + ng * 2 > len(data) or table + nd * 2 > len(data):
             raise FormatError("Invalid WFM header or pointer tables")
         # WFM3: the 128 bytes after the header are 64 group bases. A message
@@ -154,7 +160,7 @@ class Wfm:
             pal, height, width, unused = struct.unpack_from("<4H", data, ptr)
             # WFM3 packs a glyph's pixels end to end. WFM1 starts every row
             # on a 16-bit word, so a 10 pixel row takes six bytes.
-            row = (width + 3) // 4 * 2 if self.version == b"WFM1" else 0
+            row = (width + 3) // 4 * 2 if self.version in EARLY else 0
             size = row * height if row else (width * height + 1) // 2
             if not 0 < width <= 512 or not 0 < height <= 512 or ptr + 8 + size > len(data):
                 raise FormatError("Invalid WFM glyph dimensions")
@@ -181,7 +187,7 @@ class Wfm:
             raise FormatError("Dialogue pointer outside WFM resource")
         bounds = sorted(set(starts + [len(data)]))
         self.dialogues = []
-        controls = {**CONTROLS, **EARLY_CONTROLS} if self.version == b"WFM1" else CONTROLS
+        controls = {**CONTROLS, **EARLY_CONTROLS} if self.version in EARLY else CONTROLS
         for start in starts:
             end = next(p for p in bounds if p > start)
             pos, tokens, warning = start, [], ""

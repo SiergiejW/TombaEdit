@@ -753,6 +753,10 @@ def _prepare_preview(project, node, context=None, delegated=False):
         attach_palette(wfm, project, source, (node.offset if isinstance(node, Asset) else 0) + start)
         attach_usage(wfm, project, source, (node.offset if isinstance(node, Asset) else 0) + start)
         wfms.append((start, wfm))
+    if not wfms and isinstance(node, Asset) and node.kind == 'WFM' and not any('WFM candidate' in n for n in result['notes']):
+        # Say why a text resource has no dialogue, with what its bytes start with.
+        result['notes'].append(f'No WFM1, WFM2 or WFM3 header was found in this text resource, so no dialogue is shown. '
+                               f'It starts with {bytes(data[:16]).hex(" ").upper() or "no bytes"}.')
     result["wfms"] = wfms
     return result
 
