@@ -1415,7 +1415,8 @@ class MainWindow(QMainWindow):
                     session = session_for(self.project, self)
                     # A selected row is translated first, even with whole-disc preloading off.
                     self.tabs.addTab(cut_village_view(result['cut_village'], session.translations.get,
-                                                      session.request_texts, session.changed), 'Cut village')
+                                                      session.request_texts, session.changed, self.cut_village_jump),
+                                     'Cut village')
                     self.tabs.setCurrentIndex(self.tabs.count() - 1)
                 if 'level' in result:
                     self.level_view.set_labels(self.labels, self.persist_labels)
@@ -1763,6 +1764,19 @@ class MainWindow(QMainWindow):
         popup = TextSearchDialog(self, session,
             lambda bank, index: self.open_text_entry(bank, index) if self.project is project else None)
         popup.show()
+
+    def cut_village_jump(self, kind, payload):
+        """The buttons of the Cut village tab: go to the text entry, load group, overlay or file they name."""
+        if kind == 'text':
+            from formats.text import export
+            wfm, source, offset, name, index = payload
+            self.open_text_entry(export.Bank(name, source, offset, wfm=wfm), index)
+        elif kind == 'group':
+            self.jump_group(*payload)
+        elif kind == 'asset':
+            self.jump_asset(payload)
+        elif kind == 'file':
+            self.jump_file(payload)
 
     def open_text_entry(self, bank, index):
         """Open the exact decoded bank; no section reload or ambiguous filename lookup."""

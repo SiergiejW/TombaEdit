@@ -9207,6 +9207,7 @@
     }
   },
   "migrated_settings": [
-    "\\HKEY_CURRENT_USER\\Software\\TombaEdit\\TombaEdit"
+    "\\HKEY_CURRENT_USER\\Software\\TombaEdit\\TombaEdit",
+    "\\HKEY_CURRENT_USER\\Software\\TombaEditTests\\CutVillage"
   ]
 }

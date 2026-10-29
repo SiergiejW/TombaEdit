@@ -184,6 +184,12 @@ sprites panel starts on the texel value as grey and offers the smoothest windows
 it. The data that places each piece in the village is not on the disc either, so the pieces are not put
 together.
 
+The plan can have a picture under it. "Background picture..." takes any picture (a restored view of the
+village, for example) and draws it under the plan with its top left corner at the world position X, Y and its
+pixels at Scale per cent of a world unit (100% is the scale the figures are drawn at); Opacity lets the plan
+show through. The plan grows to hold the whole picture, and the picture, its place and its scale are kept for
+the village until Clear. The pictures are the user's own; none is bundled.
+
 The plan is selectable. A click on a resident, prop or house outlines it in cyan (a house is also
 shaded, and a resident's walking box is outlined) and a line under the plan says what it is; a click on
 a resident also selects its row of the table, a click on empty space deselects, and selecting rows of

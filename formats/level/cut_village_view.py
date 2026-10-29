@@ -42,6 +42,7 @@ class Preview:
     rows: list
     notes: list
     sheets: list = field(default_factory=list)      # [Sheet]: the figure sheets of the village load groups
+    places: dict = field(default_factory=dict)      # where a button can take the user: 'bank', 'group', 'overlay'
     village: object = None                          # what the plan is drawn from, to draw it again with a selection
     art: object = None
 
@@ -76,11 +77,27 @@ def patrol_box(village, r):
 HIGHLIGHT = (0, 190, 255, 255)
 
 
-def draw_plan(village, art=None, selected=(), hits=None):
+@dataclass
+class Backdrop:
+    """A picture drawn under the plan: its top left corner at world position (x, y), `scale` per cent of a
+    pixel of the picture to a unit of the world, `opacity` from 0 to 1."""
+    image: object
+    x: float
+    y: float
+    scale: float = 100.0
+    opacity: float = 1.0
+
+    @property
+    def size(self):
+        return self.image.width * self.scale / 100, self.image.height * self.scale / 100
+
+
+def draw_plan(village, art=None, selected=(), hits=None, backdrop=None):
     """The plan of a village as an image: houses, patrol boxes, props and numbered residents.
     Residents `art` has a figure for are drawn as it; a stand-in is translucent. `selected` is a list of
     (kind, index), kind being 'resident', 'prop' or 'house' (index from 0), drawn highlighted. When `hits`
-    is a list, (kind, index, (left, top, right, bottom)) is added to it for each element, in image pixels."""
+    is a list, (kind, index, (left, top, right, bottom)) is added to it for each element, in image pixels.
+    A `backdrop` is drawn under everything and makes the plan big enough to show all of it."""
     chosen = set(selected)
     hits = [] if hits is None else hits
     boxes = [b for b in (patrol_box(village, r) for r in village.residents) if b]
@@ -88,8 +105,11 @@ def draw_plan(village, art=None, selected=(), hits=None):
           + [b[i] for b in boxes for i in (0, 2)])
     ys = ([r.y for r in village.residents] + [p.y for p in village.props] + [h[i] for h in village.houses for i in (1, 3)]
           + [b[i] for b in boxes for i in (1, 3)])
+    if backdrop is not None:
+        xs += [backdrop.x, backdrop.x + backdrop.size[0]]
+        ys += [backdrop.y, backdrop.y + backdrop.size[1]]
     left, top = min(xs) - MARGIN, min(ys) - MARGIN
-    width, height = (max(xs) + MARGIN - left) * SCALE, (max(ys) + MARGIN - top) * SCALE
+    width, height = int((max(xs) + MARGIN - left) * SCALE), int((max(ys) + MARGIN - top) * SCALE)
 
     def at(x, y):
         return (x - left) * SCALE, (y - top) * SCALE
@@ -99,6 +119,14 @@ def draw_plan(village, art=None, selected=(), hits=None):
         draw.line([at(gx, top), at(gx, top + height / SCALE)], fill=(214, 210, 198, 255))
     for gy in range(int(top) // 64 * 64, int(top + height / SCALE) + 64, 64):
         draw.line([at(left, gy), at(left + width / SCALE, gy)], fill=(214, 210, 198, 255))
+    if backdrop is not None:
+        picture = backdrop.image.convert('RGBA')
+        size = (max(1, round(backdrop.size[0] * SCALE)), max(1, round(backdrop.size[1] * SCALE)))
+        picture = picture.resize(size, Image.Resampling.NEAREST if backdrop.scale * SCALE >= 100 else Image.Resampling.LANCZOS)
+        if backdrop.opacity < 1:
+            picture.putalpha(picture.getchannel('A').point(lambda a: int(a * backdrop.opacity)))
+        image.alpha_composite(picture, (round(at(backdrop.x, backdrop.y)[0]), round(at(backdrop.x, backdrop.y)[1])))
+        draw = ImageDraw.Draw(image)
     label, small = _font(13), _font(11)
     for n, (x0, y0, x1, y1) in enumerate(village.houses, 1):
         draw.rectangle([at(x0, y0), at(x1, y1)], outline=(40, 110, 230, 255), width=2)
@@ -196,13 +224,23 @@ def _overlay(project):
 
 
 def _bank(project, path):
+    """(Wfm, its asset) of the village's text bank, or (None, None)."""
     from formats.text.wfm import Wfm
     for asset in project.ldars[path][0].assets:
         if asset.kind == 'WFM' and asset.code >> 8 == 0xD0:
             try:
-                return Wfm(project.asset_data(asset))
+                return Wfm(project.asset_data(asset)), asset
             except Exception:
-                return None
+                return None, None
+    return None, None
+
+
+def _overlay_asset(project):
+    for groups in project.ldars.values():
+        for group in groups:
+            for asset in group.assets:
+                if asset.kind == 'INS' and asset.source and 'NFO2' in asset.source.path.upper():
+                    return asset
     return None
 
 
@@ -228,24 +266,29 @@ def available(project, path, index):
 
 # Per area: the group of the system load table whose first texture page is the village's figure sheet;
 # the palettes that research on the PAL disc named, each (file, palette number of 16 words, who, the
-# subtypes drawn with it); where the front, back and left-facing figures are on the sheet (texels: left,
-# top, right, bottom). Which subtype is which drawing and which palette it has were in tables the disc
-# does not hold: a palette goes to the subtypes the notes' description fits best, and the facings are a
-# guess. With `stand_in` the residents of the other subtypes are drawn translucent, in the first palette.
+# subtypes it is given there, which drawing of the sheet it is on); where the front, back and left-facing
+# figures of each drawing are on the sheet (texels: left, top, right, bottom). Which subtype is which drawing
+# and which palette it has were in tables the disc does not hold: the research matched palettes to the
+# colours of the retail screenshots and the sprites of the retail game, and guessed the subtypes. The
+# facings are a guess. With `stand_in` the residents of other subtypes are drawn translucent, in the
+# first palette.
 FIGURES = {
-    11: dict(group=61, stand_in=True,
-             palettes=[('AREA11/CLUT02.GAM', 36, 'male lumberjack resident', (0,)),
-                       ('AREA11/CLUT02.GAM', 4, 'lumberjack factory worker', (1,)),
-                       ('AREA11/CLUT02.GAM', 68, 'cursed male lumberjack', ())],
-             frames=dict(front=(1, 0, 23, 44), back=(74, 0, 93, 44), left=(27, 0, 45, 45))),
+    11: dict(group=61, stand_in=False,
+             palettes=[('AREA11/CLUT02.GAM', 4, 'lumberjack factory worker (hard hat)', (0, 1, 4), 'body'),
+                       ('AREA11/CLUT02.GAM', 36, 'male lumberjack town resident (old man)', (2, 3), 'body'),
+                       ('AREA11/CLUT02.GAM', 68, 'the old man cursed', (), 'body')],
+             drawings=dict(body=dict(front=(1, 0, 23, 44), back=(74, 0, 93, 44), left=(27, 0, 45, 45)))),
     16: dict(group=76, stand_in=False,
-             palettes=[('AREA16/CLUT07.GAM', 53, 'male Stonetown resident', (3,))],
-             frames=dict(front=(75, 202, 125, 256), back=(132, 196, 180, 256), left=(39, 196, 70, 256)),
+             palettes=[('AREA16/CLUT07.GAM', 53, 'male Stonetown resident (strongman)', (2,), 'strongman'),
+                       ('AREA16/CLUT07.GAM', 54, 'female Stonetown resident', (0,), 'woman'),
+                       ('AREA16/CLUT07.GAM', 48, 'Stonetown resident', (1, 3), 'woman')],
+             drawings=dict(strongman=dict(front=(75, 202, 125, 256), back=(132, 196, 180, 256), left=(39, 196, 70, 256)),
+                           woman=dict(front=(107, 49, 143, 93), back=(2, 0, 39, 45), left=(153, 0, 177, 46))),
              erase=[(160, 186, 182, 209)],       # the hat of the drawing beside the back view
              move=[((137, 195, 160, 208), 8, 0)]),   # the back view's head is drawn eight texels left of its body
-    17: dict(group=80, stand_in=True,
-             palettes=[('AREA17/CLUT03.GAM', 1, 'Iron Town residents', (0,))],
-             frames=dict(front=(25, 3, 48, 48), back=(145, 2, 166, 48), left=(81, 51, 105, 96))),
+    17: dict(group=80, stand_in=False,
+             palettes=[('AREA17/CLUT03.GAM', 1, 'Iron Town residents', (0, 1, 2, 3, 4), 'body')],
+             drawings=dict(body=dict(front=(25, 3, 48, 48), back=(145, 2, 166, 48), left=(81, 51, 105, 96)))),
 }
 FACINGS = {0: 'back', 1: 'right', 2: 'left', 3: 'front'}      # a resident's frame field; a guess
 STAND_IN_OPACITY = 0.5
@@ -256,6 +299,8 @@ class Look:
     label: str
     subtypes: tuple
     images: dict            # facing: RGBA image, trimmed; 'right' is the mirror of 'left'
+    file: str = ''          # the CLUT file the palette is in
+    number: int = 0         # and its number there
 
 
 @dataclass
@@ -273,13 +318,13 @@ class Art:
 
 
 def named_palettes(project, area):
-    """[(file, number, who, subtypes, 16 colours)] of the palettes FIGURES names for an area that the disc has."""
+    """[(file, number, who, subtypes, drawing, 16 colours)] of the palettes FIGURES names for an area that the disc has."""
     found = []
-    for name, number, who, subtypes in FIGURES.get(area, {}).get('palettes', ()):
+    for name, number, who, subtypes, drawing in FIGURES.get(area, {}).get('palettes', ()):
         entry = next((e for e in project.disc.files if e.path.upper() == name and not e.directory), None)
         if entry is not None:
             words = np.frombuffer(project.payload(entry), '<u2')
-            found.append((name, number, who, subtypes, words[number * 16:number * 16 + 16].copy()))
+            found.append((name, number, who, subtypes, drawing, words[number * 16:number * 16 + 16].copy()))
     return found
 
 
@@ -297,16 +342,16 @@ def figure_art(project, path, area):
         target = texels[y0 + dy:y1 + dy, x0 + dx:x1 + dx]
         target[piece != 0] = piece[piece != 0]
     looks = []
-    for name, number, who, subtypes, row in palettes:
+    for name, number, who, subtypes, drawing, row in palettes:
         images = {}
-        for facing, (x0, y0, x1, y1) in named['frames'].items():
+        for facing, (x0, y0, x1, y1) in named['drawings'][drawing].items():
             picture = Image.fromarray(colours(row)[texels[y0:y1, x0:x1]])
             box = picture.getbbox()
             if box is None:
                 return None
             images[facing] = picture.crop(box)
         images['right'] = images['left'].transpose(Image.Transpose.FLIP_LEFT_RIGHT)
-        looks.append(Look(f'{who} ({name} palette {number})', subtypes, images))
+        looks.append(Look(f'{who} ({name} palette {number})', subtypes, images, name, number))
     return Art(named['group'], looks, named['stand_in'])
 
 
@@ -453,7 +498,7 @@ def figure_sheets(project, path):
             ranked.append((int(np.abs(np.diff(rgb, axis=1)).sum() + np.abs(np.diff(rgb, axis=0)).sum()), label, row))
         ranked.sort(key=lambda r: r[0])
         if FIGURES.get(area_of(path), {}).get('group') == number:
-            for name, at, who, _subtypes, row in reversed(named_palettes(project, area_of(path))):
+            for name, at, who, _subtypes, _drawing, row in reversed(named_palettes(project, area_of(path))):
                 ranked.insert(0, (0, f'{who} (named in the research notes): {name} palette {at}', row))
         if ranked:
             sheet = Sheet(number, words, [(label, row) for _score, label, row in ranked], 0)
@@ -475,11 +520,11 @@ def preview(project, path, index):
     area = next(a for a, n in AREA_SETS.items() if n == village.set_number)
     notes = ["The village's background picture, collision map and the tables that say which drawing each resident "
              'subtype is are not on the disc, so this is a plan of marks and not the village as it looked.']
-    cases = bank = None
+    cases = bank = bank_asset = None
     windows = WINDOWS.get(found.build.name)
     if windows:
         cases = dialogue_cases(data, found.build.overlay, lambda a: found.word(a) if found.holds(a, 4) else None, windows).get(village.set_number)
-        bank = _bank(project, path)
+        bank, bank_asset = _bank(project, path)
         if cases is None or bank is None:
             notes.append('The dialogue routine of this village was not found in the overlay, so the lines are not shown.')
     else:
@@ -519,7 +564,15 @@ def preview(project, path, index):
     sheets = project.__dict__.setdefault('cut_village_sheets', {})
     if path not in sheets:
         sheets[path] = figure_sheets(project, path)
-    return Preview(village.name, area, draw_plan(village, art), rows, notes, sheets[path], village, art)
+    places = {}
+    if bank is not None and bank_asset is not None:
+        places['bank'] = (bank, bank_asset.source.path, bank_asset.offset, f'WFM {bank_asset.code:04X}')
+    if art is not None:
+        from formats.archive.ldar import system_table
+        places['group'] = (system_table(path), art.group)
+    if (overlay := _overlay_asset(project)) is not None:
+        places['overlay'] = overlay
+    return Preview(village.name, area, draw_plan(village, art), rows, notes, sheets[path], places, village, art)
 
 
 def _title(text):
@@ -605,8 +658,112 @@ def Qt_AlignTop():
     return Qt.AlignmentFlag.AlignTop
 
 
-def view(preview, english=None, request=None, changed=None):
+class _BackdropBar:
+    """The controls of the background picture and what they hold. `changed()` is called after each change."""
+    def __init__(self, layout, backdrop):
+        self.layout, self.backdrop = layout, backdrop
+
+
+def _backdrop_bar(preview, changed):
+    """A row of controls: choose a picture to draw under the plan, place it, clear it. Remembered for each area."""
+    from PyQt6.QtCore import QSettings
+    from PyQt6.QtWidgets import QDoubleSpinBox, QFileDialog, QHBoxLayout, QLabel, QPushButton, QSpinBox
+    key = f'cutVillage/{preview.area}/'
+    settings = QSettings()
+    bar = QHBoxLayout()
+    holder = _BackdropBar(bar, None)
+    choose, clear = QPushButton('Background picture...'), QPushButton('Clear')
+    x, y = QSpinBox(), QSpinBox()
+    scale = QDoubleSpinBox()
+    opacity = QSpinBox()
+    for box, low, high in ((x, -4000, 4000), (y, -4000, 4000)):
+        box.setRange(low, high)
+    scale.setRange(5, 800)
+    scale.setSuffix(' %')
+    scale.setDecimals(1)
+    scale.setSingleStep(5)
+    opacity.setRange(5, 100)
+    opacity.setSuffix(' %')
+    path_label = QLabel()
+    for widget in (choose, QLabel('X'), x, QLabel('Y'), y, QLabel('Scale'), scale, QLabel('Opacity'), opacity, clear):
+        bar.addWidget(widget)
+    bar.addWidget(path_label, 1)
+    controls = (x, y, scale, opacity, clear)
+    choose.setToolTip('Draw a picture (a restored view of the village, say) under the plan. Move it with X and Y, '
+                      'in world units, and size it with Scale; it is kept for this village.')
+
+    def load(path):
+        from PIL import Image as PilImage
+        try:
+            with PilImage.open(path) as opened:
+                return opened.convert('RGBA')
+        except Exception as error:
+            path_label.setText(f'Could not open {path}: {error}')
+            return None
+
+    def sync(editing=True):
+        enabled = holder.backdrop is not None
+        for widget in controls:
+            widget.setEnabled(enabled)
+        if enabled:
+            holder.backdrop.x, holder.backdrop.y = x.value(), y.value()
+            holder.backdrop.scale, holder.backdrop.opacity = scale.value(), opacity.value() / 100
+            if editing:
+                settings.setValue(key + 'x', x.value()); settings.setValue(key + 'y', y.value())
+                settings.setValue(key + 'scale', scale.value()); settings.setValue(key + 'opacity', opacity.value())
+        changed()
+
+    def use(image, path, left, top, size, shade):
+        holder.backdrop = Backdrop(image, left, top, size, shade / 100)
+        for box, value in ((x, left), (y, top), (scale, size), (opacity, shade)):
+            box.blockSignals(True)
+            box.setValue(value)
+            box.blockSignals(False)
+        path_label.setText(path)
+        sync(False)
+
+    def pick():
+        path, _ = QFileDialog.getOpenFileName(None, 'Background picture', settings.value(key + 'path', '') or '',
+                                              'Pictures (*.png *.jpg *.jpeg *.bmp *.webp *.gif)')
+        if not path:
+            return
+        image = load(path)
+        if image is None:
+            return
+        settings.setValue(key + 'path', path)
+        village = preview.village
+        use(image, path, min((r.x for r in village.residents), default=0) - 40, min((r.y for r in village.residents), default=0) - 40,
+            100.0, 100)
+        sync()
+
+    def remove():
+        holder.backdrop = None
+        settings.remove(key + 'path')
+        path_label.setText('')
+        sync(False)
+    choose.clicked.connect(pick)
+    clear.clicked.connect(remove)
+    for widget in (x, y, scale, opacity):
+        widget.valueChanged.connect(lambda _value: sync())
+    remembered = settings.value(key + 'path', '') or ''
+    if remembered and preview.village is not None:
+        from pathlib import Path
+        image = load(remembered) if Path(remembered).is_file() else None
+        if image is not None:
+            use(image, remembered, int(settings.value(key + 'x', 0)), int(settings.value(key + 'y', 0)),
+                float(settings.value(key + 'scale', 100.0)), int(settings.value(key + 'opacity', 100)))
+    if holder.backdrop is None:
+        for widget in controls:
+            widget.setEnabled(False)
+    return holder
+
+
+def view(preview, english=None, request=None, changed=None, jump=None):
     """The widget for a Preview. `english(text)` gives a translation of a line, or None.
+
+    `jump(kind, payload)` takes the user to something the selection is made of: kind 'text' (payload: the bank's
+    Wfm, its file, its offset, its name and the entry), 'group' (a load table and a group of it), 'asset' or
+    'file' (a disc path). Without it the buttons are not shown.
 
     Selecting a row calls `request(texts)` with that row's lines so they are translated first;
     `changed` is a signal that fires when a translation may have arrived.
@@ -626,11 +783,34 @@ def view(preview, english=None, request=None, changed=None):
     plan = QWidget()
     plan_layout = QVBoxLayout(plan)
     plan_layout.setContentsMargins(0, 0, 0, 0)
+    redraw_hook = []
+    backdrop_bar = _backdrop_bar(preview, lambda: redraw_hook and redraw_hook[0]())
+    plan_layout.addLayout(backdrop_bar.layout)
     plan_layout.addWidget(picture, 1)
     info = QLabel(describe(preview, []))
     info.setWordWrap(True)
     plan_layout.addWidget(info)
+    from PyQt6.QtWidgets import QHBoxLayout, QMenu, QPushButton
+    jump_bar = QHBoxLayout()
+    open_text = QPushButton('Open text entry')
+    open_text.setToolTip('Go to the text bank and show the selected resident\'s message.')
+    open_sprite = QPushButton('Open sprite sheet')
+    open_sprite.setToolTip('Go to the load group of the system table that holds the figures.')
+    open_palette = QPushButton('Open palette file')
+    open_palette.setToolTip('Go to the CLUT file that holds the palette of the selected resident\'s figure.')
+    open_code = QPushButton('Open overlay code')
+    open_code.setToolTip('Go to the INFO2 overlay: the residents, props and houses of the villages and their dialogue routines.')
+    for button in (open_text, open_sprite, open_palette, open_code):
+        jump_bar.addWidget(button)
+    jump_bar.addStretch()
+    if jump is not None:
+        plan_layout.addLayout(jump_bar)
+    else:
+        for button in (open_text, open_sprite, open_palette, open_code):
+            button.hide()
     split.addWidget(plan)
+    if backdrop_bar.backdrop is not None:
+        picture.set_image(draw_plan(preview.village, preview.art, backdrop=backdrop_bar.backdrop))
     headers = ['#', 'Where', 'Behaviour', 'Drawing', 'Case', 'Says (Japanese)'] + (['English'] if english else [])
     table = QTableWidget(len(preview.rows), len(headers))
     table.setHorizontalHeaderLabels(headers)
@@ -685,16 +865,65 @@ def view(preview, english=None, request=None, changed=None):
     # Selection: the table's rows and the plan's elements show each other. `syncing` stops the one
     # from answering while the other is being set.
     state = dict(selected=[], syncing=False, hits=[])
+    places = preview.places
+
+    def chosen_rows(selected):
+        return [i for kind, i in selected if kind == 'resident']
+
+    def message_entries(selected):
+        return [(row, entry) for row in chosen_rows(selected) for entry, _text in preview.rows[row].messages if entry is not None]
+
+    def chosen_looks(selected):
+        if preview.art is None:
+            return []
+        found = [preview.art.look_for(preview.village.residents[row].subtype) for row in chosen_rows(selected)]
+        return [look for look, _stand_in in (f for f in found if f)]
+
+    def update_jumps(selected):
+        open_text.setEnabled('bank' in places and bool(message_entries(selected)))
+        open_sprite.setEnabled('group' in places)
+        open_palette.setEnabled(bool(chosen_looks(selected)))
+        open_code.setEnabled('overlay' in places)
+
+    def go_text():
+        entries = message_entries(state['selected'])
+        if not entries or jump is None:
+            return
+        if len(entries) == 1:
+            jump('text', (*places['bank'], entries[0][1]))
+            return
+        menu = QMenu(open_text)
+        for row, entry in entries:
+            action = menu.addAction(f'Resident {row + 1}: entry #{entry}')
+            action.triggered.connect(lambda _checked=False, e=entry: jump('text', (*places['bank'], e)))
+        menu.exec(open_text.mapToGlobal(open_text.rect().bottomLeft()))
+
+    def go_palette():
+        looks = chosen_looks(state['selected'])
+        if looks and jump is not None:
+            jump('file', looks[0].file)
+    open_text.clicked.connect(go_text)
+    open_sprite.clicked.connect(lambda: jump('group', places['group']))
+    open_palette.clicked.connect(go_palette)
+    open_code.clicked.connect(lambda: jump('asset', places['overlay']))
+    update_jumps([])
     if preview.village is not None:
-        draw_plan(preview.village, preview.art, hits=state['hits'])
+        draw_plan(preview.village, preview.art, hits=state['hits'], backdrop=backdrop_bar.backdrop)
+
+        def redraw(selected=None):
+            if selected is not None:
+                state['selected'] = selected
+            state['hits'][:] = []
+            image = draw_plan(preview.village, preview.art, state['selected'], state['hits'], backdrop_bar.backdrop)
+            picture.set_image(image, preserve_view=True)
+        redraw_hook.append(redraw)
 
         def show(selected):
             if selected == state['selected']:
                 return
-            state['selected'] = selected
-            image = draw_plan(preview.village, preview.art, selected)
-            picture.set_image(image, preserve_view=True)
+            redraw(selected)
             info.setText(describe(preview, selected))
+            update_jumps(selected)
 
         def rows_changed():
             if state['syncing']:
