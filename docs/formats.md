@@ -157,11 +157,16 @@ lumberjack resident is `AREA11/CLUT02.GAM` number 36 (the cursed one 68, the fac
 the male Stonetown resident `AREA16/CLUT07.GAM` 53 and the Iron Town residents `AREA17/CLUT03.GAM`
 1; they give the same colours on the Japanese disc.
 
-Which drawing a subtype is, and which sheet frame a facing is, was in the sprite tables that the
-disc does not hold. The plan draws the figure for the residents of the commonest subtype of each
-village (the ones the named palettes are for), in the front, back or side frame its facing field
-suggests, and leaves the others as marks. The "Figure sheets" panel shows every group with its named
-palette first and every other palette of the area's files that colours the whole page after it.
+Which drawing a subtype is, which palette it has and which sheet frame a facing is were in tables the
+disc does not hold. The plan draws a figure for each resident whose subtype a named palette fits:
+in the Wood People's village the male lumberjack for subtype 0 and the factory worker for subtype 1
+(the cursed palette, 68, is only offered in the sheet panel), in Stonetown the muscular male
+resident for subtype 3. The residents of the other subtypes are drawn translucent as stand-ins,
+in the first palette, in the Wood People's village and Iron Town, where their drawing is not known;
+in Stonetown they stay marks, because its sheet holds other drawings and no palette is named for
+them. The front, back or side frame follows the resident's facing field, which is a guess. The
+"Figure sheets" panel shows every group with the named palettes first and every other palette of
+the area's files that colours the whole page after them.
 
 The tab is the first one of its section and opens selected. The section is blue in the disc tree and
 ends in "(unused area)". Opening the tab queues every line of the village for translation, and
