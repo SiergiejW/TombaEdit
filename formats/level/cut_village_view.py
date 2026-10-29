@@ -7,9 +7,12 @@ resident with the messages its dialogue routine can open.
 
 The plan is drawn from the data alone. The village's background picture, its
 collision map and the sprite tables that say which drawing each subtype is were
-not kept on the disc, so the figures are marks and not art.
+not kept on the disc, so the figures on the plan are marks and not art. The
+figure sheets the villages load are on the disc, and the tab shows them beside
+the plan; which village loads which sheet is not recorded in what was read.
 """
 from dataclasses import dataclass, field
+import numpy as np
 from PIL import Image, ImageDraw, ImageFont
 
 from formats.level.cut_towns import CUT, VILLAGES, WINDOWS, dialogue_cases, villages
@@ -37,6 +40,15 @@ class Preview:
     image: object
     rows: list
     notes: list
+    sheets: list = field(default_factory=list)      # [Sheet]: the figure sheets of the village load groups
+
+
+@dataclass
+class Sheet:
+    group: int              # group of the system load table
+    words: object           # the 64 x 256 words of the first texture page: 4-bit figures, 256 x 256 texels
+    palettes: list          # [(row, column, 16 colours)] in the left strip of VRAM
+    best: int               # index of the palette that makes the neighbouring texels most alike
 
 
 def _font(size):
@@ -135,6 +147,67 @@ def available(project, path, index):
     return _village(project, path, index) is not None
 
 
+def indices(words):
+    """The 4-bit texels of a texture page (64 words wide): 256 per row, the low nibble first."""
+    out = np.zeros((words.shape[0], 256), np.uint8)
+    for n in range(4):
+        out[:, n::4] = (words >> (4 * n)) & 15
+    return out
+
+
+def colours(words):
+    """RGBA of 15-bit colours; a zero word is transparent."""
+    v = np.asarray(words).astype(np.uint32)
+    out = np.zeros(v.shape + (4,), np.uint8)
+    out[..., 0] = (v & 31) * 255 // 31
+    out[..., 1] = ((v >> 5) & 31) * 255 // 31
+    out[..., 2] = ((v >> 10) & 31) * 255 // 31
+    out[..., 3] = np.where(v == 0, 0, 255)
+    return out
+
+
+def sheet_image(sheet, palette):
+    return Image.fromarray(colours(sheet.palettes[palette][2])[indices(sheet.words)])
+
+
+def village_groups(project, path):
+    """The groups of the system load table that bring the village overlay with texture pages."""
+    from formats.archive.ldar import system_table
+    groups = project.ldars.get(system_table(path))
+    found = []
+    for number, group in enumerate(groups or ()):
+        overlay = any(a.kind == 'INS' and a.source and 'NFO2' in a.source.path.upper() for a in group.assets)
+        if overlay and any(a.kind == 'GRPX' for a in group.assets):
+            found.append(number)
+    return found
+
+
+def figure_sheets(project, path):
+    """A Sheet for each village group: its first texture page, which holds the figures."""
+    sheets = []
+    for number in village_groups(project, path):
+        vram = project.vram(path, 1, number)
+        candidates = []
+        for y in range(256):
+            for x in range(0, 64, 16):
+                row = vram[y, x:x + 16]
+                if len(set(row.tolist())) >= 8:
+                    candidates.append((y, x, row.copy()))
+        if not candidates:
+            continue
+        words = vram[0:256, 64:128].copy()
+        sample = indices(words)[::2, ::2]
+        best, low = 0, None
+        for n, (_y, _x, row) in enumerate(candidates):
+            c = row.astype(np.int32)
+            rgb = np.stack([c & 31, (c >> 5) & 31, (c >> 10) & 31], -1)[sample].astype(np.int32)
+            score = np.abs(np.diff(rgb, axis=1)).sum() + np.abs(np.diff(rgb, axis=0)).sum()
+            if low is None or score < low:
+                best, low = n, score
+        sheets.append(Sheet(number, words, candidates, best))
+    return sheets
+
+
 def preview(project, path, index):
     """The Preview of the empty section a load-table group stands for, or None for any other group."""
     from formats.text import export
@@ -173,7 +246,49 @@ def preview(project, path, index):
         rows.append(row)
     if village.cut:
         notes.insert(0, f'{village.name} (AREA{area:02d} section 0) is never loaded: its load list is empty and no exit leads into it.')
-    return Preview(village.name, area, draw_plan(village), rows, notes)
+    return Preview(village.name, area, draw_plan(village), rows, notes, figure_sheets(project, path))
+
+
+def _sheets_panel(sheets):
+    """The figure sheets of the village load groups, with a choice of group and palette."""
+    from PyQt6.QtWidgets import QComboBox, QHBoxLayout, QLabel, QVBoxLayout, QWidget
+    from gui.widgets.image_view import ImageView
+    panel = QWidget()
+    layout = QVBoxLayout(panel)
+    note = QLabel('The first texture page of each group that loads the village overlay: 4-bit figures, 256 x 256 texels. '
+                  'Nothing read from the game says which village loads which group, or which palette a figure uses; '
+                  'the palette first shown is the one that makes neighbouring texels most alike, so pick another '
+                  'if the colours look wrong.')
+    note.setWordWrap(True)
+    layout.addWidget(note)
+    bar = QHBoxLayout()
+    group, palette = QComboBox(), QComboBox()
+    group.addItems([f'Group {sheet.group}' for sheet in sheets])
+    bar.addWidget(QLabel('Texture group'))
+    bar.addWidget(group)
+    bar.addWidget(QLabel('Palette'))
+    bar.addWidget(palette, 1)
+    layout.addLayout(bar)
+    picture = ImageView()
+    layout.addWidget(picture, 1)
+
+    def fill_palettes():
+        sheet = sheets[group.currentIndex()]
+        palette.blockSignals(True)
+        palette.clear()
+        palette.addItems([f'VRAM row {y}, column {x}' + (' (default)' if n == sheet.best else '')
+                          for n, (y, x, _row) in enumerate(sheet.palettes)])
+        palette.setCurrentIndex(sheet.best)
+        palette.blockSignals(False)
+        draw()
+
+    def draw():
+        sheet = sheets[group.currentIndex()]
+        picture.set_image(sheet_image(sheet, palette.currentIndex()), preserve_view=True)
+    group.currentIndexChanged.connect(fill_palettes)
+    palette.currentIndexChanged.connect(draw)
+    fill_palettes()
+    return panel
 
 
 def view(preview, english=None, request=None, changed=None):
@@ -245,7 +360,14 @@ def view(preview, english=None, request=None, changed=None):
                     + [text for row in preview.rows for text in lines(row)])
         table.itemSelectionChanged.connect(selected)
         selected()      # opening the tab already queues every line of the village
-    split.addWidget(table)
+    if preview.sheets:
+        from PyQt6.QtWidgets import QComboBox, QTabWidget
+        right = QTabWidget()
+        right.addTab(table, 'Residents')
+        right.addTab(_sheets_panel(preview.sheets), 'Figure sheets')
+        split.addWidget(right)
+    else:
+        split.addWidget(table)
     split.setSizes([480, 900])
     layout.addWidget(split, 1)
     layout.addWidget(QLabel('Red: resident outdoors. Purple: resident inside a house. Blue: house. '

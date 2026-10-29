@@ -146,6 +146,13 @@ boxes, props and numbered residents, and a table of what each one says. The back
 collision map and the tables that say which drawing each subtype is were not kept on the disc, so the
 plan is marks, not art.
 
+The figures themselves are on the disc. Each group of the system load table that brings the
+village overlay (INFO2) also brings texture pages; the first of them, at VRAM x 64, is a sheet of
+4-bit figures, and the 16-colour palettes sit in the strip at x 0 to 63. Nothing read from the game
+says which village loads which group or which palette a figure uses, so the "Figure sheets" panel
+lists the groups and the palettes and starts on the palette that makes neighbouring texels most
+alike. The pages after the first are 8-bit pictures of the village's buildings; they are not shown.
+
 The tab is the first one of its section and opens selected. The section is blue in the disc tree and
 ends in "(unused area)". Opening the tab queues every line of the village for translation, and
 selecting a row moves that row's lines to the front of the queue, so the English column fills in
