@@ -1158,6 +1158,8 @@ class MainWindow(QMainWindow):
         self.disc_tree.setUpdatesEnabled(False)
         self.disc_tree.clear()
         self.populate_disc(project.disc.root, self.disc_tree.invisibleRootItem())
+        from formats.level.cut_village_view import available as cut_village_available
+        from gui.widgets.text_usage import blue
         languages = sorted({table_name(path)[0] for path in project.ldars} - {None})
         first_language = languages[0] if languages else None
         other_languages = {}
@@ -1191,6 +1193,11 @@ class MainWindow(QMainWindow):
                 label = "Base - Shared area resources" if g.index == 0 else f"Section {g.index - 1:02d} - {section_name(area, g.index - 1)}"
                 group_item = self.item(root, label, ("group", path, g.index))
                 group_item.setToolTip(0, f"{path} | Load group {g.index} | LDAR offset 0x{g.offset:X}")
+                if cut_village_available(project, path, g.index):
+                    group_item.setData(0, ROLE + 1, label + ' (unused area)')
+                    group_item.setText(0, label + ' (unused area)')
+                    group_item.setForeground(0, blue(self.disc_tree.palette()))
+                    group_item.setToolTip(0, group_item.toolTip(0) + '\nNever loaded by the game; its village survives in the overlay (Cut village tab).')
                 for asset in g.assets:
                     item = self.item(group_item, asset.label, asset, asset.size)
                     self.asset_items[(path, asset.record_offset)] = item
@@ -1401,16 +1408,19 @@ class MainWindow(QMainWindow):
                                lambda row: self.jump_file(folder.children[row].path))
             if "group" in result:
                 group = result["group"]
+                if result.get('cut_village') is not None:
+                    # The village is what this section has to show, so it comes first and is the tab that opens.
+                    from formats.level.cut_village_view import view as cut_village_view
+                    from formats.text.translation_session import session_for
+                    session = session_for(self.project, self)
+                    # A selected row is translated first, even with whole-disc preloading off.
+                    self.tabs.addTab(cut_village_view(result['cut_village'], session.translations.get,
+                                                      session.request_texts, session.changed), 'Cut village')
+                    self.tabs.setCurrentIndex(self.tabs.count() - 1)
                 if 'level' in result:
                     self.level_view.set_labels(self.labels, self.persist_labels)
                     self.level_view.set_scene(result['level'])
                     self.tabs.addTab(self.level_view, 'Level editor')
-                if result.get('cut_village') is not None:
-                    from formats.level.cut_village_view import view as cut_village_view
-                    from formats.text.translation_session import session_for
-                    session = session_for(self.project, self)
-                    self.tabs.addTab(cut_village_view(result['cut_village'], lambda text: session.translations.get(text)
-                                                      if session.enabled else None), 'Cut village')
                 self.asset_table(group.assets)
             if 'four' in result:
                 self.four_view.set_four(result['four'], result['four_candidates'],

@@ -49,7 +49,7 @@ class TranslationSession(QObject):
         self.active = None
         self.model_test = None
         self.loaded = set()         # folders that have translated something this session
-        self.selected = ''
+        self.selected, self.also = '', []
         self.pool = QThreadPool.globalInstance()
         self.timer = QTimer(self)
         self.timer.setSingleShot(True)
@@ -139,7 +139,14 @@ class TranslationSession(QObject):
 
     def request_text(self, text):
         """Prioritise the selected entry even while whole-disc preloading is off."""
-        self.selected = text
+        self.selected, self.also = text, []
+        self.rebuild_queue()
+        self.changed.emit()
+
+    def request_texts(self, texts):
+        """Prioritise several entries at once, as when one selection opens a few lines."""
+        texts = [t for t in dict.fromkeys(texts) if t]
+        self.selected, self.also = (texts[0] if texts else ''), texts[1:]
         self.rebuild_queue()
         self.changed.emit()
 
@@ -148,7 +155,7 @@ class TranslationSession(QObject):
         self.queue.clear()
         if self.closed or not self.folder or self.error:
             return
-        wanted = dict.fromkeys([self.selected] + (list(self.originals()) if self.enabled else []))
+        wanted = dict.fromkeys([self.selected, *self.also] + (list(self.originals()) if self.enabled else []))
         for text in wanted:
             if text in self.translations or text in self.failures or self.active == (self.folder, text):
                 continue

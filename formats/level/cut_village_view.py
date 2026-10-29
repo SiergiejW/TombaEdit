@@ -115,10 +115,9 @@ def _bank(project, path):
     return None
 
 
-def preview(project, path, index):
-    """The Preview of the empty section a load-table group stands for, or None for any other group."""
+def _village(project, path, index):
+    """(executable, overlay, village) for the empty section a load-table group stands for, or None."""
     from formats.level.scene import area_of
-    from formats.text import export
     area = area_of(path)
     if index != 1 or area not in AREA_SETS or project.ldars[path][1].assets:
         return None
@@ -128,8 +127,22 @@ def preview(project, path, index):
     if found is None or data is None:
         return None
     village = villages(data, found.build.overlay).get(AREA_SETS[area])
-    if village is None:
+    return None if village is None else (found, data, village)
+
+
+def available(project, path, index):
+    """Whether the group is an empty section whose village survives in the overlay (no plan is drawn)."""
+    return _village(project, path, index) is not None
+
+
+def preview(project, path, index):
+    """The Preview of the empty section a load-table group stands for, or None for any other group."""
+    from formats.text import export
+    located = _village(project, path, index)
+    if located is None:
         return None
+    found, data, village = located
+    area = next(a for a, n in AREA_SETS.items() if n == village.set_number)
     notes = ["The village's background picture, collision map and the tables that say which drawing each resident "
              'subtype is are not on the disc, so this is a plan of marks and not the village as it looked.']
     cases = bank = None
@@ -163,8 +176,12 @@ def preview(project, path, index):
     return Preview(village.name, area, draw_plan(village), rows, notes)
 
 
-def view(preview, english=None):
-    """The widget for a Preview. `english(text)` gives a translation of a line, or None."""
+def view(preview, english=None, request=None, changed=None):
+    """The widget for a Preview. `english(text)` gives a translation of a line, or None.
+
+    Selecting a row calls `request(texts)` with that row's lines so they are translated first;
+    `changed` is a signal that fires when a translation may have arrived.
+    """
     from PyQt6.QtCore import Qt
     from PyQt6.QtWidgets import QLabel, QSplitter, QTableWidget, QTableWidgetItem, QVBoxLayout, QWidget, QAbstractItemView
     from gui.widgets.image_view import ImageView
@@ -182,18 +199,48 @@ def view(preview, english=None):
     table.setHorizontalHeaderLabels(headers)
     table.setEditTriggers(QAbstractItemView.EditTrigger.NoEditTriggers)
     table.setSelectionBehavior(QAbstractItemView.SelectionBehavior.SelectRows)
+    def lines(row):
+        return [text for entry, text in row.messages if entry is not None]
+
+    def translated(row):
+        found = [english(text) for text in lines(row)]
+        return ' / '.join(line for line in found if line)
+
+    def show_english():
+        column = len(headers) - 1
+        for r, row in enumerate(preview.rows):
+            text = translated(row)
+            item = table.item(r, column)
+            if item is not None and item.text() != text:
+                item.setText(text)
+                item.setToolTip(text)
+
     for r, row in enumerate(preview.rows):
         says = ' / '.join(text if entry is None else f'#{entry}: {text}' for entry, text in row.messages) or row.note
         cells = [str(row.number), row.where, row.behaviour, str(row.subtype), str(row.case), says]
         if english:
-            lines = [english(text) for entry, text in row.messages if entry is not None]
-            cells.append(' / '.join(line for line in lines if line))
+            cells.append(translated(row))
         for c, text in enumerate(cells):
             item = QTableWidgetItem(text)
             item.setToolTip(text)
             table.setItem(r, c, item)
     table.resizeColumnsToContents()
     table.setColumnWidth(5, min(table.columnWidth(5), 520))
+    if english and changed is not None:
+        def refresh():
+            try:
+                show_english()
+            except RuntimeError:        # the tab was closed
+                changed.disconnect(refresh)
+        changed.connect(refresh)
+    if request is not None:
+        def selected():
+            # The selected rows' lines first, then the rest of the village's.
+            rows = sorted({i.row() for i in table.selectedIndexes()})
+            request([text for r in rows for text in lines(preview.rows[r])]
+                    + [text for row in preview.rows for text in lines(row)])
+        table.itemSelectionChanged.connect(selected)
+        selected()      # opening the tab already queues every line of the village
     split.addWidget(table)
     split.setSizes([520, 760])
     layout.addWidget(split, 1)

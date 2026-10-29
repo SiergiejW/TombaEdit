@@ -15,6 +15,11 @@ def purple(palette, selected=False):
     return QColor('#bc80ed' if palette.color(background).lightness() < 128 else '#8535b1')
 
 
+def blue(palette):
+    """The colour of a section that has cut content, readable on a dark or a light tree."""
+    return QColor('#5aa2ff' if palette.color(QPalette.ColorRole.Base).lightness() < 128 else '#1c5fcf')
+
+
 class TextEntryDelegate(QStyledItemDelegate):
     def initStyleOption(self, option, index):
         super().initStyleOption(option, index)
