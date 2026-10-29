@@ -86,14 +86,22 @@ class ImageView(QWidget):
     def scale_image(self):
         if self.image is None:
             return
+        self.scrollbars(self.zoom.currentIndex() != 0)
         if self.zoom.currentIndex() == 0:
             # Fit fills the pane: the largest scale at which the whole
-            # picture shows, whatever that comes to.
+            # picture shows, whatever that comes to. It has no scroll bars: one that came and went
+            # as the picture was fitted would change the room and leave the picture off centre.
             room = self.view.maximumViewportSize()
             self.canvas.set_zoom(min((room.width() - 4) / max(1, self.image.width),
                                      (room.height() - 4) / max(1, self.image.height)), exact=True)
         else:
             self.canvas.set_zoom([1, 1, 2, 4, 8][self.zoom.currentIndex()])
+
+    def scrollbars(self, wanted):
+        """Scroll bars as needed, or none at all (Fit)."""
+        policy = Qt.ScrollBarPolicy.ScrollBarAsNeeded if wanted else Qt.ScrollBarPolicy.ScrollBarAlwaysOff
+        self.view.setHorizontalScrollBarPolicy(policy)
+        self.view.setVerticalScrollBarPolicy(policy)
 
     def fit_view(self):
         self.zoom.setCurrentIndex(0)
@@ -105,6 +113,7 @@ class ImageView(QWidget):
             return
         bars = (self.view.horizontalScrollBar(), self.view.verticalScrollBar())
         before = self.canvas.zoom
+        self.scrollbars(True)
         middle = [(bar.value() + bar.pageStep() / 2) / before for bar in bars]
         self.canvas.zoom_by(direction)
         after = self.canvas.zoom

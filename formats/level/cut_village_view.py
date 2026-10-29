@@ -47,8 +47,8 @@ class Preview:
 class Sheet:
     group: int              # group of the system load table
     words: object           # the 64 x 256 words of the first texture page: 4-bit figures, 256 x 256 texels
-    palettes: list          # [(row, column, 16 colours)] in the left strip of VRAM
-    best: int               # index of the palette that makes the neighbouring texels most alike
+    palettes: list          # [(label, 16 colours)]: complete palettes of the area's CLUT files, best first
+    best: int               # the palette shown first
 
 
 def _font(size):
@@ -167,7 +167,7 @@ def colours(words):
 
 
 def sheet_image(sheet, palette):
-    return Image.fromarray(colours(sheet.palettes[palette][2])[indices(sheet.words)])
+    return Image.fromarray(colours(sheet.palettes[palette][1])[indices(sheet.words)])
 
 
 def village_groups(project, path):
@@ -182,29 +182,49 @@ def village_groups(project, path):
     return found
 
 
+def area_palettes(project, area):
+    """[(name, row, column, 16 colours)] for each different 16-colour palette in the area's CLUT files."""
+    import re
+    found, seen = [], {}
+    for entry in sorted(project.disc.files, key=lambda e: e.path):
+        match = re.fullmatch(rf'AREA{area:02d}/(CLUT\d+)\.GAM', entry.path.upper())
+        if not match or entry.directory:
+            continue
+        words = np.frombuffer(project.payload(entry), '<u2')
+        for at in range(0, len(words) - 15, 16):
+            row = words[at:at + 16]
+            if len(set(row.tolist())) < 8:
+                continue
+            key = row.tobytes()
+            if key in seen:
+                seen[key][4] += 1
+                continue
+            seen[key] = entry = [match.group(1), at // 256, at % 256, row.copy(), 0]
+            found.append(entry)
+    return [(f'{name} row {r}, column {x}' + (f' (and {n} like it)' if n else ''), row) for name, r, x, row, n in found]
+
+
 def figure_sheets(project, path):
-    """A Sheet for each village group: its first texture page, which holds the figures."""
+    """A Sheet for each village group: its first texture page, which holds the figures, and the palettes
+    of the area's CLUT files that colour it completely, the one that makes neighbouring texels most alike first."""
+    from formats.level.scene import area_of
+    palettes = area_palettes(project, area_of(path))
     sheets = []
     for number in village_groups(project, path):
-        vram = project.vram(path, 1, number)
-        candidates = []
-        for y in range(256):
-            for x in range(0, 64, 16):
-                row = vram[y, x:x + 16]
-                if len(set(row.tolist())) >= 8:
-                    candidates.append((y, x, row.copy()))
-        if not candidates:
-            continue
-        words = vram[0:256, 64:128].copy()
-        sample = indices(words)[::2, ::2]
-        best, low = 0, None
-        for n, (_y, _x, row) in enumerate(candidates):
+        words = project.vram(path, 1, number)[0:256, 64:128].copy()
+        texels = indices(words)
+        used = sorted(set(np.unique(texels).tolist()) - {0})
+        sample = texels[:192:2, ::2]
+        ranked = []
+        for label, row in palettes:
+            if not used or (row[used] == 0).any() or len(set(row[used].tolist())) < 9:
+                continue
             c = row.astype(np.int32)
             rgb = np.stack([c & 31, (c >> 5) & 31, (c >> 10) & 31], -1)[sample].astype(np.int32)
-            score = np.abs(np.diff(rgb, axis=1)).sum() + np.abs(np.diff(rgb, axis=0)).sum()
-            if low is None or score < low:
-                best, low = n, score
-        sheets.append(Sheet(number, words, candidates, best))
+            ranked.append((int(np.abs(np.diff(rgb, axis=1)).sum() + np.abs(np.diff(rgb, axis=0)).sum()), label, row))
+        ranked.sort(key=lambda r: r[0])
+        if ranked:
+            sheets.append(Sheet(number, words, [(label, row) for _score, label, row in ranked], 0))
     return sheets
 
 
@@ -254,30 +274,32 @@ def _sheets_panel(sheets):
     from PyQt6.QtWidgets import QComboBox, QHBoxLayout, QLabel, QVBoxLayout, QWidget
     from gui.widgets.image_view import ImageView
     panel = QWidget()
-    layout = QVBoxLayout(panel)
+    layout = QHBoxLayout(panel)
+    picture = ImageView()
+    picture.zoom.setCurrentIndex(0)     # Fit
+    layout.addWidget(picture, 1)
+    side = QVBoxLayout()
     note = QLabel('The first texture page of each group that loads the village overlay: 4-bit figures, 256 x 256 texels. '
                   'Nothing read from the game says which village loads which group, or which palette a figure uses; '
-                  'the palette first shown is the one that makes neighbouring texels most alike, so pick another '
-                  'if the colours look wrong.')
+                  'the palettes are those of the area CLUT files that colour the whole page, and the one first shown '
+                  'makes neighbouring texels most alike, so pick another if the colours look wrong.')
     note.setWordWrap(True)
-    layout.addWidget(note)
-    bar = QHBoxLayout()
+    note.setMinimumWidth(220)
+    side.addWidget(note)
     group, palette = QComboBox(), QComboBox()
     group.addItems([f'Group {sheet.group}' for sheet in sheets])
-    bar.addWidget(QLabel('Texture group'))
-    bar.addWidget(group)
-    bar.addWidget(QLabel('Palette'))
-    bar.addWidget(palette, 1)
-    layout.addLayout(bar)
-    picture = ImageView()
-    layout.addWidget(picture, 1)
+    side.addWidget(QLabel('Texture group'))
+    side.addWidget(group)
+    side.addWidget(QLabel('Palette'))
+    side.addWidget(palette)
+    side.addStretch()
+    layout.addLayout(side)
 
     def fill_palettes():
         sheet = sheets[group.currentIndex()]
         palette.blockSignals(True)
         palette.clear()
-        palette.addItems([f'VRAM row {y}, column {x}' + (' (default)' if n == sheet.best else '')
-                          for n, (y, x, _row) in enumerate(sheet.palettes)])
+        palette.addItems([label + (' (default)' if n == sheet.best else '') for n, (label, _row) in enumerate(sheet.palettes)])
         palette.setCurrentIndex(sheet.best)
         palette.blockSignals(False)
         draw()
@@ -361,10 +383,11 @@ def view(preview, english=None, request=None, changed=None):
         table.itemSelectionChanged.connect(selected)
         selected()      # opening the tab already queues every line of the village
     if preview.sheets:
-        from PyQt6.QtWidgets import QComboBox, QTabWidget
-        right = QTabWidget()
-        right.addTab(table, 'Residents')
-        right.addTab(_sheets_panel(preview.sheets), 'Figure sheets')
+        # Under the residents, so the plan keeps the whole height of the tab.
+        right = QSplitter(Qt.Orientation.Vertical)
+        right.addWidget(table)
+        right.addWidget(_sheets_panel(preview.sheets))
+        right.setSizes([380, 340])
         split.addWidget(right)
     else:
         split.addWidget(table)

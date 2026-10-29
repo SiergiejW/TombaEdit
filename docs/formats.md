@@ -148,10 +148,14 @@ plan is marks, not art.
 
 The figures themselves are on the disc. Each group of the system load table that brings the
 village overlay (INFO2) also brings texture pages; the first of them, at VRAM x 64, is a sheet of
-4-bit figures, and the 16-colour palettes sit in the strip at x 0 to 63. Nothing read from the game
-says which village loads which group or which palette a figure uses, so the "Figure sheets" panel
-lists the groups and the palettes and starts on the palette that makes neighbouring texels most
-alike. The pages after the first are 8-bit pictures of the village's buildings; they are not shown.
+4-bit figures: one body drawn in all its poses, walking, talking and working. The pages after the
+first are 8-bit pictures of the village's buildings. The palettes are not in the group. They are
+the 16-colour rows of the area's `CLUTnn.GAM` files (32 rows of 256 words each; the figure
+palettes sit in the columns from 192 on, and other rows hold them too), a file for each stage of
+the story. Nothing read from the game says which village loads which group, which palette a
+resident uses, or which frame of the sheet a facing and animation are, so the "Figure sheets" panel
+lists the groups and every palette of the area's files that colours the whole page, and starts on
+the one that makes neighbouring texels most alike. That is a guess and often not the right colours.
 
 The tab is the first one of its section and opens selected. The section is blue in the disc tree and
 ends in "(unused area)". Opening the tab queues every line of the village for translation, and
