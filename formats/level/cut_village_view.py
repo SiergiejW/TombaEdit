@@ -52,6 +52,8 @@ class Sheet:
     words: object           # the 64 x 256 words of the first texture page: 4-bit figures, 256 x 256 texels
     palettes: list          # [(label, 16 colours)]: complete palettes of the area's CLUT files, best first
     best: int               # the palette shown first
+    building_words: object = None       # the 384 x 256 words of pages 1 to 6: 8-bit pictures, 768 x 256 texels
+    building_palettes: list = field(default_factory=list)   # [(label, 256 colours)], best first
 
 
 def _font(size):
@@ -327,6 +329,18 @@ def colours(words):
     return out
 
 
+def byte_indices(words):
+    """The 8-bit texels of a run of texture pages: two to a word, the low byte first."""
+    out = np.zeros((words.shape[0], words.shape[1] * 2), np.uint8)
+    out[:, 0::2] = words & 255
+    out[:, 1::2] = words >> 8
+    return out
+
+
+def building_image(sheet, palette):
+    return Image.fromarray(colours(sheet.building_palettes[palette][1])[byte_indices(sheet.building_words)])
+
+
 def sheet_image(sheet, palette):
     return Image.fromarray(colours(sheet.palettes[palette][1])[indices(sheet.words)])
 
@@ -365,14 +379,68 @@ def area_palettes(project, area):
     return [(f'{name} row {r}, column {x}' + (f' (and {n} like it)' if n else ''), row) for name, r, x, row, n in found]
 
 
+def area_windows256(project, area):
+    """[(label, 256 colours)] for every 256 words, at each multiple of 16, of the area's CLUT files."""
+    import re
+    found = []
+    for entry in sorted(project.disc.files, key=lambda e: e.path):
+        match = re.fullmatch(rf'AREA{area:02d}/(CLUT\d+)\.GAM', entry.path.upper())
+        if not match or entry.directory:
+            continue
+        words = np.frombuffer(project.payload(entry), '<u2')
+        for at in range(0, len(words) - 255, 16):
+            found.append((f'{match.group(1)} row {at // 256}, column {at % 256}', words[at:at + 256]))
+    return found
+
+
+GREY = ('texel value as grey: the colours are not recovered', np.array([(v >> 3) * 0x421 for v in range(256)], np.uint16))
+
+
+def rank_windows(windows, texels, keep=24):
+    """The windows that colour nearly every texel in use, those that make neighbouring texels most alike first.
+    Judged on the pairs of neighbouring texels, so a thousand candidates cost little."""
+    drawn = texels != 0
+    pairs = {}
+    for a, b, both in ((texels[:, :-1], texels[:, 1:], drawn[:, :-1] & drawn[:, 1:]),
+                       (texels[:-1], texels[1:], drawn[:-1] & drawn[1:])):
+        kinds, counts = np.unique(a[both].astype(np.int64) * 256 + b[both], return_counts=True)
+        for kind, count in zip(kinds.tolist(), counts.tolist()):
+            pairs[kind] = pairs.get(kind, 0) + count
+    kinds = np.array([k for k, c in pairs.items() if c >= 3])
+    weights = np.array([pairs[k] for k in kinds.tolist()], np.float64)
+    if not len(kinds):
+        return []
+    first, second = kinds // 256, kinds % 256
+    use = np.bincount(texels[drawn].astype(np.int64), minlength=256)
+    table = np.stack([w for _label, w in windows]).astype(np.int32)
+    colour = np.stack([table & 31, (table >> 5) & 31, (table >> 10) & 31], -1)
+    holes = np.array([use[row == 0].sum() for row in table]) / max(1, use.sum())
+    score = np.empty(len(table))
+    for start in range(0, len(table), 512):
+        part = colour[start:start + 512]
+        score[start:start + 512] = (np.abs(part[:, first, :] - part[:, second, :]).sum(-1) * weights).sum(1) / weights.sum()
+    order = [i for i in np.argsort(score) if holes[i] < 0.01]
+    seen, out = set(), []
+    for i in order:
+        if table[i].tobytes() in seen:
+            continue
+        seen.add(table[i].tobytes())
+        out.append((windows[i][0], windows[i][1].copy()))
+        if len(out) == keep:
+            break
+    return out
+
+
 def figure_sheets(project, path):
     """A Sheet for each village group: its first texture page, which holds the figures, and the palettes
     of the area's CLUT files that colour it completely, the one that makes neighbouring texels most alike first."""
     from formats.level.scene import area_of
     palettes = area_palettes(project, area_of(path))
+    windows256 = area_windows256(project, area_of(path))
     sheets = []
     for number in village_groups(project, path):
-        words = project.vram(path, 1, number)[0:256, 64:128].copy()
+        vram = project.vram(path, 1, number)
+        words = vram[0:256, 64:128].copy()
         texels = indices(words)
         used = sorted(set(np.unique(texels).tolist()) - {0})
         sample = texels[:192:2, ::2]
@@ -388,7 +456,12 @@ def figure_sheets(project, path):
             for name, at, who, _subtypes, row in reversed(named_palettes(project, area_of(path))):
                 ranked.insert(0, (0, f'{who} (named in the research notes): {name} palette {at}', row))
         if ranked:
-            sheets.append(Sheet(number, words, [(label, row) for _score, label, row in ranked], 0))
+            sheet = Sheet(number, words, [(label, row) for _score, label, row in ranked], 0)
+            buildings = vram[0:256, 128:512].copy()
+            sheet.building_words = buildings
+            texels = byte_indices(buildings)
+            sheet.building_palettes = [GREY] + rank_windows(windows256, texels)
+            sheets.append(sheet)
     return sheets
 
 
@@ -442,7 +515,11 @@ def preview(project, path, index):
                          else f'{stood} residents are translucent stand-ins: their own drawing or palette is not known.')
         elif len(village.residents) - sum(solid):
             notes.append(f'The other {len(village.residents) - sum(solid)} residents stay marks: their drawing is not known.')
-    return Preview(village.name, area, draw_plan(village, art), rows, notes, figure_sheets(project, path), village, art)
+    # Ranking the palettes takes seconds: once for each table a session.
+    sheets = project.__dict__.setdefault('cut_village_sheets', {})
+    if path not in sheets:
+        sheets[path] = figure_sheets(project, path)
+    return Preview(village.name, area, draw_plan(village, art), rows, notes, sheets[path], village, art)
 
 
 def _title(text):
@@ -455,19 +532,23 @@ def _title(text):
 
 
 def _sheets_panel(sheets):
-    """The sprite sheets of the village load groups, with a choice of sprite and palette above the picture."""
+    """The sprite sheets of the village load groups: the figures of page 0 and the buildings of the pages after
+    it, with a choice of sprite, page and palette above the picture."""
     from PyQt6.QtWidgets import QComboBox, QHBoxLayout, QLabel, QVBoxLayout, QWidget
     from gui.widgets.image_view import ImageView
     panel = QWidget()
     outer = QVBoxLayout(panel)
     outer.setContentsMargins(0, 0, 0, 0)
-    outer.addWidget(_title(f'Sprites: the figure sheets the village overlay can load ({len(sheets)})'))
+    outer.addWidget(_title(f'Sprites: the figures and buildings the village overlay can load ({len(sheets)} sets)'))
     bar = QHBoxLayout()
-    sprite, palette = QComboBox(), QComboBox()
+    sprite, page, palette = QComboBox(), QComboBox(), QComboBox()
     sprite.addItems([f'Sprite {n} of {len(sheets)} (group {sheet.group})' for n, sheet in enumerate(sheets, 1)])
-    sprite_count, palette_count = QLabel(), QLabel()
+    page.addItems(['Figures: page 0, 4-bit', 'Buildings: pages 1 to 6, 8-bit'])
+    palette_count = QLabel()
     bar.addWidget(QLabel('Sprite'))
     bar.addWidget(sprite)
+    bar.addWidget(QLabel('Page'))
+    bar.addWidget(page)
     bar.addWidget(QLabel('Palette'))
     bar.addWidget(palette, 1)
     bar.addWidget(palette_count)
@@ -477,32 +558,43 @@ def _sheets_panel(sheets):
     picture = ImageView()
     picture.zoom.setCurrentIndex(0)     # Fit
     layout.addWidget(picture, 1)
-    note = QLabel('The first texture page of each group that loads the village overlay: 4-bit figures, 256 x 256 texels. '
-                  'Nothing read from the game says which village loads which group, or which palette a figure uses; '
-                  'the palettes are those of the area CLUT files that colour the whole page, the named ones first, '
-                  'then the one that makes neighbouring texels most alike, so pick another if the colours look wrong.')
+    note = QLabel('Page 0 of each group that loads the village overlay holds 4-bit figures (256 x 256 texels), pages 1 to 6 '
+                  '8-bit pictures of buildings (768 x 256): pieces of the village that were put together from data '
+                  'the disc does not hold, so they are shown as they are stored. Nothing read from the game says which '
+                  'village loads which group or which palette is used; the palettes are those of the area CLUT files that '
+                  'colour the whole page, the named ones first, then the one that makes neighbouring texels most alike, '
+                  'so pick another if the colours look wrong.')
     note.setWordWrap(True)
     note.setMinimumWidth(220)
     note.setMaximumWidth(320)
     note.setAlignment(Qt_AlignTop())
     layout.addWidget(note)
 
+    def palettes_of(sheet):
+        return sheet.palettes if page.currentIndex() == 0 else sheet.building_palettes
+
     def fill_palettes():
         sheet = sheets[sprite.currentIndex()]
+        listed = palettes_of(sheet)
         palette.blockSignals(True)
         palette.clear()
-        total = len(sheet.palettes)
-        palette.addItems([f'{n} of {total}: {label}' + (' (default)' if n - 1 == sheet.best else '')
-                          for n, (label, _row) in enumerate(sheet.palettes, 1)])
-        palette.setCurrentIndex(sheet.best)
+        total = len(listed)
+        first = sheet.best if page.currentIndex() == 0 else 0
+        palette.addItems([f'{n} of {total}: {label}' + (' (default)' if n - 1 == first else '')
+                          for n, (label, _row) in enumerate(listed, 1)])
+        palette.setCurrentIndex(first if total else -1)
         palette.blockSignals(False)
         palette_count.setText(f'{total} palettes')
         draw()
 
     def draw():
         sheet = sheets[sprite.currentIndex()]
-        picture.set_image(sheet_image(sheet, palette.currentIndex()), preserve_view=True)
+        if not palettes_of(sheet) or palette.currentIndex() < 0:
+            return
+        make = sheet_image if page.currentIndex() == 0 else building_image
+        picture.set_image(make(sheet, palette.currentIndex()), preserve_view=False)
     sprite.currentIndexChanged.connect(fill_palettes)
+    page.currentIndexChanged.connect(fill_palettes)
     palette.currentIndexChanged.connect(draw)
     fill_palettes()
     return panel

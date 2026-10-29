@@ -111,6 +111,14 @@ group table, and WFM1's glyph rows and FFF4. The offset of the dialogue table
 is a 16-bit value; the event-title banks (D1FF) leave FFFF in the top half of
 the word. Glyph words also have 8000 set, apart from the flags of WFM1.
 
+The Japanese release draws its text in three bitmap sizes: 12 x 12 for running text, 10 x 10 and the
+20 x 20 of the event titles. Its kana were already known by shape; its kanji are in
+`formats/text/glyphs_jp.json` (shape key to character), read from the bitmaps and checked against the
+words around them where the reading was in doubt. Of the 1,190 shapes in the 46 distinct banks, 659
+had no character; 626 were given one that way. Afterwards 96.5% of the entries that have text decode completely (6,459 of
+6,690, from 56.8%) and 1.8% of the glyph slots (169 of 9,627) have none: icons drawn in the text, and
+shapes whose reading was not certain. A glyph with no character shows as `[gNNN]`, its number in the bank.
+
 A WFM1 glyph word carries more in its top bits. A kana that is voiced is
 two words: the kana with 1000 set, then the mark (dakuten or handakuten)
 with 2000 set, drawn over the same cell; both also have 4000. In WFM3 a
@@ -167,6 +175,14 @@ in Stonetown they stay marks, because its sheet holds other drawings and no pale
 them. The front, back or side frame follows the resident's facing field, which is a guess. The
 "Figure sheets" panel shows every group with the named palettes first and every other palette of
 the area's files that colours the whole page after them.
+
+The pages after the first (VRAM x 128 to 511, six pages of 64 words) are 8-bit: two texels to a word, the
+low byte first, 768 x 256 texels of pieces of the village's buildings, laid out the way the artist packed
+them. The pieces' shapes read clearly, but their colours were not recovered: no 256-colour palette of the
+`CLUTnn.GAM` files (read at any multiple of 16 words) makes them smooth, so the "Buildings" page of the
+sprites panel starts on the texel value as grey and offers the smoothest windows of the area's files after
+it. The data that places each piece in the village is not on the disc either, so the pieces are not put
+together.
 
 The plan is selectable. A click on a resident, prop or house outlines it in cyan (a house is also
 shaded, and a resident's walking box is outlined) and a line under the plan says what it is; a click on

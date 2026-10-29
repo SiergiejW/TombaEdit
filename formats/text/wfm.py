@@ -13,6 +13,8 @@ from disc.reader import FormatError
 DIALOGUE_CLUT = (0x0000,0x0400,0x4E73,0x2529,0x35AD,0x4210,0x14A5,0x7E4D,0x03E0,0x421F,0x297F,0x5319,0x4674,0x3A11,0,0)
 EVENT_CLUT = (0x01FF,0x8400,0x7FFF,0x3DEF,0x2529,0x56B5,0x00F0,0x0198,0x6739,0x0134,0x01FF,0x7C00,0x7C00,0x7C00,0x7C00,0x7C00)
 GLYPH_DICTIONARY = json.loads(Path(__file__).with_name('glyph_dictionary.json').read_text('utf8'))
+# The Japanese release's kanji, read from the glyph bitmaps by eye and checked against the text around them.
+GLYPH_DICTIONARY.update(json.loads(Path(__file__).with_name('glyphs_jp.json').read_text('utf8')))
 # WFM IDs are font-local. Recognize the bitmap before consulting the shared
 # character vocabulary; applying tombadict's numeric IDs directly is incorrect.
 EXACT_GLYPHS = json.loads(Path(__file__).with_name('glyphs_us.json').read_text('utf8'))
