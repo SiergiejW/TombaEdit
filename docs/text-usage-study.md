@@ -54,6 +54,8 @@ Those 102 unmatched copies contain 92 distinct decoded messages. Equality here c
 
 Independent R3000A execution of the native item/event notice selector checked all 288 valid area/kind/item combinations, recording the allocated window's actual entry ID. None selected a candidate. Stream-pointer checks found no shared entry pointers or truncated entry decoding. A scan including the Tomba `.000` files found no additional valid WFM banks or WSS programs; apparent script headers inside the menu overlays declare sizes beyond the available bytes. These checks strengthen the candidate evidence but do not replace complete gameplay reachability analysis or an emulator trace. No full DuckStation playthrough has been verified for this conclusion.
 
+Direct runtime evidence was added on 28 October from the user-supplied `work/PCPX-96093_1.sav` (SHA-256 `c83718ef4cc0a3ee4dcfb5a4787f2f9fe127370ea42724b5b65a2324e835cfd3`). It matches the patched executable's selector routines and patch code, and is in AREA02 section 01. Dialogue window `800AC2D0` reads stream `8014F2C0`, inside entry **095**, from the byte-identical `TOMBA/AREA02/A003.GAM@4E14` bank loaded at `80148E14` in text slot 0. The running game's visible dwarf dialogue matches the decoded entry. This entry now says **Observed in-game** in the patched-image viewer's usage evidence; its underlying referenced status and all candidate counts are unchanged. This observation is not transferred to the original image as a gameplay observation. Slots 2 and 3 are zero in this scene. All 16 dialogue CLUT words at (352,483) match the editor's AREA02 reconstruction exactly. This validates that palette in this scene, not every palette or scene. Reproduce the saved-state extraction with `python work/pure9_state_text_check.py work/PCPX-96093_1.sav`; its JSON output is `work/pure9-live-text-evidence.json`.
+
 Generate a reviewable UTF-8 JSON report containing every candidate's source, bank offset, zero-based viewer entry number, original text, selector evidence and matching entries:
 
 ```powershell
@@ -61,6 +63,8 @@ python -m formats.text.prepre9_study "rom/prepatched pure9/Pure Pure 09.cue" --c
 ```
 
 Pure 9 event-title colours use the native title model's CLUT 7D16, (352,500), loaded with the section. Its other cube faces are orange, matching this palette's fill. Dialogue uses (352,483).
+
+For emulator verification, use a digital controller for the PrePre 9 sampler menu. Its `MAIN.EXE` reader at `8002C3C8`, called at `8002C544`, reads the pad buffer at `801A71B8` and rejects a controller whose ID's upper nibble is not 4. Native execution with Start, Cross and Circle pressed returned the expected buttons for digital ID `41`, and zero buttons for analog IDs `73` and `53` in all nine cases. This establishes the menu reader's compatibility restriction; it does not establish the controller's current runtime mode. After changing controller type, boot the disc afresh so a loaded save state cannot retain its previous device mode. The local reproduction is `python work/pure_sampler_input_verify.py`.
 
 Other ROM builds still have partial selector coverage; their unchecked entries are not treated as used or possibly unused. No Japanese retail executable was identified locally. The folder named SLPS-01144_1998-02-03_Tombi NTSC Preview Version contains an English preview. Tomba-AR's modified font remains outside Japanese/English decoding coverage.
 

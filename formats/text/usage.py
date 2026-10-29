@@ -217,6 +217,8 @@ def entry(dialogue):
 
 def label(dialogue):
     result = entry(dialogue)
+    if result and result['status'] == 'referenced' and result.get('observations'):
+        return 'Observed in-game'
     return LABELS.get(result['status'], '') if result else ''
 
 

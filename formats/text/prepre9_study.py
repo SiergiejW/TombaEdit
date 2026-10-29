@@ -197,6 +197,23 @@ def complete(project, profile):
             'Possibly unused does not prove game-state unreachability.')
     result['audit_revision'] = 'pure9-complete-selector-audit-v2'
     result['apd_sha1'] = apd_hashes
+    if hashlib.sha1(found.data).hexdigest() == '72988193d496a3a9402399d04291997d57b4be45':
+        # Positive runtime evidence is scoped to the image actually saved.
+        # The source state also matches the patched function at 8002A87C.
+        observed = result['banks']['TOMBA/AREA02/A003.GAM@4E14']['text']['95']
+        if observed['status'] != 'referenced':
+            raise ValueError('Observed dialogue conflicts with the selector study')
+        observed['evidence'] = [line for line in observed['evidence']
+                               if line != 'Static display reference only; its trigger reachability is not established.']
+        observed['observations'] = [dict(
+            kind='duckstation-dialogue-window', date='2026-10-28', area=2, section=1,
+            state_sha256='c83718ef4cc0a3ee4dcfb5a4787f2f9fe127370ea42724b5b65a2324e835cfd3',
+            object_address='800AC2D0', stream_address='8014F2C0', bank_address='80148E14')]
+        note = ('Observed in-game: DuckStation state PCPX-96093_1.sav, AREA02 section 01. '
+                'Window 800AC2D0 reads stream 8014F2C0 inside entry 095 of the byte-identical '
+                'AREA02 dialogue bank at 80148E14, bound to text slot 0. The visible dwarf dialogue matches.')
+        if note not in observed['evidence']:
+            observed['evidence'].append(note)
     return result
 
 
