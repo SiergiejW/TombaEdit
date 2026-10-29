@@ -15,6 +15,7 @@ are the raw words, for tools.
 import csv
 import io
 import json
+import re
 from dataclasses import dataclass, field
 from pathlib import Path
 from formats.archive.ldar import table_name
@@ -171,6 +172,45 @@ def collect(project, area=None, language=None, progress=None):
             attach_usage(wfm, project, entry.path, 0)
             banks.append(Bank(Path(entry.path).name, entry.path, 0, language=tongue, version=wfm.version.decode('ascii', 'replace'),
                               wfm=wfm))
+        banks += embedded_banks(project, named, language, {(b.source, b.offset) for b in banks})
+    return banks
+
+
+def embedded_banks(project, named, language=None, seen=()):
+    """Banks inside program overlays and GAM files that no load table names,
+    such as the item and event descriptions of the menu overlays."""
+    from formats.text.titles import attach, language_of
+    from formats.text.palettes import attach as attach_palette
+    from formats.text.usage import attach as attach_usage
+    seen, banks = set(seen), []
+    for entry in project.disc.files:
+        path = entry.path.upper()
+        if (entry.directory or entry.path in named or not path.endswith(('.BIN', '.GAM'))
+                or re.search(r'(?:^|/)SYS/LD\d?(?:AR\d+|SYS)\.BIN$', path)):
+            continue
+        tongue = language_of(entry.path)
+        if language is not None and tongue not in (None, language):
+            continue
+        try:
+            data = project.payload(entry)
+        except (FormatError, ValueError, OSError):
+            continue
+        for magic in MAGICS:
+            start = bytes(data).find(magic)
+            while start >= 0:
+                if (entry.path, start) not in seen:
+                    try:
+                        wfm = Wfm(data[start:])
+                    except (FormatError, ValueError):
+                        wfm = None
+                    if wfm is not None:
+                        seen.add((entry.path, start))
+                        attach(wfm, project, tongue)
+                        attach_palette(wfm, project, entry.path, start)
+                        attach_usage(wfm, project, entry.path, start)
+                        banks.append(Bank(f'{Path(entry.path).stem} @{start:X}', entry.path, start, language=tongue,
+                                          version=wfm.version.decode('ascii', 'replace'), wfm=wfm))
+                start = bytes(data).find(magic, start + 1)
     return banks
 
 

@@ -707,6 +707,7 @@ from, keyed by its SHA-1:
 | `SCUS_942.36` | US retail | `800E7388` | `8009BCC8` |
 | `SCUS_942.55` | US demo | `800DDCA0` | `80092640` |
 | `SLPS_011.44` | Preview, 3 February 1998 | `800EDAA8` | `800A2440` |
+| `SLPS_011.44` | Japanese retail (SHA-1 `07d57769...`) | `800E9AF8` | `8009E508` |
 | `SLPM_801.65` | Japanese demo | `800E7698` | `8009A810` |
 | `TOMBA.EXE` | Pure Pure 09 sampler | `800ED548` | `800A2248` |
 | `MAIN0.EXE` | European release, language 0 | `800E8028` | `8009C960` |

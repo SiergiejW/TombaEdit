@@ -107,6 +107,18 @@ BUILDS = {
         origins=0x8007BE38, wall_origins=0x8007BE28, alternate_origin=0x8007BE24,
         plane_limits=(0x8007BF34, 0, 1), pages=0x8007AB24,
         items=(0x8007BA5C, 0x8007BB24, 0x8007BCAC), controllers=(0x8007CAD4, 0x8007CB24)),
+    '07d577698ad31ec1a69b9d7b80a7c3f90b650888': Build(
+        name='Japanese retail', overlay=0x800E9AF8, area=0x8009E508, variant=(0x800A138C, 0x8009EE6B),
+        tables={2: 0x80071784, 3: 0x80075940, 4: 0x80076900, 5: 0x80077E70, 7: 0x80076B44, 8: 0x8007591C},
+        set_animation=0x80020DE4,
+        visibility=(0x8002122C, 0x80020FF0, 0x80021124, 0x80021354, 0x80021408, 0x800214A4),
+        get_clut=0x8005AD6C,
+        draw_queues=(0x80018200, 0x8001823C, 0x80018278, 0x800182C4, 0x80018300, 0x8001833C, 0x80018378),
+        silent=(0x8001E2D4, 0x800219F0, 0x80021A94),
+        slot_tables=0x80078734, common=0x800746B0, pictures=0x80078334, entrances=0x80075328,
+        origins=0x80078140, wall_origins=0x80078130, alternate_origin=0x8007812C,
+        plane_limits=(0x8007823C, 0, 1), pages=0x80076CAC,
+        items=(0x80077BE4, 0x80077CAC, 0x80077E34), controllers=(0x80078D0C, 0x80078D5C)),
     '44360f12e7bd9449a7d46deb412d6a9499b6c94c': Build(
         name='Japanese demo', overlay=0x800E7698, area=0x8009A810, variant=None,
         tables={2: 0x8006A230, 3: 0x8006CE80, 4: 0x8006D504, 5: 0x8006E01C, 7: 0x8006D660, 8: 0x8006CE64},

@@ -710,6 +710,7 @@ routines and tables; `game/builds.py` lists them for these builds:
 | `SCUS_942.36` | US retail | all |
 | `SCUS_942.55` | US demo | 00 to 02 |
 | `SLPS_011.44` | Preview dated 3 February 1998 | all |
+| `SLPS_011.44` | Japanese retail (Ore! Tomba); a different executable from the preview's, told apart by SHA-1 | all, not yet checked area by area |
 | `SLPM_801.65` | Japanese demo, 1997 | 00 |
 | `TOMBA/TOMBA.EXE` | Pure Pure 09 sampler (PCPX-96093), 1997 | 01 and 02 |
 | `EXE/MAIN0.EXE` to `MAIN8.EXE` | European release (SCES-01331), nine languages | all |
