@@ -119,6 +119,8 @@ class VramCanvas(QWidget):
         self.mark_timer = QTimer(self)
         self.mark_timer.setSingleShot(True)
         self.mark_timer.timeout.connect(self.clear_mark)
+        from gui.widgets.zoom_buttons import ZoomButtons
+        ZoomButtons(self, lambda: self.set_zoom(self.zoom * 1.25), lambda: self.set_zoom(self.zoom / 1.25), self.fit)
 
     def set_image(self, image, per_word=None):
         """Show a new reading. Where the pixels per word change, the word in

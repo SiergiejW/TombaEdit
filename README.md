@@ -124,8 +124,12 @@ shown in-game.
 
 The APD **Placements** map overlays objects and sprites at 50% opacity, with
 fully visible, selectable points above them. Scroll to zoom, middle/right-drag
-to pan, or use **−**, **+**, **Fit** and the **F** key. Unresolved objects keep
+to pan, or use the **+**, **−** and **Fit** buttons at the top right and the **F** key. Unresolved objects keep
 their points. **Placements in level** provides the full scene and animation.
+
+Every 2D view (pictures, sprite sheets, the VRAM view, collision planes, placement maps and
+the 2D level view) has the same three buttons stacked at its top right: **+** and **−** zoom
+about the middle of the view and repeat while held, and **Fit** shows the whole picture again.
 
 ## Version 0.0.2
 

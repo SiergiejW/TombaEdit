@@ -85,6 +85,7 @@ class MeshCanvas(CameraEventMixin, QOpenGLWidget):
         self.sky = None
         self.show_backdrop = True
         self.backdrop_turned = False
+        self.zoom_buttons = None
         self.flat_mode = False
         self.flat_order = []
         self.flat_frame = set()
@@ -96,6 +97,11 @@ class MeshCanvas(CameraEventMixin, QOpenGLWidget):
         self.controls_label.setObjectName('viewerOverlay')
         self.controls_label.setTextInteractionFlags(Qt.TextInteractionFlag.TextSelectableByMouse)
         self.stats_label.raise_(); self.controls_label.raise_()
+        from gui.widgets.zoom_buttons import ZoomButtons
+        # Only a flat (2D) scene zooms like a picture; the 3D view moves its camera instead.
+        self.zoom_buttons = ZoomButtons(self, lambda: self.zoom_flat(1 / 1.15), lambda: self.zoom_flat(1.15),
+                                        lambda: self.fit())
+        self.zoom_buttons.setVisible(self.flat_mode)
         self.fit()
         self.setMinimumSize(200, 200)
 
@@ -257,13 +263,28 @@ class MeshCanvas(CameraEventMixin, QOpenGLWidget):
         self.controls_label.move(self.width() - self.controls_label.width() - 6,
                                  self.height() - self.controls_label.height() - 6)
 
+    @property
+    def flat_mode(self):
+        return self._flat_mode
+
+    @flat_mode.setter
+    def flat_mode(self, value):
+        self._flat_mode = value
+        if getattr(self, 'zoom_buttons', None) is not None:
+            self.zoom_buttons.setVisible(bool(value))
+
+    def zoom_flat(self, factor):
+        """Move the camera of a flat scene nearer (factor under 1) or farther."""
+        self.auto_fit = False
+        c = self.camera_controls
+        c.stop_glide()
+        c.camera_z = -max(.25, min(1e7, abs(c.camera_z) * factor))
+        self.update()
+
     def wheelEvent(self, event):
         self.auto_fit = False
         if self.flat_mode:
-            c = self.camera_controls
-            c.stop_glide()
-            c.camera_z = -max(.25, min(1e7, abs(c.camera_z) * 1.15 ** (-event.angleDelta().y() / 120)))
-            self.update()
+            self.zoom_flat(1.15 ** (-event.angleDelta().y() / 120))
             event.accept()
             return
         super().wheelEvent(event)

@@ -19,6 +19,8 @@ class PlacementMap(QWidget):
         self.drag = None
         self.setFocusPolicy(Qt.FocusPolicy.StrongFocus)
         self.setMinimumSize(280, 260)
+        from gui.widgets.zoom_buttons import ZoomButtons
+        ZoomButtons(self, lambda: self.zoom_by(1.2), lambda: self.zoom_by(1 / 1.2), self.fit)
 
     def set_scene(self, scene, source):
         """Record the loaded objects in APD X/Y coordinates, behind the dots."""
@@ -206,14 +208,6 @@ class StructuredView(QWidget):
                 for column, value in enumerate(values):
                     self.table.setItem(i, column, QTableWidgetItem(value))
             self.map = PlacementMap(self.records)
-            controls = QHBoxLayout()
-            for label, callback in (('−', lambda: self.map.zoom_by(1 / 1.2)),
-                                    ('+', lambda: self.map.zoom_by(1.2)), ('Fit', self.map.fit)):
-                button = QPushButton(label)
-                button.clicked.connect(callback)
-                controls.addWidget(button)
-            controls.addStretch()
-            layout.addLayout(controls)
             split = QSplitter(Qt.Orientation.Vertical)
             split.addWidget(self.map)
             split.addWidget(self.table)

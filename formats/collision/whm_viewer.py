@@ -32,6 +32,8 @@ class PlaneCanvas(QWidget):
         self.pan_x = self.pan_y = 0.0
         self.drag_from = None
         self.setMinimumSize(360, 300)
+        from gui.widgets.zoom_buttons import ZoomButtons
+        ZoomButtons(self, lambda: self.zoom_by(1.2), lambda: self.zoom_by(1 / 1.2), self.fit)
 
     def visible_spans(self):
         planes = self.whm.planes if self.plane < 0 else [self.whm.planes[self.plane]]
@@ -123,9 +125,14 @@ class PlaneCanvas(QWidget):
         self.drag_from = None
 
     def wheelEvent(self, event):
+        self.zoom_by(1.2 if event.angleDelta().y() > 0 else 1 / 1.2, event.position().x(), event.position().y())
+
+    def zoom_by(self, factor, x=None, y=None):
+        """Zoom about a point of the widget, the middle of it unless given."""
         old_ox, old_oy, old_scale, _, _ = self.transform()
-        x, y = event.position().x(), event.position().y()
-        self.zoom = max(0.25, min(24.0, self.zoom * (1.2 if event.angleDelta().y() > 0 else 1 / 1.2)))
+        x = self.width() / 2 if x is None else x
+        y = self.height() / 2 if y is None else y
+        self.zoom = max(0.25, min(24.0, self.zoom * factor))
         new_ox, new_oy, new_scale, _, _ = self.transform()
         self.pan_x += (x - old_ox) / old_scale * (old_scale - new_scale)
         self.pan_y += (y - old_oy) / old_scale * (old_scale - new_scale)

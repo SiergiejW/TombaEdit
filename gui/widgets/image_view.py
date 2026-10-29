@@ -57,6 +57,8 @@ class ImageView(QWidget):
         self.view.setWidgetResizable(False)
         self.view.setAlignment(Qt.AlignmentFlag.AlignCenter)
         layout.addWidget(self.view)
+        from gui.widgets.zoom_buttons import ZoomButtons
+        ZoomButtons(self.view.viewport(), lambda: self.step_zoom(1), lambda: self.step_zoom(-1), self.fit_view)
         self.image = None
         self.export_name = ''       # default file name, without extension
         if image is not None:
@@ -92,6 +94,31 @@ class ImageView(QWidget):
                                      (room.height() - 4) / max(1, self.image.height)), exact=True)
         else:
             self.canvas.set_zoom([1, 1, 2, 4, 8][self.zoom.currentIndex()])
+
+    def fit_view(self):
+        self.zoom.setCurrentIndex(0)
+        self.scale_image()
+
+    def step_zoom(self, direction):
+        """One notch in or out from wherever the picture is, the middle of the pane staying put."""
+        if self.image is None:
+            return
+        bars = (self.view.horizontalScrollBar(), self.view.verticalScrollBar())
+        before = self.canvas.zoom
+        middle = [(bar.value() + bar.pageStep() / 2) / before for bar in bars]
+        self.canvas.zoom_by(direction)
+        after = self.canvas.zoom
+        # The box offers 100% to 800% only: it shows the nearest, and is no longer on Fit, which would
+        # fit the picture again at the next resize.
+        nearest = min(range(1, 5), key=lambda i: abs([1, 1, 2, 4, 8][i] - after))
+        self.zoom.blockSignals(True)
+        self.zoom.setCurrentIndex(nearest)
+        self.zoom.blockSignals(False)
+
+        def keep():
+            for bar, centre in zip(bars, middle):
+                bar.setValue(int(centre * after - bar.pageStep() / 2))
+        QTimer.singleShot(0, keep)
 
     def show_area(self, left, top, right, bottom):
         """Scroll so the given pixels are centred, at the zoom chosen; Fit
