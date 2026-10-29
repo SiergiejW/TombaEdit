@@ -8,6 +8,8 @@ anything first.
 
 TombaEdit is read-only: it exports assets but does not rebuild discs.
 
+See [the 0.1.0 release notes](docs/release-notes-0.1.0.md) for changes since 0.0.2.
+
 ## Offline Japanese translation
 
 The dialogue viewer shows decoded text and English machine translation beside
@@ -116,7 +118,7 @@ their points. **Placements in level** provides the full scene and animation.
 
 ## Version 0.0.2
 
-Change `version = "0.0.2"` in `version.py` to update the title, About dialog,
+Change the `version` value in `main.py` (currently `"0.1.0"`) to update the title, About dialog,
 welcome page and application version. `python main.py --version` prints it.
 
 - SPR banks shared by towns use verified artwork and animation context from

@@ -3,7 +3,7 @@
 import os
 import sys
 from pathlib import Path
-from PyInstaller.utils.hooks import collect_dynamic_libs
+from PyInstaller.utils.hooks import collect_data_files, collect_dynamic_libs, get_package_paths
 
 ROOT = Path(SPECPATH)
 icon_files = [(str(path), str(path.parent.relative_to(ROOT)))
@@ -29,11 +29,22 @@ notices = [(str(ROOT / 'psx' / 'mips' / 'LICENSE'), 'psx/mips')]
 notices.append((str(Path(_soundfile_data.__file__).parent / 'COPYING'), '_soundfile_data'))
 app_icon = ROOT / 'icons' / 'tomba' / ('tomba1.png' if sys.platform == 'darwin' else 'tomba1.ico')
 
+# SentencePiece and Qt crash when imported into the same process on Windows.
+# PyInstaller's dependency scan imports all graph packages together. Keep this
+# package out of that import graph, but ship its Python files and native module
+# normally on disk. The translation subprocess imports it without loading Qt.
+_, sentencepiece_root = get_package_paths('sentencepiece')
+sentencepiece_root = Path(sentencepiece_root)
+sentencepiece_files = collect_data_files('sentencepiece', include_py_files=True)
+sentencepiece_binaries = [(str(path), str(Path('sentencepiece') / path.parent.relative_to(sentencepiece_root)))
+                         for path in sentencepiece_root.rglob('*')
+                         if path.is_file() and path.suffix.lower() in ('.pyd', '.so', '.dll', '.dylib')]
+
 a = Analysis(
     ['main.py'],
     pathex=[str(ROOT)],
-    binaries=collect_dynamic_libs('unicorn') + collect_dynamic_libs('ctranslate2'),
-    datas=icon_files + text_files + multimedia + label_files + notices + default_files,
+    binaries=collect_dynamic_libs('unicorn') + collect_dynamic_libs('ctranslate2') + sentencepiece_binaries,
+    datas=icon_files + text_files + multimedia + label_files + notices + default_files + sentencepiece_files,
     hiddenimports=['PyQt6.QtMultimedia', 'formats.movie.movie_panel',
                    'formats.audio.audio_viewer', 'formats.images.clut_viewer',
                    'formats.collision.structured_viewer',
@@ -43,8 +54,8 @@ a = Analysis(
                    'formats.archive.data_viewer'],
     hookspath=[],
     hooksconfig={},
-    runtime_hooks=[],
-    excludes=['torch', 'transformers', 'accelerate', 'safetensors', 'bitsandbytes',
+    runtime_hooks=[str(ROOT / 'hooks' / 'rth_translation_worker.py')],
+    excludes=['sentencepiece', 'torch', 'transformers', 'accelerate', 'safetensors', 'bitsandbytes',
               'tkinter', 'matplotlib', 'scipy', 'pandas', 'PyQt6.QtQml',
               'PyQt6.QtQuick', 'PyQt6.QtPdf', 'PyQt6.QtWebEngineWidgets'],
     noarchive=False,
