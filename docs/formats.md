@@ -146,6 +146,11 @@ boxes, props and numbered residents, and a table of what each one says. The back
 collision map and the tables that say which drawing each subtype is were not kept on the disc, so the
 plan is marks, not art.
 
+The tab is the first one of its section and opens selected. The section is blue in the disc tree and
+ends in "(unused area)". Opening the tab queues every line of the village for translation, and
+selecting a row moves that row's lines to the front of the queue, so the English column fills in
+without turning on whole-disc preloading.
+
 ## WSS
 
 Event scripts. `W\0S\0`, the file's size as a word, then sixty-four 16-bit
