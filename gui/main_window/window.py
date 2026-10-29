@@ -830,7 +830,7 @@ class MainWindow(QMainWindow):
         self.label_pool.setMaxThreadCount(1)
         # Idle work: tracing what every section shows, so that opening a
         # sprite bank finds it already worked out (see warm_analysis).
-        self.warm_process = None
+        self.warm_processes = []
         self.warm_epoch = 0
         self.label_index_epoch = 0
         self.label_index_running = False
@@ -2136,14 +2136,14 @@ class MainWindow(QMainWindow):
             QMessageBox.warning(self, 'Cannot import labels', str(exc))
 
     def stop_warm_analysis(self):
-        if self.warm_process is not None:
-            if self.warm_process.is_alive():
-                self.warm_process.terminate()
-            if self.warm_process.pid is not None:
-                self.warm_process.join(timeout=.2)
-            if not self.warm_process.is_alive():
-                self.warm_process.close()
-            self.warm_process = None
+        for process in self.warm_processes:
+            if process.is_alive():
+                process.terminate()
+            if process.pid is not None:
+                process.join(timeout=.2)
+            if not process.is_alive():
+                process.close()
+        self.warm_processes = []
 
     def warm_analysis(self):
         """Populate the same disc cache without competing for the UI's GIL."""
@@ -2154,12 +2154,19 @@ class MainWindow(QMainWindow):
         if self.project is None:
             return
         cache = folder(self.project)
-        self.warm_process = get_context('spawn').Process(target=warm_disc,
-            args=(str(self.project.disc.path), str(cache) if cache else None), daemon=True)
-        try:
-            self.warm_process.start()
-        except (OSError, RuntimeError):
-            self.stop_warm_analysis()
+        import os
+        # The sections are independent, so several processes share them. They
+        # run at idle priority and leave a core for the window.
+        shards = max(1, min(6, (os.cpu_count() or 2) - 1))
+        for shard in range(shards):
+            process = get_context('spawn').Process(target=warm_disc,
+                args=(str(self.project.disc.path), str(cache) if cache else None, shard, shards), daemon=True)
+            try:
+                process.start()
+            except (OSError, RuntimeError):
+                self.stop_warm_analysis()
+                break
+            self.warm_processes.append(process)
             # Normal asset loading remains available without precomputation.
 
     def index_labels(self):

@@ -16,20 +16,47 @@ class TranslationError(ValueError):
     pass
 
 
+# The weight files a Transformers model folder holds: (kind, index file, single file).
+WEIGHTS = (('safetensors', 'model.safetensors.index.json', 'model.safetensors'),
+           ('bin', 'pytorch_model.bin.index.json', 'pytorch_model.bin'))
+TOKENIZER_FILES = ('tokenizer.json', 'tokenizer.model', 'spiece.model', 'sentencepiece.bpe.model',
+                   'vocab.json', 'vocab.txt', 'source.spm')
+
+
+def transformers_weights(root):
+    """(kind, [file names]) of the weights in a Transformers model folder:
+    safetensors, PyTorch .bin or a GGUF file. None when it holds none."""
+    for kind, index, single in WEIGHTS:
+        if (root / index).is_file():
+            shards = set(json.loads((root / index).read_text(encoding='utf8'))['weight_map'].values())
+        elif (root / single).is_file():
+            shards = {single}
+        else:
+            continue
+        if not shards or any(Path(name).name != name or not (root / name).is_file() for name in shards):
+            raise ValueError(f'some of the {kind} weight files are missing')
+        return kind, sorted(shards)
+    gguf = sorted(path.name for path in root.glob('*.gguf'))
+    return ('gguf', gguf[:1]) if gguf else None
+
+
 def model_metadata(folder):
     root = Path(folder)
-    if (root / 'config.json').is_file():
+    if (root / 'config.json').is_file() or any(root.glob('*.gguf')):
         try:
-            config = json.loads((root / 'config.json').read_text(encoding='utf8'))
-            index = root / 'model.safetensors.index.json'
-            shards = set(json.loads(index.read_text(encoding='utf8'))['weight_map'].values()) if index.is_file() else {'model.safetensors'}
-            if not shards or any(Path(name).name != name or not (root / name).is_file() for name in shards):
-                raise ValueError('missing safetensors weights')
-            if not (root / 'tokenizer.json').is_file() or config.get('model_type') != 'mistral':
-                raise ValueError('expected a CAT-Translate-7b tokenizer and Mistral model')
-            return dict(backend='cat', config=config)
+            config = json.loads((root / 'config.json').read_text(encoding='utf8')) if (root / 'config.json').is_file() else {}
+            found = transformers_weights(root)
+            if found is None:
+                raise ValueError('it has no safetensors, PyTorch .bin or GGUF weights')
+            kind, shards = found
+            if kind != 'gguf' and not isinstance(config.get('model_type'), str):
+                raise ValueError('config.json does not name a model_type')
+            if kind != 'gguf' and not any((root / name).is_file() for name in TOKENIZER_FILES):
+                raise ValueError('it has no tokenizer files')
+            return dict(backend='cat', config=config, weights=kind, shards=shards,
+                        seq2seq=bool(config.get('is_encoder_decoder')))
         except (OSError, ValueError, KeyError, TypeError) as exc:
-            raise TranslationError(f'The local CAT-Translate folder is incomplete: {exc}.') from exc
+            raise TranslationError(f'The local Transformers model folder cannot be used: {exc}.') from exc
     try:
         metadata = json.loads((root / 'metadata.json').read_text(encoding='utf-8'))
     except (OSError, ValueError) as exc:
@@ -93,21 +120,79 @@ class LocalTranslator:
         return result
 
 
+def fast_tokenizer(folder):
+    """The tokenizer in `tokenizer.json`, with the special tokens and chat template the
+    model's other files name, or None. It needs no extra libraries."""
+    root = Path(folder)
+    if not (root / 'tokenizer.json').is_file():
+        return None
+    from transformers import PreTrainedTokenizerFast
+
+    def read(name):
+        path = root / name
+        return json.loads(path.read_text(encoding='utf8')) if path.is_file() else {}
+    config, special = read('tokenizer_config.json'), read('special_tokens_map.json')
+    tokens = {}
+    for name in ('bos_token', 'eos_token', 'unk_token', 'pad_token'):
+        value = special.get(name) or config.get(name)
+        value = value.get('content') if isinstance(value, dict) else value
+        if value:
+            tokens[name] = value
+    tokenizer = PreTrainedTokenizerFast(tokenizer_file=str(root / 'tokenizer.json'),
+                                        model_input_names=['input_ids', 'attention_mask'], **tokens)
+    template = config.get('chat_template')
+    if not template and (root / 'chat_template.jinja').is_file():
+        template = (root / 'chat_template.jinja').read_text(encoding='utf8')
+    if template:
+        tokenizer.chat_template = template
+    return tokenizer
+
+
 class CatTranslator:
-    """User-selected, local safetensors CAT-Translate-7b; never fetch code."""
+    """A local Transformers model the user chose, such as CAT-Translate: safetensors, PyTorch .bin or GGUF
+    weights, a causal language model that is asked to translate or an encoder-decoder translator.
+    Never fetches code."""
     def __init__(self, folder):
-        model_metadata(folder)
+        metadata = model_metadata(folder)
         try:
             import torch
-            from transformers import AutoTokenizer, AutoModelForCausalLM
+            from transformers import AutoTokenizer, AutoModelForCausalLM, AutoModelForSeq2SeqLM
         except ImportError as exc:
-            raise TranslationError('Install requirements-translation-cat.txt to use a CAT-Translate safetensors model.') from exc
+            raise TranslationError('Install requirements-translation-cat.txt to use a Transformers model.') from exc
         torch.set_num_threads(2)
         self.torch = torch
-        weights = sum(path.stat().st_size for path in Path(folder).glob('*.safetensors'))
-        self.tokenizer = AutoTokenizer.from_pretrained(folder, local_files_only=True, trust_remote_code=False)
-        options = dict(local_files_only=True, trust_remote_code=False, use_safetensors=True,
+        self.seq2seq = metadata['seq2seq']
+        weights = sum((Path(folder) / name).stat().st_size for name in metadata['shards'])
+        options = dict(local_files_only=True, trust_remote_code=False,
                        low_cpu_mem_usage=True, dtype=torch.float16 if torch.cuda.is_available() else torch.float32)
+        tokenizer_options = dict(local_files_only=True, trust_remote_code=False)
+        kind = metadata['weights']
+        if kind == 'safetensors':
+            options['use_safetensors'] = True
+        elif kind == 'bin':
+            # A .bin file is a pickle, which can run code when it is loaded.
+            # Newer PyTorch refuses unsafe ones; older does not, so it is not used.
+            version = tuple(int(part) for part in re.findall(r'\d+', torch.__version__)[:2])
+            if version < (2, 6):
+                raise TranslationError('This model has PyTorch .bin weights, which are loaded only with PyTorch 2.6 or '
+                                       f'newer (this is {torch.__version__}). Update PyTorch, or use a safetensors copy.')
+            options['use_safetensors'] = False
+        else:
+            try:
+                import gguf  # noqa: F401
+            except ImportError as exc:
+                raise TranslationError('Install the gguf package (pip install gguf) to load a GGUF model.') from exc
+            options['gguf_file'] = tokenizer_options['gguf_file'] = metadata['shards'][0]
+        try:
+            try:
+                self.tokenizer = AutoTokenizer.from_pretrained(folder, **tokenizer_options)
+            except ImportError:
+                # A SentencePiece tokenizer that asks for protobuf to be rebuilt: its tokenizer.json holds the same one.
+                self.tokenizer = fast_tokenizer(folder)
+                if self.tokenizer is None:
+                    raise
+        except (ValueError, OSError, KeyError, ImportError) as exc:
+            raise TranslationError(f'Transformers could not read this model\'s tokenizer: {exc}') from exc
         if torch.cuda.is_available():
             # Leave space for generation and other applications. Accelerate
             # can keep the remaining layers in system RAM when necessary.
@@ -115,14 +200,15 @@ class CatTranslator:
             import psutil
             options.update(device_map='auto', max_memory={0: max(0, free - 1024 ** 3),
                            'cpu': int(psutil.virtual_memory().available * .6)})
-            if free < weights + 1024 ** 3:
+            if free < weights + 1024 ** 3 and kind != 'gguf':
                 try:
                     import bitsandbytes
                     from transformers import BitsAndBytesConfig
                 except ImportError as exc:
                     raise TranslationError('Free more GPU memory, or install bitsandbytes for low-memory GPU translation.') from exc
-                if free < 5 * 1024 ** 3:
-                    raise TranslationError(f'CAT-Translate-7b needs about 5 GB of free GPU memory; '
+                needed = 5 if weights > 10 * 1024 ** 3 else 3
+                if free < needed * 1024 ** 3:
+                    raise TranslationError(f'This model needs about {needed} GB of free GPU memory; '
                         f'{free / 1024 ** 3:.1f} GB is currently free. Close a GPU-heavy application '
                         'or project, then select this entry again to retry.')
                 options['quantization_config'] = BitsAndBytesConfig(load_in_4bit=True,
@@ -134,23 +220,54 @@ class CatTranslator:
             if weights * 2 > psutil.virtual_memory().available * .85:
                 raise TranslationError('Not enough free RAM for CPU translation. Install CUDA-enabled PyTorch '
                                        'for your GPU, or free memory before loading this model.')
-        self.model = AutoModelForCausalLM.from_pretrained(folder, **options).eval()
+        loader = AutoModelForSeq2SeqLM if self.seq2seq else AutoModelForCausalLM
+        try:
+            self.model = loader.from_pretrained(folder, **options).eval()
+        except (ValueError, OSError, KeyError) as exc:
+            raise TranslationError(f'Transformers could not load this {metadata["config"].get("model_type", "GGUF")} '
+                                   f'model as a {"translation" if self.seq2seq else "causal language"} model: {exc}') from exc
+        self.options = self.language_options(metadata['config'])
         self.cache = OrderedDict()
+
+    def language_options(self, config):
+        """Generation settings the multilingual translation models need to go from Japanese to English."""
+        kind, tokenizer = config.get('model_type'), self.tokenizer
+        try:
+            if kind == 'm2m_100':
+                if hasattr(tokenizer, 'get_lang_id') and tokenizer.get_lang_id('ja') != tokenizer.unk_token_id:
+                    tokenizer.src_lang = 'ja'
+                    return dict(forced_bos_token_id=tokenizer.get_lang_id('en'))
+                tokenizer.src_lang = 'jpn_Jpan'            # NLLB shares this model type
+                return dict(forced_bos_token_id=tokenizer.convert_tokens_to_ids('eng_Latn'))
+            if kind in ('mbart', 'mbart50'):
+                tokenizer.src_lang = 'ja_XX'
+                return dict(forced_bos_token_id=tokenizer.lang_code_to_id['en_XX'])
+        except (AttributeError, KeyError, ValueError):
+            pass
+        return {}
 
     def translate(self, text):
         if text in self.cache:
             self.cache.move_to_end(text)
             return self.cache[text]
         prompt = 'Translate the following Japanese text into English.\n\n' + text
-        inputs = self.tokenizer.apply_chat_template([dict(role='user', content=prompt)],
-                    add_generation_prompt=True, return_tensors='pt', return_dict=True)
+        if self.seq2seq:
+            inputs = self.tokenizer(text, return_tensors='pt')
+        elif getattr(self.tokenizer, 'chat_template', None):
+            inputs = self.tokenizer.apply_chat_template([dict(role='user', content=prompt)],
+                        add_generation_prompt=True, return_tensors='pt', return_dict=True)
+        else:
+            inputs = self.tokenizer(prompt, return_tensors='pt')    # a model with no chat template: plain prompt
         if inputs['input_ids'].shape[1] > 4096:
             raise TranslationError('Select a shorter dialogue entry (up to 4096 input tokens).')
-        inputs = {key: value.to(self.model.device) for key, value in inputs.items()}
+        # Language models take no segment ids, which some tokenizers add all the same.
+        inputs = {key: value.to(self.model.device) for key, value in inputs.items() if key != 'token_type_ids'}
+        pad =self.tokenizer.pad_token_id if self.tokenizer.pad_token_id is not None else self.tokenizer.eos_token_id
         with self.torch.inference_mode():
             result = self.model.generate(**inputs, max_new_tokens=1024, do_sample=False, use_cache=True,
-                         pad_token_id=self.tokenizer.pad_token_id or self.tokenizer.eos_token_id)
-        value = self.tokenizer.decode(result[0, inputs['input_ids'].shape[1]:], skip_special_tokens=True).strip()
+                                         pad_token_id=pad, **self.options)
+        start = 0 if self.seq2seq else inputs['input_ids'].shape[1]
+        value = self.tokenizer.decode(result[0, start:], skip_special_tokens=True).strip()
         self.cache[text] = value
         if len(self.cache) > 1024:
             self.cache.popitem(last=False)

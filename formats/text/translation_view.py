@@ -1,5 +1,6 @@
 """Controls and the current entry of a shared offline translation session."""
-from PyQt6.QtWidgets import QWidget, QVBoxLayout, QHBoxLayout, QLabel, QPushButton, QCheckBox, QFileDialog
+from pathlib import Path
+from PyQt6.QtWidgets import QWidget, QVBoxLayout, QHBoxLayout, QLabel, QPushButton, QCheckBox, QFileDialog, QMessageBox
 from gui.widgets.image_view import text_view
 from formats.text.translation import model_metadata, translatable, TranslationError
 from formats.text.translation_session import TranslationSession
@@ -15,9 +16,9 @@ class TranslationPane(QWidget):
         self.enabled = QCheckBox('Auto-translate all WFM text')
         self.enabled.setToolTip('Preload English for every text bank on this disc, including unopened entries.')
         tools.addWidget(self.enabled, 1)
-        choose = QPushButton('Choose model...')
-        choose.clicked.connect(self.choose_model)
-        tools.addWidget(choose)
+        self.choose = QPushButton('Choose model...')
+        self.choose.clicked.connect(self.choose_model)
+        tools.addWidget(self.choose)
         layout.addLayout(tools)
         self.progress = QLabel()
         self.progress.setWordWrap(True)
@@ -41,11 +42,41 @@ class TranslationPane(QWidget):
         if not folder:
             return
         try:
-            model_metadata(folder)
+            metadata = model_metadata(folder)
         except TranslationError as exc:
             self.output.setPlainText(str(exc))
+            self.report(False, folder, str(exc))
             return
+        previous = self.session.folder
         self.session.configure(folder=folder)
+        # Try the model now, so the answer comes with the choice and not with
+        # the first entry that happens to be selected.
+        self.choose.setEnabled(False)
+        self.progress.setText(f'Trying {Path(folder).name}... A large model can take a minute or more to load.')
+        self.session.test_model(folder, lambda ok, message: self.tested(ok, folder, previous, metadata, message))
+
+    def tested(self, ok, folder, previous, metadata, message):
+        self.choose.setEnabled(True)
+        kept = ''
+        if not ok and previous and previous != self.session.folder:
+            # Do not leave the app on a model that cannot translate.
+            self.session.configure(folder=previous)
+            kept = f'{Path(previous).name} is still the selected model.'
+        self.progress.setText(self.session.status())
+        self.report(ok, folder, message, 'CAT-Translate' if metadata.get('backend') == 'cat' else 'Argos', kept)
+
+    def report(self, ok, folder, message, kind='', kept=''):
+        """Tell the user whether the model they chose can translate."""
+        name = Path(folder).name or str(folder)
+        if ok:
+            QMessageBox.information(self, 'Translation model ready',
+                f'{name} ({kind}) loaded and translated a test sentence.\n\n'
+                f'{self.session.SAMPLE}  ->  {message}\n\n'
+                'It stays selected for this and later sessions.')
+        else:
+            QMessageBox.warning(self, 'Translation model failed',
+                f'{name} could not be used.\n\n{message}\n\n'
+                + (kept or 'Choose a different folder, or fix the problem and choose this one again.'))
 
     def set_text(self, text, note=''):
         self.text = text

@@ -84,11 +84,42 @@ def save(project, name, value):
                 pass
 
 
+_trimmed = {}       # cache root -> when it was last measured
+TRIM_EVERY = 120    # seconds between measurements of the whole cache
+
+
 def _trim(root):
-    """Drop the oldest files once all discs together pass LIMIT."""
-    files = sorted(root.glob('*/*.json.gz'), key=lambda p: p.stat().st_mtime_ns, reverse=True)
-    total = 0
-    for old in files:
-        total += old.stat().st_size
-        if total > LIMIT:
-            old.unlink()
+    """Drop the oldest files once all discs together pass LIMIT.
+
+    Measuring the cache walks every file, so it is done once in a while, not
+    for every file saved, and from the directory listing without a call per
+    file."""
+    import time
+    now = time.monotonic()
+    if now - _trimmed.get(root, -TRIM_EVERY) < TRIM_EVERY:
+        return
+    _trimmed[root] = now
+    files, total = [], 0
+    try:
+        with os.scandir(root) as folders:
+            for folder_entry in folders:
+                if not folder_entry.is_dir():
+                    continue
+                with os.scandir(folder_entry.path) as entries:
+                    for entry in entries:
+                        if entry.name.endswith('.json.gz'):
+                            info = entry.stat()
+                            files.append((info.st_mtime_ns, info.st_size, entry.path))
+                            total += info.st_size
+    except OSError:
+        return
+    if total <= LIMIT:
+        return
+    kept = 0
+    for _, size, path in sorted(files, reverse=True):
+        kept += size
+        if kept > LIMIT:
+            try:
+                os.unlink(path)
+            except OSError:
+                pass

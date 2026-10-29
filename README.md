@@ -17,6 +17,10 @@ its rendered preview. Translation is **off by default**. Choose your own local
 model folder and explicitly enable **Auto-translate all WFM text**.
 The app never downloads models or sends dialogue online.
 
+**Choose model...** tries the folder straight away: it loads the model and translates a
+short test sentence, then says whether it worked and shows the English it gave, or why it
+could not be used. A model that fails does not replace the one that was selected before.
+
 Enabling translation queues every readable Japanese entry on the disc, including
 WFM banks you have not opened yet. English previews appear in the entry lists as
 the background queue finishes; the progress line shows how much is ready.
@@ -45,14 +49,21 @@ horizontally; the popup stays open for following further matches.
 
 Supported model folders:
 
-- **CAT-Translate-7b** from [CyberAgent](https://huggingface.co/cyberagent/CAT-Translate-7b):
-  the original Transformers **safetensors** format, with `config.json`, the four
-  weight shards, `model.safetensors.index.json`, tokenizer files and chat template.
+- A **Transformers** model folder, such as **CAT-Translate** from
+  [CyberAgent](https://huggingface.co/cyberagent) (the 7b, which is Mistral-based, and
+  the 3.3b, which is Llama-based): `config.json` with a `model_type`, the weights as
+  **safetensors** (one file or shards with an index), tokenizer files and, for a chat
+  model, a chat template. Any architecture Transformers can load as a causal language
+  model is accepted, and so is an encoder-decoder translator such as Marian, NLLB or
+  M2M-100. A model without a chat template is given the instruction as plain text.
+  PyTorch **`.bin`** weights are accepted only with PyTorch 2.6 or newer, because those
+  files are pickles; a single **GGUF** file is accepted when the `gguf` package is installed.
+  Which of these a folder is, and whether it loads, is found out when you choose it.
   Install `requirements-translation-cat.txt` in the Python environment, or into
   a `runtime` folder alongside the selected model folder. CUDA-enabled PyTorch uses a
   compatible NVIDIA GPU; CPU inference needs considerably more RAM and time.
   When GPU memory cannot hold the original weights, the backend uses local NF4
-  4-bit inference through bitsandbytes; the downloaded safetensors stay unchanged.
+  4-bit inference through bitsandbytes (not for GGUF); the downloaded files stay unchanged.
   Loading the model on first use can take about a minute. Later selections reuse it.
   The worker runs below normal priority, although the initial load can still
   cause brief pauses when system memory or storage is busy.

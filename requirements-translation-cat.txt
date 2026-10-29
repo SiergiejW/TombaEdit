@@ -1,4 +1,4 @@
-# Optional local CAT-Translate-7b backend. Install a CUDA-enabled PyTorch
+# Optional local Transformers backend (CAT-Translate 7b or 3.3b, and other models). Install a CUDA-enabled PyTorch
 # build for GPU inference; CPU inference also works but is much slower.
 torch>=2.4,<3
 transformers>=4.57.1,<5

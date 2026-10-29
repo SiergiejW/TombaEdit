@@ -127,7 +127,14 @@ def door_sibling(project, path, index):
         return None
     section = index - 1
     sibling = DOOR_SIBLINGS.get((area_of(path), section))
-    if sibling is None or sibling + 1 >= len(groups) or not groups[sibling + 1].assets or section & 7 != sibling & 7:
+    if sibling is None:
+        # Not entered by a known door: the one other group that loads the
+        # placement list this section reads is the one it shows.
+        donors = [g.index - 1 for g in groups[1:] if g.index != index and g.assets
+                  and any((a.code >> 8) & 15 == section & 7 for a in g.assets if a.kind == 'APD'
+                          and (a.code >> 8) & 15 != min(15, len(groups) - 1))]
+        return donors[0] if len(donors) == 1 else None
+    if sibling + 1 >= len(groups) or not groups[sibling + 1].assets or section & 7 != sibling & 7:
         return None
     return sibling
 
@@ -476,9 +483,14 @@ def build_scene(project, path, index):
         # sibling filled, so the game shows the sibling's scene.
         scene = build_scene(project, path, sibling + 1)
         scene.location_index = index
-        scene.notes.insert(0, f'Section {index - 1:02d} loads nothing of its own. The game enters it through a door '
-                              f'from section {sibling:02d}, keeps what that section loaded and reads the same '
-                              'placement list, so it is shown as that section.')
+        from game.areas import DOOR_SIBLINGS
+        if (area_of(path), index - 1) in DOOR_SIBLINGS:
+            scene.notes.insert(0, f'Section {index - 1:02d} loads nothing of its own. The game enters it through a door '
+                                  f'from section {sibling:02d}, keeps what that section loaded and reads the same '
+                                  'placement list, so it is shown as that section.')
+        else:
+            scene.notes.insert(0, f'Section {index - 1:02d} loads nothing of its own. It reads placement list {(index - 1) & 7}, '
+                                  f'which section {sibling:02d} loads, so it is shown as that section.')
         return scene
     resources = loaded_resources(project, path, index)
     vram = project.vram(path, index)
@@ -497,6 +509,19 @@ def build_scene(project, path, index):
     in_town = bool(resolver.available and town_of(resolver.town))
     overlay_size = resources['INS', 0].size if ('INS', 0) in resources else 0
     slots = resolver.placement_slots(area, index-1) if resolver.available and index else None
+    section_number = index - 1
+    if slots and not resolver.build.legacy8:
+        # A group whose own placement list is not the one its section number
+        # reads (the Japanese release numbers AREA13's groups differently):
+        # the section is the one the group's list belongs to.
+        loaded = sorted({(a.code >> 8) & 15 for (kind, _), a in resources.items() if kind == 'APD'})
+        own = [slot for slot in loaded if slot != slots[1]]
+        if loaded and slots[0] not in loaded and len(own) == 1:
+            notes.append(f'This group loads placement list {own[0]}, not list {slots[0]}, which section {index - 1} '
+                         f'would read; it is shown as section {own[0]}.')
+            section_number = own[0]
+            resolver = InitialPoseResolver(project, area, section_number, resources)
+            slots = resolver.placement_slots(area, section_number)
     notes.append(resolver.reason)
     notes.append('Initial state preview. Event conditions and scripted spawns are not simulated. Diamond markers, in the colour of their class, have unresolved visuals.')
     for (kind, slot), asset in resources.items():
@@ -578,7 +603,7 @@ def build_scene(project, path, index):
             notes.append(f'{asset.label}: {exc}')
     # What the section's event script creates is put through the same
     # object routines as what the placement lists hold.
-    scripted = scripted_placements(project, resolver, area, index - 1) if index else []
+    scripted = scripted_placements(project, resolver, area, section_number) if index else []
     for source, made in scripted:
         batches.append((None, source, [placement for placement, _ in made], [created for _, created in made]))
     if scripted:
@@ -622,7 +647,7 @@ def build_scene(project, path, index):
     # Measured against the emulator's room dumps (work/section_rule.py).
     own_records = {placement.raw for slot, _, placements, created in batches
                    if slots and slot == slots[0] and created is None for placement in placements}
-    shared = (index - 1, ~(index - 1), ~(index - 2))
+    shared = (section_number, ~section_number, ~(section_number - 1))
     retail = resolver.available and not resolver.build.early and not resolver.build.legacy8
     for slot, asset, placements, created in batches:
         for i, placement in enumerate(placements):
@@ -869,7 +894,7 @@ def build_scene(project, path, index):
     orient_assemblies(entries)
     from formats.collision.geometry import records, lines
     collision_records = []
-    x0, z0, turned, only = resolver.collision_frame(area, index - 1)
+    x0, z0, turned, only = resolver.collision_frame(area, section_number)
     for (kind, slot), asset in resources.items():
         if kind != 'WHM' or only not in (None, slot) or not resolver.available:
             continue
@@ -883,7 +908,7 @@ def build_scene(project, path, index):
             notes.append(f'{asset.label}: {exc}')
     if resolver.available and area == 3 and index in (2, 6) and ('WHM', 1) in resources:
         asset = resources['WHM', 1]
-        alt_x, alt_z, alt_turned, _ = resolver.collision_frame(area, index - 1, alternate=True)
+        alt_x, alt_z, alt_turned, _ = resolver.collision_frame(area, section_number, alternate=True)
         try:
             alternate = records(parse_whm(project.asset_data(asset)), alt_x, alt_z, alt_turned, asset)
             for record in alternate:
@@ -906,7 +931,7 @@ def build_scene(project, path, index):
     sky = None
     # The colour the game clears the screen to in this section, where the
     # executable says; otherwise the top edge of the scenery stands in.
-    clear = resolver.clear_colour(area, index - 1) if resolver.available and index else None
+    clear = resolver.clear_colour(area, section_number) if resolver.available and index else None
     if clear is not None:
         sky = tuple(c / 255 for c in clear)
     elif backdrops:
@@ -928,7 +953,7 @@ def build_scene(project, path, index):
                        collision_records, context, locations, index)
     scene.overlay = resolver.build.overlay if resolver.available else 0
     scene.rate = 50 if resolver.available and 'European' in resolver.build.name else 60
-    scene.palettes = resolver.palette_animation(index - 1) if resolver.available and index else []
+    scene.palettes = resolver.palette_animation(section_number) if resolver.available and index else []
     # Objects that rewrite palettes as they run (area 4's sky), one cycle
     # per row: the first object found for a row is the one kept.
     rows = {palette[:4] for palette in scene.palettes}
@@ -945,7 +970,7 @@ def build_scene(project, path, index):
     scene.view_2d = is_flat(entries)
     if town is not None:
         from formats.level.town import town_graphics
-        profile = town_graphics(project, resources, area, index - 1)
+        profile = town_graphics(project, resources, area, section_number)
         if profile is not None:
             asset = resources['SPR', profile.bank]
             for name, frame in profile.houses:

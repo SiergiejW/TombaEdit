@@ -152,6 +152,14 @@ def player_scripts(regions, frame_count):
                     continue
                 decoded = [read_script(memory, p, frame_count) for p in pointers]
                 if all(decoded):
+                    # A later build has a longer table than the demo's: take
+                    # every script that follows the 56 in the same list.
+                    if count == 56:
+                        while at + 4 * len(pointers) + 4 <= len(data):
+                            more = struct.unpack_from('<I', data, at + 4 * len(pointers))[0]
+                            if memory.region(more) != 'executable' or not read_script(memory, more, frame_count):
+                                break
+                            pointers = pointers + (more,)
                     found = {}
                     for index, pointer in enumerate(pointers):
                         name = PLAYER_ANIMATIONS.get(index) if count == 90 else None
@@ -229,10 +237,26 @@ def table_siblings(memory, starts, frame_count):
 SPR_SLOTS = 0x1F8002C8
 
 
+_constants_cache = {}
+
+
 def code_constants(base, data):
     """{address: [instruction addresses]} for addresses built in MIPS code
     with lui and a following addiu, ori or load/store offset on the same
-    register."""
+    register. The same overlay is read over and over, so what was found for
+    one is kept; each caller gets lists of its own."""
+    import hashlib
+    key = base, len(data), hashlib.blake2b(bytes(data), digest_size=16).digest()
+    found = _constants_cache.get(key)
+    if found is None:
+        found = _code_constants(base, data)
+        if len(_constants_cache) >= 48:
+            _constants_cache.pop(next(iter(_constants_cache)))
+        _constants_cache[key] = found
+    return {value: list(where) for value, where in found.items()}
+
+
+def _code_constants(base, data):
     count = len(data) // 4
     words = np.frombuffer(data[:count * 4], '<u4')
     out = {}

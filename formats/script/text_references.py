@@ -7,7 +7,7 @@ branches. A finite result is a dynamic selection, not a proven playthrough.
 from collections import defaultdict
 
 
-def selectors(script, limit=256):
+def selectors(script, limit=256, actions=(4, 8), base_arg=2, line_arg=3):
     definitions = defaultdict(list)
     talks = []
     for i, ins in enumerate(script.instructions):
@@ -98,8 +98,9 @@ def selectors(script, limit=256):
                 changed = True
     result = []
     for ins in talks:
-        action, base, line = (read(o) for o in ins.operands[1:4])
-        if action is None or action & {4, 8}:
+        action = read(ins.operands[1])
+        base, line = (read(ins.operands[n]) if n < len(ins.operands) else None for n in (base_arg, line_arg))
+        if action is None or action & set(actions):
             result.append(dict(offset=ins.offset, bases=base, lines=line,
                                bounded=action is not None and base is not None and line is not None))
     return result

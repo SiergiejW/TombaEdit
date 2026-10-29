@@ -38,6 +38,7 @@ class TranslationSession(QObject):
         self.busy = self.reading = self.discovered = self.closed = False
         self.error = self.discovery_error = ''
         self.active = None
+        self.model_test = None
         self.selected = ''
         self.pool = QThreadPool.globalInstance()
         self.timer = QTimer(self)
@@ -62,6 +63,32 @@ class TranslationSession(QObject):
         if self.enabled and self.folder:
             self.discover()
         self.changed.emit()
+
+    SAMPLE = 'こんにちは'
+
+    def test_model(self, folder, done):
+        """Translate a short sentence with the model in `folder`, in the
+        background, then call `done(ok, message)`: the English it gave, or
+        why it could not be used. Loading a model takes a while; the first
+        entry waits for it in the same worker, so the model loads once."""
+        folder = str(Path(folder).resolve())
+        task = Task(lambda: worker.translate(folder, self.SAMPLE))
+
+        def finished(response):
+            value, failure = response
+            if failure:
+                done(False, failure)
+            elif value.startswith('Translation unavailable:'):
+                done(False, value[len('Translation unavailable:'):].strip())
+            elif not value.strip():
+                done(False, 'The model returned no text for a test sentence.')
+            else:
+                done(True, value.strip())
+            if self.model_test is task:
+                self.model_test = None
+        task.signals.ready.connect(finished)
+        self.model_test = task      # the signal must outlive this call
+        self.pool.start(task)
 
     def discover(self):
         if self.closed or self.reading or self.discovered or self.project is None:

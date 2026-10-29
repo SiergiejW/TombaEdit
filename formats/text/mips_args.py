@@ -48,9 +48,23 @@ def signed16(n):
 def apply(op, a, b):
     """The values `op` gives for every pair of constants, or unknown."""
     if a.consts is None or b.consts is None:
+        if a.consts is None and b.consts is None and a.note and b.note and a.note != b.note:
+            return Value(None, f'{a.note}+{b.note}')
         return Value(None, a.note or b.note)
     out = {op(x, y) & 0xFFFFFFFF for x in a.consts for y in b.consts}
     return Value(frozenset(out)) if len(out) <= LIMIT else Value(None, 'many')
+
+
+def add_values(a, b):
+    """a + b; a constant address plus an unknown index stays known as a table base."""
+    for known, other in ((a, b), (b, a)):
+        if known.consts is not None and len(known.consts) == 1 and other.consts is None:
+            address = next(iter(known.consts))
+            if address >= 0x10000 and not other.note.startswith('idx+'):
+                return Value(None, f'idx+{address:08X}')
+            if other.note.startswith('idx+'):
+                return Value(None, f'idx+{(int(other.note[4:12], 16) + address) & 0xFFFFFFFF:08X}')
+    return apply(lambda x, y: x + y, a, b)
 
 
 def prologues(words):
@@ -92,8 +106,11 @@ class Function:
     def calls(self, targets):
         """{call address: (a0, a1, a2, a3)} to any address in `targets`, over all paths."""
         words, start, end = self.words, self.start, self.end
-        states = {start: [UNKNOWN] * 32}
-        states[start][0] = ZERO
+        entry = [UNKNOWN] * 32
+        entry[0] = ZERO
+        for n in range(4, 8):
+            entry[n] = Value(None, f'param a{n - 4}')
+        states = {start: entry}
         sp = Value(None, 'stack')
         work = [start]
         result = {}
@@ -121,7 +138,7 @@ class Function:
                 if fn == 0:   state[rd] = apply(lambda x, y: x << y, state[rt], const(sh)) if w else state[rd]
                 elif fn == 2: state[rd] = apply(lambda x, y: x >> y, state[rt], const(sh))
                 elif fn == 3: state[rd] = apply(lambda x, y: (x - (1 << 32) if x & 0x80000000 else x) >> y, state[rt], const(sh))
-                elif fn in (33, 32): state[rd] = apply(lambda x, y: x + y, state[rs], state[rt])
+                elif fn in (33, 32): state[rd] = add_values(state[rs], state[rt])
                 elif fn in (35, 34): state[rd] = apply(lambda x, y: x - y, state[rs], state[rt])
                 elif fn == 37: state[rd] = apply(lambda x, y: x | y, state[rs], state[rt])
                 elif fn == 36: state[rd] = apply(lambda x, y: x & y, state[rs], state[rt])
@@ -130,7 +147,7 @@ class Function:
                 elif fn in (24, 25, 26, 27): pass
                 elif fn in (8, 9, 12, 13): pass
                 else: state[rd] = Value(None, f'special{fn}')
-            elif op in (8, 9):  state[rt] = apply(lambda x, y: x + y, state[rs], const(signed16(imm)))
+            elif op in (8, 9):  state[rt] = add_values(state[rs], const(signed16(imm)))
             elif op == 10 or op == 11: state[rt] = Value(frozenset({0, 1}))
             elif op == 12: state[rt] = apply(lambda x, y: x & y, state[rs], const(imm))
             elif op == 13: state[rt] = apply(lambda x, y: x | y, state[rs], const(imm))
@@ -140,6 +157,8 @@ class Function:
                 name = {32: 'lb', 33: 'lh', 34: 'lwl', 35: 'lw', 36: 'lbu', 37: 'lhu', 38: 'lwr'}[op]
                 base = state[rs]
                 note = f'{name} {signed16(imm):#x}(r{rs})'
+                if base.consts is None and base.note.startswith('idx+'):
+                    note = f'{name} table[{(int(base.note[4:12], 16) + signed16(imm)) & 0xFFFFFFFF:08X}]'
                 if base.consts is not None and len(base.consts) == 1:
                     note = f'{name} [{(next(iter(base.consts)) + signed16(imm)) & 0xFFFFFFFF:08X}]'
                 state[rt] = Value(None, note)
@@ -198,18 +217,21 @@ class Function:
 
 
 def analyse(words, base, targets, read_word):
-    """{call address: (a0, a1, a2, a3)} for calls to `targets` in a code region, and
-    the addresses of indirect jumps whose targets were not found."""
+    """({call address: (a0, a1, a2, a3)} for calls to `targets` in a code region,
+    the addresses of indirect jumps whose targets were not found, and the
+    address of the function each call is in)."""
     starts = prologues(words) + [len(words)]
-    found, jumps = {}, []
+    found, jumps, owner = {}, [], {}
     for k in range(len(starts) - 1):
         function = Function(words, base, starts[k], starts[k + 1], read_word)
         # Skip functions with no call to a target.
         if not any(w >> 26 == 3 and (0x80000000 | (w & 0x3FFFFFF) << 2) in targets for w in words[starts[k]:starts[k + 1]]):
             continue
-        found.update(function.calls(targets))
+        for pc, args in function.calls(targets).items():
+            found[pc] = args
+            owner[pc] = function.address(function.start)
         jumps += function.unresolved_jumps
-    return found, jumps
+    return found, jumps, owner
 
 
 def region_words(data):
