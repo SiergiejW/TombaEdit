@@ -7,9 +7,10 @@ resident with the messages its dialogue routine can open.
 
 The plan is drawn from the data alone. The village's background picture, its
 collision map and the sprite tables that say which drawing each subtype is were
-not kept on the disc, so the figures on the plan are marks and not art. The
-figure sheets the villages load are on the disc, and the tab shows them beside
-the plan; which village loads which sheet is not recorded in what was read.
+not kept on the disc, so the plan has no background and most residents are marks.
+The figure sheets the villages load are on the disc, and the tab shows them under
+the plan. For the residents of the commonest subtype of each village the plan draws
+the figure, with the palette that research on the PAL disc found for it (FIGURES).
 """
 from dataclasses import dataclass, field
 import numpy as np
@@ -68,8 +69,9 @@ def patrol_box(village, r):
     return x0, y0, x1, y1
 
 
-def draw_plan(village):
-    """The plan of a village as an image: houses, patrol boxes, props and numbered residents."""
+def draw_plan(village, art=None):
+    """The plan of a village as an image: houses, patrol boxes, props and numbered residents.
+    Residents of the subtype `art` is for are drawn as that figure."""
     boxes = [b for b in (patrol_box(village, r) for r in village.residents) if b]
     xs = ([r.x for r in village.residents] + [p.x for p in village.props] + [h[i] for h in village.houses for i in (0, 2)]
           + [b[i] for b in boxes for i in (0, 2)])
@@ -98,12 +100,21 @@ def draw_plan(village):
     for r in village.residents:
         px, py = at(r.x, r.y)
         colour = (150, 40, 190, 255) if r.room else (210, 30, 30, 255)
-        draw.line([(px, py), (px, py - 22)], fill=colour, width=2)
-        draw.ellipse([px - 3, py - 3, px + 3, py + 3], fill=colour)
-        draw.ellipse([px - 10, py - 34, px + 10, py - 14], fill=colour, outline=(255, 255, 255, 255))
+        lift = 0
+        if art is not None and r.subtype == art.subtype:
+            figure = art.images[FACINGS.get(r.frame, 'front')]
+            figure = figure.resize((figure.width * SCALE, figure.height * SCALE), Image.Resampling.NEAREST)
+            image.alpha_composite(figure, (int(px - figure.width / 2), int(py - figure.height)))
+            draw.ellipse([px - 3, py - 3, px + 3, py + 3], fill=colour)
+            lift = figure.height - 22
+        else:
+            draw.line([(px, py), (px, py - 22)], fill=colour, width=2)
+            draw.ellipse([px - 3, py - 3, px + 3, py + 3], fill=colour)
+        draw.ellipse([px - 10, py - 34 - lift, px + 10, py - 14 - lift], fill=colour, outline=(255, 255, 255, 255))
         text = str(r.index + 1)
         box = draw.textbbox((0, 0), text, font=small)
-        draw.text((px - (box[2] - box[0]) / 2 - box[0], py - 24 - (box[3] - box[1]) / 2 - box[1] - 0), text, fill=(255, 255, 255, 255), font=small)
+        draw.text((px - (box[2] - box[0]) / 2 - box[0], py - 24 - lift - (box[3] - box[1]) / 2 - box[1]), text,
+                  fill=(255, 255, 255, 255), font=small)
     return image
 
 
@@ -145,6 +156,64 @@ def _village(project, path, index):
 def available(project, path, index):
     """Whether the group is an empty section whose village survives in the overlay (no plan is drawn)."""
     return _village(project, path, index) is not None
+
+
+# Per area: the group of the system load table whose first texture page is the village's figure sheet,
+# the palette that research on the PAL disc named for the commonest resident (file, palette number of 16
+# words, who it is), that resident's subtype, and where the front, back and left-facing figures are on
+# the sheet (texels: left, top, right, bottom). Which subtype is which drawing is not on the disc: the
+# subtype is the one most residents have, and the facings are a guess.
+FIGURES = {
+    11: dict(group=61, palette=('AREA11/CLUT02.GAM', 36, 'male lumberjack resident'), subtype=0,
+             frames=dict(front=(1, 0, 23, 44), back=(74, 0, 93, 44), left=(27, 0, 45, 45))),
+    16: dict(group=76, palette=('AREA16/CLUT07.GAM', 53, 'male Stonetown resident'), subtype=3,
+             frames=dict(front=(75, 202, 125, 256), back=(132, 196, 180, 256), left=(39, 196, 70, 256)),
+             erase=[(160, 186, 182, 209)]),      # the hat of the drawing beside the back view
+    17: dict(group=80, palette=('AREA17/CLUT03.GAM', 1, 'Iron Town residents'), subtype=0,
+             frames=dict(front=(25, 3, 48, 48), back=(145, 2, 166, 48), left=(81, 51, 105, 96))),
+}
+FACINGS = {0: 'back', 1: 'right', 2: 'left', 3: 'front'}      # a resident's frame field; a guess
+
+
+@dataclass
+class Art:
+    group: int
+    subtype: int
+    label: str
+    palette: object         # 16 colours
+    images: dict            # facing: RGBA image, trimmed; 'right' is the mirror of 'left'
+
+
+def named_palette(project, area):
+    """(file, number, who, 16 colours) of the palette FIGURES names for an area, or None."""
+    named = FIGURES.get(area)
+    if not named:
+        return None
+    name, number, who = named['palette']
+    entry = next((e for e in project.disc.files if e.path.upper() == name and not e.directory), None)
+    if entry is None:
+        return None
+    words = np.frombuffer(project.payload(entry), '<u2')
+    return name, number, who, words[number * 16:number * 16 + 16].copy()
+
+
+def figure_art(project, path, area):
+    """The Art of an area's commonest resident, or None where the disc lacks the group or the palette."""
+    named, palette = FIGURES.get(area), named_palette(project, area)
+    if not named or palette is None or named['group'] not in village_groups(project, path):
+        return None
+    texels = indices(project.vram(path, 1, named['group'])[0:256, 64:128])
+    for x0, y0, x1, y1 in named.get('erase', ()):
+        texels[y0:y1, x0:x1] = 0
+    images = {}
+    for facing, (x0, y0, x1, y1) in named['frames'].items():
+        picture = Image.fromarray(colours(palette[3])[texels[y0:y1, x0:x1]])
+        box = picture.getbbox()
+        if box is None:
+            return None
+        images[facing] = picture.crop(box)
+    images['right'] = images['left'].transpose(Image.Transpose.FLIP_LEFT_RIGHT)
+    return Art(named['group'], named['subtype'], f'{palette[2]}: {palette[0]} palette {palette[1]}', palette[3], images)
 
 
 def indices(words):
@@ -223,6 +292,9 @@ def figure_sheets(project, path):
             rgb = np.stack([c & 31, (c >> 5) & 31, (c >> 10) & 31], -1)[sample].astype(np.int32)
             ranked.append((int(np.abs(np.diff(rgb, axis=1)).sum() + np.abs(np.diff(rgb, axis=0)).sum()), label, row))
         ranked.sort(key=lambda r: r[0])
+        named = named_palette(project, area_of(path))
+        if named and FIGURES[area_of(path)]['group'] == number:
+            ranked.insert(0, (0, f'{named[2]} (named in the research notes): {named[0]} palette {named[1]}', named[3]))
         if ranked:
             sheets.append(Sheet(number, words, [(label, row) for _score, label, row in ranked], 0))
     return sheets
@@ -266,7 +338,12 @@ def preview(project, path, index):
         rows.append(row)
     if village.cut:
         notes.insert(0, f'{village.name} (AREA{area:02d} section 0) is never loaded: its load list is empty and no exit leads into it.')
-    return Preview(village.name, area, draw_plan(village), rows, notes, figure_sheets(project, path))
+    art = figure_art(project, path, area)
+    if art is not None:
+        count = sum(1 for r in village.residents if r.subtype == art.subtype)
+        notes.append(f'The {count} residents of subtype {art.subtype} are drawn as the figure of group {art.group} in the {art.label}. '
+                     'Which drawing a subtype is, and which way each facing looks, are guesses; the other residents stay marks.')
+    return Preview(village.name, area, draw_plan(village, art), rows, notes, figure_sheets(project, path))
 
 
 def _sheets_panel(sheets):

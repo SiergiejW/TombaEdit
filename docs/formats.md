@@ -148,14 +148,20 @@ plan is marks, not art.
 
 The figures themselves are on the disc. Each group of the system load table that brings the
 village overlay (INFO2) also brings texture pages; the first of them, at VRAM x 64, is a sheet of
-4-bit figures: one body drawn in all its poses, walking, talking and working. The pages after the
-first are 8-bit pictures of the village's buildings. The palettes are not in the group. They are
-the 16-colour rows of the area's `CLUTnn.GAM` files (32 rows of 256 words each; the figure
-palettes sit in the columns from 192 on, and other rows hold them too), a file for each stage of
-the story. Nothing read from the game says which village loads which group, which palette a
-resident uses, or which frame of the sheet a facing and animation are, so the "Figure sheets" panel
-lists the groups and every palette of the area's files that colours the whole page, and starts on
-the one that makes neighbouring texels most alike. That is a guess and often not the right colours.
+4-bit figures drawn in all their poses, and the pages after it are 8-bit pictures of the village's
+buildings. Groups 61, 76 and 80 are the sheets of the Wood People's village, Stonetown and Iron
+Town. The palettes are not in the group. They are the 16-colour rows of the area's `CLUTnn.GAM`
+files (8192 words each, 512 palettes; a palette is named by its number, the word offset divided
+by 16), a file for each stage of the story. Research on the PAL disc named some: the male
+lumberjack resident is `AREA11/CLUT02.GAM` number 36 (the cursed one 68, the factory worker 4),
+the male Stonetown resident `AREA16/CLUT07.GAM` 53 and the Iron Town residents `AREA17/CLUT03.GAM`
+1; they give the same colours on the Japanese disc.
+
+Which drawing a subtype is, and which sheet frame a facing is, was in the sprite tables that the
+disc does not hold. The plan draws the figure for the residents of the commonest subtype of each
+village (the ones the named palettes are for), in the front, back or side frame its facing field
+suggests, and leaves the others as marks. The "Figure sheets" panel shows every group with its named
+palette first and every other palette of the area's files that colours the whole page after it.
 
 The tab is the first one of its section and opens selected. The section is blue in the disc tree and
 ends in "(unused area)". Opening the tab queues every line of the village for translation, and
