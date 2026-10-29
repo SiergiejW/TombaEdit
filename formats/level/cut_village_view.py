@@ -531,7 +531,14 @@ def view(preview, english=None, request=None, changed=None):
     picture = ImageView()
     picture.zoom.setCurrentIndex(0)     # Fit: the plan is larger than its pane at 200%
     picture.set_image(preview.image)
-    split.addWidget(picture)
+    plan = QWidget()
+    plan_layout = QVBoxLayout(plan)
+    plan_layout.setContentsMargins(0, 0, 0, 0)
+    plan_layout.addWidget(picture, 1)
+    info = QLabel(describe(preview, []))
+    info.setWordWrap(True)
+    plan_layout.addWidget(info)
+    split.addWidget(plan)
     headers = ['#', 'Where', 'Behaviour', 'Drawing', 'Case', 'Says (Japanese)'] + (['English'] if english else [])
     table = QTableWidget(len(preview.rows), len(headers))
     table.setHorizontalHeaderLabels(headers)
@@ -582,6 +589,43 @@ def view(preview, english=None, request=None, changed=None):
                     + [text for row in preview.rows for text in lines(row)])
         table.itemSelectionChanged.connect(selected)
         selected()      # opening the tab already queues every line of the village
+        state_selected_lines = selected
+    # Selection: the table's rows and the plan's elements show each other. `syncing` stops the one
+    # from answering while the other is being set.
+    state = dict(selected=[], syncing=False, hits=[])
+    if preview.village is not None:
+        draw_plan(preview.village, preview.art, hits=state['hits'])
+
+        def show(selected):
+            if selected == state['selected']:
+                return
+            state['selected'] = selected
+            image = draw_plan(preview.village, preview.art, selected)
+            picture.set_image(image, preserve_view=True)
+            info.setText(describe(preview, selected))
+
+        def rows_changed():
+            if state['syncing']:
+                return
+            rows = sorted({i.row() for i in table.selectedIndexes()})
+            show([('resident', r) for r in rows])
+
+        def plan_clicked(x, y):
+            found = hit_test(state['hits'], x, y)
+            state['syncing'] = True
+            try:
+                table.clearSelection()
+                if found is not None and found[0] == 'resident':
+                    table.selectRow(found[1])
+                    table.scrollToItem(table.item(found[1], 0))
+            finally:
+                state['syncing'] = False
+            show([found] if found is not None else [])
+            selected_lines()        # the table's own handler for translation priority
+
+        selected_lines = state_selected_lines if request is not None else (lambda: None)
+        table.itemSelectionChanged.connect(rows_changed)
+        picture.canvas.clicked.connect(plan_clicked)
     residents = QWidget()
     inside = QVBoxLayout(residents)
     inside.setContentsMargins(0, 0, 0, 0)

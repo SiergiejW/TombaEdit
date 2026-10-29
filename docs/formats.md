@@ -168,6 +168,11 @@ them. The front, back or side frame follows the resident's facing field, which i
 "Figure sheets" panel shows every group with the named palettes first and every other palette of
 the area's files that colours the whole page after them.
 
+The plan is selectable. A click on a resident, prop or house outlines it in cyan (a house is also
+shaded, and a resident's walking box is outlined) and a line under the plan says what it is; a click on
+a resident also selects its row of the table, a click on empty space deselects, and selecting rows of
+the table outlines those residents on the plan.
+
 The tab is the first one of its section and opens selected. The section is blue in the disc tree and
 ends in "(unused area)". Opening the tab queues every line of the village for translation, and
 selecting a row moves that row's lines to the front of the queue, so the English column fills in
