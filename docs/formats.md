@@ -122,6 +122,30 @@ lit, whatever their colour. The 1997 title font is drawn on a solid ground,
 which leaves no unlit pixel to tell its glyphs apart, so those are keyed by
 their exact pixels.
 
+## The cut villages
+
+Section 0 of AREA11 (the Wood People's village), AREA16 (Stonetown) and AREA17 (Iron Town)
+has an empty load list and nothing leads into it, but the INFO2 overlay still holds its
+data, identically on the European and the Japanese disc. `formats/level/cut_towns.py` finds it
+by shape. Residents are 28-byte records of 16-bit words: room, frame, animation, patrol box
+(x0, y0, x1, y1), dialogue case, behaviour, x, y, subtype and a progress gate. A record begins
+partway through the row that holds the previous one's position, so a position is 18 bytes into its
+record; the last resident's final word is 255. Props are 16-byte records (kind, room, animation, x, y,
+subtype; a first word of 255 ends the list), houses are lists of rectangles ending in 255, one list
+per village that has houses. The three lists agree: every prop in house n stands inside rectangle n.
+
+A village's dialogue routine reads the resident's case from the actor (offset `BA`), switches on it
+through a jump table and opens a message in each case. The Japanese routines are at `800F0A04`
+(23 cases), `800F3000` (11) and `800F5488` (16) in the overlay loaded at `800E9AF8`; their
+jump tables are found by size. A case can open several messages, one for each stage of the story.
+`formats/text/mips_args.py` follows the code from a case to the window calls. Some cases open
+nothing, and some stages name lines the Japanese text does not hold; the viewer says so.
+
+The window shows this as a "Cut village" tab on those three empty sections: a plan of houses, walking
+boxes, props and numbered residents, and a table of what each one says. The background picture, the
+collision map and the tables that say which drawing each subtype is were not kept on the disc, so the
+plan is marks, not art.
+
 ## WSS
 
 Event scripts. `W\0S\0`, the file's size as a word, then sixty-four 16-bit

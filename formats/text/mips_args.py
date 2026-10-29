@@ -103,16 +103,30 @@ class Function:
                 return None
         return None
 
-    def calls(self, targets):
-        """{call address: (a0, a1, a2, a3)} to any address in `targets`, over all paths."""
+    def switches(self):
+        """[(address of the jr, [case addresses])] for each jump table in the function."""
+        found = []
+        for i in range(self.start, self.end):
+            w = self.words[i]
+            if w >> 26 == 0 and w & 63 == 8 and w >> 21 & 31 != 31:
+                targets = self.switch_targets(i)
+                if targets:
+                    found.append((self.address(i), targets))
+        return found
+
+    def calls(self, targets, at=None):
+        """{call address: (a0, a1, a2, a3)} to any address in `targets`, over all paths
+        from the start of the function, or from the instruction index `at`."""
         words, start, end = self.words, self.start, self.end
         entry = [UNKNOWN] * 32
         entry[0] = ZERO
         for n in range(4, 8):
             entry[n] = Value(None, f'param a{n - 4}')
-        states = {start: entry}
+        begin = start if at is None else at
+        self.called = set()         # every routine the paths from `begin` call
+        states = {begin: entry}
         sp = Value(None, 'stack')
-        work = [start]
+        work = [begin]
         result = {}
         unreached_jr = []
 
@@ -182,6 +196,7 @@ class Function:
                 slot = step(state, words[i + 1], pc + 4) if i + 1 < end else state
                 if is_jal:
                     target = 0x80000000 | (w & 0x3FFFFFF) << 2
+                    self.called.add(target)
                     if target in targets:
                         result[pc] = tuple(slot[4:8])
                     after = list(slot)

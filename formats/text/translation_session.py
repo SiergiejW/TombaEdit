@@ -6,6 +6,15 @@ from formats.text.translation import worker, translatable, TranslationError
 from formats.text import export
 
 
+def say(text):
+    """One line on the console, in the console's own characters."""
+    line = ' '.join(str(text).split())
+    try:
+        print(line, flush=True)
+    except UnicodeEncodeError:
+        print(line.encode('ascii', 'replace').decode('ascii'), flush=True)
+
+
 class Signals(QObject):
     ready = pyqtSignal(object)
 
@@ -39,6 +48,7 @@ class TranslationSession(QObject):
         self.error = self.discovery_error = ''
         self.active = None
         self.model_test = None
+        self.loaded = set()         # folders that have translated something this session
         self.selected = ''
         self.pool = QThreadPool.globalInstance()
         self.timer = QTimer(self)
@@ -172,9 +182,14 @@ class TranslationSession(QObject):
             if folder == self.folder:
                 self.failures[text] = result
                 if 'shorter dialogue entry' not in result:
+                    if not self.error:
+                        say(f'translation model: FAILED | {Path(folder).name} | {result[len("Translation unavailable:"):]}')
                     self.error = result
                     self.queue.clear()
         else:
+            if folder not in self.loaded:
+                self.loaded.add(folder)
+                say(f'translation model: ready | {Path(folder).name} | first translation {text[:24]} -> {result[:60]}')
             self.results.setdefault(folder, {})[text] = result
         self.changed.emit()
         if not self.error and self.queue:

@@ -1,9 +1,10 @@
 """Controls and the current entry of a shared offline translation session."""
+import time
 from pathlib import Path
 from PyQt6.QtWidgets import QWidget, QVBoxLayout, QHBoxLayout, QLabel, QPushButton, QCheckBox, QFileDialog, QMessageBox
 from gui.widgets.image_view import text_view
 from formats.text.translation import model_metadata, translatable, TranslationError
-from formats.text.translation_session import TranslationSession
+from formats.text.translation_session import TranslationSession, say
 
 
 class TranslationPane(QWidget):
@@ -51,6 +52,9 @@ class TranslationPane(QWidget):
         self.session.configure(folder=folder)
         # Try the model now, so the answer comes with the choice and not with
         # the first entry that happens to be selected.
+        self.started = time.monotonic()
+        say(f'translation model: trying {Path(folder).name} ({"CAT-Translate" if metadata.get("backend") == "cat" else "Argos"}, '
+            f'{metadata.get("weights", "ctranslate2")}) in {folder}')
         self.choose.setEnabled(False)
         self.progress.setText(f'Trying {Path(folder).name}... A large model can take a minute or more to load.')
         self.session.test_model(folder, lambda ok, message: self.tested(ok, folder, previous, metadata, message))
@@ -68,6 +72,13 @@ class TranslationPane(QWidget):
     def report(self, ok, folder, message, kind='', kept=''):
         """Tell the user whether the model they chose can translate."""
         name = Path(folder).name or str(folder)
+        started = getattr(self, 'started', None)
+        took = f' after {time.monotonic() - started:.1f}s' if started is not None else ''
+        self.started = None
+        if ok:
+            say(f'translation model: ready | {name} ({kind}){took} | test sentence {self.session.SAMPLE} -> {message}')
+        else:
+            say(f'translation model: FAILED | {name}{took} | {message}' + (f' | {kept}' if kept else ''))
         if ok:
             QMessageBox.information(self, 'Translation model ready',
                 f'{name} ({kind}) loaded and translated a test sentence.\n\n'

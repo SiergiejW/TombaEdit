@@ -131,9 +131,26 @@ class Audit:
                     raise ValueError(f'Indirect reference to a message routine in {region["source"]}')
 
     # ---- what each family selects
+    def village_routines(self):
+        """{address: (area, village name, {case: pairs})} of the dialogue routines of the cut villages
+        in the INFO2 overlay. Their calls belong to the village's own area: the overlay is loaded for
+        others, but those never run these routines."""
+        from formats.level.cut_towns import VILLAGES, dialogue_routines
+        found = {}
+        for region in self.regions.values():
+            if 'INFO2' not in region['source'].upper():
+                continue
+            routines = dialogue_routines(region['data'], region['base'],
+                                         lambda a: self.found.word(a) if self.found.holds(a, 4) else None, WINDOW)
+            for number, (address, cases) in routines.items():
+                area, name = VILLAGES[number][:2]
+                found[address] = (area, name, cases)
+        return found
+
     def collect(self):
         sites = self.window_sites()
         self.scan_indirect()
+        routines = self.village_routines()
         apd_sign = collections.defaultdict(set)
         for path, groups in self.project.ldars.items():
             for group in groups:
@@ -142,7 +159,15 @@ class Audit:
                         for placement in parse_apd(self.project.asset_data(asset)):
                             if placement.layer == 4 and placement.kind == 0x1A:
                                 apd_sign[area_number(path)].add(placement.variant)
+        for address, (area, name, cases) in routines.items():
+            for case, pairs in cases.items():
+                for pair in pairs:
+                    self.exact[area][pair].append(
+                        f'case {case} of the {name} dialogue routine ({address:08X}); that village is cut: its section '
+                        'has no load list and no exit leads into it')
         for site in sites:
+            if 'INFO2' in site['region']['source'].upper() and site['owner'] in routines:
+                continue            # counted above, for the village's own area
             G, L = site['g'].consts, site['l'].consts
             where = f"{site['region']['source']} at {site['pc']:08X}"
             for area in sorted(site['areas']) or list(AREAS):

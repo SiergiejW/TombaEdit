@@ -19,6 +19,12 @@ def fonts():
     return result
 
 
+def typical_width(font):
+    """The usual width of a letter in a saved font: the median of its letters."""
+    letters = sorted(image.width for char, image in font.items() if char.isalpha())
+    return letters[len(letters) // 2] if letters else 8
+
+
 def render(wfm, index, text):
     """Reflow a translation; never borrow Japanese character positions/control timing.
 
@@ -31,10 +37,15 @@ def render(wfm, index, text):
     saved = fonts()
     preferred = min(saved, key=lambda h: (abs(h - target), -h))
     glyphs = dict(saved[preferred])
+    widths = {height: typical_width(font) for height, font in saved.items()}
     for height in sorted(saved, key=lambda h: abs(h - target)):
         for char, image in saved[height].items():
             if char not in glyphs:
-                glyphs[char] = image.resize((max(1, round(image.width * preferred / height)), preferred), Image.Resampling.NEAREST)
+                # A letter borrowed from another size keeps its place in that font's proportions: the
+                # 8 pixel font's letters are square and the 16 pixel font's are half as wide as they are
+                # tall, so scaling by height alone would make a borrowed letter twice as wide as its neighbours.
+                wide = max(1, round(image.width * widths[preferred] / widths[height]))
+                glyphs[char] = image.resize((wide, preferred), Image.Resampling.NEAREST)
     for char, image in zip(wfm.characters, wfm.glyphs):
         if char and len(char) == 1 and char.isascii() and image.height == preferred:
             glyphs[char] = image

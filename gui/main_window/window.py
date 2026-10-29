@@ -212,6 +212,8 @@ def _prepare_preview(project, node, context=None, delegated=False):
         if index:
             from formats.level.scene import build_scene
             result['level'] = build_scene(project, path, index)
+            from formats.level.cut_village_view import preview
+            result['cut_village'] = preview(project, path, index)
         return result
     if isinstance(node, Asset):
         data = project.asset_data(node)
@@ -1403,6 +1405,12 @@ class MainWindow(QMainWindow):
                     self.level_view.set_labels(self.labels, self.persist_labels)
                     self.level_view.set_scene(result['level'])
                     self.tabs.addTab(self.level_view, 'Level editor')
+                if result.get('cut_village') is not None:
+                    from formats.level.cut_village_view import view as cut_village_view
+                    from formats.text.translation_session import session_for
+                    session = session_for(self.project, self)
+                    self.tabs.addTab(cut_village_view(result['cut_village'], lambda text: session.translations.get(text)
+                                                      if session.enabled else None), 'Cut village')
                 self.asset_table(group.assets)
             if 'four' in result:
                 self.four_view.set_four(result['four'], result['four_candidates'],
