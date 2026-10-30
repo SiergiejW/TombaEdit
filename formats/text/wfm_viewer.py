@@ -158,11 +158,18 @@ class DialogueView(QWidget):
         menu.addAction(self.premade_info)
         menu.addSeparator()
         model = menu.addMenu('Translate with a model')
+        self.model_off_action = QAction('Never load the translation model', model, checkable=True)
+        self.model_off_action.setChecked(session.model_off)
+        self.model_off_action.setToolTip('Keep the model out of memory, even if a model folder is remembered. '
+                                         'A model that is loading is stopped. Only the premade translations are used.')
+        self.model_off_action.toggled.connect(lambda value: session.configure(model_off=value))
+        model.addAction(self.model_off_action)
+        model.addSeparator()
         self.model_action = QAction('Translate every message in the background', model, checkable=True)
         self.model_action.setChecked(session.enabled)
         self.model_action.toggled.connect(lambda value: session.configure(enabled=value))
         model.addAction(self.model_action)
-        model.addAction('Choose a model...', self.translation.choose_model)
+        self.model_choose = model.addAction('Choose a model...', self.translation.choose_model)
         button.setMenu(menu)
         bar.insertWidget(bar.count() - 1 if bar.count() else 0, button)
         self.display_button = button
@@ -175,10 +182,12 @@ class DialogueView(QWidget):
             action.blockSignals(True)
             action.setChecked(session.display == key)
             action.blockSignals(False)
-        for action, value in ((self.premade_action, session.use_premade), (self.model_action, session.enabled)):
+        for action, value in ((self.premade_action, session.use_premade), (self.model_action, session.enabled),
+                              (self.model_off_action, session.model_off)):
             action.blockSignals(True)
             action.setChecked(value)
             action.blockSignals(False)
+        self.model_action.setEnabled(not session.model_off)
         premade = session.premade
         self.premade_info.setText(
             f'{len(premade):,} premade messages ({", ".join(premade.models) or "no model"})' if len(premade) else 'No premade translations')

@@ -114,6 +114,8 @@ class TranslationPane(QWidget):
                 needs_translation = translatable(self.text)
                 if not needs_translation:
                     value = self.text
+                elif self.session.model_off:
+                    value = 'No premade translation, and the translation model is switched off (Display > Translate with a model).'
                 elif not self.session.folder:
                     value = 'Choose a local model to translate this entry.'
                 else:

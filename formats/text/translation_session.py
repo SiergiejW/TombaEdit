@@ -79,6 +79,8 @@ class TranslationSession(QObject):
         self.enabled = settings.value('translation/enabled', False, type=bool)
         # The translations that come with the program, used by default; and how a message is shown.
         self.use_premade = settings.value('translation/premade', True, type=bool)
+        # A model that is never loaded, whatever folder is remembered: nothing starts it, and nothing waits for it.
+        self.model_off = settings.value('translation/model_off', False, type=bool)
         shown = str(settings.value('translation/display', 'both'))
         self.display = shown if shown in DISPLAYS else 'both'
         self.premade = premade.load()
@@ -131,7 +133,7 @@ class TranslationSession(QObject):
             return f'Premade translations ({model}): {len(self.premade):,} messages.' + known
         return f'Premade translations ({model}): {covered:,} of {total:,} messages of this disc.' + known
 
-    def configure(self, enabled=None, folder=None, premade_on=None, display=None):
+    def configure(self, enabled=None, folder=None, premade_on=None, display=None, model_off=None):
         if folder is not None:
             self.folder = str(Path(folder).resolve()) if folder else ''
         if enabled is not None:
@@ -140,15 +142,22 @@ class TranslationSession(QObject):
             self.use_premade = bool(premade_on)
         if display in DISPLAYS:
             self.display = display
+        if model_off is not None:
+            self.model_off = bool(model_off)
         settings = QSettings()
         settings.setValue('translation/model', self.folder)
         settings.setValue('translation/enabled', self.enabled)
         settings.setValue('translation/premade', self.use_premade)
         settings.setValue('translation/display', self.display)
+        settings.setValue('translation/model_off', self.model_off)
         self.error = ''
         self.failures.clear()
         self.rebuild_queue()
-        if self.enabled and self.folder:
+        if self.model_off:
+            # A model that is still loading is stopped with its process; what it was working on is dropped.
+            self.queue.clear()
+            worker.close()
+        elif self.enabled and self.folder:
             self.discover()
         self.changed.emit()
 
@@ -231,7 +240,7 @@ class TranslationSession(QObject):
     def rebuild_queue(self):
         self.timer.stop()
         self.queue.clear()
-        if self.closed or not self.folder or self.error:
+        if self.closed or not self.folder or self.error or self.model_off:
             return
         wanted = dict.fromkeys([self.selected, *self.also] + (list(self.originals()) if self.enabled else []))
         for text in wanted:
@@ -246,7 +255,7 @@ class TranslationSession(QObject):
             self.timer.start(0)
 
     def start(self):
-        if self.closed or self.busy or not self.queue or self.error:
+        if self.closed or self.busy or not self.queue or self.error or self.model_off:
             return
         self.busy = True
         folder, text = self.folder, self.queue.popleft()
@@ -260,6 +269,9 @@ class TranslationSession(QObject):
         active = self.active
         self.busy, self.active = False, None
         if self.closed:
+            return
+        if self.model_off:
+            self.changed.emit()     # switched off while this was under way: the answer, or the stop, is dropped
             return
         value, failure = response
         folder, text, result = value or (*active, 'Translation unavailable: ' + failure)
@@ -285,7 +297,7 @@ class TranslationSession(QObject):
             found = self.premade.get(text, self.build_name)
             if found is not None:
                 return found
-        if not self.enabled:
+        if not self.enabled or self.model_off:
             return text
         if text in self.translations:
             return self.translations[text]
@@ -302,6 +314,8 @@ class TranslationSession(QObject):
         return f'{premade_line}\n{base}' if premade_line else base
 
     def model_status(self):
+        if self.model_off:
+            return 'The translation model is switched off and is never loaded. Only the premade translations are used.'
         if not self.enabled:
             if self.error:
                 return self.error
