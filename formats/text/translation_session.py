@@ -1,9 +1,10 @@
 """One shared, cancellable background translation queue per disc."""
 from collections import deque
+from collections.abc import Mapping
 from pathlib import Path
 from PyQt6.QtCore import QObject, QRunnable, QThreadPool, QSettings, QTimer, pyqtSignal
 from formats.text.translation import worker, translatable, TranslationError
-from formats.text import export
+from formats.text import export, premade
 
 
 def say(text):
@@ -33,6 +34,40 @@ class Task(QRunnable):
         self.signals.ready.emit((value, error))
 
 
+DISPLAYS = ('both', 'original', 'translated')
+
+
+class Translations(Mapping):
+    """What can be shown for a message: its premade translation when those are in use, then what the model gave."""
+    def __init__(self, session):
+        self.session = session
+
+    def model(self):
+        return self.session.results.setdefault(self.session.folder, {})
+
+    def __getitem__(self, text):
+        session = self.session
+        if session.use_premade:
+            found = session.premade.get(text)
+            if found is not None:
+                return found
+        return self.model()[text]
+
+    def __iter__(self):
+        session = self.session
+        seen = set()
+        if session.use_premade:
+            for text in session.premade.entries:
+                seen.add(text)
+                yield text
+        for text in self.model():
+            if text not in seen:
+                yield text
+
+    def __len__(self):
+        return sum(1 for _ in self)
+
+
 class TranslationSession(QObject):
     changed = pyqtSignal()
 
@@ -42,6 +77,11 @@ class TranslationSession(QObject):
         settings = QSettings()
         self.folder = str(settings.value('translation/model', '') or '')
         self.enabled = settings.value('translation/enabled', False, type=bool)
+        # The translations that come with the program, used by default; and how a message is shown.
+        self.use_premade = settings.value('translation/premade', True, type=bool)
+        shown = str(settings.value('translation/display', 'both'))
+        self.display = shown if shown in DISPLAYS else 'both'
+        self.premade = premade.load()
         self.banks, self.results, self.failures, self.texts = {}, {}, {}, {}
         self.queue = deque()
         self.busy = self.reading = self.discovered = self.closed = False
@@ -57,16 +97,52 @@ class TranslationSession(QObject):
 
     @property
     def translations(self):
-        return self.results.setdefault(self.folder, {})
+        return Translations(self)
 
-    def configure(self, enabled=None, folder=None):
+    @property
+    def build_name(self):
+        """The name of this disc's build when it is a known one, else ''."""
+        if self.project is None:
+            return ''
+        from game.builds import executable
+        found = executable(self.project)
+        return found.build.name if found is not None else ''
+
+    def premade_status(self):
+        """One line about the translations that come with the program, for this disc."""
+        if not self.premade.entries:
+            return 'No premade translations come with this program.'
+        covered = total = 0
+        for text in self.originals():
+            try:
+                if translatable(text):
+                    total += 1
+                    covered += text in self.premade
+            except TranslationError:
+                pass
+        model = ', '.join(self.premade.models) or 'a model'
+        build = self.build_name
+        known = f' This disc is a known build ({build}).' if build and self.premade.covers(build) else ''
+        if not self.use_premade:
+            return f'Premade translations ({model}) are off.' + known
+        if not total:
+            return f'Premade translations ({model}): {len(self.premade):,} messages.' + known
+        return f'Premade translations ({model}): {covered:,} of {total:,} messages of this disc.' + known
+
+    def configure(self, enabled=None, folder=None, premade_on=None, display=None):
         if folder is not None:
             self.folder = str(Path(folder).resolve()) if folder else ''
         if enabled is not None:
             self.enabled = bool(enabled)
+        if premade_on is not None:
+            self.use_premade = bool(premade_on)
+        if display in DISPLAYS:
+            self.display = display
         settings = QSettings()
         settings.setValue('translation/model', self.folder)
         settings.setValue('translation/enabled', self.enabled)
+        settings.setValue('translation/premade', self.use_premade)
+        settings.setValue('translation/display', self.display)
         self.error = ''
         self.failures.clear()
         self.rebuild_queue()
@@ -203,6 +279,10 @@ class TranslationSession(QObject):
             self.timer.start(0)
 
     def lookup(self, text):
+        if self.use_premade:
+            found = self.premade.get(text)
+            if found is not None:
+                return found
         if not self.enabled:
             return text
         if text in self.translations:
@@ -215,6 +295,11 @@ class TranslationSession(QObject):
         return None
 
     def status(self):
+        premade_line = self.premade_status() if self.premade.entries else ''
+        base = self.model_status()
+        return f'{premade_line}\n{base}' if premade_line else base
+
+    def model_status(self):
         if not self.enabled:
             if self.error:
                 return self.error

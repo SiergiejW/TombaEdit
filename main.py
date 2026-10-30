@@ -31,6 +31,9 @@ def main():
                 stream.write(report + "\n")
         except OSError:
             pass
+        if kind is RuntimeError and "has been deleted" in str(value):
+            # A background job answered after its window had gone: nothing to show, nothing to lose.
+            return
         QMessageBox.critical(None, "TombaEdit error", f"{kind.__name__}: {value}\n\nDetails: {log}")
         app.exit(1)
     sys.excepthook = report_error

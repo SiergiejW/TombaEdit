@@ -60,7 +60,14 @@ class TranslationPane(QWidget):
         self.session.test_model(folder, lambda ok, message: self.tested(ok, folder, previous, metadata, message))
 
     def tested(self, ok, folder, previous, metadata, message):
-        self.choose.setEnabled(True)
+        try:
+            self.choose.setEnabled(True)
+        except RuntimeError:
+            # The pane was closed while a large model was loading: the answer has nowhere to be shown, but the
+            # console still gets it.
+            name = Path(folder).name or str(folder)
+            say(f'translation model: {"ready" if ok else "FAILED"} | {name} | {message}')
+            return
         kept = ''
         if not ok and previous and previous != self.session.folder:
             # Do not leave the app on a model that cannot translate.

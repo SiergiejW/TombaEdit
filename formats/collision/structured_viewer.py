@@ -167,10 +167,7 @@ class PlacementMap(QWidget):
                         overlay.drawImage(QPointF(0, 0), image)
                         overlay.restore()
                 overlay.end()
-            painter.save()
-            painter.setOpacity(.5)
             painter.drawImage(0, 0, self.visual_cache)
-            painter.restore()
         for i, (x, y) in enumerate(self.points()):
             painter.setPen(QPen(QColor('#ff6060' if i == self.selected else '#a7c653'),
                                 5 if i == self.selected else 2))
@@ -191,7 +188,7 @@ class StructuredView(QWidget):
             from formats.level.apd import parse_apd
             self.placements = parse_apd(data)
             self.records = [struct.unpack('<6B3h2H', placement.raw) for placement in self.placements]
-            header = QLabel(f'{len(self.records)} placements | X/Y map | Objects: 50% opacity | '
+            header = QLabel(f'{len(self.records)} placements | X/Y map | '
                             'Scroll: zoom | Middle/right-drag: pan | F: fit')
             header.setSizePolicy(QSizePolicy.Policy.Preferred, QSizePolicy.Policy.Fixed)
             header.setTextInteractionFlags(Qt.TextInteractionFlag.TextSelectableByMouse)

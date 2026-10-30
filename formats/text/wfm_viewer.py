@@ -62,21 +62,30 @@ class DialogueView(QWidget):
         self.entries.setItemDelegate(TextEntryDelegate(self.entries))
         split.addWidget(self.entries)
         right = QSplitter(Qt.Orientation.Vertical)
+        # The message twice, side by side: as the game draws it, in its own font, and in English with the
+        # fallback letters. The Display menu picks what is shown.
         self.rendered = ImageView()
-        self.english_display = QCheckBox('English display')
-        self.english_display.setChecked(True)
-        self.english_display.setToolTip('Show the translation in Tomba lettering as soon as it is available. Uncheck to inspect the original.')
-        self.english_display.toggled.connect(self.refresh_display)
-        self.rendered.tools.addWidget(self.english_display)
+        self.rendered_translated = ImageView()
+        self.original_title = QLabel('Original')
+        self.translated_title = QLabel('English')
+        self.panes = QSplitter()
+        for title, view in ((self.original_title, self.rendered), (self.translated_title, self.rendered_translated)):
+            holder = QWidget()
+            box = QVBoxLayout(holder)
+            box.setContentsMargins(0, 0, 0, 0)
+            box.addWidget(title)
+            box.addWidget(view, 1)
+            self.panes.addWidget(holder)
         self._display_key = None
         self.script = text_view("")
-        right.addWidget(self.rendered)
+        right.addWidget(self.panes)
         right.addWidget(self.script)
         right.setSizes([400, 160])
         split.addWidget(right)
         from formats.text.translation_view import TranslationPane
         self.translation = TranslationPane(translation_session)
         self.translation.session.changed.connect(self.refresh_translations)
+        self.make_display_menu(bar)
         split.addWidget(self.translation)
         split.setSizes([260, 550, 350])
         layout.addWidget(split, 1)
@@ -114,6 +123,62 @@ class DialogueView(QWidget):
         if row >= 0:
             self.entries.setCurrentRow(row)
         self.filter(self.search.text())
+
+    def make_display_menu(self, bar):
+        """The Display menu: what is shown of a message, and where the English comes from."""
+        from PyQt6.QtGui import QAction, QActionGroup
+        session = self.translation.session
+        button = QPushButton('Display')
+        button.setToolTip('Show the message as the game draws it, in English, or both; and choose where the English comes from.')
+        menu = QMenu(button)
+        group = QActionGroup(menu)
+        self.display_actions = {}
+        for key, label in (('both', 'Original and English, side by side'), ('original', 'Original only'),
+                           ('translated', 'English only')):
+            action = QAction(label, menu, checkable=True)
+            action.setChecked(session.display == key)
+            action.triggered.connect(lambda _checked=False, k=key: session.configure(display=k))
+            group.addAction(action)
+            menu.addAction(action)
+            self.display_actions[key] = action
+        menu.addSeparator()
+        self.premade_action = QAction('Use the premade translations', menu, checkable=True)
+        self.premade_action.setChecked(session.use_premade)
+        self.premade_action.setToolTip('The English that comes with the program for known discs. Needs no model.')
+        self.premade_action.toggled.connect(lambda value: session.configure(premade_on=value))
+        menu.addAction(self.premade_action)
+        self.premade_info = QAction('', menu)
+        self.premade_info.setEnabled(False)
+        menu.addAction(self.premade_info)
+        menu.addSeparator()
+        model = menu.addMenu('Translate with a model')
+        self.model_action = QAction('Translate every message in the background', model, checkable=True)
+        self.model_action.setChecked(session.enabled)
+        self.model_action.toggled.connect(lambda value: session.configure(enabled=value))
+        model.addAction(self.model_action)
+        model.addAction('Choose a model...', self.translation.choose_model)
+        button.setMenu(menu)
+        bar.insertWidget(bar.count() - 1 if bar.count() else 0, button)
+        self.display_button = button
+        self.sync_display_menu()
+        session.changed.connect(self.sync_display_menu)
+
+    def sync_display_menu(self):
+        session = self.translation.session
+        for key, action in self.display_actions.items():
+            action.blockSignals(True)
+            action.setChecked(session.display == key)
+            action.blockSignals(False)
+        for action, value in ((self.premade_action, session.use_premade), (self.model_action, session.enabled)):
+            action.blockSignals(True)
+            action.setChecked(value)
+            action.blockSignals(False)
+        premade = session.premade
+        self.premade_info.setText(
+            f'{len(premade):,} premade messages ({", ".join(premade.models) or "no model"})' if len(premade) else 'No premade translations')
+        original, translated = session.display != 'translated', session.display != 'original'
+        self.panes.widget(0).setVisible(original)
+        self.panes.widget(1).setVisible(translated)
 
     def select(self, index):
         if index < 0:
@@ -158,25 +223,35 @@ class DialogueView(QWidget):
         if not 0 <= index < len(self.wfm.dialogues):
             return
         original = export.plain(self.wfm.dialogues[index])
-        translated = self.translation.session.translations.get(original) if self.english_display.isChecked() else None
+        session = self.translation.session
+        translated = session.translations.get(original)
         key = index, translated
         if key == self._display_key:
             return
+        self.rendered.setToolTip('Original text, as the game draws it'
+                                 + ('\n' + self.wfm.palette_source if hasattr(self.wfm, 'palette_source') else ''))
+        self.rendered.set_image(self.wfm.render(index), subject=('original', index))
         if translated is not None and translated != original:
             from formats.text.english_preview import render
             try:
                 image, missing = render(self.wfm, index, translated)
-                self.rendered.setToolTip('English machine translation · Tomba lettering'
-                    + ('\nNo recognised glyph for: ' + ' '.join(sorted(missing)) + ' (shown as ?).' if missing else ''))
+                tip = ('English translation, in the fallback letters'
+                       + ('\nNo recognised glyph for: ' + ' '.join(sorted(missing)) + ' (shown as ?).' if missing else ''))
             except (OSError, ValueError, KeyError) as exc:
-                image = self.wfm.render(index)
-                self.rendered.setToolTip('English preview unavailable: ' + str(exc))
+                image, tip = self.awaiting_image('English preview unavailable'), str(exc)
         else:
-            image = self.wfm.render(index)
-            self.rendered.setToolTip(('Original text · awaiting translation' if self.english_display.isChecked() else 'Original text')
-                                    + ('\n' + self.wfm.palette_source if hasattr(self.wfm, 'palette_source') else ''))
-        self.rendered.set_image(image, subject=index)
+            image = self.awaiting_image('No translation yet')
+            tip = 'There is no premade translation of this message; choose a model in the Display menu to translate it.'
+        self.rendered_translated.setToolTip(tip)
+        self.rendered_translated.set_image(image, subject=('translated', index))
         self._display_key = key
+
+    @staticmethod
+    def awaiting_image(text):
+        from PIL import Image, ImageDraw
+        image = Image.new('RGBA', (256, 64), (60, 60, 60, 255))
+        ImageDraw.Draw(image).text((10, 24), text, fill=(210, 210, 210, 255))
+        return image
 
     def search_all_text(self):
         host = self.window()

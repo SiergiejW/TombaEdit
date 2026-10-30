@@ -570,6 +570,12 @@ class MeshCanvas(CameraEventMixin, QOpenGLWidget):
             gl.glBindTexture(gl.GL_TEXTURE_2D, texture)
             gl.glTexParameteri(gl.GL_TEXTURE_2D, gl.GL_TEXTURE_MIN_FILTER, gl.GL_NEAREST)
             gl.glTexParameteri(gl.GL_TEXTURE_2D, gl.GL_TEXTURE_MAG_FILTER, gl.GL_NEAREST)
+            limit = int(gl.glGetIntegerv(gl.GL_MAX_TEXTURE_SIZE))
+            if max(image.size) > limit:
+                # Too big for this graphics card: a panorama of a section whose strips lie very far apart. Scale
+                # it to fit rather than fail inside the paint routine, which would close the program.
+                scale = limit / max(image.size)
+                image = image.resize((max(1, int(image.width * scale)), max(1, int(image.height * scale))))
             gl.glTexImage2D(gl.GL_TEXTURE_2D, 0, gl.GL_RGBA, image.width, image.height, 0,
                             gl.GL_RGBA, gl.GL_UNSIGNED_BYTE, image.tobytes())
         return self.textures[key]

@@ -12,8 +12,33 @@ See [the 0.1.0 release notes](docs/release-notes-0.1.0.md) for changes since 0.0
 
 ## Offline Japanese translation
 
-The dialogue viewer shows decoded text and English machine translation beside
-its rendered preview. Translation is **off by default**. Choose your own local
+### Premade translations
+
+Translations of the Japanese discs come with the program (`formats/text/translations/`), so reading
+the text needs no model and no GPU. They are used by default. The dialogue viewer shows each message
+twice, side by side: **Original**, drawn as the game draws it in its own font, and **English**, drawn
+in the fallback letters. A message is matched by its words, so a translation serves every disc that has
+the same message, and the Information line under the entry list says how many messages of the open disc
+are covered and whether it is a known build. The **Display** menu of the dialogue viewer chooses
+*Original and English side by side*, *Original only* or *English only*, switches the premade
+translations on and off, and holds the model options below. The choice is remembered.
+
+The files were made from the Japanese retail disc, the Japanese demo, the Taikenban Vol. 2 sampler and
+PrePre Vol. 8 and 9 with CAT-Translate 7b, by `tools/make_translations.py`. To add a disc or to translate
+the messages whose glyphs have been read since, run it again; it only translates what has no translation
+yet and can be stopped and started again:
+
+```
+python tools/make_translations.py "rom/Ore! Tomba (Japan).cue" "rom/PrePre Vol. 8 (Japan).cue"
+```
+
+It runs the model from `rom/translator` (CUDA PyTorch and bitsandbytes in `rom/translator/runtime`, if
+present) and writes `formats/text/translations/ja-CAT-Translate-7b.json`.
+
+### Translating with your own model
+
+The dialogue viewer also shows decoded text and English machine translation beside
+its rendered preview. Translation with a model is **off by default**. Choose your own local
 model folder and explicitly enable **Auto-translate all WFM text**.
 The app never downloads models or sends dialogue online.
 
@@ -28,9 +53,9 @@ Turning it off immediately restores original entry-list previews. Completed tran
 are reused during the current disc session, including after toggling it back on.
 With bulk preloading off, selecting an entry still translates it in the English
 pane. The selected entry takes priority over the remaining background queue.
-The display window switches to English as soon as a translation is ready, using
-saved Latin glyphs from the English ROM. **English display** switches it back to
-the original. The control-code script and decoded Japanese remain available.
+The English window shows a translation as soon as one is ready, using
+saved Latin glyphs from the English ROM; the **Display** menu hides it or the original.
+The control-code script and decoded Japanese remain available.
 Missing font sizes/letters fall back to another saved Tomba font; Q/X and two
 punctuation marks are adapted from existing glyphs with their provenance recorded.
 
@@ -122,8 +147,8 @@ text with a display reference and 3 with a dynamic selection elsewhere; the
 remaining 102 copies contain 92 distinct messages. None is confirmed never
 shown in-game.
 
-The APD **Placements** map overlays objects and sprites at 50% opacity, with
-fully visible, selectable points above them. Scroll to zoom, middle/right-drag
+The APD **Placements** map draws objects and sprites as they are, with
+selectable points above them. Scroll to zoom, middle/right-drag
 to pan, or use the **+**, **−** and **Fit** buttons at the top right and the **F** key. Unresolved objects keep
 their points. **Placements in level** provides the full scene and animation.
 
