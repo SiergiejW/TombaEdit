@@ -1,0 +1,444 @@
+{
+ "format": 1,
+ "language": "ja",
+ "build": "PrePre Vol. 8",
+ "model": "CAT-Translate-7b",
+ "builds": {
+  "PrePre Vol. 8": 67
+ },
+ "messages": 71,
+ "translated": 67,
+ "entries": {
+  "・・・うーん・・・こまったのぉ・・・\n\n\nなんじゃ?わしに何か用かな・・・すまんが、ちょっと考え事をしておってな・・・\n\n\nおおそうじゃ、おまえさん、表に散らばっておったコッカ卵を集めてくれんか?\n\n\nコッカの奴、よそから卵を盗んできては、ああやって自分のものにしておるんじゃ・・・あのままでは卵が かわいそうじゃからな・・・\n\n\n無事持ってきてくれれば何でも話してあげよう・・・": "...Hmm... I'm in trouble...\n\n\nWhat is it? Do you have something to say to me...? Sorry, I'm just thinking about something...\n\n\nOh, right, you, could you gather the Kokka eggs scattered around outside?\n\n\nThat Kokka guy steals eggs from elsewhere and makes them his own like that... It's pitiful for the eggs to be left like that...\n\n\nIf you bring them safely, I'll tell you anything...",
+  "このへんの全ての卵を集めたらまた来るのじゃ・・・たのんだぞ": "I'll come back once I've collected all the eggs around here... I'm counting on you.",
+  "数が足らんぞ・・・れっつ、りとらい じゃ!": "The numbers aren't enough... Let's go, let's go!",
+  "ほっほっほ・・・どうやら全部集めたようじゃな・・・ん?・・・卵はどこじゃ?": "Hohoho... it seems like I've collected everything... hmm? ...where are the eggs?",
+  "おー・まい・がっ!!": "Oh my god!!",
+  "・・・・・・\n\n\n・・・まぁ、悪気はなさそうじゃし、仕方ないのぉ・・・それで、何を聞きたいんじゃ?\n\n\n魔ブタの事か!?・・・まぁ、いいじゃろう・・・元気な子どもよ、よぉく聞くがいい": "...\n\n...Well, it doesn't seem like he meant any harm, so I guess it's okay... So, what do you want to ask?\n\n\nAbout the demon pig!? ...Well, that's fine... Listen carefully, energetic child.",
+  "わしの力になれる事じゃったら何でも協力してやるからの・・・\n\n\nそうじゃ\n\n\nわしは物の目利きには自信があるから、使い道の解らない物を手に入れたらわしのところに持ってくるといい・・・\n\n\nまずは、この先の森に住むドワーフの長に会ってみるといい・・・きっとおまえさんの力になってくれるはずじゃ": "If it's something I can help with, I'll cooperate with you...\n\nThat's right.\n\nI have confidence in my eye for value, so if you get something you don't know how to use, bring it to me...\n\nFirst, you should try meeting the chief of the dwarves who live in the forest ahead... I'm sure he will help you.",
+  "なんじゃ、解らない物があるなら見せてごらん・・・": "What? If there's something you don't understand, show it to me...",
+  "あらら・・・もう見つかっちゃった・・・": "Oh dear... I've already been found out...",
+  "いい事教えてやろうか?\n\n\nこの先を登って行けば100年老人って言う物知りのじいさんが住んでるんだぜ・・・\n\n\nどうだ?知らなかっただろ?": "Wanna hear something good?\n\n\nIf you keep climbing up ahead, you'll find an old man called the 100-Year-Old Sage who knows everything...\n\n\nWhat do you think? Didn't you know that?",
+  "いい事教えてやろうか?\n\n\nこの小屋のウラをまっすぐ奥に行くと、大きな水たまりがあるんだぜ・・・\n\n\nどうだ?ビックリだろ?": "Wanna know something cool?\n\n\nIf you go straight past this shed, you'll find a big puddle...\n\n\nWhat do you think? Pretty surprising, huh?",
+  "さっきオイラがいた小屋のウラを奥に行くと、大きな水たまりがあるんだぜ・・・\n\n\nだまされたとおもって、行ってみなよ": "If you go behind the shed where I was just now, there's a big puddle...\n\n\nThink you've been tricked, go check it out.",
+  "・・・え?・・・あぁオイラかい?オイラは・・・\n\n\n・・・つぎ、会ったときに教えてやるよ!": "...Huh? ...Oh, me? I'm...\n\n\n...Next time we meet, I'll tell you!",
+  "見つけたらまたおいでいい事教えてやるよ": "If you find it, you can come back and I'll tell you something good.",
+  "見つけたらまたおいでオイラの事教えてやるよ": "If you find it, come back and I'll tell you about me.",
+  "出会ったらまたおいでつぎこそオイラの事教えてやるよ": "If we meet again, I'll tell you about myself next time.",
+  "あ〜すっきりした・・・誰かに話したくてウズウズしてたんだ・・・": "Ah, I feel so relieved... I was itching to talk to someone about it...",
+  "・・・どうだい、ウソじゃなかっただろ?・・・\n\n\n・・・さぁて、それじゃオイラは新しいネタでも仕込みに行くかな・・・\n\n\n・・・えっ?・・・あぁ、オイラかい?オイラ、隠れ里のヤンって言うんだ・・・": "...How about it? It wasn't a lie, was it?...\n\n\n...Well then, I guess I'll go plant some new material...\n\n\n...Huh?... Oh, me? I'm Yan from the Hidden Village...",
+  "この先もオイラを見つける事が出来れば、もっといろんな事を教えてやるよ・・・見つける事が出来れば、な\n\n\nう〜ん・・・なんだか楽しくなってきたな・・・がんばって見つけてくれよ、じゃあな!": "If you can find me from here on out, I'll teach you even more things... if you can find me, that is.\n\n\nHmm... I'm starting to feel like I'm having fun now... Good luck finding me, see ya!",
+  "キミ、泳げるのかい?": "Can you swim?",
+  "・・・ダメじゃない・・・泳げないとこの先の大きな水たまりには行けないョ": "...It's not good... I can't go to the big puddle ahead if I can't swim.",
+  "・・・せっかくだから、これあげるョ": "...Since you're here, I'll give you this.",
+  "泳げるようになったら、またおいで": "Come again when you can swim.",
+  "ウワッ!やめろョ": "Whoa! Stop it!",
+  "ハラへってるからイライラしてるんだョ": "I'm irritated because I'm hungry.",
+  "え?そのバナナくれるのか": "Huh? Are you giving me that banana?",
+  "サンキュ\n\n\nオイラのとくいワザを教えてやるョ\n\n\n□といっしょに→をおすとオイラのように速くはしれるョ\n\n\nじゃぁ、またナ": "Thank you.\n\nI'll show you my special skill!\n\nPress □ together → and you can run as fast as I can!\n\nSee you later!",
+  "奥が高くなっているところでは↑と×で奥へジャンプする事が出来るよ": "You can jump forward using ↑ and × where the back is raised.",
+  "木の枝にぶら下がったときは→で回転どんどん速くなる。ジャンプしたい方向と×ボタンで飛び出す!": "When hanging from a tree branch, use → to rotate faster and faster. Use the direction you want to jump and the × button to launch!",
+  "○ボタンをおしつづけると、より強力な攻撃が出来る": "Pressing the ○ button continuously allows you to perform more powerful attacks.",
+  "APをためていくと・・・いろいろうれしい事があるかもね": "As you accumulate AP... there might be some wonderful things waiting for you.",
+  "ここがセーブポイントです。↑で奥を向いているときに○を押せばセーブが出来ます": "This is the save point. If you press ○ while facing backward with ↑, you can save.",
+  "始まりの村": "The Beginning Village",
+  "始まりの森": "The Beginning Forest",
+  "100年老人の小屋": "The 100-Year-Old Man's Cabin",
+  "ふるいけ": "sieve",
+  "おぉーーい!!": "Ooooooo!!",
+  "いてぇーーーっ!!": "Ouch!!!",
+  "こども・・・もりに、花の種さがしにいったまま・・・かえってこない・・・": "The child... went into the forest looking for flower seeds... and hasn't come back...",
+  "とてもしんぱい・・・": "I'm very worried...",
+  "おお!おまえ、こども、たすけてくれたか!\n\n\nおまえ、とてもやさしいこころもってる・・・わし、とてもうれしい\n\n\nおれいに、これ、もってゆけきっとやくにたつ": "Oh! You, child, did you help me!\n\n\nYou have a very kind heart... I am very happy.\n\n\nTake this with you, I'm sure it will be useful.",
+  "わしとおまえ、ともだち": "You and I, friends.",
+  "・・・おりれなくなっちゃった・・・\n\n\n花の種をさがしにきたんだけど・・・どこにもないんだ・・・\n\n\nかえりたいよぉ・・・": "...I can't go back anymore...\n\n\nI came looking for flower seeds, but... they're nowhere to be found...\n\n\nI want to go home...",
+  "・・・おにいちゃん・・・つれてってくれるの?・・・・・・ありがとう!": "...Older brother... will you take me?... Thank you!",
+  "・・・おにいちゃん・・・そっちじゃないよ": "...Older brother... that's not it.",
+  "この花壇にお花咲かせたいなぁ・・・\n\n\nちょっと前までは、森にたくさん種があったんだよでも、今はみんなしおれてた・・・\n\n\n栄養が足らないのかなぁ・・・": "I wish flowers would bloom in this flowerbed...\n\n\nJust a little while ago, there were so many seeds in the forest, but now they've all withered...\n\n\nMaybe they don't have enough nutrients...",
+  "もう、お花見れないのかなぁ・・・": "I wonder if I'll never be able to see cherry blossoms again...",
+  "おまえ、APと書かれたへんな塔見たか?": "Did you see the strange tower marked with AP?",
+  "わしらの仲間、あれと同じマークの入ったトビラや箱も見たこと、あるらしい": "Our comrades say they've also seen doors and boxes with the same mark as that one.",
+  "あれ、うわさではポイントゲートとか言うらしい・・・けど、中に入るには条件ある・・・わしら、中に入れない・・・": "Hmm, I heard it's called a point gate... but there are conditions to get inside... we can't get in...",
+  "どうすれば、入口開くか?・・・気になる・・・": "How can I open the entrance?... I'm curious...",
+  "おお、おまえ、わしらのことばわかるか!?\n\n\nわしら、とてもこまってる・・・わしらの長老のはなしきいてくれないか?": "Oh, you, do you understand our language!?\n\n\nWe are very troubled… will you listen to what our elder says?",
+  "わしらの長老、しろいヒゲはやしているから、すぐわかる": "Our elder, he has a white beard, so you can tell right away.",
+  "おお、少年よ・・・わしらの言葉を理解する知恵のある者よ・・・\n\n\nどうかわしらに力を貸してくださらんか・・・\n\n\n実はこの森の奥で何人もの仲間がゆくえ知れずになっておるんじゃ・・・": "Oh, boy... a wise one who understands our words...\n\nWould you please lend us your strength...?\n\nActually, several of our companions have gone missing deep within this forest...",
+  "どうにかして助けてやりたいのじゃが・・・": "I really want to help you somehow...",
+  "おまえ、とても、ゆうきある。ドワーフ、おまえ、そんけいする": "You are very brave. Dwarf, you are so brave.",
+  "勇気ある少年よ・・・ドワーフの一族全員になりかわり礼を言わせて欲しい・・・\n\n\n仲間を救ってくれて本当にありがとう\n\n\nそれと・・・森の中の秘密の出入り口を開けますから自由に使ってくだされ": "A brave boy... I would like to speak on behalf of the entire dwarf clan and express my gratitude...\n\n\nThank you very much for saving my comrades.\n\n\nAlso... I will open a secret entrance in the forest, so please feel free to use it.",
+  "魔ブタの力は強大じゃ・・・無理はせんようにな・・・": "The power of the demon pig is immense... don't push yourself too hard...",
+  "百花の森": "Forest of a Hundred Flowers",
+  "グラグラ吊橋": "Guragura Suspension Bridge",
+  "高見ヤグラ": "Takami Yagura",
+  "恵みの広場": "Blessed Square",
+  "キノコの森": "Mushroom Forest",
+  "リーフスライダー": "Leaf Slider",
+  "森の地下迷路": "Forest Underground Maze",
+  "ドワーフの集落": "Dwarven settlement",
+  "ドワーフの集落の広場": "Dwarven Village Square"
+ },
+ "banks": [
+  {
+   "bank": "WFM D0FF",
+   "file": "TOMBA/TOMBA.EXE",
+   "offset": "0x0",
+   "messages": [
+    {
+     "index": 0,
+     "original": "・・・うーん・・・こまったのぉ・・・\n\n\nなんじゃ?わしに何か用かな・・・すまんが、ちょっと考え事をしておってな・・・\n\n\nおおそうじゃ、おまえさん、表に散らばっておったコッカ卵を集めてくれんか?\n\n\nコッカの奴、よそから卵を盗んできては、ああやって自分のものにしておるんじゃ・・・あのままでは卵が かわいそうじゃからな・・・\n\n\n無事持ってきてくれれば何でも話してあげよう・・・",
+     "translation": "...Hmm... I'm in trouble...\n\n\nWhat is it? Do you have something to say to me...? Sorry, I'm just thinking about something...\n\n\nOh, right, you, could you gather the Kokka eggs scattered around outside?\n\n\nThat Kokka guy steals eggs from elsewhere and makes them his own like that... It's pitiful for the eggs to be left like that...\n\n\nIf you bring them safely, I'll tell you anything..."
+    },
+    {
+     "index": 1,
+     "original": "このへんの全ての卵を集めたらまた来るのじゃ・・・たのんだぞ",
+     "translation": "I'll come back once I've collected all the eggs around here... I'm counting on you."
+    },
+    {
+     "index": 2,
+     "original": "数が足らんぞ・・・れっつ、りとらい じゃ!",
+     "translation": "The numbers aren't enough... Let's go, let's go!"
+    },
+    {
+     "index": 3,
+     "original": "ほっほっほ・・・どうやら全部集めたようじゃな・・・ん?・・・卵はどこじゃ?",
+     "translation": "Hohoho... it seems like I've collected everything... hmm? ...where are the eggs?"
+    },
+    {
+     "index": 4,
+     "original": "おー・まい・がっ!!",
+     "translation": "Oh my god!!"
+    },
+    {
+     "index": 5,
+     "original": "・・・・・・\n\n\n・・・まぁ、悪気はなさそうじゃし、仕方ないのぉ・・・それで、何を聞きたいんじゃ?\n\n\n魔ブタの事か!?・・・まぁ、いいじゃろう・・・元気な子どもよ、よぉく聞くがいい",
+     "translation": "...\n\n...Well, it doesn't seem like he meant any harm, so I guess it's okay... So, what do you want to ask?\n\n\nAbout the demon pig!? ...Well, that's fine... Listen carefully, energetic child."
+    },
+    {
+     "index": 6,
+     "original": "わしの力になれる事じゃったら何でも協力してやるからの・・・\n\n\nそうじゃ\n\n\nわしは物の目利きには自信があるから、使い道の解らない物を手に入れたらわしのところに持ってくるといい・・・\n\n\nまずは、この先の森に住むドワーフの長に会ってみるといい・・・きっとおまえさんの力になってくれるはずじゃ",
+     "translation": "If it's something I can help with, I'll cooperate with you...\n\nThat's right.\n\nI have confidence in my eye for value, so if you get something you don't know how to use, bring it to me...\n\nFirst, you should try meeting the chief of the dwarves who live in the forest ahead... I'm sure he will help you."
+    },
+    {
+     "index": 7,
+     "original": "なんじゃ、解らない物があるなら見せてごらん・・・",
+     "translation": "What? If there's something you don't understand, show it to me..."
+    },
+    {
+     "index": 8,
+     "original": "あらら・・・もう見つかっちゃった・・・",
+     "translation": "Oh dear... I've already been found out..."
+    },
+    {
+     "index": 9,
+     "original": "いい事教えてやろうか?\n\n\nこの先を登って行けば100年老人って言う物知りのじいさんが住んでるんだぜ・・・\n\n\nどうだ?知らなかっただろ?",
+     "translation": "Wanna hear something good?\n\n\nIf you keep climbing up ahead, you'll find an old man called the 100-Year-Old Sage who knows everything...\n\n\nWhat do you think? Didn't you know that?"
+    },
+    {
+     "index": 10,
+     "original": "いい事教えてやろうか?\n\n\nこの小屋のウラをまっすぐ奥に行くと、大きな水たまりがあるんだぜ・・・\n\n\nどうだ?ビックリだろ?",
+     "translation": "Wanna know something cool?\n\n\nIf you go straight past this shed, you'll find a big puddle...\n\n\nWhat do you think? Pretty surprising, huh?"
+    },
+    {
+     "index": 11,
+     "original": "さっきオイラがいた小屋のウラを奥に行くと、大きな水たまりがあるんだぜ・・・\n\n\nだまされたとおもって、行ってみなよ",
+     "translation": "If you go behind the shed where I was just now, there's a big puddle...\n\n\nThink you've been tricked, go check it out."
+    },
+    {
+     "index": 12,
+     "original": "・・・え?・・・あぁオイラかい?オイラは・・・\n\n\n・・・つぎ、会ったときに教えてやるよ!",
+     "translation": "...Huh? ...Oh, me? I'm...\n\n\n...Next time we meet, I'll tell you!"
+    },
+    {
+     "index": 13,
+     "original": "見つけたらまたおいでいい事教えてやるよ",
+     "translation": "If you find it, you can come back and I'll tell you something good."
+    },
+    {
+     "index": 14,
+     "original": "見つけたらまたおいでオイラの事教えてやるよ",
+     "translation": "If you find it, come back and I'll tell you about me."
+    },
+    {
+     "index": 15,
+     "original": "出会ったらまたおいでつぎこそオイラの事教えてやるよ",
+     "translation": "If we meet again, I'll tell you about myself next time."
+    },
+    {
+     "index": 16,
+     "original": "あ〜すっきりした・・・誰かに話したくてウズウズしてたんだ・・・",
+     "translation": "Ah, I feel so relieved... I was itching to talk to someone about it..."
+    },
+    {
+     "index": 17,
+     "original": "・・・どうだい、ウソじゃなかっただろ?・・・\n\n\n・・・さぁて、それじゃオイラは新しいネタでも仕込みに行くかな・・・\n\n\n・・・えっ?・・・あぁ、オイラかい?オイラ、隠れ里のヤンって言うんだ・・・",
+     "translation": "...How about it? It wasn't a lie, was it?...\n\n\n...Well then, I guess I'll go plant some new material...\n\n\n...Huh?... Oh, me? I'm Yan from the Hidden Village..."
+    },
+    {
+     "index": 18,
+     "original": "この先もオイラを見つける事が出来れば、もっといろんな事を教えてやるよ・・・見つける事が出来れば、な\n\n\nう〜ん・・・なんだか楽しくなってきたな・・・がんばって見つけてくれよ、じゃあな!",
+     "translation": "If you can find me from here on out, I'll teach you even more things... if you can find me, that is.\n\n\nHmm... I'm starting to feel like I'm having fun now... Good luck finding me, see ya!"
+    },
+    {
+     "index": 19,
+     "original": "キミ、泳げるのかい?",
+     "translation": "Can you swim?"
+    },
+    {
+     "index": 20,
+     "original": "・・・ダメじゃない・・・泳げないとこの先の大きな水たまりには行けないョ",
+     "translation": "...It's not good... I can't go to the big puddle ahead if I can't swim."
+    },
+    {
+     "index": 21,
+     "original": "・・・せっかくだから、これあげるョ",
+     "translation": "...Since you're here, I'll give you this."
+    },
+    {
+     "index": 22,
+     "original": "泳げるようになったら、またおいで",
+     "translation": "Come again when you can swim."
+    },
+    {
+     "index": 23,
+     "original": "ウワッ!やめろョ",
+     "translation": "Whoa! Stop it!"
+    },
+    {
+     "index": 24,
+     "original": "ハラへってるからイライラしてるんだョ",
+     "translation": "I'm irritated because I'm hungry."
+    },
+    {
+     "index": 25,
+     "original": "え?そのバナナくれるのか",
+     "translation": "Huh? Are you giving me that banana?"
+    },
+    {
+     "index": 26,
+     "original": "サンキュ\n\n\nオイラのとくいワザを教えてやるョ\n\n\n□といっしょに→をおすとオイラのように速くはしれるョ\n\n\nじゃぁ、またナ",
+     "translation": "Thank you.\n\nI'll show you my special skill!\n\nPress □ together → and you can run as fast as I can!\n\nSee you later!"
+    },
+    {
+     "index": 27,
+     "original": "奥が高くなっているところでは↑と×で奥へジャンプする事が出来るよ",
+     "translation": "You can jump forward using ↑ and × where the back is raised."
+    },
+    {
+     "index": 28,
+     "original": "木の枝にぶら下がったときは→で回転どんどん速くなる。ジャンプしたい方向と×ボタンで飛び出す!",
+     "translation": "When hanging from a tree branch, use → to rotate faster and faster. Use the direction you want to jump and the × button to launch!"
+    },
+    {
+     "index": 29,
+     "original": "○ボタンをおしつづけると、より強力な攻撃が出来る",
+     "translation": "Pressing the ○ button continuously allows you to perform more powerful attacks."
+    },
+    {
+     "index": 30,
+     "original": "APをためていくと・・・いろいろうれしい事があるかもね",
+     "translation": "As you accumulate AP... there might be some wonderful things waiting for you."
+    },
+    {
+     "index": 31,
+     "original": "ここがセーブポイントです。↑で奥を向いているときに○を押せばセーブが出来ます",
+     "translation": "This is the save point. If you press ○ while facing backward with ↑, you can save."
+    },
+    {
+     "index": 32,
+     "original": "始まりの村",
+     "translation": "The Beginning Village"
+    },
+    {
+     "index": 33,
+     "original": "始まりの森",
+     "translation": "The Beginning Forest"
+    },
+    {
+     "index": 34,
+     "original": "100年老人の小屋",
+     "translation": "The 100-Year-Old Man's Cabin"
+    },
+    {
+     "index": 35,
+     "original": "ふるいけ",
+     "translation": "sieve"
+    },
+    {
+     "index": 36,
+     "original": "□△[g197]○[g199][g19A]△[g19B]???…!!!???",
+     "translation": null
+    },
+    {
+     "index": 37,
+     "original": "[g199][g19A]△[g19B]?!!",
+     "translation": null
+    },
+    {
+     "index": 38,
+     "original": "おぉーーい!!",
+     "translation": "Ooooooo!!"
+    },
+    {
+     "index": 39,
+     "original": "いてぇーーーっ!!",
+     "translation": "Ouch!!!"
+    },
+    {
+     "index": 40,
+     "original": "こども・・・もりに、花の種さがしにいったまま・・・かえってこない・・・",
+     "translation": "The child... went into the forest looking for flower seeds... and hasn't come back..."
+    },
+    {
+     "index": 41,
+     "original": "とてもしんぱい・・・",
+     "translation": "I'm very worried..."
+    },
+    {
+     "index": 42,
+     "original": "おお!おまえ、こども、たすけてくれたか!\n\n\nおまえ、とてもやさしいこころもってる・・・わし、とてもうれしい\n\n\nおれいに、これ、もってゆけきっとやくにたつ",
+     "translation": "Oh! You, child, did you help me!\n\n\nYou have a very kind heart... I am very happy.\n\n\nTake this with you, I'm sure it will be useful."
+    },
+    {
+     "index": 43,
+     "original": "わしとおまえ、ともだち",
+     "translation": "You and I, friends."
+    },
+    {
+     "index": 44,
+     "original": "・・・おりれなくなっちゃった・・・\n\n\n花の種をさがしにきたんだけど・・・どこにもないんだ・・・\n\n\nかえりたいよぉ・・・",
+     "translation": "...I can't go back anymore...\n\n\nI came looking for flower seeds, but... they're nowhere to be found...\n\n\nI want to go home..."
+    },
+    {
+     "index": 45,
+     "original": "・・・おにいちゃん・・・つれてってくれるの?・・・・・・ありがとう!",
+     "translation": "...Older brother... will you take me?... Thank you!"
+    },
+    {
+     "index": 46,
+     "original": "・・・おにいちゃん・・・そっちじゃないよ",
+     "translation": "...Older brother... that's not it."
+    },
+    {
+     "index": 47,
+     "original": "この花壇にお花咲かせたいなぁ・・・\n\n\nちょっと前までは、森にたくさん種があったんだよでも、今はみんなしおれてた・・・\n\n\n栄養が足らないのかなぁ・・・",
+     "translation": "I wish flowers would bloom in this flowerbed...\n\n\nJust a little while ago, there were so many seeds in the forest, but now they've all withered...\n\n\nMaybe they don't have enough nutrients..."
+    },
+    {
+     "index": 48,
+     "original": "もう、お花見れないのかなぁ・・・",
+     "translation": "I wonder if I'll never be able to see cherry blossoms again..."
+    },
+    {
+     "index": 49,
+     "original": "おまえ、APと書かれたへんな塔見たか?",
+     "translation": "Did you see the strange tower marked with AP?"
+    },
+    {
+     "index": 50,
+     "original": "わしらの仲間、あれと同じマークの入ったトビラや箱も見たこと、あるらしい",
+     "translation": "Our comrades say they've also seen doors and boxes with the same mark as that one."
+    },
+    {
+     "index": 51,
+     "original": "あれ、うわさではポイントゲートとか言うらしい・・・けど、中に入るには条件ある・・・わしら、中に入れない・・・",
+     "translation": "Hmm, I heard it's called a point gate... but there are conditions to get inside... we can't get in..."
+    },
+    {
+     "index": 52,
+     "original": "どうすれば、入口開くか?・・・気になる・・・",
+     "translation": "How can I open the entrance?... I'm curious..."
+    },
+    {
+     "index": 53,
+     "original": "おお、おまえ、わしらのことばわかるか!?\n\n\nわしら、とてもこまってる・・・わしらの長老のはなしきいてくれないか?",
+     "translation": "Oh, you, do you understand our language!?\n\n\nWe are very troubled… will you listen to what our elder says?"
+    },
+    {
+     "index": 54,
+     "original": "わしらの長老、しろいヒゲはやしているから、すぐわかる",
+     "translation": "Our elder, he has a white beard, so you can tell right away."
+    },
+    {
+     "index": 55,
+     "original": "おお、少年よ・・・わしらの言葉を理解する知恵のある者よ・・・\n\n\nどうかわしらに力を貸してくださらんか・・・\n\n\n実はこの森の奥で何人もの仲間がゆくえ知れずになっておるんじゃ・・・",
+     "translation": "Oh, boy... a wise one who understands our words...\n\nWould you please lend us your strength...?\n\nActually, several of our companions have gone missing deep within this forest..."
+    },
+    {
+     "index": 56,
+     "original": "どうにかして助けてやりたいのじゃが・・・",
+     "translation": "I really want to help you somehow..."
+    },
+    {
+     "index": 57,
+     "original": "おまえ、とても、ゆうきある。ドワーフ、おまえ、そんけいする",
+     "translation": "You are very brave. Dwarf, you are so brave."
+    },
+    {
+     "index": 58,
+     "original": "勇気ある少年よ・・・ドワーフの一族全員になりかわり礼を言わせて欲しい・・・\n\n\n仲間を救ってくれて本当にありがとう\n\n\nそれと・・・森の中の秘密の出入り口を開けますから自由に使ってくだされ",
+     "translation": "A brave boy... I would like to speak on behalf of the entire dwarf clan and express my gratitude...\n\n\nThank you very much for saving my comrades.\n\n\nAlso... I will open a secret entrance in the forest, so please feel free to use it."
+    },
+    {
+     "index": 59,
+     "original": "魔ブタの力は強大じゃ・・・無理はせんようにな・・・",
+     "translation": "The power of the demon pig is immense... don't push yourself too hard..."
+    },
+    {
+     "index": 60,
+     "original": "百花の森",
+     "translation": "Forest of a Hundred Flowers"
+    },
+    {
+     "index": 61,
+     "original": "グラグラ吊橋",
+     "translation": "Guragura Suspension Bridge"
+    },
+    {
+     "index": 62,
+     "original": "高見ヤグラ",
+     "translation": "Takami Yagura"
+    },
+    {
+     "index": 63,
+     "original": "恵みの広場",
+     "translation": "Blessed Square"
+    },
+    {
+     "index": 64,
+     "original": "キノコの森",
+     "translation": "Mushroom Forest"
+    },
+    {
+     "index": 65,
+     "original": "リーフスライダー",
+     "translation": "Leaf Slider"
+    },
+    {
+     "index": 66,
+     "original": "森の地下迷路",
+     "translation": "Forest Underground Maze"
+    },
+    {
+     "index": 67,
+     "original": "ドワーフの集落",
+     "translation": "Dwarven settlement"
+    },
+    {
+     "index": 68,
+     "original": "ドワーフの集落の広場",
+     "translation": "Dwarven Village Square"
+    },
+    {
+     "index": 69,
+     "original": "Thank You!!",
+     "translation": null
+    },
+    {
+     "index": 70,
+     "original": "Bye-Bye...",
+     "translation": null
+    }
+   ]
+  }
+ ]
+}

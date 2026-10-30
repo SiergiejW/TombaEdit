@@ -1,0 +1,3734 @@
+{
+ "format": 1,
+ "language": "ja",
+ "build": "Sampler: Japanese demo (Dengeki D5)",
+ "model": "CAT-Translate-7b",
+ "builds": {
+  "Sampler: Japanese demo (Dengeki D5)": 259
+ },
+ "messages": 685,
+ "translated": 259,
+ "entries": {
+  "カギがかかっている": "The key is locked.",
+  "ヒヨコをつかった": "I used a chick.",
+  "カエルをつかった": "Used a frog.",
+  "バナナをつかった": "I used a banana.",
+  "あばれ竜巻をつかった": "I used a rampaging tornado.",
+  "100年のカギをつかった": "I used the key of 100 years.",
+  "100年の鍵をつかった": "I used the key from 100 years ago.",
+  "めぐみの羽根をつかった": "I used Megumi's feather.",
+  "かみつき草の花をつかった": "I used the flowers of the biting grass.",
+  "マゴブタをつかった": "I used a pig.",
+  "ケモノダッシュ": "Kemono Dash",
+  "カエルがにげた": "The frog ran away.",
+  "バイタリティ1ぞうか": "Vitality 1 elephant",
+  "奥のカベには ↑と×ボタンで とびつくことができ、\nそのまま上に上がると 奥のラインを歩けるよ\n手前にもどりたいときはその逆だよ": "You can jump onto the wall at the back using the ↑ and × buttons,\nand if you go up from there, you can walk along the back line.\nTo return to the front, do the opposite.",
+  "木の枝にぶら下がったときは→で回転\nどんどん速くなる。ジャンプしたい\n方向と×ボタンで飛び出す!": "When hanging from a tree branch → rotate\nIt gets faster and faster. I want to jump.\nUse direction and the × button to jump out!",
+  "○ボタンをおしつづけると、\nより強力な攻撃ができる": "If you continue pressing the ○ button,\nyou can perform a more powerful attack.",
+  "人と話すときは ○ボタン": "When talking to people, press the ○ button.",
+  "ここがセーブポイントです。\n↑で奥を向いているときに\n○を押せばセーブができます": "This is the save point.\nWhen facing backward with ↑,\npressing ○ will save.",
+  "ポスト あけるな!": "Don't open the mailbox!",
+  "始まりの村": "The Beginning Village",
+  "始まりの森": "The Beginning Forest",
+  "100年老人の小屋": "The 100-Year-Old Man's Cabin",
+  "ふるいけ": "sieve",
+  "この土地は はじめてか?\n\nオレは前に ここに住んでたんだけど、\nなんか ようすがかわっちまってよォ\n\nなんかわからんが、しりたいことがあるなら\nこの先の ずーっと上の小屋に住んでる\n\n100年老人というジィさんに\n会ってきいてみろよ\n\nでも、このあたりもあぶなくなったから\n気ィつけていけよ\n\nあっ そうだ! たてふだは見てけよ\n見るときは ↑と○ボタンだぜ\n\n・・・じゃあな!": "Is this land new to you?\n\nI used to live here before,\nbut things have changed a lot since then.\n\nI don't know what it is, but if you want to know something,\nthere's a cabin way up ahead.\n\nMeet the 100-year-old old man and ask him.\n\nBut things around here have gotten dangerous,\nso be careful.\n\nOh, right! Look at the foot pedals.\nWhen looking, use the ↑ and ○ buttons.\n\n...See ya!",
+  "よぉ、にィちゃんも\nこの先に行きたいのかい?\n\nそりゃぁムリだ・・・\nこの先はキリで まっ白だぜ\n\nキリがなくなりゃぁ\n行けるんだけどな・・・": "Hey, Niichan too,\ndo you want to go further?\n\nThat's impossible...\nBeyond this point, it's completely white.\n\nIf the Kiri runs out,\nyou can go, though...",
+  "まぁーきくところによると あばれ竜巻 があれば\n何とかなるみたいだけど・・・\nじっさい どこにあるんだよ、そんなもん・・・\n\nオレは あきらめた!\nにぃちゃんも考えた方がいいぜ・・・\n\nあばよ!": "Well, according to what I heard, if there's a violent tornado,\nit seems like we can manage somehow...\nBut seriously, where on earth is something like that...?\n\nI've given up!\nYou should think about it too, big brother...\n\nGoodbye!",
+  "ちょっと まてよ": "Wait a minute.",
+  "ウワッ!やめろョ": "Whoa! Stop it!",
+  "オレは今、ハラがへってて イライラしてんだ\n何か たべるもん ないか?・・・\nなけりゃ またあとにしてくれョ": "I'm hungry right now and I'm getting irritated.\nIs there anything I can eat?...\nIf not, please save it for later.",
+  "オ〜〜〜ッ!\nなんだ それくれるのか?\n\nサンキュー! たすかったゼ\nもう ハラがへって、うごけなかったんだ\n\nオレ サンタ ってんだ、よろしくな": "Ohhhh!\nWhat? You're giving me that?\n\nThanks! That saved me.\nI was so hungry I couldn't move.\n\nI'm Santa—nice to meet you.",
+  "そうだ!!\nとっておきの技をおしえてやるョ\n\nいいか?": "That's right!!\nI'll teach you my secret technique!\n\nIs that okay?",
+  "×ボタンを押しながら走るとスピードが速くなる、\n人よんで ケモノダッシュっていう技だゼ": "Pressing the X button while running makes your speed increase—it's called \"Kemono Dash,\" a technique used by humans.",
+  "おぼえたか?\n×ボタンを押しながらだぞ・・・・・・\nじゃぁオレはいくゼ\n\nあばよ!": "Did you remember?\nWhile pressing the X button...\nWell then, I'm off!\n\nGoodbye!",
+  "サンキュ": "Thank you.",
+  "バイバイ・・・": "Bye-bye...",
+  "・・・あらら・・・もう見つかっちゃった!\n\nかくれてたんだけど よくわかったな・・・": "...Oh dear... I've already been found!\n\nI was hiding, but you figured it out so well...",
+  "よし! いいことおしえてやるよ\n\nこの小屋のウラをまっすぐ奥に行くと ふるいけ、\nそして、この小屋の先を上に行くと\n100年老人っていう ジィさんが住んでるんだ": "Alright! I'll tell you something good.\n\nIf you go straight to the back of this hut, there's a gate,\nAnd if you go up past this hut,\nThere's an old man called the 100-year-old living there.",
+  "え?・・・オイラかい?・・・・・・\nそんなことより まず行ってみろよ、\nウソじゃないから・・・\n\nそのあとで また会おうや": "Huh?... Is that me?...\nRather than that, first go and see it,\nIt's not a lie...\n\nAfter that, let's meet again.",
+  "えっ?!もう行ったのか?・・・そうか・・・": "Huh?! Already gone?... I see...",
+  "100年老人には会ったのかい?\n\n会ったら また会おうや": "Have you met the 100-year-old?\n\nIf you do, let's meet again.",
+  "ふるいけ には行ったかい?\n\n行ったら また会おうや": "Did you go to Furuike?\n\nIf you did, let's meet again.",
+  "どうだい、ウソじゃなかっただろ\n\nじまんじゃないけどオイラいろいろ しってんだ": "How about it, it wasn't a lie, right?\n\nIt's not a joke, but I know a lot.",
+  "・・・あぁ、オイラかい?\n\nオイラ、ヤン かくれ里のヤンていうんだ・・・": "...Ah, me?\n\nI'm Yan, from the Hidden Village...",
+  "いつも かくれてるんだけど、\nだれも見つけられないんだ・・・\n\nまた見つけられたら そのときも\nいいことおしえてやるよ!\n・・・見つけることができたらな": "I always hide,\nbut no one can find me...\n\nIf I can be found again,\nI'll tell you something good then too!\n...If I can be found.",
+  "う〜ん・・・なんだか楽しくなってきたな・・・\nがんばって見つけてくれよ\n\nじゃあな!": "Hmm... I'm starting to feel like I'm having fun now...\nPlease do your best to find it!\n\nSee ya!",
+  "この先に行く気か?\n\nでも・・・おまえ泳げるんかィ?": "Are you going to go ahead?\n\nBut… can you swim?",
+  "いかん、いかん\n\n今はカメさんに たすけてもらったが\n次からそうはいかん\n\nそこのトビラの先は\n泳げないと行けんのだから・・・\n\n悪いことはいわん、\n今はやめた方がいい・・・\n\nいつか 泳げるようになってから行くんだナ\n\nおっ そうだ!\nおまえ ハラへってないかィ?\n\nこれ もってけよ!": "No, no.\n\nI got help from the turtle this time,\nbut I can't do that again next time.\n\nBeyond that door,\nyou can't go unless you can swim...\n\nDon't say bad things,\nit's better to stop now...\n\nI'll go when I can swim someday.\n\nOh, right!\nAre you hungry?\n\nTake this!",
+  "じゃあなボウズ 気ィつけて行けや": "See ya, loser. Be careful.",
+  "・・・うーん・・・こまったのォ・・・\n\nどーしたもんかのォ・・・\n\nんっ?": "...Hmm... I'm in trouble...\n\nWhat should I do...?\n\nHmm?",
+  "なんじゃ?・・・\nわしが100年老人じゃが・・・何か用かな?": "What is it?...\nI am a 100-year-old old man... Is there something you need?",
+  "すまんが、ちょっと\n考えごとをしておってな・・・・・・\n\n・・・おお そうじゃ!!\nちょっと おまえさん、たのまれてくれんか?\nたのみというのはのォ・・・\n\nおまえさんも ここへ来るとき 見たと思うが、\n赤いトリのコッカのやつめ、\n\nよそからタマゴを盗んできては、\nああやって自分のものにしておってな・・・\n\nあのままでは\n中のヒナが かわいそうなんじゃ・・・\n\nそこでおまえさん、このへんにあるタマゴの中にいる\nヒナを全部 集めてくれんか?": "Sorry, I'm just thinking about something...\n\n...Oh, that's right!\nHey, would you do me a favor?\nWhat I mean by \"favor\" is...\n\nYou probably saw it when you came here,\nthat red-breasted chick,\n\nstealing eggs from other places\nand then making them his own...\n\nIf things continue like this,\nthe chicks inside will be pitiful...\n\nSo, could you gather all the chicks\ninside the eggs around here?",
+  "しんぱいじゃからな・・・\nたのんだぞ": "I'm worried...\nI'm counting on you.",
+  "なんじゃ、もう 集まっとるのか?\n\nん〜〜〜っ・・・\nじゃが まだ残っとるようじゃのォ・・・\n\nすまんがもう一度 行ってくれんか?": "What? Are they already gathering?\n\nHmm~~~...\nBut it seems like there's still some left...\n\nSorry, could you go again?",
+  "集めてくれたのか?・・・\nん〜〜〜っ・・・\n\nじゃが まだ残っとるようじゃのォ・・・\nすまんがもう一度 行ってくれんか?": "Did you collect them?...\nHmmmmm...\n\nBut it seems there's still some left...\nSorry, but could you go again?",
+  "なんじゃ、もう 集まっとるのか・・・\nおおぉぉぉっ!しかも全部集まっとるではないか!\n・・・・・・で、中身はどこじゃ?": "What? Already gathered...?\nOhhhhh! And they're all gathered!\n...And where are the contents?",
+  "おー・まい・がっ!!\n\nハラの中に入れとったのか!?\n\nまぁ、しかし 消化はされとらんようじゃし、\nよしとするかのォ\n\nいやぁ、何はともあれ ごくろうじゃった\n・・・これで わしも安心じゃわい\n\nんっ?・・・・・・そうじゃそうじゃ\nわしに何か用が あったようじゃな\n\n・・・・・・ほう・・・・・・\nコマブタに おジィさんの形見のうでわを\nとられたのか・・・\n\nそれで コマブタたちのことを\nききたいんじゃな・・・\n\nんっ わかった・・・\nじつはのォ・・・・・・・・・・・・": "Oh my god!!\n\nDid you put it in the stomach!?\n\nWell, but it doesn't seem to be digested,\nso I'll leave it at that.\n\nWell, anyway, it was exhausting.\n...With this, I can rest easy.\n\nHmm?...That's right, that's right.\nIt seems like there was something you wanted from me.\n\n...Hmm...\nDid Komabuta take the memento of Ojiisan's arm...?\n\nSo, you want to ask about Komabuta and the others...\n\nHmm, I understand...\nActually, no...",
+  "集めてくれたのか?\n\n・・・おぉっ!! 全部集まったようじゃな\n・・・・・・で、中身はどこじゃ?": "Did you gather them?\n\n...Oh! It looks like everything's been collected.\n...And where are the contents?",
+  "わしが話してやれる事はここまでじゃ・・・\n\nもしおまえさんがこの先の方を進むのなら、\nわしの仲間をさがしてみるといい、\nきっと力になってくれるはずじゃ・・・": "This is as far as I can go in telling you...\n\nIf you're going to move forward from here,\nyou should try looking for my companions,\nand I'm sure they'll be able to help you...",
+  "もちろん、わしの力になれることじゃったら\n何でも協力してやるからの・・・\n\n・・・そうじゃ、\n\nわしは物の めききには自信があるから、\n使い方のわからない物を手に入れたら\nわしのところに持ってくるといい・・・": "Of course, if there's anything I can do to help,\nI'll cooperate with you...\n\n...That's right,\n\nI have confidence in my abilities, so\nif you get something you don't know how to use,\nbring it to me...",
+  "おや?ないのぉ・・・\nおまえさんに100年のすずを\nやろうとおもったんじゃが・・・\n\nどこかで無くしてしまったようじゃな・・・\n\nもし、それらしい物をみつけたら\n持ってきておくれ・・・\n\nそのかわり、おまえさんには・・・\nホレ、これをやろう・・・100年のカギじゃ": "Oh? It's gone...\nI was going to give you a hundred years of tin...\n\nIt seems like you lost it somewhere...\n\nIf you find something like it,\nbring it to me...\n\nIn exchange, I'll give you this... Here, take this—it's a hundred-year key.",
+  "これで、ここにあるのとおなじ宝箱なら\nあけることができるようになったはずじゃ・・・\nん〜 ラッキーじゃのぉ・・・": "With this, you should now be able to open the same treasure chests as the ones here...\nHmm~ Lucky you...",
+  "・・・・・・・しかし!\n\n今回のバージョンでは、ここまでなんじゃ・・・\nん〜〜っ ざんねんじゃのぅ・・・": "...However!\n\nIn this version, it's up to this point...\nHmm~ That's disappointing...",
+  "このつづきは、ぜひ せいひんばんで\n楽しんでくだされ・・・\n\nイベント、アクション、もりだくさんじゃから\nきっと気にいる はずじゃ・・・\n\n・・・勇気ある少年よ・・・\nぼうけんは まだ、始まったばかりじゃ\nせいひんばんで お会いしましょうぞ・・・": "Please enjoy the rest at the product page...\n\nThere's plenty of events and actions, so I'm sure you'll like it...\n\n...Brave boy...\nYour adventure has only just begun.\nLet's meet at the product page...",
+  "なんじゃ、わからない物があるなら見せてごらん・・・": "What? If there's something you don't understand, show it to me...",
+  "・・・おおっ、これはまさしく100年のすず!\nよく見つけたのぉ・・・\n\nこれをつかえばいつでも、\nここに戻って来ることができるはずじゃ・・・": "...Oh wow, this is exactly 100 years of Suzu!\nYou found it well...\n\nIf you use this, you should be able to come back here anytime...",
+  "ジィちゃんの形見": "Grandpa's keepsake.",
+  "100年老人との出会い": "Encounter with a 100-Year-Old Man",
+  "霧を吹き飛ばせ!": "Blow away the fog!",
+  "カエル水にかえる": "The frog returns to the water.",
+  "モトクロスコース": "Motocross Course",
+  "キミ、だあれ?": "Who are you?",
+  "大きな水たまり?": "A large puddle?",
+  "かくれ里のヤン": "Yan of the Hidden Village",
+  "オイラ泳げない…": "I can't swim...",
+  "コッカタマゴの中身": "The contents of a cockerel egg.",
+  "100年老人の話": "The Story of a 100-Year-Old Man",
+  "ドワーフの長老": "Dwarf Elder",
+  "サンタの好きなもの…": "Santa's favorite things...",
+  "小さなブタ…マゴブタ?": "A small pig... Magobuta?",
+  "かみつき草の花": "The flowers of the biting grass.",
+  "うまれたてのヒヨコ": "A newborn chick.",
+  "かえり道をわすれたカエル": "The frog who forgot its way home.",
+  "かえられなくなった\nドワーフのこども": "I can't be changed anymore.\nDwarf child.",
+  "ハラペコな おなかに\nおいしいバナナ": "A hungry stomach\ndelicious banana",
+  "何でもふき飛ばす\n強力なたつまき": "Blows everything away\nA powerful gale",
+  "100年老人の小屋へ いつでも もどれる\nふしぎな すず": "I can always return to the old man's hut, 100 years old.\nMysterious Suz.",
+  "100年の宝箱を\nあけられる カギ": "The key to unlocking a 100-year treasure chest.",
+  "一度行った場所へ いつでも 行ける\nきちょうな はね": "You can always go to places you've been to once.\nA dull feather.",
+  "かみつき草にさいた\nめずらしい花": "I planted it in the grass.\nA rare flower.",
+  "気持ちをしずめてくれる": "It calms my feelings.",
+  "もれない バケツ": "A bucket that doesn't leak.",
+  "とてもきれいな\nからの小ビン": "A very beautiful small bottle from.",
+  "ナミダのつまった小ビン": "A small bottle filled with tears.",
+  "ホカホカ できたての\nやきいも": "Hot and freshly baked yakiimo.",
+  "ヤミを てらす\nタイマツ": "Illuminating darkness\nThai mat",
+  "水がたっぷり\nはいったバケツ": "A bucket filled with plenty of water.",
+  "なにも うつさないカガミ": "A mirror that doesn't reflect anything.",
+  "たかい所から\nユラユラおりられる": "From a high place,\nyou can sway down.",
+  "木で できた かるい\nブーメラン": "A light boomerang made of wood.",
+  "イシで できた おもい\nブーメラン": "A thought made of stone\nBoomerang",
+  "コウテツで できた 強力な\nブーメラン": "A powerful boomerang made of kouetsu.",
+  "魔ブタを封じこめる\nたいせつな ふくろ": "Sealing the demon pig\nA precious pouch",
+  "せかいを 見わたす\nべんりな ちず": "A convenient map that covers the world.",
+  "ふるびた つぼ": "An old pot.",
+  "すべてを けちらす\n強力な ブキ": "Scatter everything\nPowerful weapon",
+  "動きが はやくなる\nべんりな パンツ": "Movement becomes faster.\nConvenient pants.",
+  "バイタリティが すこし\nかいふくする": "Vitality will slightly recover.",
+  "バイタリティ すべてかいふく\nおなかいっぱい!": "Vitality All Recovery\nFull!",
+  "はじめから はいている\nパンツ": "I've been wearing them from the beginning.\nPants.",
+  "ささると ブラさがれたり\nブキにもなる たのもしいアイテム": "When you get caught, you'll be exposed,\nand it can also become a weapon—a truly impressive item.",
+  "グルドカとグルピンの のうりょくをもつ\n強力なブキ": "A powerful weapon possessing the power of Gurdka and Gurupin.",
+  "シリモモのガスを あびて\n小さくなった コマブタ": "Bathed in the gas of Shirimomo,\nthe small piglet.",
+  "1000年の宝箱を\nあけられる カギ": "The key that can open the 1000-year treasure chest.",
+  "魔ブタを封じる力をもつ\n赤色の ふくろ": "A red pouch possessing the power to seal the demon pig.",
+  "魔ブタを封じる力をもつ\nオレンジ色の ふくろ": "An orange pouch that holds the power to seal the demon pig.",
+  "魔ブタを封じる力をもつ\n黄色の ふくろ": "A yellow pouch possessing the power to seal the demon pig.",
+  "魔ブタを封じる力をもつ\n緑色の ふくろ": "A green pouch that holds the power to seal the demon pig.",
+  "魔ブタを封じる力をもつ\n青色の ふくろ": "A blue pouch possessing the power to seal the demon pig.",
+  "万年の宝箱を\nあけられる カギ": "The key that can open the treasure chest of eternity.",
+  "億年の宝箱を\nあけられる カギ": "The key that can open the billion-year treasure chest.",
+  "大きなカギ穴を持つ トビラをひらく\n大きなカギ": "Opening a door with a large keyhole.\nA large key.",
+  "小さなカギ穴を持つ トビラをひらく\n小さなカギ": "Opening a door with a small keyhole.\nA small key.",
+  "たくさん 集めると いい物がもらえる\nうれしい アイテム": "Collecting many will earn you good items.\nHappy items.",
+  "いろんな ものを見ることができる\n魔法のカガミ": "A magical mirror that lets you see various things.",
+  "世界をえがいた 大きな ちずの半分": "Half of a large map of the world",
+  "大きな 物でも ふきとばす\nたのもしい アイテム": "Even large objects can be blown away.\nA powerful item.",
+  "じょうぶな どうぐが つくれそうな\n鉄のかたまり": "A lump of iron that seems like it could make a strong tool.",
+  "がんじょうに つくられたハグルマ": "A Haguruma built in Ganjō.",
+  "どんな 花が さくのか\n楽しみな タネ": "What kind of flowers will bloom?\nA fun seed.",
+  "モレ知らずの べんりな バルブ": "A convenient valve that doesn't leak.",
+  "きれいな 花をさかせる\nしょくぶつの 実": "Make beautiful flowers bloom.\nThe fruit of the plant.",
+  "・・・???": "...???",
+  "コマブタにとられた うでわを\nもとめて たびだつ": "I'm going to retrieve the arm taken by the pig.",
+  "ものしりな100年老人に\n会いに行く": "I'm going to meet a knowledgeable 100-year-old.",
+  "行く手をはばむ\nきりを はらす": "blocking the way,\ncutting through.",
+  "カエルを つかまえた": "I caught a frog.",
+  "サクのむこうに のびる\nデコボコ道": "Beyond the sack, stretching out,\na bumpy road.",
+  "まどから のぞいている人と\n話しをした": "I talked to the person peeking through the window.",
+  "おおきな みずたまりの 話しをきいた": "I listened to the story of a big puddle.",
+  "かくれていた人の\nなまえを しった": "I learned the name of the person who was hiding.",
+  "泳げない自分に気づいた": "I realized I couldn't swim.",
+  "たまごの なかみを\nあつめる": "Gather the contents of the egg.",
+  "魔ブタが来たときの\n話しをきいた": "I listened to the story when the demon pig came.",
+  "とらわれの 老人?": "A captive old man?",
+  "ドワーフの長老に会う": "Meet the Dwarf Elder",
+  "ドワーフのコトバを おぼえる": "Learn the Dwarven language.",
+  "森でまいごになった\nこどもを さがす": "Lost in the forest\nSearching for a child",
+  "何かの たねを\nひろう": "I'll gather some seeds.",
+  "APをためると\nいいものが手に入る": "Accumulating AP will get you good things.",
+  "森でいなくなった ドワーフたちを さがす": "Search for the dwarves who disappeared in the forest.",
+  "きこりドワーフに\n木を きってもらう": "I'll have the woodcutter dwarf cut the wood.",
+  "ふしぎな森の水晶に\n何かが入っている": "Something is inside the crystal of the mysterious forest.",
+  "ドワーフたちのケンカを やめさせる": "Stop the dwarves from fighting.",
+  "地下のオオドロボウと話しをする": "Talk to the Oodorobou in the basement.",
+  "ケガをしたバロンを\nたすける": "Help Baron who was injured.",
+  "かくれていた とまっている\nエレベーター": "I was hiding, I was standing.\nElevator.",
+  "うわさの宝を\n手に入れる": "To obtain the rumored treasure.",
+  "ひみつの じゅもんを\nおしえてもらう": "I will be taught a secret spell.",
+  "トビラが しまって\nでられない": "The door is closed, so I can't get out.",
+  "かくされた封印ぶくろを\n手に入れる": "Obtain the hidden sealed bag.",
+  "魔ブタを 封印ぶくろに封じてしまう": "Sealing the Demon Pig in a Sealing Bag",
+  "どこに つながっているか\nわからない パイプ": "Pipes whose connections are unknown.",
+  "コインは どこからカゼに\n飛ばされて きたのか・・・?": "Where did the coin come from, blown by the wind...?",
+  "穴ほり名人と会う": "Meet the Master of Hole Digging",
+  "行く手をはばむ炎を\nけしさる": "The flames that obstruct my path,\nI will cut through.",
+  "嵐の山にいる 大トリに\nあいに行く": "I'm going to see the grand finale at Arashi's mountain.",
+  "行く手を ふさぐ マサカリ族に\nどいてもらう": "I'll have the Masakari tribe, who block my path, move aside.",
+  "キノコの森に すむという\n怪物と たたかう": "To fight the monster that lives in the mushroom forest.",
+  "しょくぶつを からせてしまう\n実を みんな つぶす": "It makes the living things suffer.\nIt crushes all the fruits.",
+  "笑いのトビラは 笑っている人にしか\nひらかない": "The door to laughter is only open to those who are laughing.",
+  "泣きのトビラは 泣いている人にしか\nひらかない": "The door of tears opens only to those who are crying.",
+  "泣きやみたくても やめられない": "Even when I want to stop crying, I can't.",
+  "よく当る 赤い占い師に会う": "Meet a red fortune teller who often gets it right.",
+  "APが おおいほど\nいいアイテムが 手に入る": "The more AP you have, the better items you get.",
+  "まいごになった 子ネズミを\nさがしだす": "I start looking for the lost baby mouse.",
+  "コレクターが ほしがる物をあつめると\nとてもいい アイテムがもらえる": "If you collect things that collectors want,\nyou'll get very good items.",
+  "・・・・・・・???": "............???",
+  "シーフマンションをこえて\nポンプを しゅうりする": "Beyond the Sea Mansion,\nI will suck the pump.",
+  "湖への きけんな道を かけぬける": "I run through the dangerous road to the lake.",
+  "トビラにあう ちいさなカギを手に入れる": "Obtain a small key that matches the door.",
+  "橋がなくて こまる": "It's troublesome without a bridge.",
+  "ネズミに かえられた\n人たちを もどしてあげる": "I'll return the people who were turned into mice.",
+  "魔ブタを 封印ぶくろに\n封じる": "Seal the demon pig in a sealed bag.",
+  "トビラにあう 大きなカギを 手に入れる": "Obtain the large key that matches the door.",
+  "封印をといて 1000年老人の\nはなしをきく": "Break the seal and listen to the story of a thousand-year-old man.",
+  "かくされた力が めざめる": "The hidden power awakens.",
+  "族長が なくしたヤリを さがす": "The chief searches for the lost spear.",
+  "マサカリ族のコトバを おぼえる": "Learn the words of the Masakari tribe.",
+  "マサカリ族のヒミツを とく": "The secret of the Masakari tribe.",
+  "ものしりの 老木に 会いにいく": "I'm going to meet the old tree that knows everything.",
+  "すべてのポンプ岩には ヒミツがある": "All pump rocks have secrets.",
+  "サンタの きげんをとると\nあたらしいことを おしえてくれる": "When you take Santa's mood,\nhe will teach you something new.",
+  "ナミダのビンは どこに・・・?": "Where is the tear bottle?",
+  "・・・・・・???": "...???",
+  "らくがき岩の もじを かいどくする": "Carve the characters on the rough rock.",
+  "動かなくなった時計台の\n時計を動かす": "The clock tower that stopped working\nto make the clock run.",
+  "きけんな 電気うなぎを つかまえる": "Catching a kikenna electric eel.",
+  "ぬすまれた 封印ぶくろを さがしだす": "I'm searching for the stolen sealed bag.",
+  "きけんな 力を 持つ物": "Things that possess power.",
+  "動きだした 地下のせかい": "The underground world has begun to move.",
+  "魔ブタの魔力がとけて\n森が げんきを とりもどす": "The magic pig's magic power melts,\nand the forest regains its vitality.",
+  "かまないように ヒヤヒヤ!": "Don't bite me! I'm nervous!",
+  "おなかを すかせたタロウに\nたべものを あげる": "I'll give food to Taro, who is hungry.",
+  "お食事会には ごちそう いっぱい": "There will be plenty of food at the dinner party.",
+  "魔ブタを 封印ぶくろに封じる": "Seal the Demon Pig in a Sealing Bag.",
+  "とかすと 道があらわれる": "When you comb it, a path appears.",
+  "ユキダマになって コロがりおりる": "Become a snowball and roll down.",
+  "緑の占い師の 話しをきく": "Listen to the green fortune teller's story.",
+  "あらたな 力が めをさます": "A new power awakens.",
+  "かるくて うきあがってしまう": "It's light and it makes me feel buoyant.",
+  "はりあわないで なかよくしてよ": "Don't be rude, please be friendly.",
+  "こわれた橋で あしどめ": "A broken bridge, a dead end.",
+  "ハリのとまった 時計": "A clock with a sharp edge.",
+  "時計台の たいせつな ハグルマ": "The important Haguruma of the clock tower.",
+  "イシより じょうぶな物?": "Is something stronger than stone?",
+  "ひらかない カギ穴のついた トビラ": "A door with a keyhole that doesn't open.",
+  "ビクともしない サビついたトビラ": "A rusty door that doesn't budge.",
+  "エネルギーを つくる エサ?": "Food to create energy?",
+  "大きな力で ふきとばそう": "Let's blow it away with great force.",
+  "かけっこなら まけないゾ!": "I won't lose in a race!",
+  "何でも 見通す メガネ": "Glasses that see through everything.",
+  "みうごき させない かくされた力": "Hidden power that doesn't move.",
+  "・・・・・・??": "..........??",
+  "クスリを つくるのに 何がひつよう??": "What is needed to make medicine??",
+  "コトバで 何かが うごきだす!": "With words, something starts to move!",
+  "どうぐも 強くなれる!?": "Can you become stronger!?",
+  "あらたな 道は どこに・・・": "Where is the new path…",
+  "さきへ行くには 泳ぐしかない!": "The only way to get there is to swim!",
+  "かわったサカナ たべられるの?": "Can you eat the changed fish?",
+  "ゆうしょうすると いい物が もらえる": "If you do it well, you will get good things.",
+  "わすれた物は おもいで?": "Do you remember what you forgot?",
+  "かいぞくの 宝を さがそう!!": "Let's search for the treasure of the sea!",
+  "魔ブタを封印ぶくろに封じる": "Seal the demon pig in a bag.",
+  "魔力がきえて むらが もとのすがたを とりもどす": "The magic has vanished, and the village has returned to its original form.",
+  "魔力がきえて 3つのまちが ひとつになる": "When the magic power disappears, three towns will become one.",
+  "何か のりものが あれば・・・": "If there was some kind of vehicle...",
+  "サルのサンタは おなかが すいているようだ\nなにか たべものを さがしてこようか?": "The monkey Santa seems hungry. Shall I go look for something to eat?",
+  "コマブタが小さくなって マゴブタ?": "The piglet has gotten smaller, is it a magobuta?",
+  "魔ブタを 封じる力を持つ\n封印ぶくろ": "A glove with the power to seal a demon pig.",
+  "あぶない花が きれいな花を さかせる": "Dangerous flowers bloom beautiful flowers.",
+  "嵐が強くて トビラが あけられない": "The storm is strong and I can't open the door.",
+  "ヨボヨボ大トリに げんきをあげる": "Giving energy to the aging grand finale.",
+  "サンタの オシャレな パラソル ちょうだい": "Santa's stylish parasol, please.",
+  "あれは何だ・・・!? バナナ": "What is that...!? Banana.",
+  "アジトを なくした とうぞく": "The place where the hideout was lost.",
+  "みんなを 笑わせる 笑がお\nできるかな?": "Can I make everyone laugh?",
+  "かなしさを つたえる 泣きがお\nできるかな?": "Can I cry to convey sadness?",
+  "たき先から あま〜い かおりが\nただよってくる": "A sweet fragrance drifts from the tip of the flame.",
+  "くらくなって 何も見えない": "I'm getting dark and can't see anything.",
+  "ブクブクと おとをたてて しずんでいく\n大きなタル": "Bubububu, making a sound, it sinks.\nA big barrel.",
+  "てっぺんまで カケッこ どっちが はやい?": "Which is faster, running to the top or climbing?",
+  "何もうつらないほど よごれたカガミ": "A mirror so dirty it doesn't reflect anything.",
+  "かくされた封印ぶくろを手に入れる": "Obtain the hidden sealed bag.",
+  "なかまは たいせつ": "Friends are important.",
+  "見はりがいる宝箱 なかには何が・・・?": "There's a treasure chest with a guard. What's inside...?",
+  "たかく のぼれば よく見える": "The higher you climb, the better you can see.",
+  "パクリとカジれば 泣き 笑い": "If you copy and cheat, you cry and laugh.",
+  "ちょっと あぶない すべり台": "A little dangerous slide.",
+  "2つをあわせると 見たことない物が あらわれる": "When you combine the two, something you've never seen before appears."
+ },
+ "banks": [
+  {
+   "bank": "WFM D0FF",
+   "file": "TOMBA/AREA00/A006.GAM",
+   "offset": "0x14A58",
+   "messages": [
+    {
+     "index": 0,
+     "original": "カギがかかっている",
+     "translation": "The key is locked."
+    },
+    {
+     "index": 1,
+     "original": "ヒヨコをつかった",
+     "translation": "I used a chick."
+    },
+    {
+     "index": 2,
+     "original": "カエルをつかった",
+     "translation": "Used a frog."
+    },
+    {
+     "index": 3,
+     "original": "バナナをつかった",
+     "translation": "I used a banana."
+    },
+    {
+     "index": 4,
+     "original": "あばれ竜巻をつかった",
+     "translation": "I used a rampaging tornado."
+    },
+    {
+     "index": 5,
+     "original": "100年のカギをつかった",
+     "translation": "I used the key of 100 years."
+    },
+    {
+     "index": 6,
+     "original": "100年の鍵をつかった",
+     "translation": "I used the key from 100 years ago."
+    },
+    {
+     "index": 7,
+     "original": "めぐみの羽根をつかった",
+     "translation": "I used Megumi's feather."
+    },
+    {
+     "index": 8,
+     "original": "かみつき草の花をつかった",
+     "translation": "I used the flowers of the biting grass."
+    },
+    {
+     "index": 9,
+     "original": "マゴブタをつかった",
+     "translation": "I used a pig."
+    },
+    {
+     "index": 10,
+     "original": "ケモノダッシュ",
+     "translation": "Kemono Dash"
+    },
+    {
+     "index": 11,
+     "original": "カエルがにげた",
+     "translation": "The frog ran away."
+    },
+    {
+     "index": 12,
+     "original": "1UP",
+     "translation": null
+    },
+    {
+     "index": 13,
+     "original": "バイタリティ1ぞうか",
+     "translation": "Vitality 1 elephant"
+    },
+    {
+     "index": 14,
+     "original": "奥のカベには ↑と×ボタンで とびつくことができ、\nそのまま上に上がると 奥のラインを歩けるよ\n手前にもどりたいときはその逆だよ",
+     "translation": "You can jump onto the wall at the back using the ↑ and × buttons,\nand if you go up from there, you can walk along the back line.\nTo return to the front, do the opposite."
+    },
+    {
+     "index": 15,
+     "original": "木の枝にぶら下がったときは→で回転\nどんどん速くなる。ジャンプしたい\n方向と×ボタンで飛び出す!",
+     "translation": "When hanging from a tree branch → rotate\nIt gets faster and faster. I want to jump.\nUse direction and the × button to jump out!"
+    },
+    {
+     "index": 16,
+     "original": "○ボタンをおしつづけると、\nより強力な攻撃ができる",
+     "translation": "If you continue pressing the ○ button,\nyou can perform a more powerful attack."
+    },
+    {
+     "index": 17,
+     "original": "人と話すときは ○ボタン",
+     "translation": "When talking to people, press the ○ button."
+    },
+    {
+     "index": 18,
+     "original": "ここがセーブポイントです。\n↑で奥を向いているときに\n○を押せばセーブができます",
+     "translation": "This is the save point.\nWhen facing backward with ↑,\npressing ○ will save."
+    },
+    {
+     "index": 19,
+     "original": "ポスト あけるな!",
+     "translation": "Don't open the mailbox!"
+    },
+    {
+     "index": 20,
+     "original": "始まりの村",
+     "translation": "The Beginning Village"
+    },
+    {
+     "index": 21,
+     "original": "始まりの森",
+     "translation": "The Beginning Forest"
+    },
+    {
+     "index": 22,
+     "original": "100年老人の小屋",
+     "translation": "The 100-Year-Old Man's Cabin"
+    },
+    {
+     "index": 23,
+     "original": "ふるいけ",
+     "translation": "sieve"
+    },
+    {
+     "index": 24,
+     "original": "この土地は はじめてか?\n\nオレは前に ここに住んでたんだけど、\nなんか ようすがかわっちまってよォ\n\nなんかわからんが、しりたいことがあるなら\nこの先の ずーっと上の小屋に住んでる\n\n100年老人というジィさんに\n会ってきいてみろよ\n\nでも、このあたりもあぶなくなったから\n気ィつけていけよ\n\nあっ そうだ! たてふだは見てけよ\n見るときは ↑と○ボタンだぜ\n\n・・・じゃあな!",
+     "translation": "Is this land new to you?\n\nI used to live here before,\nbut things have changed a lot since then.\n\nI don't know what it is, but if you want to know something,\nthere's a cabin way up ahead.\n\nMeet the 100-year-old old man and ask him.\n\nBut things around here have gotten dangerous,\nso be careful.\n\nOh, right! Look at the foot pedals.\nWhen looking, use the ↑ and ○ buttons.\n\n...See ya!"
+    },
+    {
+     "index": 25,
+     "original": "よぉ、にィちゃんも\nこの先に行きたいのかい?\n\nそりゃぁムリだ・・・\nこの先はキリで まっ白だぜ\n\nキリがなくなりゃぁ\n行けるんだけどな・・・",
+     "translation": "Hey, Niichan too,\ndo you want to go further?\n\nThat's impossible...\nBeyond this point, it's completely white.\n\nIf the Kiri runs out,\nyou can go, though..."
+    },
+    {
+     "index": 26,
+     "original": "まぁーきくところによると あばれ竜巻 があれば\n何とかなるみたいだけど・・・\nじっさい どこにあるんだよ、そんなもん・・・\n\nオレは あきらめた!\nにぃちゃんも考えた方がいいぜ・・・\n\nあばよ!",
+     "translation": "Well, according to what I heard, if there's a violent tornado,\nit seems like we can manage somehow...\nBut seriously, where on earth is something like that...?\n\nI've given up!\nYou should think about it too, big brother...\n\nGoodbye!"
+    },
+    {
+     "index": 27,
+     "original": "ちょっと まてよ",
+     "translation": "Wait a minute."
+    },
+    {
+     "index": 28,
+     "original": "ウワッ!やめろョ",
+     "translation": "Whoa! Stop it!"
+    },
+    {
+     "index": 29,
+     "original": "オレは今、ハラがへってて イライラしてんだ\n何か たべるもん ないか?・・・\nなけりゃ またあとにしてくれョ",
+     "translation": "I'm hungry right now and I'm getting irritated.\nIs there anything I can eat?...\nIf not, please save it for later."
+    },
+    {
+     "index": 30,
+     "original": "オ〜〜〜ッ!\nなんだ それくれるのか?\n\nサンキュー! たすかったゼ\nもう ハラがへって、うごけなかったんだ\n\nオレ サンタ ってんだ、よろしくな",
+     "translation": "Ohhhh!\nWhat? You're giving me that?\n\nThanks! That saved me.\nI was so hungry I couldn't move.\n\nI'm Santa—nice to meet you."
+    },
+    {
+     "index": 31,
+     "original": "そうだ!!\nとっておきの技をおしえてやるョ\n\nいいか?",
+     "translation": "That's right!!\nI'll teach you my secret technique!\n\nIs that okay?"
+    },
+    {
+     "index": 32,
+     "original": "×ボタンを押しながら走るとスピードが速くなる、\n人よんで ケモノダッシュっていう技だゼ",
+     "translation": "Pressing the X button while running makes your speed increase—it's called \"Kemono Dash,\" a technique used by humans."
+    },
+    {
+     "index": 33,
+     "original": "おぼえたか?\n×ボタンを押しながらだぞ・・・・・・\nじゃぁオレはいくゼ\n\nあばよ!",
+     "translation": "Did you remember?\nWhile pressing the X button...\nWell then, I'm off!\n\nGoodbye!"
+    },
+    {
+     "index": 34,
+     "original": "サンキュ",
+     "translation": "Thank you."
+    },
+    {
+     "index": 35,
+     "original": "バイバイ・・・",
+     "translation": "Bye-bye..."
+    },
+    {
+     "index": 36,
+     "original": "・・・あらら・・・もう見つかっちゃった!\n\nかくれてたんだけど よくわかったな・・・",
+     "translation": "...Oh dear... I've already been found!\n\nI was hiding, but you figured it out so well..."
+    },
+    {
+     "index": 37,
+     "original": "よし! いいことおしえてやるよ\n\nこの小屋のウラをまっすぐ奥に行くと ふるいけ、\nそして、この小屋の先を上に行くと\n100年老人っていう ジィさんが住んでるんだ",
+     "translation": "Alright! I'll tell you something good.\n\nIf you go straight to the back of this hut, there's a gate,\nAnd if you go up past this hut,\nThere's an old man called the 100-year-old living there."
+    },
+    {
+     "index": 38,
+     "original": "え?・・・オイラかい?・・・・・・\nそんなことより まず行ってみろよ、\nウソじゃないから・・・\n\nそのあとで また会おうや",
+     "translation": "Huh?... Is that me?...\nRather than that, first go and see it,\nIt's not a lie...\n\nAfter that, let's meet again."
+    },
+    {
+     "index": 39,
+     "original": "えっ?!もう行ったのか?・・・そうか・・・",
+     "translation": "Huh?! Already gone?... I see..."
+    },
+    {
+     "index": 40,
+     "original": "100年老人には会ったのかい?\n\n会ったら また会おうや",
+     "translation": "Have you met the 100-year-old?\n\nIf you do, let's meet again."
+    },
+    {
+     "index": 41,
+     "original": "ふるいけ には行ったかい?\n\n行ったら また会おうや",
+     "translation": "Did you go to Furuike?\n\nIf you did, let's meet again."
+    },
+    {
+     "index": 42,
+     "original": "どうだい、ウソじゃなかっただろ\n\nじまんじゃないけどオイラいろいろ しってんだ",
+     "translation": "How about it, it wasn't a lie, right?\n\nIt's not a joke, but I know a lot."
+    },
+    {
+     "index": 43,
+     "original": "・・・あぁ、オイラかい?\n\nオイラ、ヤン かくれ里のヤンていうんだ・・・",
+     "translation": "...Ah, me?\n\nI'm Yan, from the Hidden Village..."
+    },
+    {
+     "index": 44,
+     "original": "いつも かくれてるんだけど、\nだれも見つけられないんだ・・・\n\nまた見つけられたら そのときも\nいいことおしえてやるよ!\n・・・見つけることができたらな",
+     "translation": "I always hide,\nbut no one can find me...\n\nIf I can be found again,\nI'll tell you something good then too!\n...If I can be found."
+    },
+    {
+     "index": 45,
+     "original": "う〜ん・・・なんだか楽しくなってきたな・・・\nがんばって見つけてくれよ\n\nじゃあな!",
+     "translation": "Hmm... I'm starting to feel like I'm having fun now...\nPlease do your best to find it!\n\nSee ya!"
+    },
+    {
+     "index": 46,
+     "original": "この先に行く気か?\n\nでも・・・おまえ泳げるんかィ?",
+     "translation": "Are you going to go ahead?\n\nBut… can you swim?"
+    },
+    {
+     "index": 47,
+     "original": "いかん、いかん\n\n今はカメさんに たすけてもらったが\n次からそうはいかん\n\nそこのトビラの先は\n泳げないと行けんのだから・・・\n\n悪いことはいわん、\n今はやめた方がいい・・・\n\nいつか 泳げるようになってから行くんだナ\n\nおっ そうだ!\nおまえ ハラへってないかィ?\n\nこれ もってけよ!",
+     "translation": "No, no.\n\nI got help from the turtle this time,\nbut I can't do that again next time.\n\nBeyond that door,\nyou can't go unless you can swim...\n\nDon't say bad things,\nit's better to stop now...\n\nI'll go when I can swim someday.\n\nOh, right!\nAre you hungry?\n\nTake this!"
+    },
+    {
+     "index": 48,
+     "original": "じゃあなボウズ 気ィつけて行けや",
+     "translation": "See ya, loser. Be careful."
+    },
+    {
+     "index": 49,
+     "original": "・・・うーん・・・こまったのォ・・・\n\nどーしたもんかのォ・・・\n\nんっ?",
+     "translation": "...Hmm... I'm in trouble...\n\nWhat should I do...?\n\nHmm?"
+    },
+    {
+     "index": 50,
+     "original": "なんじゃ?・・・\nわしが100年老人じゃが・・・何か用かな?",
+     "translation": "What is it?...\nI am a 100-year-old old man... Is there something you need?"
+    },
+    {
+     "index": 51,
+     "original": "すまんが、ちょっと\n考えごとをしておってな・・・・・・\n\n・・・おお そうじゃ!!\nちょっと おまえさん、たのまれてくれんか?\nたのみというのはのォ・・・\n\nおまえさんも ここへ来るとき 見たと思うが、\n赤いトリのコッカのやつめ、\n\nよそからタマゴを盗んできては、\nああやって自分のものにしておってな・・・\n\nあのままでは\n中のヒナが かわいそうなんじゃ・・・\n\nそこでおまえさん、このへんにあるタマゴの中にいる\nヒナを全部 集めてくれんか?",
+     "translation": "Sorry, I'm just thinking about something...\n\n...Oh, that's right!\nHey, would you do me a favor?\nWhat I mean by \"favor\" is...\n\nYou probably saw it when you came here,\nthat red-breasted chick,\n\nstealing eggs from other places\nand then making them his own...\n\nIf things continue like this,\nthe chicks inside will be pitiful...\n\nSo, could you gather all the chicks\ninside the eggs around here?"
+    },
+    {
+     "index": 52,
+     "original": "しんぱいじゃからな・・・\nたのんだぞ",
+     "translation": "I'm worried...\nI'm counting on you."
+    },
+    {
+     "index": 53,
+     "original": "なんじゃ、もう 集まっとるのか?\n\nん〜〜〜っ・・・\nじゃが まだ残っとるようじゃのォ・・・\n\nすまんがもう一度 行ってくれんか?",
+     "translation": "What? Are they already gathering?\n\nHmm~~~...\nBut it seems like there's still some left...\n\nSorry, could you go again?"
+    },
+    {
+     "index": 54,
+     "original": "集めてくれたのか?・・・\nん〜〜〜っ・・・\n\nじゃが まだ残っとるようじゃのォ・・・\nすまんがもう一度 行ってくれんか?",
+     "translation": "Did you collect them?...\nHmmmmm...\n\nBut it seems there's still some left...\nSorry, but could you go again?"
+    },
+    {
+     "index": 55,
+     "original": "なんじゃ、もう 集まっとるのか・・・\nおおぉぉぉっ!しかも全部集まっとるではないか!\n・・・・・・で、中身はどこじゃ?",
+     "translation": "What? Already gathered...?\nOhhhhh! And they're all gathered!\n...And where are the contents?"
+    },
+    {
+     "index": 56,
+     "original": "おー・まい・がっ!!\n\nハラの中に入れとったのか!?\n\nまぁ、しかし 消化はされとらんようじゃし、\nよしとするかのォ\n\nいやぁ、何はともあれ ごくろうじゃった\n・・・これで わしも安心じゃわい\n\nんっ?・・・・・・そうじゃそうじゃ\nわしに何か用が あったようじゃな\n\n・・・・・・ほう・・・・・・\nコマブタに おジィさんの形見のうでわを\nとられたのか・・・\n\nそれで コマブタたちのことを\nききたいんじゃな・・・\n\nんっ わかった・・・\nじつはのォ・・・・・・・・・・・・",
+     "translation": "Oh my god!!\n\nDid you put it in the stomach!?\n\nWell, but it doesn't seem to be digested,\nso I'll leave it at that.\n\nWell, anyway, it was exhausting.\n...With this, I can rest easy.\n\nHmm?...That's right, that's right.\nIt seems like there was something you wanted from me.\n\n...Hmm...\nDid Komabuta take the memento of Ojiisan's arm...?\n\nSo, you want to ask about Komabuta and the others...\n\nHmm, I understand...\nActually, no..."
+    },
+    {
+     "index": 57,
+     "original": "集めてくれたのか?\n\n・・・おぉっ!! 全部集まったようじゃな\n・・・・・・で、中身はどこじゃ?",
+     "translation": "Did you gather them?\n\n...Oh! It looks like everything's been collected.\n...And where are the contents?"
+    },
+    {
+     "index": 58,
+     "original": "わしが話してやれる事はここまでじゃ・・・\n\nもしおまえさんがこの先の方を進むのなら、\nわしの仲間をさがしてみるといい、\nきっと力になってくれるはずじゃ・・・",
+     "translation": "This is as far as I can go in telling you...\n\nIf you're going to move forward from here,\nyou should try looking for my companions,\nand I'm sure they'll be able to help you..."
+    },
+    {
+     "index": 59,
+     "original": "もちろん、わしの力になれることじゃったら\n何でも協力してやるからの・・・\n\n・・・そうじゃ、\n\nわしは物の めききには自信があるから、\n使い方のわからない物を手に入れたら\nわしのところに持ってくるといい・・・",
+     "translation": "Of course, if there's anything I can do to help,\nI'll cooperate with you...\n\n...That's right,\n\nI have confidence in my abilities, so\nif you get something you don't know how to use,\nbring it to me..."
+    },
+    {
+     "index": 60,
+     "original": "おや?ないのぉ・・・\nおまえさんに100年のすずを\nやろうとおもったんじゃが・・・\n\nどこかで無くしてしまったようじゃな・・・\n\nもし、それらしい物をみつけたら\n持ってきておくれ・・・\n\nそのかわり、おまえさんには・・・\nホレ、これをやろう・・・100年のカギじゃ",
+     "translation": "Oh? It's gone...\nI was going to give you a hundred years of tin...\n\nIt seems like you lost it somewhere...\n\nIf you find something like it,\nbring it to me...\n\nIn exchange, I'll give you this... Here, take this—it's a hundred-year key."
+    },
+    {
+     "index": 61,
+     "original": "これで、ここにあるのとおなじ宝箱なら\nあけることができるようになったはずじゃ・・・\nん〜 ラッキーじゃのぉ・・・",
+     "translation": "With this, you should now be able to open the same treasure chests as the ones here...\nHmm~ Lucky you..."
+    },
+    {
+     "index": 62,
+     "original": "・・・・・・・しかし!\n\n今回のバージョンでは、ここまでなんじゃ・・・\nん〜〜っ ざんねんじゃのぅ・・・",
+     "translation": "...However!\n\nIn this version, it's up to this point...\nHmm~ That's disappointing..."
+    },
+    {
+     "index": 63,
+     "original": "このつづきは、ぜひ せいひんばんで\n楽しんでくだされ・・・\n\nイベント、アクション、もりだくさんじゃから\nきっと気にいる はずじゃ・・・\n\n・・・勇気ある少年よ・・・\nぼうけんは まだ、始まったばかりじゃ\nせいひんばんで お会いしましょうぞ・・・",
+     "translation": "Please enjoy the rest at the product page...\n\nThere's plenty of events and actions, so I'm sure you'll like it...\n\n...Brave boy...\nYour adventure has only just begun.\nLet's meet at the product page..."
+    },
+    {
+     "index": 64,
+     "original": "なんじゃ、わからない物があるなら見せてごらん・・・",
+     "translation": "What? If there's something you don't understand, show it to me..."
+    },
+    {
+     "index": 65,
+     "original": "・・・おおっ、これはまさしく100年のすず!\nよく見つけたのぉ・・・\n\nこれをつかえばいつでも、\nここに戻って来ることができるはずじゃ・・・",
+     "translation": "...Oh wow, this is exactly 100 years of Suzu!\nYou found it well...\n\nIf you use this, you should be able to come back here anytime..."
+    }
+   ]
+  },
+  {
+   "bank": "WFM D1FF",
+   "file": "TOMBA/AREA00/A006.GAM",
+   "offset": "0x1A6D8",
+   "messages": [
+    {
+     "index": 0,
+     "original": "CLEAR! ",
+     "translation": null
+    },
+    {
+     "index": 1,
+     "original": "ジィちゃんの形見",
+     "translation": "Grandpa's keepsake."
+    },
+    {
+     "index": 2,
+     "original": "100年老人との出会い",
+     "translation": "Encounter with a 100-Year-Old Man"
+    },
+    {
+     "index": 3,
+     "original": "霧を吹き飛ばせ!",
+     "translation": "Blow away the fog!"
+    },
+    {
+     "index": 4,
+     "original": "カエル水にかえる",
+     "translation": "The frog returns to the water."
+    },
+    {
+     "index": 5,
+     "original": "モトクロスコース",
+     "translation": "Motocross Course"
+    },
+    {
+     "index": 6,
+     "original": "キミ、だあれ?",
+     "translation": "Who are you?"
+    },
+    {
+     "index": 7,
+     "original": "大きな水たまり?",
+     "translation": "A large puddle?"
+    },
+    {
+     "index": 8,
+     "original": "かくれ里のヤン",
+     "translation": "Yan of the Hidden Village"
+    },
+    {
+     "index": 9,
+     "original": "オイラ泳げない…",
+     "translation": "I can't swim..."
+    },
+    {
+     "index": 10,
+     "original": "コッカタマゴの中身",
+     "translation": "The contents of a cockerel egg."
+    },
+    {
+     "index": 11,
+     "original": "100年老人の話",
+     "translation": "The Story of a 100-Year-Old Man"
+    },
+    {
+     "index": 12,
+     "original": "???",
+     "translation": null
+    },
+    {
+     "index": 13,
+     "original": "ドワーフの長老",
+     "translation": "Dwarf Elder"
+    },
+    {
+     "index": 14,
+     "original": "サンタの好きなもの…",
+     "translation": "Santa's favorite things..."
+    },
+    {
+     "index": 15,
+     "original": "小さなブタ…マゴブタ?",
+     "translation": "A small pig... Magobuta?"
+    },
+    {
+     "index": 16,
+     "original": "かみつき草の花",
+     "translation": "The flowers of the biting grass."
+    }
+   ]
+  },
+  {
+   "bank": "WFM D2FF",
+   "file": "TOMBA/SYSTEM/A00013.000",
+   "offset": "0x0",
+   "messages": [
+    {
+     "index": 0,
+     "original": "うまれたてのヒヨコ",
+     "translation": "A newborn chick."
+    },
+    {
+     "index": 1,
+     "original": "かえり道をわすれたカエル",
+     "translation": "The frog who forgot its way home."
+    },
+    {
+     "index": 2,
+     "original": "かえられなくなった\nドワーフのこども",
+     "translation": "I can't be changed anymore.\nDwarf child."
+    },
+    {
+     "index": 3,
+     "original": "ハラペコな おなかに\nおいしいバナナ",
+     "translation": "A hungry stomach\ndelicious banana"
+    },
+    {
+     "index": 4,
+     "original": "何でもふき飛ばす\n強力なたつまき",
+     "translation": "Blows everything away\nA powerful gale"
+    },
+    {
+     "index": 5,
+     "original": "100年老人の小屋へ いつでも もどれる\nふしぎな すず",
+     "translation": "I can always return to the old man's hut, 100 years old.\nMysterious Suz."
+    },
+    {
+     "index": 6,
+     "original": "100年の宝箱を\nあけられる カギ",
+     "translation": "The key to unlocking a 100-year treasure chest."
+    },
+    {
+     "index": 7,
+     "original": "一度行った場所へ いつでも 行ける\nきちょうな はね",
+     "translation": "You can always go to places you've been to once.\nA dull feather."
+    },
+    {
+     "index": 8,
+     "original": "かみつき草にさいた\nめずらしい花",
+     "translation": "I planted it in the grass.\nA rare flower."
+    },
+    {
+     "index": 9,
+     "original": "気持ちをしずめてくれる",
+     "translation": "It calms my feelings."
+    },
+    {
+     "index": 10,
+     "original": "もれない バケツ",
+     "translation": "A bucket that doesn't leak."
+    },
+    {
+     "index": 11,
+     "original": "[g050]くの[g051]色が 見られる",
+     "translation": null
+    },
+    {
+     "index": 12,
+     "original": "とてもきれいな\nからの小ビン",
+     "translation": "A very beautiful small bottle from."
+    },
+    {
+     "index": 13,
+     "original": "ナミダのつまった小ビン",
+     "translation": "A small bottle filled with tears."
+    },
+    {
+     "index": 14,
+     "original": "あしをケガした小[g057]",
+     "translation": null
+    },
+    {
+     "index": 15,
+     "original": "ホカホカ できたての\nやきいも",
+     "translation": "Hot and freshly baked yakiimo."
+    },
+    {
+     "index": 16,
+     "original": "枯れ葉の羽を持つ\n伝[g05E]のチョウチョ",
+     "translation": null
+    },
+    {
+     "index": 17,
+     "original": "ヤミを てらす\nタイマツ",
+     "translation": "Illuminating darkness\nThai mat"
+    },
+    {
+     "index": 18,
+     "original": "水がたっぷり\nはいったバケツ",
+     "translation": "A bucket filled with plenty of water."
+    },
+    {
+     "index": 19,
+     "original": "なにも うつさないカガミ",
+     "translation": "A mirror that doesn't reflect anything."
+    },
+    {
+     "index": 20,
+     "original": "たかい所から\nユラユラおりられる",
+     "translation": "From a high place,\nyou can sway down."
+    },
+    {
+     "index": 21,
+     "original": "木で できた かるい\nブーメラン",
+     "translation": "A light boomerang made of wood."
+    },
+    {
+     "index": 22,
+     "original": "イシで できた おもい\nブーメラン",
+     "translation": "A thought made of stone\nBoomerang"
+    },
+    {
+     "index": 23,
+     "original": "コウテツで できた 強力な\nブーメラン",
+     "translation": "A powerful boomerang made of kouetsu."
+    },
+    {
+     "index": 24,
+     "original": "魔ブタを封じこめる\nたいせつな ふくろ",
+     "translation": "Sealing the demon pig\nA precious pouch"
+    },
+    {
+     "index": 25,
+     "original": "せかいを 見わたす\nべんりな ちず",
+     "translation": "A convenient map that covers the world."
+    },
+    {
+     "index": 26,
+     "original": "ふるびた つぼ",
+     "translation": "An old pot."
+    },
+    {
+     "index": 27,
+     "original": "すべてを けちらす\n強力な ブキ",
+     "translation": "Scatter everything\nPowerful weapon"
+    },
+    {
+     "index": 28,
+     "original": "動きが はやくなる\nべんりな パンツ",
+     "translation": "Movement becomes faster.\nConvenient pants."
+    },
+    {
+     "index": 29,
+     "original": "動きが 最[g074]になる\nすばらしい パンツ",
+     "translation": null
+    },
+    {
+     "index": 30,
+     "original": "バイタリティが すこし\nかいふくする",
+     "translation": "Vitality will slightly recover."
+    },
+    {
+     "index": 31,
+     "original": "バイタリティ すべてかいふく\nおなかいっぱい!",
+     "translation": "Vitality All Recovery\nFull!"
+    },
+    {
+     "index": 32,
+     "original": "はじめから はいている\nパンツ",
+     "translation": "I've been wearing them from the beginning.\nPants."
+    },
+    {
+     "index": 33,
+     "original": "ささると ブラさがれたり\nブキにもなる たのもしいアイテム",
+     "translation": "When you get caught, you'll be exposed,\nand it can also become a weapon—a truly impressive item."
+    },
+    {
+     "index": 34,
+     "original": "グルドカとグルピンの のうりょくをもつ\n強力なブキ",
+     "translation": "A powerful weapon possessing the power of Gurdka and Gurupin."
+    },
+    {
+     "index": 35,
+     "original": "シリモモのガスを あびて\n小さくなった コマブタ",
+     "translation": "Bathed in the gas of Shirimomo,\nthe small piglet."
+    },
+    {
+     "index": 36,
+     "original": "1000年の宝箱を\nあけられる カギ",
+     "translation": "The key that can open the 1000-year treasure chest."
+    },
+    {
+     "index": 37,
+     "original": "魔ブタを封じる力をもつ\n赤色の ふくろ",
+     "translation": "A red pouch possessing the power to seal the demon pig."
+    },
+    {
+     "index": 38,
+     "original": "魔ブタを封じる力をもつ\nオレンジ色の ふくろ",
+     "translation": "An orange pouch that holds the power to seal the demon pig."
+    },
+    {
+     "index": 39,
+     "original": "魔ブタを封じる力をもつ\n黄色の ふくろ",
+     "translation": "A yellow pouch possessing the power to seal the demon pig."
+    },
+    {
+     "index": 40,
+     "original": "魔ブタを封じる力をもつ\n緑色の ふくろ",
+     "translation": "A green pouch that holds the power to seal the demon pig."
+    },
+    {
+     "index": 41,
+     "original": "魔ブタを封じる力をもつ\n青色の ふくろ",
+     "translation": "A blue pouch possessing the power to seal the demon pig."
+    },
+    {
+     "index": 42,
+     "original": "魔ブタを封じる力をもつ\n[g083]色の ふくろ",
+     "translation": null
+    },
+    {
+     "index": 43,
+     "original": "魔ブタを封じる力をもつ\n[g084]色の ふくろ",
+     "translation": null
+    },
+    {
+     "index": 44,
+     "original": "万年の宝箱を\nあけられる カギ",
+     "translation": "The key that can open the treasure chest of eternity."
+    },
+    {
+     "index": 45,
+     "original": "億年の宝箱を\nあけられる カギ",
+     "translation": "The key that can open the billion-year treasure chest."
+    },
+    {
+     "index": 46,
+     "original": "大きな[g088]の 一部らしい パネル1",
+     "translation": null
+    },
+    {
+     "index": 47,
+     "original": "大きな[g088]の 一部らしい パネル2",
+     "translation": null
+    },
+    {
+     "index": 48,
+     "original": "大きな[g088]の 一部らしい パネル3",
+     "translation": null
+    },
+    {
+     "index": 49,
+     "original": "大きな[g088]の 一部らしい パネル4",
+     "translation": null
+    },
+    {
+     "index": 50,
+     "original": "大きな[g088]の 一部らしい パネル5",
+     "translation": null
+    },
+    {
+     "index": 51,
+     "original": "パワーぎれも いっきに解[g090]できる\nありがたい アイテム",
+     "translation": null
+    },
+    {
+     "index": 52,
+     "original": "雨[g092]を[g093]んで 雨をふらせる\n[g094][g095]のアイテム",
+     "translation": null
+    },
+    {
+     "index": 53,
+     "original": "大きなカギ穴を持つ トビラをひらく\n大きなカギ",
+     "translation": "Opening a door with a large keyhole.\nA large key."
+    },
+    {
+     "index": 54,
+     "original": "小さなカギ穴を持つ トビラをひらく\n小さなカギ",
+     "translation": "Opening a door with a small keyhole.\nA small key."
+    },
+    {
+     "index": 55,
+     "original": "たくさん 集めると いい物がもらえる\nうれしい アイテム",
+     "translation": "Collecting many will earn you good items.\nHappy items."
+    },
+    {
+     "index": 56,
+     "original": "いろんな ものを見ることができる\n魔法のカガミ",
+     "translation": "A magical mirror that lets you see various things."
+    },
+    {
+     "index": 57,
+     "original": "世界をえがいた 大きな ちずの半分",
+     "translation": "Half of a large map of the world"
+    },
+    {
+     "index": 58,
+     "original": "世界をえがいた 大きな ちずの半分",
+     "translation": "Half of a large map of the world"
+    },
+    {
+     "index": 59,
+     "original": "あぶない物を持っても\n[g09E]気な 手ぶくろ",
+     "translation": null
+    },
+    {
+     "index": 60,
+     "original": "大きな 物でも ふきとばす\nたのもしい アイテム",
+     "translation": "Even large objects can be blown away.\nA powerful item."
+    },
+    {
+     "index": 61,
+     "original": "じょうぶな どうぐが つくれそうな\n鉄のかたまり",
+     "translation": "A lump of iron that seems like it could make a strong tool."
+    },
+    {
+     "index": 62,
+     "original": "がんじょうに つくられたハグルマ",
+     "translation": "A Haguruma built in Ganjō."
+    },
+    {
+     "index": 63,
+     "original": "どんな 花が さくのか\n楽しみな タネ",
+     "translation": "What kind of flowers will bloom?\nA fun seed."
+    },
+    {
+     "index": 64,
+     "original": "モレ知らずの べんりな バルブ",
+     "translation": "A convenient valve that doesn't leak."
+    },
+    {
+     "index": 65,
+     "original": "[g0A4]で ホロ[g0A6]い気分になりそうな\nアルコール",
+     "translation": null
+    },
+    {
+     "index": 66,
+     "original": "きれいな 花をさかせる\nしょくぶつの 実",
+     "translation": "Make beautiful flowers bloom.\nThe fruit of the plant."
+    },
+    {
+     "index": 67,
+     "original": "・・・???",
+     "translation": "...???"
+    },
+    {
+     "index": 68,
+     "original": "・・・???",
+     "translation": "...???"
+    },
+    {
+     "index": 69,
+     "original": "・・・???",
+     "translation": "...???"
+    },
+    {
+     "index": 70,
+     "original": "・・・???",
+     "translation": "...???"
+    },
+    {
+     "index": 71,
+     "original": "・・・???",
+     "translation": "...???"
+    },
+    {
+     "index": 72,
+     "original": "・・・???",
+     "translation": "...???"
+    },
+    {
+     "index": 73,
+     "original": "・・・???",
+     "translation": "...???"
+    },
+    {
+     "index": 74,
+     "original": "・・・???",
+     "translation": "...???"
+    },
+    {
+     "index": 75,
+     "original": "・・・???",
+     "translation": "...???"
+    },
+    {
+     "index": 76,
+     "original": "・・・???",
+     "translation": "...???"
+    },
+    {
+     "index": 77,
+     "original": "・・・???",
+     "translation": "...???"
+    },
+    {
+     "index": 78,
+     "original": "・・・???",
+     "translation": "...???"
+    },
+    {
+     "index": 79,
+     "original": "・・・???",
+     "translation": "...???"
+    },
+    {
+     "index": 80,
+     "original": "・・・???",
+     "translation": "...???"
+    },
+    {
+     "index": 81,
+     "original": "・・・???",
+     "translation": "...???"
+    },
+    {
+     "index": 82,
+     "original": "・・・???",
+     "translation": "...???"
+    },
+    {
+     "index": 83,
+     "original": "・・・???",
+     "translation": "...???"
+    },
+    {
+     "index": 84,
+     "original": "・・・???",
+     "translation": "...???"
+    },
+    {
+     "index": 85,
+     "original": "・・・???",
+     "translation": "...???"
+    },
+    {
+     "index": 86,
+     "original": "・・・???",
+     "translation": "...???"
+    },
+    {
+     "index": 87,
+     "original": "・・・???",
+     "translation": "...???"
+    },
+    {
+     "index": 88,
+     "original": "・・・???",
+     "translation": "...???"
+    },
+    {
+     "index": 89,
+     "original": "・・・???",
+     "translation": "...???"
+    },
+    {
+     "index": 90,
+     "original": "・・・???",
+     "translation": "...???"
+    },
+    {
+     "index": 91,
+     "original": "・・・???",
+     "translation": "...???"
+    },
+    {
+     "index": 92,
+     "original": "・・・???",
+     "translation": "...???"
+    },
+    {
+     "index": 93,
+     "original": "・・・???",
+     "translation": "...???"
+    },
+    {
+     "index": 94,
+     "original": "・・・???",
+     "translation": "...???"
+    },
+    {
+     "index": 95,
+     "original": "・・・???",
+     "translation": "...???"
+    },
+    {
+     "index": 96,
+     "original": "・・・???",
+     "translation": "...???"
+    },
+    {
+     "index": 97,
+     "original": "・・・???",
+     "translation": "...???"
+    },
+    {
+     "index": 98,
+     "original": "・・・???",
+     "translation": "...???"
+    },
+    {
+     "index": 99,
+     "original": "・・・???",
+     "translation": "...???"
+    },
+    {
+     "index": 100,
+     "original": "・・・???",
+     "translation": "...???"
+    },
+    {
+     "index": 101,
+     "original": "・・・???",
+     "translation": "...???"
+    },
+    {
+     "index": 102,
+     "original": "・・・???",
+     "translation": "...???"
+    },
+    {
+     "index": 103,
+     "original": "・・・???",
+     "translation": "...???"
+    },
+    {
+     "index": 104,
+     "original": "・・・???",
+     "translation": "...???"
+    },
+    {
+     "index": 105,
+     "original": "・・・???",
+     "translation": "...???"
+    },
+    {
+     "index": 106,
+     "original": "・・・???",
+     "translation": "...???"
+    },
+    {
+     "index": 107,
+     "original": "・・・???",
+     "translation": "...???"
+    },
+    {
+     "index": 108,
+     "original": "・・・???",
+     "translation": "...???"
+    },
+    {
+     "index": 109,
+     "original": "・・・???",
+     "translation": "...???"
+    },
+    {
+     "index": 110,
+     "original": "・・・???",
+     "translation": "...???"
+    },
+    {
+     "index": 111,
+     "original": "・・・???",
+     "translation": "...???"
+    },
+    {
+     "index": 112,
+     "original": "・・・???",
+     "translation": "...???"
+    },
+    {
+     "index": 113,
+     "original": "・・・???",
+     "translation": "...???"
+    },
+    {
+     "index": 114,
+     "original": "・・・???",
+     "translation": "...???"
+    },
+    {
+     "index": 115,
+     "original": "・・・???",
+     "translation": "...???"
+    },
+    {
+     "index": 116,
+     "original": "・・・???",
+     "translation": "...???"
+    },
+    {
+     "index": 117,
+     "original": "・・・???",
+     "translation": "...???"
+    },
+    {
+     "index": 118,
+     "original": "・・・???",
+     "translation": "...???"
+    },
+    {
+     "index": 119,
+     "original": "・・・???",
+     "translation": "...???"
+    },
+    {
+     "index": 120,
+     "original": "・・・???",
+     "translation": "...???"
+    },
+    {
+     "index": 121,
+     "original": "・・・???",
+     "translation": "...???"
+    },
+    {
+     "index": 122,
+     "original": "・・・???",
+     "translation": "...???"
+    },
+    {
+     "index": 123,
+     "original": "・・・???",
+     "translation": "...???"
+    },
+    {
+     "index": 124,
+     "original": "・・・???",
+     "translation": "...???"
+    },
+    {
+     "index": 125,
+     "original": "・・・???",
+     "translation": "...???"
+    },
+    {
+     "index": 126,
+     "original": "・・・???",
+     "translation": "...???"
+    },
+    {
+     "index": 127,
+     "original": "・・・???",
+     "translation": "...???"
+    },
+    {
+     "index": 128,
+     "original": "・・・???",
+     "translation": "...???"
+    },
+    {
+     "index": 129,
+     "original": "・・・???",
+     "translation": "...???"
+    },
+    {
+     "index": 130,
+     "original": "・・・???",
+     "translation": "...???"
+    },
+    {
+     "index": 131,
+     "original": "・・・???",
+     "translation": "...???"
+    },
+    {
+     "index": 132,
+     "original": "・・・???",
+     "translation": "...???"
+    },
+    {
+     "index": 133,
+     "original": "・・・???",
+     "translation": "...???"
+    },
+    {
+     "index": 134,
+     "original": "・・・???",
+     "translation": "...???"
+    },
+    {
+     "index": 135,
+     "original": "・・・???",
+     "translation": "...???"
+    },
+    {
+     "index": 136,
+     "original": "・・・???",
+     "translation": "...???"
+    },
+    {
+     "index": 137,
+     "original": "・・・???",
+     "translation": "...???"
+    },
+    {
+     "index": 138,
+     "original": "・・・???",
+     "translation": "...???"
+    },
+    {
+     "index": 139,
+     "original": "・・・???",
+     "translation": "...???"
+    },
+    {
+     "index": 140,
+     "original": "・・・???",
+     "translation": "...???"
+    },
+    {
+     "index": 141,
+     "original": "・・・???",
+     "translation": "...???"
+    },
+    {
+     "index": 142,
+     "original": "・・・???",
+     "translation": "...???"
+    },
+    {
+     "index": 143,
+     "original": "・・・???",
+     "translation": "...???"
+    },
+    {
+     "index": 144,
+     "original": "・・・???",
+     "translation": "...???"
+    },
+    {
+     "index": 145,
+     "original": "・・・???",
+     "translation": "...???"
+    },
+    {
+     "index": 146,
+     "original": "・・・???",
+     "translation": "...???"
+    },
+    {
+     "index": 147,
+     "original": "・・・???",
+     "translation": "...???"
+    },
+    {
+     "index": 148,
+     "original": "・・・???",
+     "translation": "...???"
+    },
+    {
+     "index": 149,
+     "original": "・・・???",
+     "translation": "...???"
+    },
+    {
+     "index": 150,
+     "original": "・・・???",
+     "translation": "...???"
+    },
+    {
+     "index": 151,
+     "original": "・・・???",
+     "translation": "...???"
+    },
+    {
+     "index": 152,
+     "original": "・・・???",
+     "translation": "...???"
+    },
+    {
+     "index": 153,
+     "original": "・・・???",
+     "translation": "...???"
+    },
+    {
+     "index": 154,
+     "original": "・・・???",
+     "translation": "...???"
+    },
+    {
+     "index": 155,
+     "original": "・・・???",
+     "translation": "...???"
+    },
+    {
+     "index": 156,
+     "original": "・・・???",
+     "translation": "...???"
+    },
+    {
+     "index": 157,
+     "original": "・・・???",
+     "translation": "...???"
+    },
+    {
+     "index": 158,
+     "original": "・・・???",
+     "translation": "...???"
+    },
+    {
+     "index": 159,
+     "original": "・・・???",
+     "translation": "...???"
+    },
+    {
+     "index": 160,
+     "original": "・・・???",
+     "translation": "...???"
+    },
+    {
+     "index": 161,
+     "original": "・・・???",
+     "translation": "...???"
+    },
+    {
+     "index": 162,
+     "original": "・・・???",
+     "translation": "...???"
+    },
+    {
+     "index": 163,
+     "original": "・・・???",
+     "translation": "...???"
+    },
+    {
+     "index": 164,
+     "original": "・・・???",
+     "translation": "...???"
+    },
+    {
+     "index": 165,
+     "original": "・・・???",
+     "translation": "...???"
+    },
+    {
+     "index": 166,
+     "original": "・・・???",
+     "translation": "...???"
+    },
+    {
+     "index": 167,
+     "original": "・・・???",
+     "translation": "...???"
+    },
+    {
+     "index": 168,
+     "original": "・・・???",
+     "translation": "...???"
+    },
+    {
+     "index": 169,
+     "original": "・・・???",
+     "translation": "...???"
+    },
+    {
+     "index": 170,
+     "original": "・・・???",
+     "translation": "...???"
+    },
+    {
+     "index": 171,
+     "original": "・・・???",
+     "translation": "...???"
+    },
+    {
+     "index": 172,
+     "original": "・・・???",
+     "translation": "...???"
+    },
+    {
+     "index": 173,
+     "original": "・・・???",
+     "translation": "...???"
+    },
+    {
+     "index": 174,
+     "original": "・・・???",
+     "translation": "...???"
+    },
+    {
+     "index": 175,
+     "original": "・・・???",
+     "translation": "...???"
+    },
+    {
+     "index": 176,
+     "original": "・・・???",
+     "translation": "...???"
+    },
+    {
+     "index": 177,
+     "original": "・・・???",
+     "translation": "...???"
+    },
+    {
+     "index": 178,
+     "original": "・・・???",
+     "translation": "...???"
+    },
+    {
+     "index": 179,
+     "original": "・・・???",
+     "translation": "...???"
+    },
+    {
+     "index": 180,
+     "original": "・・・???",
+     "translation": "...???"
+    },
+    {
+     "index": 181,
+     "original": "・・・???",
+     "translation": "...???"
+    },
+    {
+     "index": 182,
+     "original": "・・・???",
+     "translation": "...???"
+    },
+    {
+     "index": 183,
+     "original": "・・・???",
+     "translation": "...???"
+    },
+    {
+     "index": 184,
+     "original": "・・・???",
+     "translation": "...???"
+    },
+    {
+     "index": 185,
+     "original": "・・・???",
+     "translation": "...???"
+    },
+    {
+     "index": 186,
+     "original": "・・・???",
+     "translation": "...???"
+    },
+    {
+     "index": 187,
+     "original": "・・・???",
+     "translation": "...???"
+    },
+    {
+     "index": 188,
+     "original": "・・・???",
+     "translation": "...???"
+    },
+    {
+     "index": 189,
+     "original": "・・・???",
+     "translation": "...???"
+    },
+    {
+     "index": 190,
+     "original": "・・・???",
+     "translation": "...???"
+    },
+    {
+     "index": 191,
+     "original": "・・・???",
+     "translation": "...???"
+    },
+    {
+     "index": 192,
+     "original": "・・・???",
+     "translation": "...???"
+    },
+    {
+     "index": 193,
+     "original": "・・・???",
+     "translation": "...???"
+    },
+    {
+     "index": 194,
+     "original": "・・・???",
+     "translation": "...???"
+    },
+    {
+     "index": 195,
+     "original": "・・・???",
+     "translation": "...???"
+    },
+    {
+     "index": 196,
+     "original": "・・・???",
+     "translation": "...???"
+    },
+    {
+     "index": 197,
+     "original": "・・・???",
+     "translation": "...???"
+    },
+    {
+     "index": 198,
+     "original": "・・・???",
+     "translation": "...???"
+    },
+    {
+     "index": 199,
+     "original": "・・・???",
+     "translation": "...???"
+    },
+    {
+     "index": 200,
+     "original": "・・・???",
+     "translation": "...???"
+    }
+   ]
+  },
+  {
+   "bank": "WFM D3FF",
+   "file": "TOMBA/SYSTEM/A00014.000",
+   "offset": "0x0",
+   "messages": [
+    {
+     "index": 0,
+     "original": "コマブタにとられた うでわを\nもとめて たびだつ",
+     "translation": "I'm going to retrieve the arm taken by the pig."
+    },
+    {
+     "index": 1,
+     "original": "ものしりな100年老人に\n会いに行く",
+     "translation": "I'm going to meet a knowledgeable 100-year-old."
+    },
+    {
+     "index": 2,
+     "original": "行く手をはばむ\nきりを はらす",
+     "translation": "blocking the way,\ncutting through."
+    },
+    {
+     "index": 3,
+     "original": "カエルを つかまえた",
+     "translation": "I caught a frog."
+    },
+    {
+     "index": 4,
+     "original": "サクのむこうに のびる\nデコボコ道",
+     "translation": "Beyond the sack, stretching out,\na bumpy road."
+    },
+    {
+     "index": 5,
+     "original": "まどから のぞいている人と\n話しをした",
+     "translation": "I talked to the person peeking through the window."
+    },
+    {
+     "index": 6,
+     "original": "おおきな みずたまりの 話しをきいた",
+     "translation": "I listened to the story of a big puddle."
+    },
+    {
+     "index": 7,
+     "original": "かくれていた人の\nなまえを しった",
+     "translation": "I learned the name of the person who was hiding."
+    },
+    {
+     "index": 8,
+     "original": "泳げない自分に気づいた",
+     "translation": "I realized I couldn't swim."
+    },
+    {
+     "index": 9,
+     "original": "たまごの なかみを\nあつめる",
+     "translation": "Gather the contents of the egg."
+    },
+    {
+     "index": 10,
+     "original": "魔ブタが来たときの\n話しをきいた",
+     "translation": "I listened to the story when the demon pig came."
+    },
+    {
+     "index": 11,
+     "original": "とらわれの 老人?",
+     "translation": "A captive old man?"
+    },
+    {
+     "index": 12,
+     "original": "ドワーフの長老に会う",
+     "translation": "Meet the Dwarf Elder"
+    },
+    {
+     "index": 13,
+     "original": "ドワーフのコトバを おぼえる",
+     "translation": "Learn the Dwarven language."
+    },
+    {
+     "index": 14,
+     "original": "森でまいごになった\nこどもを さがす",
+     "translation": "Lost in the forest\nSearching for a child"
+    },
+    {
+     "index": 15,
+     "original": "何かの たねを\nひろう",
+     "translation": "I'll gather some seeds."
+    },
+    {
+     "index": 16,
+     "original": "APをためると\nいいものが手に入る",
+     "translation": "Accumulating AP will get you good things."
+    },
+    {
+     "index": 17,
+     "original": "森でいなくなった ドワーフたちを さがす",
+     "translation": "Search for the dwarves who disappeared in the forest."
+    },
+    {
+     "index": 18,
+     "original": "きこりドワーフに\n木を きってもらう",
+     "translation": "I'll have the woodcutter dwarf cut the wood."
+    },
+    {
+     "index": 19,
+     "original": "ふしぎな森の水晶に\n何かが入っている",
+     "translation": "Something is inside the crystal of the mysterious forest."
+    },
+    {
+     "index": 20,
+     "original": "ドワーフたちのケンカを やめさせる",
+     "translation": "Stop the dwarves from fighting."
+    },
+    {
+     "index": 21,
+     "original": "地下のオオドロボウと話しをする",
+     "translation": "Talk to the Oodorobou in the basement."
+    },
+    {
+     "index": 22,
+     "original": "[g05C]くの [g05D]色を見わたす",
+     "translation": null
+    },
+    {
+     "index": 23,
+     "original": "ケガをしたバロンを\nたすける",
+     "translation": "Help Baron who was injured."
+    },
+    {
+     "index": 24,
+     "original": "かくれていた とまっている\nエレベーター",
+     "translation": "I was hiding, I was standing.\nElevator."
+    },
+    {
+     "index": 25,
+     "original": "うわさの宝を\n手に入れる",
+     "translation": "To obtain the rumored treasure."
+    },
+    {
+     "index": 26,
+     "original": "ひみつの じゅもんを\nおしえてもらう",
+     "translation": "I will be taught a secret spell."
+    },
+    {
+     "index": 27,
+     "original": "恵みさまを[g066]活させると\n何かがおこる",
+     "translation": null
+    },
+    {
+     "index": 28,
+     "original": "トビラが しまって\nでられない",
+     "translation": "The door is closed, so I can't get out."
+    },
+    {
+     "index": 29,
+     "original": "かくされた封印ぶくろを\n手に入れる",
+     "translation": "Obtain the hidden sealed bag."
+    },
+    {
+     "index": 30,
+     "original": "魔ブタを 封印ぶくろに封じてしまう",
+     "translation": "Sealing the Demon Pig in a Sealing Bag"
+    },
+    {
+     "index": 31,
+     "original": "どこに つながっているか\nわからない パイプ",
+     "translation": "Pipes whose connections are unknown."
+    },
+    {
+     "index": 32,
+     "original": "コインは どこからカゼに\n飛ばされて きたのか・・・?",
+     "translation": "Where did the coin come from, blown by the wind...?"
+    },
+    {
+     "index": 33,
+     "original": "穴ほり名人と会う",
+     "translation": "Meet the Master of Hole Digging"
+    },
+    {
+     "index": 34,
+     "original": "行く手をはばむ炎を\nけしさる",
+     "translation": "The flames that obstruct my path,\nI will cut through."
+    },
+    {
+     "index": 35,
+     "original": "嵐の山にいる 大トリに\nあいに行く",
+     "translation": "I'm going to see the grand finale at Arashi's mountain."
+    },
+    {
+     "index": 36,
+     "original": "行く手を ふさぐ マサカリ族に\nどいてもらう",
+     "translation": "I'll have the Masakari tribe, who block my path, move aside."
+    },
+    {
+     "index": 37,
+     "original": "キノコの森に すむという\n怪物と たたかう",
+     "translation": "To fight the monster that lives in the mushroom forest."
+    },
+    {
+     "index": 38,
+     "original": "しょくぶつを からせてしまう\n実を みんな つぶす",
+     "translation": "It makes the living things suffer.\nIt crushes all the fruits."
+    },
+    {
+     "index": 39,
+     "original": "お花のたねを [g080]にまいて\nきれいな お花[g080]にする",
+     "translation": null
+    },
+    {
+     "index": 40,
+     "original": "ナミダは [g066]活に かかせないの?",
+     "translation": null
+    },
+    {
+     "index": 41,
+     "original": "笑いのトビラは 笑っている人にしか\nひらかない",
+     "translation": "The door to laughter is only open to those who are laughing."
+    },
+    {
+     "index": 42,
+     "original": "泣きのトビラは 泣いている人にしか\nひらかない",
+     "translation": "The door of tears opens only to those who are crying."
+    },
+    {
+     "index": 43,
+     "original": "泣きやみたくても やめられない",
+     "translation": "Even when I want to stop crying, I can't."
+    },
+    {
+     "index": 44,
+     "original": "よく当る 赤い占い師に会う",
+     "translation": "Meet a red fortune teller who often gets it right."
+    },
+    {
+     "index": 45,
+     "original": "APが おおいほど\nいいアイテムが 手に入る",
+     "translation": "The more AP you have, the better items you get."
+    },
+    {
+     "index": 46,
+     "original": "まいごになった 子ネズミを\nさがしだす",
+     "translation": "I start looking for the lost baby mouse."
+    },
+    {
+     "index": 47,
+     "original": "コレクターが ほしがる物をあつめると\nとてもいい アイテムがもらえる",
+     "translation": "If you collect things that collectors want,\nyou'll get very good items."
+    },
+    {
+     "index": 48,
+     "original": "・・・・・・・???",
+     "translation": "............???"
+    },
+    {
+     "index": 49,
+     "original": "シーフマンションをこえて\nポンプを しゅうりする",
+     "translation": "Beyond the Sea Mansion,\nI will suck the pump."
+    },
+    {
+     "index": 50,
+     "original": "湖への きけんな道を かけぬける",
+     "translation": "I run through the dangerous road to the lake."
+    },
+    {
+     "index": 51,
+     "original": "トビラにあう ちいさなカギを手に入れる",
+     "translation": "Obtain a small key that matches the door."
+    },
+    {
+     "index": 52,
+     "original": "橋がなくて こまる",
+     "translation": "It's troublesome without a bridge."
+    },
+    {
+     "index": 53,
+     "original": "ネズミに かえられた\n人たちを もどしてあげる",
+     "translation": "I'll return the people who were turned into mice."
+    },
+    {
+     "index": 54,
+     "original": "魔ブタを 封印ぶくろに\n封じる",
+     "translation": "Seal the demon pig in a sealed bag."
+    },
+    {
+     "index": 55,
+     "original": "トビラにあう 大きなカギを 手に入れる",
+     "translation": "Obtain the large key that matches the door."
+    },
+    {
+     "index": 56,
+     "original": "[g095]のパーツを すべてあつめると\nアイテムが手に入る",
+     "translation": null
+    },
+    {
+     "index": 57,
+     "original": "封印をといて 1000年老人の\nはなしをきく",
+     "translation": "Break the seal and listen to the story of a thousand-year-old man."
+    },
+    {
+     "index": 58,
+     "original": "かくされた力が めざめる",
+     "translation": "The hidden power awakens."
+    },
+    {
+     "index": 59,
+     "original": "族長が なくしたヤリを さがす",
+     "translation": "The chief searches for the lost spear."
+    },
+    {
+     "index": 60,
+     "original": "マサカリ族のコトバを おぼえる",
+     "translation": "Learn the words of the Masakari tribe."
+    },
+    {
+     "index": 61,
+     "original": "マサカリ族のヒミツを とく",
+     "translation": "The secret of the Masakari tribe."
+    },
+    {
+     "index": 62,
+     "original": "ものしりの 老木に 会いにいく",
+     "translation": "I'm going to meet the old tree that knows everything."
+    },
+    {
+     "index": 63,
+     "original": "すべてのポンプ岩には ヒミツがある",
+     "translation": "All pump rocks have secrets."
+    },
+    {
+     "index": 64,
+     "original": "サンタの きげんをとると\nあたらしいことを おしえてくれる",
+     "translation": "When you take Santa's mood,\nhe will teach you something new."
+    },
+    {
+     "index": 65,
+     "original": "ナミダのビンは どこに・・・?",
+     "translation": "Where is the tear bottle?"
+    },
+    {
+     "index": 66,
+     "original": "・・・・・・???",
+     "translation": "...???"
+    },
+    {
+     "index": 67,
+     "original": "らくがき岩の もじを かいどくする",
+     "translation": "Carve the characters on the rough rock."
+    },
+    {
+     "index": 68,
+     "original": "・・・???",
+     "translation": "...???"
+    },
+    {
+     "index": 69,
+     "original": "・・・・・・???",
+     "translation": "...???"
+    },
+    {
+     "index": 70,
+     "original": "・・・・・・???",
+     "translation": "...???"
+    },
+    {
+     "index": 71,
+     "original": "・・・・・・???",
+     "translation": "...???"
+    },
+    {
+     "index": 72,
+     "original": "・・・・・・???",
+     "translation": "...???"
+    },
+    {
+     "index": 73,
+     "original": "動かなくなった時計台の\n時計を動かす",
+     "translation": "The clock tower that stopped working\nto make the clock run."
+    },
+    {
+     "index": 74,
+     "original": "きけんな 電気うなぎを つかまえる",
+     "translation": "Catching a kikenna electric eel."
+    },
+    {
+     "index": 75,
+     "original": "ぬすまれた 封印ぶくろを さがしだす",
+     "translation": "I'm searching for the stolen sealed bag."
+    },
+    {
+     "index": 76,
+     "original": "きけんな 力を 持つ物",
+     "translation": "Things that possess power."
+    },
+    {
+     "index": 77,
+     "original": "[g066]活した キカイ",
+     "translation": null
+    },
+    {
+     "index": 78,
+     "original": "・・・・・・???",
+     "translation": "...???"
+    },
+    {
+     "index": 79,
+     "original": "動きだした 地下のせかい",
+     "translation": "The underground world has begun to move."
+    },
+    {
+     "index": 80,
+     "original": "魔ブタの魔力がとけて\n森が げんきを とりもどす",
+     "translation": "The magic pig's magic power melts,\nand the forest regains its vitality."
+    },
+    {
+     "index": 81,
+     "original": "かまないように ヒヤヒヤ!",
+     "translation": "Don't bite me! I'm nervous!"
+    },
+    {
+     "index": 82,
+     "original": "おなかを すかせたタロウに\nたべものを あげる",
+     "translation": "I'll give food to Taro, who is hungry."
+    },
+    {
+     "index": 83,
+     "original": "お食事会には ごちそう いっぱい",
+     "translation": "There will be plenty of food at the dinner party."
+    },
+    {
+     "index": 84,
+     "original": "・・・・・・???",
+     "translation": "...???"
+    },
+    {
+     "index": 85,
+     "original": "魔ブタを 封印ぶくろに封じる",
+     "translation": "Seal the Demon Pig in a Sealing Bag."
+    },
+    {
+     "index": 86,
+     "original": "・・・・・・???",
+     "translation": "...???"
+    },
+    {
+     "index": 87,
+     "original": "とかすと 道があらわれる",
+     "translation": "When you comb it, a path appears."
+    },
+    {
+     "index": 88,
+     "original": "ユキダマになって コロがりおりる",
+     "translation": "Become a snowball and roll down."
+    },
+    {
+     "index": 89,
+     "original": "緑の占い師の 話しをきく",
+     "translation": "Listen to the green fortune teller's story."
+    },
+    {
+     "index": 90,
+     "original": "あらたな 力が めをさます",
+     "translation": "A new power awakens."
+    },
+    {
+     "index": 91,
+     "original": "かるくて うきあがってしまう",
+     "translation": "It's light and it makes me feel buoyant."
+    },
+    {
+     "index": 92,
+     "original": "・・・・・・???",
+     "translation": "...???"
+    },
+    {
+     "index": 93,
+     "original": "・・・・・・???",
+     "translation": "...???"
+    },
+    {
+     "index": 94,
+     "original": "はりあわないで なかよくしてよ",
+     "translation": "Don't be rude, please be friendly."
+    },
+    {
+     "index": 95,
+     "original": "こわれた橋で あしどめ",
+     "translation": "A broken bridge, a dead end."
+    },
+    {
+     "index": 96,
+     "original": "・・・・・・???",
+     "translation": "...???"
+    },
+    {
+     "index": 97,
+     "original": "ハリのとまった 時計",
+     "translation": "A clock with a sharp edge."
+    },
+    {
+     "index": 98,
+     "original": "時計台の たいせつな ハグルマ",
+     "translation": "The important Haguruma of the clock tower."
+    },
+    {
+     "index": 99,
+     "original": "イシより じょうぶな物?",
+     "translation": "Is something stronger than stone?"
+    },
+    {
+     "index": 100,
+     "original": "ひらかない カギ穴のついた トビラ",
+     "translation": "A door with a keyhole that doesn't open."
+    },
+    {
+     "index": 101,
+     "original": "・・・・・・???",
+     "translation": "...???"
+    },
+    {
+     "index": 102,
+     "original": "ビクともしない サビついたトビラ",
+     "translation": "A rusty door that doesn't budge."
+    },
+    {
+     "index": 103,
+     "original": "・・・・・・???",
+     "translation": "...???"
+    },
+    {
+     "index": 104,
+     "original": "エネルギーを つくる エサ?",
+     "translation": "Food to create energy?"
+    },
+    {
+     "index": 105,
+     "original": "大きな力で ふきとばそう",
+     "translation": "Let's blow it away with great force."
+    },
+    {
+     "index": 106,
+     "original": "かけっこなら まけないゾ!",
+     "translation": "I won't lose in a race!"
+    },
+    {
+     "index": 107,
+     "original": "・・・・・・???",
+     "translation": "...???"
+    },
+    {
+     "index": 108,
+     "original": "・・・・・・???",
+     "translation": "...???"
+    },
+    {
+     "index": 109,
+     "original": "何でも 見通す メガネ",
+     "translation": "Glasses that see through everything."
+    },
+    {
+     "index": 110,
+     "original": "・・・・・・???",
+     "translation": "...???"
+    },
+    {
+     "index": 111,
+     "original": "魔ブタを 封印ぶくろに封じる",
+     "translation": "Seal the Demon Pig in a Sealing Bag."
+    },
+    {
+     "index": 112,
+     "original": "みうごき させない かくされた力",
+     "translation": "Hidden power that doesn't move."
+    },
+    {
+     "index": 113,
+     "original": "・・・・・・??",
+     "translation": "..........??"
+    },
+    {
+     "index": 114,
+     "original": "クスリを つくるのに 何がひつよう??",
+     "translation": "What is needed to make medicine??"
+    },
+    {
+     "index": 115,
+     "original": "コトバで 何かが うごきだす!",
+     "translation": "With words, something starts to move!"
+    },
+    {
+     "index": 116,
+     "original": "どうぐも 強くなれる!?",
+     "translation": "Can you become stronger!?"
+    },
+    {
+     "index": 117,
+     "original": "あらたな 道は どこに・・・",
+     "translation": "Where is the new path…"
+    },
+    {
+     "index": 118,
+     "original": "さきへ行くには 泳ぐしかない!",
+     "translation": "The only way to get there is to swim!"
+    },
+    {
+     "index": 119,
+     "original": "かわったサカナ たべられるの?",
+     "translation": "Can you eat the changed fish?"
+    },
+    {
+     "index": 120,
+     "original": "ゆうしょうすると いい物が もらえる",
+     "translation": "If you do it well, you will get good things."
+    },
+    {
+     "index": 121,
+     "original": "わすれた物は おもいで?",
+     "translation": "Do you remember what you forgot?"
+    },
+    {
+     "index": 122,
+     "original": "かいぞくの 宝を さがそう!!",
+     "translation": "Let's search for the treasure of the sea!"
+    },
+    {
+     "index": 123,
+     "original": "魔ブタを封印ぶくろに封じる",
+     "translation": "Seal the demon pig in a bag."
+    },
+    {
+     "index": 124,
+     "original": "魔力がきえて むらが もとのすがたを とりもどす",
+     "translation": "The magic has vanished, and the village has returned to its original form."
+    },
+    {
+     "index": 125,
+     "original": "・・・・・・???",
+     "translation": "...???"
+    },
+    {
+     "index": 126,
+     "original": "・・・・・・???",
+     "translation": "...???"
+    },
+    {
+     "index": 127,
+     "original": "・・・・・・???",
+     "translation": "...???"
+    },
+    {
+     "index": 128,
+     "original": "・・・・・・???",
+     "translation": "...???"
+    },
+    {
+     "index": 129,
+     "original": "・・・・・・???",
+     "translation": "...???"
+    },
+    {
+     "index": 130,
+     "original": "・・・・・・???",
+     "translation": "...???"
+    },
+    {
+     "index": 131,
+     "original": "・・・・・・???",
+     "translation": "...???"
+    },
+    {
+     "index": 132,
+     "original": "・・・・・・???",
+     "translation": "...???"
+    },
+    {
+     "index": 133,
+     "original": "・・・・・・???",
+     "translation": "...???"
+    },
+    {
+     "index": 134,
+     "original": "・・・・・・???",
+     "translation": "...???"
+    },
+    {
+     "index": 135,
+     "original": "・・・・・・???",
+     "translation": "...???"
+    },
+    {
+     "index": 136,
+     "original": "・・・・・・???",
+     "translation": "...???"
+    },
+    {
+     "index": 137,
+     "original": "・・・・・・???",
+     "translation": "...???"
+    },
+    {
+     "index": 138,
+     "original": "・・・・・・???",
+     "translation": "...???"
+    },
+    {
+     "index": 139,
+     "original": "・・・・・・???",
+     "translation": "...???"
+    },
+    {
+     "index": 140,
+     "original": "・・・・・・???",
+     "translation": "...???"
+    },
+    {
+     "index": 141,
+     "original": "・・・・・・???",
+     "translation": "...???"
+    },
+    {
+     "index": 142,
+     "original": "・・・・・・???",
+     "translation": "...???"
+    },
+    {
+     "index": 143,
+     "original": "魔力がきえて 3つのまちが ひとつになる",
+     "translation": "When the magic power disappears, three towns will become one."
+    },
+    {
+     "index": 144,
+     "original": "・・・・・・???",
+     "translation": "...???"
+    },
+    {
+     "index": 145,
+     "original": "・・・・・・???",
+     "translation": "...???"
+    },
+    {
+     "index": 146,
+     "original": "・・・・・・???",
+     "translation": "...???"
+    },
+    {
+     "index": 147,
+     "original": "・・・・・・???",
+     "translation": "...???"
+    },
+    {
+     "index": 148,
+     "original": "・・・・・・???",
+     "translation": "...???"
+    },
+    {
+     "index": 149,
+     "original": "・・・・・・???",
+     "translation": "...???"
+    },
+    {
+     "index": 150,
+     "original": "何か のりものが あれば・・・",
+     "translation": "If there was some kind of vehicle..."
+    },
+    {
+     "index": 151,
+     "original": "・・・・・・???",
+     "translation": "...???"
+    },
+    {
+     "index": 152,
+     "original": "・・・・・・???",
+     "translation": "...???"
+    },
+    {
+     "index": 153,
+     "original": "・・・・・・???",
+     "translation": "...???"
+    },
+    {
+     "index": 154,
+     "original": "・・・・・・???",
+     "translation": "...???"
+    },
+    {
+     "index": 155,
+     "original": "・・・・・・???",
+     "translation": "...???"
+    },
+    {
+     "index": 156,
+     "original": "・・・・・・???",
+     "translation": "...???"
+    },
+    {
+     "index": 157,
+     "original": "・・・・・・???",
+     "translation": "...???"
+    },
+    {
+     "index": 158,
+     "original": "・・・・・・???",
+     "translation": "...???"
+    },
+    {
+     "index": 159,
+     "original": "・・・・・・???",
+     "translation": "...???"
+    },
+    {
+     "index": 160,
+     "original": "・・・・・・???",
+     "translation": "...???"
+    },
+    {
+     "index": 161,
+     "original": "・・・・・・???",
+     "translation": "...???"
+    },
+    {
+     "index": 162,
+     "original": "・・・・・・???",
+     "translation": "...???"
+    },
+    {
+     "index": 163,
+     "original": "・・・・・・???",
+     "translation": "...???"
+    },
+    {
+     "index": 164,
+     "original": "・・・・・・???",
+     "translation": "...???"
+    },
+    {
+     "index": 165,
+     "original": "・・・・・・???",
+     "translation": "...???"
+    },
+    {
+     "index": 166,
+     "original": "サルのサンタは おなかが すいているようだ\nなにか たべものを さがしてこようか?",
+     "translation": "The monkey Santa seems hungry. Shall I go look for something to eat?"
+    },
+    {
+     "index": 167,
+     "original": "コマブタが小さくなって マゴブタ?",
+     "translation": "The piglet has gotten smaller, is it a magobuta?"
+    },
+    {
+     "index": 168,
+     "original": "魔ブタを 封じる力を持つ\n封印ぶくろ",
+     "translation": "A glove with the power to seal a demon pig."
+    },
+    {
+     "index": 169,
+     "original": "あぶない花が きれいな花を さかせる",
+     "translation": "Dangerous flowers bloom beautiful flowers."
+    },
+    {
+     "index": 170,
+     "original": "嵐が強くて トビラが あけられない",
+     "translation": "The storm is strong and I can't open the door."
+    },
+    {
+     "index": 171,
+     "original": "ヨボヨボ大トリに げんきをあげる",
+     "translation": "Giving energy to the aging grand finale."
+    },
+    {
+     "index": 172,
+     "original": "サンタの オシャレな パラソル ちょうだい",
+     "translation": "Santa's stylish parasol, please."
+    },
+    {
+     "index": 173,
+     "original": "あれは何だ・・・!? バナナ",
+     "translation": "What is that...!? Banana."
+    },
+    {
+     "index": 174,
+     "original": "アジトを なくした とうぞく",
+     "translation": "The place where the hideout was lost."
+    },
+    {
+     "index": 175,
+     "original": "みんなを 笑わせる 笑がお\nできるかな?",
+     "translation": "Can I make everyone laugh?"
+    },
+    {
+     "index": 176,
+     "original": "かなしさを つたえる 泣きがお\nできるかな?",
+     "translation": "Can I cry to convey sadness?"
+    },
+    {
+     "index": 177,
+     "original": "たき先から あま〜い かおりが\nただよってくる",
+     "translation": "A sweet fragrance drifts from the tip of the flame."
+    },
+    {
+     "index": 178,
+     "original": "なぞの力をもつ 伝[g0B1]のチョウ",
+     "translation": null
+    },
+    {
+     "index": 179,
+     "original": "くらくなって 何も見えない",
+     "translation": "I'm getting dark and can't see anything."
+    },
+    {
+     "index": 180,
+     "original": "ブクブクと おとをたてて しずんでいく\n大きなタル",
+     "translation": "Bubububu, making a sound, it sinks.\nA big barrel."
+    },
+    {
+     "index": 181,
+     "original": "てっぺんまで カケッこ どっちが はやい?",
+     "translation": "Which is faster, running to the top or climbing?"
+    },
+    {
+     "index": 182,
+     "original": "何もうつらないほど よごれたカガミ",
+     "translation": "A mirror so dirty it doesn't reflect anything."
+    },
+    {
+     "index": 183,
+     "original": "かくされた封印ぶくろを手に入れる",
+     "translation": "Obtain the hidden sealed bag."
+    },
+    {
+     "index": 184,
+     "original": "なかまは たいせつ",
+     "translation": "Friends are important."
+    },
+    {
+     "index": 185,
+     "original": "見はりがいる宝箱 なかには何が・・・?",
+     "translation": "There's a treasure chest with a guard. What's inside...?"
+    },
+    {
+     "index": 186,
+     "original": "たかく のぼれば よく見える",
+     "translation": "The higher you climb, the better you can see."
+    },
+    {
+     "index": 187,
+     "original": "パクリとカジれば 泣き 笑い",
+     "translation": "If you copy and cheat, you cry and laugh."
+    },
+    {
+     "index": 188,
+     "original": "ちょっと あぶない すべり台",
+     "translation": "A little dangerous slide."
+    },
+    {
+     "index": 189,
+     "original": "2つをあわせると 見たことない物が あらわれる",
+     "translation": "When you combine the two, something you've never seen before appears."
+    },
+    {
+     "index": 190,
+     "original": "・・・・・・???",
+     "translation": "...???"
+    },
+    {
+     "index": 191,
+     "original": "・・・・・・???",
+     "translation": "...???"
+    },
+    {
+     "index": 192,
+     "original": "・・・・・・???",
+     "translation": "...???"
+    },
+    {
+     "index": 193,
+     "original": "・・・・・・???",
+     "translation": "...???"
+    },
+    {
+     "index": 194,
+     "original": "・・・・・・???",
+     "translation": "...???"
+    },
+    {
+     "index": 195,
+     "original": "・・・・・・???",
+     "translation": "...???"
+    },
+    {
+     "index": 196,
+     "original": "・・・・・・???",
+     "translation": "...???"
+    },
+    {
+     "index": 197,
+     "original": "・・・・・・???",
+     "translation": "...???"
+    },
+    {
+     "index": 198,
+     "original": "・・・・・・???",
+     "translation": "...???"
+    },
+    {
+     "index": 199,
+     "original": "・・・・・・???",
+     "translation": "...???"
+    }
+   ]
+  },
+  {
+   "bank": "WFM D2FF",
+   "file": "TOMBA/SYSTEM/A00016.000",
+   "offset": "0x0",
+   "messages": [
+    {
+     "index": 0,
+     "original": "うまれたてのヒヨコ",
+     "translation": "A newborn chick."
+    },
+    {
+     "index": 1,
+     "original": "かえり道をわすれたカエル",
+     "translation": "The frog who forgot its way home."
+    },
+    {
+     "index": 2,
+     "original": "かえられなくなった\nドワーフのこども",
+     "translation": "I can't be changed anymore.\nDwarf child."
+    },
+    {
+     "index": 3,
+     "original": "ハラペコな おなかに\nおいしいバナナ",
+     "translation": "A hungry stomach\ndelicious banana"
+    },
+    {
+     "index": 4,
+     "original": "何でもふき飛ばす\n強力なたつまき",
+     "translation": "Blows everything away\nA powerful gale"
+    },
+    {
+     "index": 5,
+     "original": "100年老人の小屋へ いつでも もどれる\nふしぎな すず",
+     "translation": "I can always return to the old man's hut, 100 years old.\nMysterious Suz."
+    },
+    {
+     "index": 6,
+     "original": "100年の宝箱を\nあけられる カギ",
+     "translation": "The key to unlocking a 100-year treasure chest."
+    },
+    {
+     "index": 7,
+     "original": "一度行った場所へ いつでも 行ける\nきちょうな はね",
+     "translation": "You can always go to places you've been to once.\nA dull feather."
+    },
+    {
+     "index": 8,
+     "original": "かみつき草にさいた\nめずらしい花",
+     "translation": "I planted it in the grass.\nA rare flower."
+    },
+    {
+     "index": 9,
+     "original": "気持ちをしずめてくれる",
+     "translation": "It calms my feelings."
+    },
+    {
+     "index": 10,
+     "original": "もれない バケツ",
+     "translation": "A bucket that doesn't leak."
+    },
+    {
+     "index": 11,
+     "original": "[g050]くの[g051]色が 見られる",
+     "translation": null
+    },
+    {
+     "index": 12,
+     "original": "とてもきれいな\nからの小ビン",
+     "translation": "A very beautiful small bottle from."
+    },
+    {
+     "index": 13,
+     "original": "ナミダのつまった小ビン",
+     "translation": "A small bottle filled with tears."
+    },
+    {
+     "index": 14,
+     "original": "あしをケガした小[g057]",
+     "translation": null
+    },
+    {
+     "index": 15,
+     "original": "ホカホカ できたての\nやきいも",
+     "translation": "Hot and freshly baked yakiimo."
+    },
+    {
+     "index": 16,
+     "original": "枯れ葉の羽を持つ\n伝[g05E]のチョウチョ",
+     "translation": null
+    },
+    {
+     "index": 17,
+     "original": "ヤミを てらす\nタイマツ",
+     "translation": "Illuminating darkness\nThai mat"
+    },
+    {
+     "index": 18,
+     "original": "水がたっぷり\nはいったバケツ",
+     "translation": "A bucket filled with plenty of water."
+    },
+    {
+     "index": 19,
+     "original": "なにも うつさないカガミ",
+     "translation": "A mirror that doesn't reflect anything."
+    },
+    {
+     "index": 20,
+     "original": "たかい所から\nユラユラおりられる",
+     "translation": "From a high place,\nyou can sway down."
+    },
+    {
+     "index": 21,
+     "original": "木で できた かるい\nブーメラン",
+     "translation": "A light boomerang made of wood."
+    },
+    {
+     "index": 22,
+     "original": "イシで できた おもい\nブーメラン",
+     "translation": "A thought made of stone\nBoomerang"
+    },
+    {
+     "index": 23,
+     "original": "コウテツで できた 強力な\nブーメラン",
+     "translation": "A powerful boomerang made of kouetsu."
+    },
+    {
+     "index": 24,
+     "original": "魔ブタを封じこめる\nたいせつな ふくろ",
+     "translation": "Sealing the demon pig\nA precious pouch"
+    },
+    {
+     "index": 25,
+     "original": "せかいを 見わたす\nべんりな ちず",
+     "translation": "A convenient map that covers the world."
+    },
+    {
+     "index": 26,
+     "original": "ふるびた つぼ",
+     "translation": "An old pot."
+    },
+    {
+     "index": 27,
+     "original": "すべてを けちらす\n強力な ブキ",
+     "translation": "Scatter everything\nPowerful weapon"
+    },
+    {
+     "index": 28,
+     "original": "動きが はやくなる\nべんりな パンツ",
+     "translation": "Movement becomes faster.\nConvenient pants."
+    },
+    {
+     "index": 29,
+     "original": "動きが 最[g074]になる\nすばらしい パンツ",
+     "translation": null
+    },
+    {
+     "index": 30,
+     "original": "バイタリティが すこし\nかいふくする",
+     "translation": "Vitality will slightly recover."
+    },
+    {
+     "index": 31,
+     "original": "バイタリティ すべてかいふく\nおなかいっぱい!",
+     "translation": "Vitality All Recovery\nFull!"
+    },
+    {
+     "index": 32,
+     "original": "はじめから はいている\nパンツ",
+     "translation": "I've been wearing them from the beginning.\nPants."
+    },
+    {
+     "index": 33,
+     "original": "ささると ブラさがれたり\nブキにもなる たのもしいアイテム",
+     "translation": "When you get caught, you'll be exposed,\nand it can also become a weapon—a truly impressive item."
+    },
+    {
+     "index": 34,
+     "original": "グルドカとグルピンの のうりょくをもつ\n強力なブキ",
+     "translation": "A powerful weapon possessing the power of Gurdka and Gurupin."
+    },
+    {
+     "index": 35,
+     "original": "シリモモのガスを あびて\n小さくなった コマブタ",
+     "translation": "Bathed in the gas of Shirimomo,\nthe small piglet."
+    },
+    {
+     "index": 36,
+     "original": "1000年の宝箱を\nあけられる カギ",
+     "translation": "The key that can open the 1000-year treasure chest."
+    },
+    {
+     "index": 37,
+     "original": "魔ブタを封じる力をもつ\n赤色の ふくろ",
+     "translation": "A red pouch possessing the power to seal the demon pig."
+    },
+    {
+     "index": 38,
+     "original": "魔ブタを封じる力をもつ\nオレンジ色の ふくろ",
+     "translation": "An orange pouch that holds the power to seal the demon pig."
+    },
+    {
+     "index": 39,
+     "original": "魔ブタを封じる力をもつ\n黄色の ふくろ",
+     "translation": "A yellow pouch possessing the power to seal the demon pig."
+    },
+    {
+     "index": 40,
+     "original": "魔ブタを封じる力をもつ\n緑色の ふくろ",
+     "translation": "A green pouch that holds the power to seal the demon pig."
+    },
+    {
+     "index": 41,
+     "original": "魔ブタを封じる力をもつ\n青色の ふくろ",
+     "translation": "A blue pouch possessing the power to seal the demon pig."
+    },
+    {
+     "index": 42,
+     "original": "魔ブタを封じる力をもつ\n[g083]色の ふくろ",
+     "translation": null
+    },
+    {
+     "index": 43,
+     "original": "魔ブタを封じる力をもつ\n[g084]色の ふくろ",
+     "translation": null
+    },
+    {
+     "index": 44,
+     "original": "万年の宝箱を\nあけられる カギ",
+     "translation": "The key that can open the treasure chest of eternity."
+    },
+    {
+     "index": 45,
+     "original": "億年の宝箱を\nあけられる カギ",
+     "translation": "The key that can open the billion-year treasure chest."
+    },
+    {
+     "index": 46,
+     "original": "大きな[g088]の 一部らしい パネル1",
+     "translation": null
+    },
+    {
+     "index": 47,
+     "original": "大きな[g088]の 一部らしい パネル2",
+     "translation": null
+    },
+    {
+     "index": 48,
+     "original": "大きな[g088]の 一部らしい パネル3",
+     "translation": null
+    },
+    {
+     "index": 49,
+     "original": "大きな[g088]の 一部らしい パネル4",
+     "translation": null
+    },
+    {
+     "index": 50,
+     "original": "大きな[g088]の 一部らしい パネル5",
+     "translation": null
+    },
+    {
+     "index": 51,
+     "original": "パワーぎれも いっきに解[g090]できる\nありがたい アイテム",
+     "translation": null
+    },
+    {
+     "index": 52,
+     "original": "雨[g092]を[g093]んで 雨をふらせる\n[g094][g095]のアイテム",
+     "translation": null
+    },
+    {
+     "index": 53,
+     "original": "大きなカギ穴を持つ トビラをひらく\n大きなカギ",
+     "translation": "Opening a door with a large keyhole.\nA large key."
+    },
+    {
+     "index": 54,
+     "original": "小さなカギ穴を持つ トビラをひらく\n小さなカギ",
+     "translation": "Opening a door with a small keyhole.\nA small key."
+    },
+    {
+     "index": 55,
+     "original": "たくさん 集めると いい物がもらえる\nうれしい アイテム",
+     "translation": "Collecting many will earn you good items.\nHappy items."
+    },
+    {
+     "index": 56,
+     "original": "いろんな ものを見ることができる\n魔法のカガミ",
+     "translation": "A magical mirror that lets you see various things."
+    },
+    {
+     "index": 57,
+     "original": "世界をえがいた 大きな ちずの半分",
+     "translation": "Half of a large map of the world"
+    },
+    {
+     "index": 58,
+     "original": "世界をえがいた 大きな ちずの半分",
+     "translation": "Half of a large map of the world"
+    },
+    {
+     "index": 59,
+     "original": "あぶない物を持っても\n[g09E]気な 手ぶくろ",
+     "translation": null
+    },
+    {
+     "index": 60,
+     "original": "大きな 物でも ふきとばす\nたのもしい アイテム",
+     "translation": "Even large objects can be blown away.\nA powerful item."
+    },
+    {
+     "index": 61,
+     "original": "じょうぶな どうぐが つくれそうな\n鉄のかたまり",
+     "translation": "A lump of iron that seems like it could make a strong tool."
+    },
+    {
+     "index": 62,
+     "original": "がんじょうに つくられたハグルマ",
+     "translation": "A Haguruma built in Ganjō."
+    },
+    {
+     "index": 63,
+     "original": "どんな 花が さくのか\n楽しみな タネ",
+     "translation": "What kind of flowers will bloom?\nA fun seed."
+    },
+    {
+     "index": 64,
+     "original": "モレ知らずの べんりな バルブ",
+     "translation": "A convenient valve that doesn't leak."
+    },
+    {
+     "index": 65,
+     "original": "[g0A4]で ホロ[g0A6]い気分になりそうな\nアルコール",
+     "translation": null
+    },
+    {
+     "index": 66,
+     "original": "きれいな 花をさかせる\nしょくぶつの 実",
+     "translation": "Make beautiful flowers bloom.\nThe fruit of the plant."
+    },
+    {
+     "index": 67,
+     "original": "・・・???",
+     "translation": "...???"
+    },
+    {
+     "index": 68,
+     "original": "・・・???",
+     "translation": "...???"
+    },
+    {
+     "index": 69,
+     "original": "・・・???",
+     "translation": "...???"
+    },
+    {
+     "index": 70,
+     "original": "・・・???",
+     "translation": "...???"
+    },
+    {
+     "index": 71,
+     "original": "・・・???",
+     "translation": "...???"
+    },
+    {
+     "index": 72,
+     "original": "・・・???",
+     "translation": "...???"
+    },
+    {
+     "index": 73,
+     "original": "・・・???",
+     "translation": "...???"
+    },
+    {
+     "index": 74,
+     "original": "・・・???",
+     "translation": "...???"
+    },
+    {
+     "index": 75,
+     "original": "・・・???",
+     "translation": "...???"
+    },
+    {
+     "index": 76,
+     "original": "・・・???",
+     "translation": "...???"
+    },
+    {
+     "index": 77,
+     "original": "・・・???",
+     "translation": "...???"
+    },
+    {
+     "index": 78,
+     "original": "・・・???",
+     "translation": "...???"
+    },
+    {
+     "index": 79,
+     "original": "・・・???",
+     "translation": "...???"
+    },
+    {
+     "index": 80,
+     "original": "・・・???",
+     "translation": "...???"
+    },
+    {
+     "index": 81,
+     "original": "・・・???",
+     "translation": "...???"
+    },
+    {
+     "index": 82,
+     "original": "・・・???",
+     "translation": "...???"
+    },
+    {
+     "index": 83,
+     "original": "・・・???",
+     "translation": "...???"
+    },
+    {
+     "index": 84,
+     "original": "・・・???",
+     "translation": "...???"
+    },
+    {
+     "index": 85,
+     "original": "・・・???",
+     "translation": "...???"
+    },
+    {
+     "index": 86,
+     "original": "・・・???",
+     "translation": "...???"
+    },
+    {
+     "index": 87,
+     "original": "・・・???",
+     "translation": "...???"
+    },
+    {
+     "index": 88,
+     "original": "・・・???",
+     "translation": "...???"
+    },
+    {
+     "index": 89,
+     "original": "・・・???",
+     "translation": "...???"
+    },
+    {
+     "index": 90,
+     "original": "・・・???",
+     "translation": "...???"
+    },
+    {
+     "index": 91,
+     "original": "・・・???",
+     "translation": "...???"
+    },
+    {
+     "index": 92,
+     "original": "・・・???",
+     "translation": "...???"
+    },
+    {
+     "index": 93,
+     "original": "・・・???",
+     "translation": "...???"
+    },
+    {
+     "index": 94,
+     "original": "・・・???",
+     "translation": "...???"
+    },
+    {
+     "index": 95,
+     "original": "・・・???",
+     "translation": "...???"
+    },
+    {
+     "index": 96,
+     "original": "・・・???",
+     "translation": "...???"
+    },
+    {
+     "index": 97,
+     "original": "・・・???",
+     "translation": "...???"
+    },
+    {
+     "index": 98,
+     "original": "・・・???",
+     "translation": "...???"
+    },
+    {
+     "index": 99,
+     "original": "・・・???",
+     "translation": "...???"
+    },
+    {
+     "index": 100,
+     "original": "・・・???",
+     "translation": "...???"
+    },
+    {
+     "index": 101,
+     "original": "・・・???",
+     "translation": "...???"
+    },
+    {
+     "index": 102,
+     "original": "・・・???",
+     "translation": "...???"
+    },
+    {
+     "index": 103,
+     "original": "・・・???",
+     "translation": "...???"
+    },
+    {
+     "index": 104,
+     "original": "・・・???",
+     "translation": "...???"
+    },
+    {
+     "index": 105,
+     "original": "・・・???",
+     "translation": "...???"
+    },
+    {
+     "index": 106,
+     "original": "・・・???",
+     "translation": "...???"
+    },
+    {
+     "index": 107,
+     "original": "・・・???",
+     "translation": "...???"
+    },
+    {
+     "index": 108,
+     "original": "・・・???",
+     "translation": "...???"
+    },
+    {
+     "index": 109,
+     "original": "・・・???",
+     "translation": "...???"
+    },
+    {
+     "index": 110,
+     "original": "・・・???",
+     "translation": "...???"
+    },
+    {
+     "index": 111,
+     "original": "・・・???",
+     "translation": "...???"
+    },
+    {
+     "index": 112,
+     "original": "・・・???",
+     "translation": "...???"
+    },
+    {
+     "index": 113,
+     "original": "・・・???",
+     "translation": "...???"
+    },
+    {
+     "index": 114,
+     "original": "・・・???",
+     "translation": "...???"
+    },
+    {
+     "index": 115,
+     "original": "・・・???",
+     "translation": "...???"
+    },
+    {
+     "index": 116,
+     "original": "・・・???",
+     "translation": "...???"
+    },
+    {
+     "index": 117,
+     "original": "・・・???",
+     "translation": "...???"
+    },
+    {
+     "index": 118,
+     "original": "・・・???",
+     "translation": "...???"
+    },
+    {
+     "index": 119,
+     "original": "・・・???",
+     "translation": "...???"
+    },
+    {
+     "index": 120,
+     "original": "・・・???",
+     "translation": "...???"
+    },
+    {
+     "index": 121,
+     "original": "・・・???",
+     "translation": "...???"
+    },
+    {
+     "index": 122,
+     "original": "・・・???",
+     "translation": "...???"
+    },
+    {
+     "index": 123,
+     "original": "・・・???",
+     "translation": "...???"
+    },
+    {
+     "index": 124,
+     "original": "・・・???",
+     "translation": "...???"
+    },
+    {
+     "index": 125,
+     "original": "・・・???",
+     "translation": "...???"
+    },
+    {
+     "index": 126,
+     "original": "・・・???",
+     "translation": "...???"
+    },
+    {
+     "index": 127,
+     "original": "・・・???",
+     "translation": "...???"
+    },
+    {
+     "index": 128,
+     "original": "・・・???",
+     "translation": "...???"
+    },
+    {
+     "index": 129,
+     "original": "・・・???",
+     "translation": "...???"
+    },
+    {
+     "index": 130,
+     "original": "・・・???",
+     "translation": "...???"
+    },
+    {
+     "index": 131,
+     "original": "・・・???",
+     "translation": "...???"
+    },
+    {
+     "index": 132,
+     "original": "・・・???",
+     "translation": "...???"
+    },
+    {
+     "index": 133,
+     "original": "・・・???",
+     "translation": "...???"
+    },
+    {
+     "index": 134,
+     "original": "・・・???",
+     "translation": "...???"
+    },
+    {
+     "index": 135,
+     "original": "・・・???",
+     "translation": "...???"
+    },
+    {
+     "index": 136,
+     "original": "・・・???",
+     "translation": "...???"
+    },
+    {
+     "index": 137,
+     "original": "・・・???",
+     "translation": "...???"
+    },
+    {
+     "index": 138,
+     "original": "・・・???",
+     "translation": "...???"
+    },
+    {
+     "index": 139,
+     "original": "・・・???",
+     "translation": "...???"
+    },
+    {
+     "index": 140,
+     "original": "・・・???",
+     "translation": "...???"
+    },
+    {
+     "index": 141,
+     "original": "・・・???",
+     "translation": "...???"
+    },
+    {
+     "index": 142,
+     "original": "・・・???",
+     "translation": "...???"
+    },
+    {
+     "index": 143,
+     "original": "・・・???",
+     "translation": "...???"
+    },
+    {
+     "index": 144,
+     "original": "・・・???",
+     "translation": "...???"
+    },
+    {
+     "index": 145,
+     "original": "・・・???",
+     "translation": "...???"
+    },
+    {
+     "index": 146,
+     "original": "・・・???",
+     "translation": "...???"
+    },
+    {
+     "index": 147,
+     "original": "・・・???",
+     "translation": "...???"
+    },
+    {
+     "index": 148,
+     "original": "・・・???",
+     "translation": "...???"
+    },
+    {
+     "index": 149,
+     "original": "・・・???",
+     "translation": "...???"
+    },
+    {
+     "index": 150,
+     "original": "・・・???",
+     "translation": "...???"
+    },
+    {
+     "index": 151,
+     "original": "・・・???",
+     "translation": "...???"
+    },
+    {
+     "index": 152,
+     "original": "・・・???",
+     "translation": "...???"
+    },
+    {
+     "index": 153,
+     "original": "・・・???",
+     "translation": "...???"
+    },
+    {
+     "index": 154,
+     "original": "・・・???",
+     "translation": "...???"
+    },
+    {
+     "index": 155,
+     "original": "・・・???",
+     "translation": "...???"
+    },
+    {
+     "index": 156,
+     "original": "・・・???",
+     "translation": "...???"
+    },
+    {
+     "index": 157,
+     "original": "・・・???",
+     "translation": "...???"
+    },
+    {
+     "index": 158,
+     "original": "・・・???",
+     "translation": "...???"
+    },
+    {
+     "index": 159,
+     "original": "・・・???",
+     "translation": "...???"
+    },
+    {
+     "index": 160,
+     "original": "・・・???",
+     "translation": "...???"
+    },
+    {
+     "index": 161,
+     "original": "・・・???",
+     "translation": "...???"
+    },
+    {
+     "index": 162,
+     "original": "・・・???",
+     "translation": "...???"
+    },
+    {
+     "index": 163,
+     "original": "・・・???",
+     "translation": "...???"
+    },
+    {
+     "index": 164,
+     "original": "・・・???",
+     "translation": "...???"
+    },
+    {
+     "index": 165,
+     "original": "・・・???",
+     "translation": "...???"
+    },
+    {
+     "index": 166,
+     "original": "・・・???",
+     "translation": "...???"
+    },
+    {
+     "index": 167,
+     "original": "・・・???",
+     "translation": "...???"
+    },
+    {
+     "index": 168,
+     "original": "・・・???",
+     "translation": "...???"
+    },
+    {
+     "index": 169,
+     "original": "・・・???",
+     "translation": "...???"
+    },
+    {
+     "index": 170,
+     "original": "・・・???",
+     "translation": "...???"
+    },
+    {
+     "index": 171,
+     "original": "・・・???",
+     "translation": "...???"
+    },
+    {
+     "index": 172,
+     "original": "・・・???",
+     "translation": "...???"
+    },
+    {
+     "index": 173,
+     "original": "・・・???",
+     "translation": "...???"
+    },
+    {
+     "index": 174,
+     "original": "・・・???",
+     "translation": "...???"
+    },
+    {
+     "index": 175,
+     "original": "・・・???",
+     "translation": "...???"
+    },
+    {
+     "index": 176,
+     "original": "・・・???",
+     "translation": "...???"
+    },
+    {
+     "index": 177,
+     "original": "・・・???",
+     "translation": "...???"
+    },
+    {
+     "index": 178,
+     "original": "・・・???",
+     "translation": "...???"
+    },
+    {
+     "index": 179,
+     "original": "・・・???",
+     "translation": "...???"
+    },
+    {
+     "index": 180,
+     "original": "・・・???",
+     "translation": "...???"
+    },
+    {
+     "index": 181,
+     "original": "・・・???",
+     "translation": "...???"
+    },
+    {
+     "index": 182,
+     "original": "・・・???",
+     "translation": "...???"
+    },
+    {
+     "index": 183,
+     "original": "・・・???",
+     "translation": "...???"
+    },
+    {
+     "index": 184,
+     "original": "・・・???",
+     "translation": "...???"
+    },
+    {
+     "index": 185,
+     "original": "・・・???",
+     "translation": "...???"
+    },
+    {
+     "index": 186,
+     "original": "・・・???",
+     "translation": "...???"
+    },
+    {
+     "index": 187,
+     "original": "・・・???",
+     "translation": "...???"
+    },
+    {
+     "index": 188,
+     "original": "・・・???",
+     "translation": "...???"
+    },
+    {
+     "index": 189,
+     "original": "・・・???",
+     "translation": "...???"
+    },
+    {
+     "index": 190,
+     "original": "・・・???",
+     "translation": "...???"
+    },
+    {
+     "index": 191,
+     "original": "・・・???",
+     "translation": "...???"
+    },
+    {
+     "index": 192,
+     "original": "・・・???",
+     "translation": "...???"
+    },
+    {
+     "index": 193,
+     "original": "・・・???",
+     "translation": "...???"
+    },
+    {
+     "index": 194,
+     "original": "・・・???",
+     "translation": "...???"
+    },
+    {
+     "index": 195,
+     "original": "・・・???",
+     "translation": "...???"
+    },
+    {
+     "index": 196,
+     "original": "・・・???",
+     "translation": "...???"
+    },
+    {
+     "index": 197,
+     "original": "・・・???",
+     "translation": "...???"
+    },
+    {
+     "index": 198,
+     "original": "・・・???",
+     "translation": "...???"
+    },
+    {
+     "index": 199,
+     "original": "・・・???",
+     "translation": "...???"
+    },
+    {
+     "index": 200,
+     "original": "・・・???",
+     "translation": "...???"
+    }
+   ]
+  }
+ ]
+}

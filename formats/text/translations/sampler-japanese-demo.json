@@ -1,0 +1,3955 @@
+{
+ "format": 1,
+ "language": "ja",
+ "build": "Sampler: Japanese demo",
+ "model": "CAT-Translate-7b",
+ "builds": {
+  "Sampler: Japanese demo": 480
+ },
+ "messages": 685,
+ "translated": 480,
+ "entries": {
+  "カギがかかっている": "The key is locked.",
+  "ヒヨコをつかった": "I used a chick.",
+  "カエルをつかった": "Used a frog.",
+  "バナナをつかった": "I used a banana.",
+  "あばれ竜巻をつかった": "I used a rampaging tornado.",
+  "100年のカギをつかった": "I used the key of 100 years.",
+  "100年の鍵をつかった": "I used the key from 100 years ago.",
+  "めぐみの羽根をつかった": "I used Megumi's feather.",
+  "かみつき草の花をつかった": "I used the flowers of the biting grass.",
+  "マゴブタをつかった": "I used a pig.",
+  "ケモノダッシュ": "Kemono Dash",
+  "カエルがにげた": "The frog ran away.",
+  "ライフゲージかくだい": "Life Gauge Kakudai",
+  "奥のカベには ↑と×ボタンで とびつくことができ、\nそのまま上に上がると 奥のラインを歩けるよ\n手前にもどりたいときはその逆だよ": "You can jump onto the wall at the back using the ↑ and × buttons,\nand if you go up from there, you can walk along the back line.\nTo return to the front, do the opposite.",
+  "木の枝にぶら下がったときは→で回転\nどんどん速くなる。ジャンプしたい\n方向と×ボタンで飛び出す!": "When hanging from a tree branch → rotate\nIt gets faster and faster. I want to jump.\nUse direction and the × button to jump out!",
+  "○ボタンをおしつづけると、\nより強力な攻撃ができる": "If you continue pressing the ○ button,\nyou can perform a more powerful attack.",
+  "人と話すときは ○ボタン": "When talking to people, press the ○ button.",
+  "ここがセーブポイントです。\n↑で奥を向いているときに\n○を押せばセーブができます": "This is the save point.\nWhen facing backward with ↑,\npressing ○ will save.",
+  "ポスト あけるな!": "Don't open the mailbox!",
+  "始まりの村": "The Beginning Village",
+  "始まりの森": "The Beginning Forest",
+  "100年老人の小屋": "The 100-Year-Old Man's Cabin",
+  "ふるいけ": "sieve",
+  "この土地は はじめてか?\n\nオレは前に ここに住んでたんだけど、\nなんか ようすがかわっちまってよォ\n\nなんかわからんが、しりたいことがあるなら\nこの先の ずーっと上の小屋に住んでる\n\n100年老人というジィさんに\n会ってきいてみろよ\n\nでも、このあたりもあぶなくなったから\n気ィつけていけよ\n\nあっ そうだ! たてふだは見てけよ\n見るときは ↑と○ボタンだぜ\n\n・・・じゃあな!": "Is this land new to you?\n\nI used to live here before,\nbut things have changed a lot since then.\n\nI don't know what it is, but if you want to know something,\nthere's a cabin way up ahead.\n\nMeet the 100-year-old old man and ask him.\n\nBut things around here have gotten dangerous,\nso be careful.\n\nOh, right! Look at the foot pedals.\nWhen looking, use the ↑ and ○ buttons.\n\n...See ya!",
+  "よぉ、にィちゃんも\nこの先に行きたいのかい?\n\nそりゃぁムリだ・・・\nこの先はキリで まっ白だぜ\n\nキリがなくなりゃぁ\n行けるんだけどな・・・": "Hey, Niichan too,\ndo you want to go further?\n\nThat's impossible...\nBeyond this point, it's completely white.\n\nIf the Kiri runs out,\nyou can go, though...",
+  "まぁーきくところによると あばれ竜巻 があれば\n何とかなるみたいだけど・・・\nじっさい どこにあるんだよ、そんなもん・・・\n\nオレは あきらめた!\nにぃちゃんも考えた方がいいぜ・・・\n\nあばよ!": "Well, according to what I heard, if there's a violent tornado,\nit seems like we can manage somehow...\nBut seriously, where on earth is something like that...?\n\nI've given up!\nYou should think about it too, big brother...\n\nGoodbye!",
+  "ちょっと まてよ": "Wait a minute.",
+  "ウワッ!やめろョ": "Whoa! Stop it!",
+  "オレは今、ハラがへってて イライラしてんだ\n何か たべるもん ないか?・・・\nなけりゃ またあとにしてくれョ": "I'm hungry right now and I'm getting irritated.\nIs there anything I can eat?...\nIf not, please save it for later.",
+  "オ〜〜〜ッ!\nなんだ それくれるのか?\n\nサンキュー! たすかったゼ\nもう ハラがへって、うごけなかったんだ\n\nオレ サンタ ってんだ、よろしくな": "Ohhhh!\nWhat? You're giving me that?\n\nThanks! That saved me.\nI was so hungry I couldn't move.\n\nI'm Santa—nice to meet you.",
+  "そうだ!!\nとっておきの技をおしえてやるョ\n\nいいか?": "That's right!!\nI'll teach you my secret technique!\n\nIs that okay?",
+  "×ボタンを押しながら走るとスピードが速くなる、\n人よんで ケモノダッシュっていう技だゼ": "Pressing the X button while running makes your speed increase—it's called \"Kemono Dash,\" a technique used by humans.",
+  "おぼえたか?\n×ボタンを押しながらだぞ・・・・・・\nじゃぁオレはいくゼ\n\nあばよ!": "Did you remember?\nWhile pressing the X button...\nWell then, I'm off!\n\nGoodbye!",
+  "サンキュ": "Thank you.",
+  "バイバイ・・・": "Bye-bye...",
+  "・・・あらら・・・もう見つかっちゃった!\n\nかくれてたんだけど よくわかったな・・・": "...Oh dear... I've already been found!\n\nI was hiding, but you figured it out so well...",
+  "よし! いいことおしえてやるよ\n\nこの小屋のウラをまっすぐ奥に行くと ふるいけ、\nそして、この小屋の先を上に行くと\n100年老人っていう ジィさんが住んでるんだ": "Alright! I'll tell you something good.\n\nIf you go straight to the back of this hut, there's a gate,\nAnd if you go up past this hut,\nThere's an old man called the 100-year-old living there.",
+  "え?・・・オイラかい?・・・・・・\nそんなことより まず行ってみろよ、\nウソじゃないから・・・\n\nそのあとで また会おうや": "Huh?... Is that me?...\nRather than that, first go and see it,\nIt's not a lie...\n\nAfter that, let's meet again.",
+  "えっ?!もう行ったのか?・・・そうか・・・": "Huh?! Already gone?... I see...",
+  "100年老人には会ったのかい?\n\n会ったら また会おうや": "Have you met the 100-year-old?\n\nIf you do, let's meet again.",
+  "ふるいけ には行ったかい?\n\n行ったら また会おうや": "Did you go to Furuike?\n\nIf you did, let's meet again.",
+  "どうだい、ウソじゃなかっただろ\n\nじまんじゃないけどオイラいろいろ しってんだ": "How about it, it wasn't a lie, right?\n\nIt's not a joke, but I know a lot.",
+  "・・・あぁ、オイラかい?\n\nオイラ、ヤン かくれ里のヤンていうんだ・・・": "...Ah, me?\n\nI'm Yan, from the Hidden Village...",
+  "いつも かくれてるんだけど、\nだれも見つけられないんだ・・・\n\nまた見つけられたら そのときも\nいいことおしえてやるよ!\n・・・見つけることができたらな": "I always hide,\nbut no one can find me...\n\nIf I can be found again,\nI'll tell you something good then too!\n...If I can be found.",
+  "う〜ん・・・なんだか楽しくなってきたな・・・\nがんばって見つけてくれよ\n\nじゃあな!": "Hmm... I'm starting to feel like I'm having fun now...\nPlease do your best to find it!\n\nSee ya!",
+  "この先に行く気か?\n\nでも・・・おまえ泳げるんかィ?": "Are you going to go ahead?\n\nBut… can you swim?",
+  "いかん、いかん\n\n今はカメさんに たすけてもらったが\n次からそうはいかん\n\nそこのトビラの先は\n泳げないと行けんのだから・・・\n\n悪いことはいわん、\n今はやめた方がいい・・・\n\nいつか 泳げるようになってから行くんだナ\n\nおっ そうだ!\nおまえ ハラへってないかィ?\n\nこれ もってけよ!": "No, no.\n\nI got help from the turtle this time,\nbut I can't do that again next time.\n\nBeyond that door,\nyou can't go unless you can swim...\n\nDon't say bad things,\nit's better to stop now...\n\nI'll go when I can swim someday.\n\nOh, right!\nAre you hungry?\n\nTake this!",
+  "じゃあなボウズ 気ィつけて行けや": "See ya, loser. Be careful.",
+  "・・・うーん・・・こまったのォ・・・\n\nどーしたもんかのォ・・・\n\nんっ?": "...Hmm... I'm in trouble...\n\nWhat should I do...?\n\nHmm?",
+  "なんじゃ?・・・\nわしが100年老人じゃが・・・何か用かな?": "What is it?...\nI am a 100-year-old old man... Is there something you need?",
+  "すまんが、ちょっと\n考えごとをしておってな・・・・・・\n\n・・・おお そうじゃ!!\nちょっと おまえさん、たのまれてくれんか?\nたのみというのはのォ・・・\n\nおまえさんも ここへ来るとき 見たと思うが、\n赤いトリのコッカのやつめ、\n\nよそからタマゴを盗んできては、\nああやって自分のものにしておってな・・・\n\nあのままでは\n中のヒナが かわいそうなんじゃ・・・\n\nそこでおまえさん、このへんにあるタマゴの中にいる\nヒナを全部 集めてくれんか?": "Sorry, I'm just thinking about something...\n\n...Oh, that's right!\nHey, would you do me a favor?\nWhat I mean by \"favor\" is...\n\nYou probably saw it when you came here,\nthat red-breasted chick,\n\nstealing eggs from other places\nand then making them his own...\n\nIf things continue like this,\nthe chicks inside will be pitiful...\n\nSo, could you gather all the chicks\ninside the eggs around here?",
+  "しんぱいじゃからな・・・\nたのんだぞ": "I'm worried...\nI'm counting on you.",
+  "なんじゃ、もう 集まっとるのか?\n\nん〜〜〜っ・・・\nじゃが まだ残っとるようじゃのォ・・・\n\nすまんがもう一度 行ってくれんか?": "What? Are they already gathering?\n\nHmm~~~...\nBut it seems like there's still some left...\n\nSorry, could you go again?",
+  "集めてくれたのか?・・・\nん〜〜〜っ・・・\n\nじゃが まだ残っとるようじゃのォ・・・\nすまんがもう一度 行ってくれんか?": "Did you collect them?...\nHmmmmm...\n\nBut it seems there's still some left...\nSorry, but could you go again?",
+  "なんじゃ、もう 集まっとるのか・・・\nおおぉぉぉっ!しかも全部集まっとるではないか!\n・・・・・・で、中身はどこじゃ?": "What? Already gathered...?\nOhhhhh! And they're all gathered!\n...And where are the contents?",
+  "おー・まい・がっ!!\n\nハラの中に入れとったのか!?\n\nまぁ、しかし 消化はされとらんようじゃし、\nよしとするかのォ\n\nいやぁ、何はともあれ ごくろうじゃった\n・・・これで わしも安心じゃわい\n\nんっ?・・・・・・そうじゃそうじゃ\nわしに何か用が あったようじゃな\n\n・・・・・・ほう・・・・・・\nコマブタに おジィさんの形見のうでわを\nとられたのか・・・\n\nそれで コマブタたちのことを\nききたいんじゃな・・・\n\nんっ わかった・・・\nじつはのォ・・・・・・・・・・・・\n\n・・・と 言いたいところじゃが\n今回のバージョンは ここまでじゃ\nん〜〜っ ざんねんじゃのぅ・・・\n\nこのつづきは、ぜひ せいひんばんで\n楽しんでくだされ・・・\n\nイベント、アクション、もりだくさんじゃから\nきっと 気にいる はずじゃ・・・\nこのあとのムービーを 見ていくがよい・・・\n\n・・・・・・勇気ある少年よ\nぼうけんは 始まったばかりじゃ\nせいひんばんで まっておるぞ・・・": "Oh my god!!\n\nDid you put it in the stomach!?\n\nWell, but it doesn't seem to be digested,\nso I'll leave it at that.\n\nWell, anyway, it was exhausting.\n...With this, I'm relieved too.\n\nHmm?...That's right, that's right.\nIt seems like there was something you wanted from me.\n\n...Hmm...\nDid Komabuta take the memento arm of Ojiisan?\n\nAnd you want to ask about Komabuta and the others...\n\nHmm, I understand...\nActually...\n\n...I want to say that, but\nThis version ends here.\nHmm~ That's disappointing...\n\nPlease enjoy the rest on the product page...\n\nThere are plenty of events and actions, so\nI'm sure you'll like it...\nPlease watch the following movies...\n\n...Bravery boy\nThe adventure has just begun\nI'm waiting for you on the product page...",
+  "集めてくれたのか?\n\n・・・おぉっ!! 全部集まったようじゃな\n・・・・・・で、中身はどこじゃ?": "Did you gather them?\n\n...Oh! It looks like everything's been collected.\n...And where are the contents?",
+  "わしが話してやれる事はここまでじゃ・・・\n\nもしおまえさんがこの先の方を進むのなら、\nわしの仲間をさがしてみるといい、\nきっと力になってくれるはずじゃ・・・": "This is as far as I can go in telling you...\n\nIf you're going to move forward from here,\nyou should try looking for my companions,\nand I'm sure they'll be able to help you...",
+  "もちろん、わしの力になれることじゃったら\n何でも協力してやるからの・・・\n\n・・・そうじゃ、\n\nわしは物の めききには自信があるから、\n使い方のわからない物を手に入れたら\nわしのところに持ってくるといい・・・": "Of course, if there's anything I can do to help,\nI'll cooperate with you...\n\n...That's right,\n\nI have confidence in my abilities, so\nif you get something you don't know how to use,\nbring it to me...",
+  "おや?ないのぉ・・・\nおまえさんに100年のすずを\nやろうとおもったんじゃが・・・\n\nどこかで無くしてしまったようじゃな・・・\n\nもし、それらしい物をみつけたら\n持ってきておくれ・・・\n\nそのかわり、おまえさんには・・・\nホレ、これをやろう・・・100年のカギじゃ": "Oh? It's gone...\nI was going to give you a hundred years of tin...\n\nIt seems like you lost it somewhere...\n\nIf you find something like it,\nbring it to me...\n\nIn exchange, I'll give you this... Here, take this—it's a hundred-year key.",
+  "これで、ここにあるのとおなじ宝箱なら\nあけることができるようになったはずじゃ・・・\nん〜ラッキーじゃのぉ・・・": "With this, you should now be able to open the same treasure chests as the ones here...\nHmm, what luck!",
+  "それと・・・魔ブタをさがすには、\n封印ぶくろ と呼ばれるモノが必要じゃ・・・\n\nそれがないと、\nかくれ場所が目に見えんようになっとるんじゃ・・・": "And... to find the Demon Pig, you need something called a Seal Pouch...\n\nWithout it,\nthe hiding place becomes invisible...",
+  "封印ぶくろのことは、この先の森に住む\nドワーフの長老にきいてみるといい・・・\nもっとくわしくおしえてくれるはずじゃ。": "As for the sealed bag, you should ask the elder of the dwarves who live in the forest ahead...\nHe should be able to tell you more about it.",
+  "なんじゃ、わからない物があるなら見せてごらん・・・": "What? If there's something you don't understand, show it to me...",
+  "・・・おおっ、これはまさしく100年のすず!\nよく見つけたのぉ・・・\n\nこれをつかえばいつでも、\nここに戻って来ることができるはずじゃ・・・": "...Oh wow, this is exactly 100 years of Suzu!\nYou found it well...\n\nIf you use this, you should be able to come back here anytime...",
+  "ジィちゃんの形見": "Grandpa's keepsake.",
+  "100年老人との出会い": "Encounter with a 100-Year-Old Man",
+  "霧を吹き飛ばせ!": "Blow away the fog!",
+  "カエル水にかえる": "The frog returns to the water.",
+  "モトクロスコース": "Motocross Course",
+  "キミ、だあれ?": "Who are you?",
+  "大きな水たまり?": "A large puddle?",
+  "かくれ里のヤン": "Yan of the Hidden Village",
+  "オイラ泳げない…": "I can't swim...",
+  "コッカタマゴの中身": "The contents of a cockerel egg.",
+  "100年老人の話": "The Story of a 100-Year-Old Man",
+  "ドワーフの長老": "Dwarf Elder",
+  "サンタの好きなもの…": "Santa's favorite things...",
+  "小さなブタ…マゴブタ?": "A small pig... Magobuta?",
+  "かみつき草の花": "The flowers of the biting grass.",
+  "うまれたてのヒヨコ": "A newborn chick.",
+  "かえり道をわすれたカエル": "The frog who forgot its way home.",
+  "かえられなくなった\nドワーフのこども": "I can't be changed anymore.\nDwarf child.",
+  "ハラペコな おなかに\nおいしいバナナ": "A hungry stomach\ndelicious banana",
+  "何でもふき飛ばす\n強力なたつまき": "Blows everything away\nA powerful gale",
+  "100年老人の小屋へ\nいつでも もどれる": "To the 100-year-old man's cabin,\nI can always return.",
+  "ある宝箱に合うと\nひらく事ができる": "When it fits into a treasure chest,\nyou can open it.",
+  "一度行った場所へ\nいつでも 行ける": "To a place I once went,\nI can always go.",
+  "かみつき草にさいた\nめずらしい花": "I planted it in the grass.\nA rare flower.",
+  "気持ちをしずめてくれる": "It calms my feelings.",
+  "もれない バケツ": "A bucket that doesn't leak.",
+  "遠くの景色が\n見られる": "You can see the distant scenery.",
+  "とてもきれいな\nからの小ビン": "A very beautiful small bottle from.",
+  "涙のつまった小ビン": "A small bottle filled with tears.",
+  "あしをケガしたこいぬ": "A puppy with an injured leg.",
+  "ホカホカ できたての\nやきいも": "Hot and freshly baked yakiimo.",
+  "枯れ葉の羽を持つ\n伝説のチョウチョ": "A butterfly with wings of withered leaves,\na legendary butterfly.",
+  "ヤミを てらす\nタイマツ": "Illuminating darkness\nThai mat",
+  "水がたっぷり\n入ったバケツ": "A bucket filled with plenty of water.",
+  "なにも うつさないカガミ": "A mirror that doesn't reflect anything.",
+  "たかい所から\nユラユラおりられる": "From a high place,\nyou can sway down.",
+  "木でできた かるい\nブーメラン": "Lightweight boomerang made of wood.",
+  "イシでできた おもい\nブーメラン": "A boomerang made of stone.",
+  "コウテツでできた 強力な\nブーメラン": "A powerful boomerang made of kouetsu.",
+  "魔ブタを封じこめる\nたいせつな ふくろ": "Sealing the demon pig\nA precious pouch",
+  "せかいを 見わたす\nべんりな地図": "A convenient map that covers the world.",
+  "ふるびた つぼ": "An old pot.",
+  "すべてを けちらす\n強力な ぶき": "Scatter everything\nPowerful weapon",
+  "動きが はやくなる\nべんりな パンツ": "Movement becomes faster.\nConvenient pants.",
+  "動きが 最速になる\nすばらしい パンツ": "Movement becomes fastest\nWonderful pants",
+  "バイタリティが すこし\nかいふくする": "Vitality will slightly recover.",
+  "バイタリティ すべてかいふく\n\nおなかいっぱい!": "Vitality All Recovery",
+  "はじめから はいている\nパンツ": "I've been wearing them from the beginning.\nPants.",
+  "アイテム033": "Item 033",
+  "アイテム034": "Item 034",
+  "アイテム035": "Item 035",
+  "アイテム036": "Item 036",
+  "アイテム037": "Item 037",
+  "アイテム038": "Item 038",
+  "アイテム039": "Item 039",
+  "アイテム040": "Item 040",
+  "アイテム041": "Item 041",
+  "アイテム042": "Item 042",
+  "アイテム043": "Item 043",
+  "アイテム044": "Item 044",
+  "アイテム045": "Item 045",
+  "アイテム046": "Item 046",
+  "アイテム047": "Item 047",
+  "アイテム048": "Item 048",
+  "アイテム049": "Item 049",
+  "アイテム050": "Item 050",
+  "アイテム051": "Item 051",
+  "アイテム052": "Item 052",
+  "アイテム053": "Item 053",
+  "アイテム054": "Item 054",
+  "アイテム055": "Item 055",
+  "アイテム056": "Item 056",
+  "アイテム057": "Item 057",
+  "アイテム058": "Item 058",
+  "アイテム059": "Item 059",
+  "アイテム060": "Item 060",
+  "アイテム061": "Item 061",
+  "アイテム062": "Item 062",
+  "アイテム063": "Item 063",
+  "アイテム064": "Item 064",
+  "アイテム065": "Item 065",
+  "アイテム066": "Item 066",
+  "アイテム067": "Item 067",
+  "アイテム068": "Item 068",
+  "アイテム069": "Item 069",
+  "アイテム070": "Item 070",
+  "アイテム071": "Item 071",
+  "アイテム072": "Item 072",
+  "アイテム073": "Item 073",
+  "アイテム074": "Item 074",
+  "アイテム075": "Item 075",
+  "アイテム076": "Item 076",
+  "アイテム077": "Item 077",
+  "アイテム078": "Item 078",
+  "アイテム079": "Item 079",
+  "アイテム080": "Item 080",
+  "アイテム081": "Item 081",
+  "アイテム082": "Item 082",
+  "アイテム083": "Item 083",
+  "アイテム084": "Item 084",
+  "アイテム085": "Item 085",
+  "アイテム086": "Item 086",
+  "アイテム087": "Item 087",
+  "アイテム088": "Item 088",
+  "アイテム089": "Item 089",
+  "アイテム090": "Item 090",
+  "アイテム091": "Item 091",
+  "アイテム092": "Item 092",
+  "アイテム093": "Item 093",
+  "アイテム094": "Item 094",
+  "アイテム095": "Item 095",
+  "アイテム096": "Item 096",
+  "アイテム097": "Item 097",
+  "アイテム098": "Item 098",
+  "アイテム099": "Item 099",
+  "アイテム100": "Item 100",
+  "アイテム101": "Item 101",
+  "アイテム102": "Item 102",
+  "アイテム103": "Item 103",
+  "アイテム104": "Item 104",
+  "アイテム105": "Item 105",
+  "アイテム106": "Item 106",
+  "アイテム107": "Item 107",
+  "アイテム108": "Item 108",
+  "アイテム109": "Item 109",
+  "アイテム110": "Item 110",
+  "アイテム111": "Item 111",
+  "アイテム112": "Item 112",
+  "アイテム113": "Item 113",
+  "アイテム114": "Item 114",
+  "アイテム115": "Item 115",
+  "アイテム116": "Item 116",
+  "アイテム117": "Item 117",
+  "アイテム118": "Item 118",
+  "アイテム119": "Item 119",
+  "アイテム120": "Item 120",
+  "アイテム121": "Item 121",
+  "アイテム122": "Item 122",
+  "アイテム123": "Item 123",
+  "アイテム124": "Item 124",
+  "アイテム125": "Item 125",
+  "アイテム126": "Item 126",
+  "アイテム127": "Item 127",
+  "アイテム128": "Item 128",
+  "アイテム129": "Item 129",
+  "アイテム130": "Item 130",
+  "アイテム131": "Item 131",
+  "アイテム132": "Item 132",
+  "アイテム133": "Item 133",
+  "アイテム134": "Item 134",
+  "アイテム135": "Item 135",
+  "アイテム136": "Item 136",
+  "アイテム137": "Item 137",
+  "アイテム138": "Item 138",
+  "アイテム139": "Item 139",
+  "アイテム140": "Item 140",
+  "アイテム141": "Item 141",
+  "アイテム142": "Item 142",
+  "アイテム143": "Item 143",
+  "アイテム144": "Item 144",
+  "アイテム145": "Item 145",
+  "アイテム146": "Item 146",
+  "アイテム147": "Item 147",
+  "アイテム148": "Item 148",
+  "アイテム149": "Item 149",
+  "アイテム150": "Item 150",
+  "アイテム151": "Item 151",
+  "アイテム152": "Item 152",
+  "アイテム153": "Item 153",
+  "アイテム154": "Item 154",
+  "アイテム155": "Item 155",
+  "アイテム156": "Item 156",
+  "アイテム157": "Item 157",
+  "アイテム158": "Item 158",
+  "アイテム159": "Item 159",
+  "アイテム160": "Item 160",
+  "アイテム161": "Item 161",
+  "アイテム162": "Item 162",
+  "アイテム163": "Item 163",
+  "アイテム164": "Item 164",
+  "アイテム165": "Item 165",
+  "アイテム166": "Item 166",
+  "アイテム167": "Item 167",
+  "アイテム168": "Item 168",
+  "アイテム169": "Item 169",
+  "アイテム170": "Item 170",
+  "アイテム171": "Item 171",
+  "アイテム172": "Item 172",
+  "アイテム173": "Item 173",
+  "アイテム174": "Item 174",
+  "アイテム175": "Item 175",
+  "アイテム176": "Item 176",
+  "アイテム177": "Item 177",
+  "アイテム178": "Item 178",
+  "アイテム179": "Item 179",
+  "アイテム180": "Item 180",
+  "アイテム181": "Item 181",
+  "アイテム182": "Item 182",
+  "アイテム183": "Item 183",
+  "アイテム184": "Item 184",
+  "アイテム185": "Item 185",
+  "アイテム186": "Item 186",
+  "アイテム187": "Item 187",
+  "アイテム188": "Item 188",
+  "アイテム189": "Item 189",
+  "アイテム190": "Item 190",
+  "アイテム191": "Item 191",
+  "アイテム192": "Item 192",
+  "アイテム193": "Item 193",
+  "アイテム194": "Item 194",
+  "アイテム195": "Item 195",
+  "アイテム196": "Item 196",
+  "アイテム197": "Item 197",
+  "アイテム198": "Item 198",
+  "アイテム199": "Item 199",
+  "アイテム200": "Item 200",
+  "コマブタにとられた うでわを\nもとめて たびだつ": "I'm going to retrieve the arm taken by the pig.",
+  "ものしりな100年老人に\n会いに行く": "I'm going to meet a knowledgeable 100-year-old.",
+  "行く手をはばむ\nきりを はらす": "blocking the way,\ncutting through.",
+  "カエルを つかまえた": "I caught a frog.",
+  "およげないと ダメらしい": "It seems like I can't do it unless I run.",
+  "まどから のぞいている人と\n話しをした": "I talked to the person peeking through the window.",
+  "おおきな みずたまり\nの話を きいた": "I heard a story about a big puddle.",
+  "かくれていた人の\nなまえを しった": "I learned the name of the person who was hiding.",
+  "泳げない自分に気づいた": "I realized I couldn't swim.",
+  "たまごの なかみを\nあつめる": "Gather the contents of the egg.",
+  "魔ブタが出たときの\n話を きいた": "I heard the story when the demon pig appeared.",
+  "イベント012": "Event 012",
+  "ドワーフの長老に会う": "Meet the Dwarf Elder",
+  "ドワーフのことばを おぼえる": "Learn the Dwarven language.",
+  "森でまいごになった\nこどもを さがす": "Lost in the forest\nSearching for a child",
+  "イベント016": "Event 016",
+  "イベント017": "Event 017",
+  "森でいなくなった ドワーフたちを さがす": "Search for the dwarves who disappeared in the forest.",
+  "イベント020": "Event 020",
+  "ドワーフたちのケンカを やめさせる": "Stop the dwarves from fighting.",
+  "地下のオオドロボウと話しをする": "Talk to the Oodorobou in the basement.",
+  "イベント023": "Event 023",
+  "ケガをした小鳥を\nたすける": "Help the injured little bird.",
+  "イベント025": "Event 025",
+  "イベント026": "Event 026",
+  "イベント027": "Event 027",
+  "イベント028": "Event 028",
+  "イベント029": "Event 029",
+  "イベント030": "Event 030",
+  "イベント031": "Event 031",
+  "イベント032": "Event 032",
+  "イベント033": "Event 033",
+  "イベント034": "Event 034",
+  "イベント035": "Event 035",
+  "イベント036": "Event 036",
+  "イベント037": "Event 037",
+  "イベント038": "Event 038",
+  "イベント039": "Event 039",
+  "イベント040": "Event 040",
+  "イベント041": "Event 041",
+  "イベント042": "Event 042",
+  "イベント043": "Event 043",
+  "イベント044": "Event 044",
+  "イベント045": "Event 045",
+  "イベント046": "Event 046",
+  "イベント047": "Event 047",
+  "イベント048": "Event 048",
+  "イベント049": "Event 049",
+  "イベント050": "Event 050",
+  "イベント051": "Event 051",
+  "イベント052": "Event 052",
+  "イベント053": "Event 053",
+  "イベント054": "Event 054",
+  "イベント055": "Event 055",
+  "イベント056": "Event 056",
+  "イベント057": "Event 057",
+  "イベント058": "Event 058",
+  "イベント059": "Event 059",
+  "イベント060": "Event 060",
+  "イベント061": "Event 061",
+  "イベント062": "Event 062",
+  "イベント063": "Event 063",
+  "イベント064": "Event 064",
+  "イベント065": "Event 065",
+  "イベント066": "Event 066",
+  "イベント067": "Event 067",
+  "イベント068": "Event 068",
+  "イベント069": "Event 069",
+  "イベント070": "Event 070",
+  "イベント071": "Event 071",
+  "イベント072": "Event 072",
+  "イベント073": "Event 073",
+  "イベント074": "Event 074",
+  "イベント075": "Event 075",
+  "イベント076": "Event 076",
+  "イベント077": "Event 077",
+  "イベント078": "Event 078",
+  "イベント079": "Event 079",
+  "イベント080": "Event 080",
+  "イベント081": "Event 081",
+  "イベント082": "Event 082",
+  "イベント083": "Event 083",
+  "イベント084": "Event 084",
+  "イベント085": "Event 085",
+  "イベント086": "Event 086",
+  "イベント087": "Event 087",
+  "イベント088": "Event 088",
+  "イベント089": "Event 089",
+  "イベント090": "Event 090",
+  "イベント091": "Event 091",
+  "イベント092": "Event 092",
+  "イベント093": "Event 093",
+  "イベント094": "Event 094",
+  "イベント095": "Event 095",
+  "イベント096": "Event 096",
+  "イベント097": "Event 097",
+  "イベント098": "Event 098",
+  "イベント099": "Event 099",
+  "イベント100": "Event 100",
+  "イベント101": "Event 101",
+  "イベント102": "Event 102",
+  "イベント103": "Event 103",
+  "イベント104": "Event 104",
+  "イベント105": "Event 105",
+  "イベント106": "Event 106",
+  "イベント107": "Event 107",
+  "イベント108": "Event 108",
+  "イベント109": "Event 109",
+  "イベント110": "Event 110",
+  "イベント111": "Event 111",
+  "イベント112": "Event 112",
+  "イベント113": "Event 113",
+  "イベント114": "Event 114",
+  "イベント115": "Event 115",
+  "イベント116": "Event 116",
+  "イベント117": "Event 117",
+  "イベント118": "Event 118",
+  "イベント119": "Event 119",
+  "イベント120": "Event 120",
+  "イベント121": "Event 121",
+  "イベント122": "Event 122",
+  "イベント123": "Event 123",
+  "イベント124": "Event 124",
+  "イベント125": "Event 125",
+  "イベント126": "Event 126",
+  "イベント127": "Event 127",
+  "イベント128": "Event 128",
+  "イベント129": "Event 129",
+  "イベント130": "Event 130",
+  "イベント131": "Event 131",
+  "イベント132": "Event 132",
+  "イベント133": "Event 133",
+  "イベント134": "Event 134",
+  "イベント135": "Event 135",
+  "イベント136": "Event 136",
+  "イベント137": "Event 137",
+  "イベント138": "Event 138",
+  "イベント139": "Event 139",
+  "イベント140": "Event 140",
+  "イベント141": "Event 141",
+  "イベント142": "Event 142",
+  "イベント143": "Event 143",
+  "イベント144": "Event 144",
+  "イベント145": "Event 145",
+  "イベント146": "Event 146",
+  "イベント147": "Event 147",
+  "イベント148": "Event 148",
+  "イベント149": "Event 149",
+  "イベント150": "Event 150",
+  "イベント151": "Event 151",
+  "イベント152": "Event 152",
+  "イベント153": "Event 153",
+  "イベント154": "Event 154",
+  "イベント155": "Event 155",
+  "イベント156": "Event 156",
+  "イベント157": "Event 157",
+  "イベント158": "Event 158",
+  "イベント159": "Event 159",
+  "イベント160": "Event 160",
+  "イベント161": "Event 161",
+  "イベント162": "Event 162",
+  "イベント163": "Event 163",
+  "イベント164": "Event 164",
+  "イベント165": "Event 165",
+  "イベント166": "Event 166",
+  "サルのサンタは おなかが すいているようだ\nなにか たべものを さがしてこようか?": "The monkey Santa seems hungry. Shall I go look for something to eat?",
+  "イベント168": "Event 168",
+  "イベント169": "Event 169",
+  "イベント170": "Event 170",
+  "イベント171": "Event 171",
+  "イベント172": "Event 172",
+  "イベント173": "Event 173",
+  "イベント174": "Event 174",
+  "イベント175": "Event 175",
+  "イベント176": "Event 176",
+  "イベント177": "Event 177",
+  "イベント178": "Event 178",
+  "イベント179": "Event 179",
+  "イベント180": "Event 180",
+  "イベント181": "Event 181",
+  "イベント182": "Event 182",
+  "イベント183": "Event 183",
+  "イベント184": "Event 184",
+  "イベント185": "Event 185",
+  "イベント186": "Event 186",
+  "イベント187": "Event 187",
+  "イベント188": "Event 188",
+  "イベント189": "Event 189",
+  "イベント190": "Event 190",
+  "イベント191": "Event 191",
+  "イベント192": "Event 192",
+  "イベント193": "Event 193",
+  "イベント194": "Event 194",
+  "イベント195": "Event 195",
+  "イベント196": "Event 196",
+  "イベント197": "Event 197",
+  "イベント198": "Event 198",
+  "イベント199": "Event 199",
+  "イベント200": "Event 200"
+ },
+ "banks": [
+  {
+   "bank": "WFM D0FF",
+   "file": "TOMBA/AREA00/A006.GAM",
+   "offset": "0x14A58",
+   "messages": [
+    {
+     "index": 0,
+     "original": "カギがかかっている",
+     "translation": "The key is locked."
+    },
+    {
+     "index": 1,
+     "original": "ヒヨコをつかった",
+     "translation": "I used a chick."
+    },
+    {
+     "index": 2,
+     "original": "カエルをつかった",
+     "translation": "Used a frog."
+    },
+    {
+     "index": 3,
+     "original": "バナナをつかった",
+     "translation": "I used a banana."
+    },
+    {
+     "index": 4,
+     "original": "あばれ竜巻をつかった",
+     "translation": "I used a rampaging tornado."
+    },
+    {
+     "index": 5,
+     "original": "100年のカギをつかった",
+     "translation": "I used the key of 100 years."
+    },
+    {
+     "index": 6,
+     "original": "100年の鍵をつかった",
+     "translation": "I used the key from 100 years ago."
+    },
+    {
+     "index": 7,
+     "original": "めぐみの羽根をつかった",
+     "translation": "I used Megumi's feather."
+    },
+    {
+     "index": 8,
+     "original": "かみつき草の花をつかった",
+     "translation": "I used the flowers of the biting grass."
+    },
+    {
+     "index": 9,
+     "original": "マゴブタをつかった",
+     "translation": "I used a pig."
+    },
+    {
+     "index": 10,
+     "original": "ケモノダッシュ",
+     "translation": "Kemono Dash"
+    },
+    {
+     "index": 11,
+     "original": "カエルがにげた",
+     "translation": "The frog ran away."
+    },
+    {
+     "index": 12,
+     "original": "1UP",
+     "translation": null
+    },
+    {
+     "index": 13,
+     "original": "ライフゲージかくだい",
+     "translation": "Life Gauge Kakudai"
+    },
+    {
+     "index": 14,
+     "original": "奥のカベには ↑と×ボタンで とびつくことができ、\nそのまま上に上がると 奥のラインを歩けるよ\n手前にもどりたいときはその逆だよ",
+     "translation": "You can jump onto the wall at the back using the ↑ and × buttons,\nand if you go up from there, you can walk along the back line.\nTo return to the front, do the opposite."
+    },
+    {
+     "index": 15,
+     "original": "木の枝にぶら下がったときは→で回転\nどんどん速くなる。ジャンプしたい\n方向と×ボタンで飛び出す!",
+     "translation": "When hanging from a tree branch → rotate\nIt gets faster and faster. I want to jump.\nUse direction and the × button to jump out!"
+    },
+    {
+     "index": 16,
+     "original": "○ボタンをおしつづけると、\nより強力な攻撃ができる",
+     "translation": "If you continue pressing the ○ button,\nyou can perform a more powerful attack."
+    },
+    {
+     "index": 17,
+     "original": "人と話すときは ○ボタン",
+     "translation": "When talking to people, press the ○ button."
+    },
+    {
+     "index": 18,
+     "original": "ここがセーブポイントです。\n↑で奥を向いているときに\n○を押せばセーブができます",
+     "translation": "This is the save point.\nWhen facing backward with ↑,\npressing ○ will save."
+    },
+    {
+     "index": 19,
+     "original": "ポスト あけるな!",
+     "translation": "Don't open the mailbox!"
+    },
+    {
+     "index": 20,
+     "original": "始まりの村",
+     "translation": "The Beginning Village"
+    },
+    {
+     "index": 21,
+     "original": "始まりの森",
+     "translation": "The Beginning Forest"
+    },
+    {
+     "index": 22,
+     "original": "100年老人の小屋",
+     "translation": "The 100-Year-Old Man's Cabin"
+    },
+    {
+     "index": 23,
+     "original": "ふるいけ",
+     "translation": "sieve"
+    },
+    {
+     "index": 24,
+     "original": "この土地は はじめてか?\n\nオレは前に ここに住んでたんだけど、\nなんか ようすがかわっちまってよォ\n\nなんかわからんが、しりたいことがあるなら\nこの先の ずーっと上の小屋に住んでる\n\n100年老人というジィさんに\n会ってきいてみろよ\n\nでも、このあたりもあぶなくなったから\n気ィつけていけよ\n\nあっ そうだ! たてふだは見てけよ\n見るときは ↑と○ボタンだぜ\n\n・・・じゃあな!",
+     "translation": "Is this land new to you?\n\nI used to live here before,\nbut things have changed a lot since then.\n\nI don't know what it is, but if you want to know something,\nthere's a cabin way up ahead.\n\nMeet the 100-year-old old man and ask him.\n\nBut things around here have gotten dangerous,\nso be careful.\n\nOh, right! Look at the foot pedals.\nWhen looking, use the ↑ and ○ buttons.\n\n...See ya!"
+    },
+    {
+     "index": 25,
+     "original": "よぉ、にィちゃんも\nこの先に行きたいのかい?\n\nそりゃぁムリだ・・・\nこの先はキリで まっ白だぜ\n\nキリがなくなりゃぁ\n行けるんだけどな・・・",
+     "translation": "Hey, Niichan too,\ndo you want to go further?\n\nThat's impossible...\nBeyond this point, it's completely white.\n\nIf the Kiri runs out,\nyou can go, though..."
+    },
+    {
+     "index": 26,
+     "original": "まぁーきくところによると あばれ竜巻 があれば\n何とかなるみたいだけど・・・\nじっさい どこにあるんだよ、そんなもん・・・\n\nオレは あきらめた!\nにぃちゃんも考えた方がいいぜ・・・\n\nあばよ!",
+     "translation": "Well, according to what I heard, if there's a violent tornado,\nit seems like we can manage somehow...\nBut seriously, where on earth is something like that...?\n\nI've given up!\nYou should think about it too, big brother...\n\nGoodbye!"
+    },
+    {
+     "index": 27,
+     "original": "ちょっと まてよ",
+     "translation": "Wait a minute."
+    },
+    {
+     "index": 28,
+     "original": "ウワッ!やめろョ",
+     "translation": "Whoa! Stop it!"
+    },
+    {
+     "index": 29,
+     "original": "オレは今、ハラがへってて イライラしてんだ\n何か たべるもん ないか?・・・\nなけりゃ またあとにしてくれョ",
+     "translation": "I'm hungry right now and I'm getting irritated.\nIs there anything I can eat?...\nIf not, please save it for later."
+    },
+    {
+     "index": 30,
+     "original": "オ〜〜〜ッ!\nなんだ それくれるのか?\n\nサンキュー! たすかったゼ\nもう ハラがへって、うごけなかったんだ\n\nオレ サンタ ってんだ、よろしくな",
+     "translation": "Ohhhh!\nWhat? You're giving me that?\n\nThanks! That saved me.\nI was so hungry I couldn't move.\n\nI'm Santa—nice to meet you."
+    },
+    {
+     "index": 31,
+     "original": "そうだ!!\nとっておきの技をおしえてやるョ\n\nいいか?",
+     "translation": "That's right!!\nI'll teach you my secret technique!\n\nIs that okay?"
+    },
+    {
+     "index": 32,
+     "original": "×ボタンを押しながら走るとスピードが速くなる、\n人よんで ケモノダッシュっていう技だゼ",
+     "translation": "Pressing the X button while running makes your speed increase—it's called \"Kemono Dash,\" a technique used by humans."
+    },
+    {
+     "index": 33,
+     "original": "おぼえたか?\n×ボタンを押しながらだぞ・・・・・・\nじゃぁオレはいくゼ\n\nあばよ!",
+     "translation": "Did you remember?\nWhile pressing the X button...\nWell then, I'm off!\n\nGoodbye!"
+    },
+    {
+     "index": 34,
+     "original": "サンキュ",
+     "translation": "Thank you."
+    },
+    {
+     "index": 35,
+     "original": "バイバイ・・・",
+     "translation": "Bye-bye..."
+    },
+    {
+     "index": 36,
+     "original": "・・・あらら・・・もう見つかっちゃった!\n\nかくれてたんだけど よくわかったな・・・",
+     "translation": "...Oh dear... I've already been found!\n\nI was hiding, but you figured it out so well..."
+    },
+    {
+     "index": 37,
+     "original": "よし! いいことおしえてやるよ\n\nこの小屋のウラをまっすぐ奥に行くと ふるいけ、\nそして、この小屋の先を上に行くと\n100年老人っていう ジィさんが住んでるんだ",
+     "translation": "Alright! I'll tell you something good.\n\nIf you go straight to the back of this hut, there's a gate,\nAnd if you go up past this hut,\nThere's an old man called the 100-year-old living there."
+    },
+    {
+     "index": 38,
+     "original": "え?・・・オイラかい?・・・・・・\nそんなことより まず行ってみろよ、\nウソじゃないから・・・\n\nそのあとで また会おうや",
+     "translation": "Huh?... Is that me?...\nRather than that, first go and see it,\nIt's not a lie...\n\nAfter that, let's meet again."
+    },
+    {
+     "index": 39,
+     "original": "えっ?!もう行ったのか?・・・そうか・・・",
+     "translation": "Huh?! Already gone?... I see..."
+    },
+    {
+     "index": 40,
+     "original": "100年老人には会ったのかい?\n\n会ったら また会おうや",
+     "translation": "Have you met the 100-year-old?\n\nIf you do, let's meet again."
+    },
+    {
+     "index": 41,
+     "original": "ふるいけ には行ったかい?\n\n行ったら また会おうや",
+     "translation": "Did you go to Furuike?\n\nIf you did, let's meet again."
+    },
+    {
+     "index": 42,
+     "original": "どうだい、ウソじゃなかっただろ\n\nじまんじゃないけどオイラいろいろ しってんだ",
+     "translation": "How about it, it wasn't a lie, right?\n\nIt's not a joke, but I know a lot."
+    },
+    {
+     "index": 43,
+     "original": "・・・あぁ、オイラかい?\n\nオイラ、ヤン かくれ里のヤンていうんだ・・・",
+     "translation": "...Ah, me?\n\nI'm Yan, from the Hidden Village..."
+    },
+    {
+     "index": 44,
+     "original": "いつも かくれてるんだけど、\nだれも見つけられないんだ・・・\n\nまた見つけられたら そのときも\nいいことおしえてやるよ!\n・・・見つけることができたらな",
+     "translation": "I always hide,\nbut no one can find me...\n\nIf I can be found again,\nI'll tell you something good then too!\n...If I can be found."
+    },
+    {
+     "index": 45,
+     "original": "う〜ん・・・なんだか楽しくなってきたな・・・\nがんばって見つけてくれよ\n\nじゃあな!",
+     "translation": "Hmm... I'm starting to feel like I'm having fun now...\nPlease do your best to find it!\n\nSee ya!"
+    },
+    {
+     "index": 46,
+     "original": "この先に行く気か?\n\nでも・・・おまえ泳げるんかィ?",
+     "translation": "Are you going to go ahead?\n\nBut… can you swim?"
+    },
+    {
+     "index": 47,
+     "original": "いかん、いかん\n\n今はカメさんに たすけてもらったが\n次からそうはいかん\n\nそこのトビラの先は\n泳げないと行けんのだから・・・\n\n悪いことはいわん、\n今はやめた方がいい・・・\n\nいつか 泳げるようになってから行くんだナ\n\nおっ そうだ!\nおまえ ハラへってないかィ?\n\nこれ もってけよ!",
+     "translation": "No, no.\n\nI got help from the turtle this time,\nbut I can't do that again next time.\n\nBeyond that door,\nyou can't go unless you can swim...\n\nDon't say bad things,\nit's better to stop now...\n\nI'll go when I can swim someday.\n\nOh, right!\nAre you hungry?\n\nTake this!"
+    },
+    {
+     "index": 48,
+     "original": "じゃあなボウズ 気ィつけて行けや",
+     "translation": "See ya, loser. Be careful."
+    },
+    {
+     "index": 49,
+     "original": "・・・うーん・・・こまったのォ・・・\n\nどーしたもんかのォ・・・\n\nんっ?",
+     "translation": "...Hmm... I'm in trouble...\n\nWhat should I do...?\n\nHmm?"
+    },
+    {
+     "index": 50,
+     "original": "なんじゃ?・・・\nわしが100年老人じゃが・・・何か用かな?",
+     "translation": "What is it?...\nI am a 100-year-old old man... Is there something you need?"
+    },
+    {
+     "index": 51,
+     "original": "すまんが、ちょっと\n考えごとをしておってな・・・・・・\n\n・・・おお そうじゃ!!\nちょっと おまえさん、たのまれてくれんか?\nたのみというのはのォ・・・\n\nおまえさんも ここへ来るとき 見たと思うが、\n赤いトリのコッカのやつめ、\n\nよそからタマゴを盗んできては、\nああやって自分のものにしておってな・・・\n\nあのままでは\n中のヒナが かわいそうなんじゃ・・・\n\nそこでおまえさん、このへんにあるタマゴの中にいる\nヒナを全部 集めてくれんか?",
+     "translation": "Sorry, I'm just thinking about something...\n\n...Oh, that's right!\nHey, would you do me a favor?\nWhat I mean by \"favor\" is...\n\nYou probably saw it when you came here,\nthat red-breasted chick,\n\nstealing eggs from other places\nand then making them his own...\n\nIf things continue like this,\nthe chicks inside will be pitiful...\n\nSo, could you gather all the chicks\ninside the eggs around here?"
+    },
+    {
+     "index": 52,
+     "original": "しんぱいじゃからな・・・\nたのんだぞ",
+     "translation": "I'm worried...\nI'm counting on you."
+    },
+    {
+     "index": 53,
+     "original": "なんじゃ、もう 集まっとるのか?\n\nん〜〜〜っ・・・\nじゃが まだ残っとるようじゃのォ・・・\n\nすまんがもう一度 行ってくれんか?",
+     "translation": "What? Are they already gathering?\n\nHmm~~~...\nBut it seems like there's still some left...\n\nSorry, could you go again?"
+    },
+    {
+     "index": 54,
+     "original": "集めてくれたのか?・・・\nん〜〜〜っ・・・\n\nじゃが まだ残っとるようじゃのォ・・・\nすまんがもう一度 行ってくれんか?",
+     "translation": "Did you collect them?...\nHmmmmm...\n\nBut it seems there's still some left...\nSorry, but could you go again?"
+    },
+    {
+     "index": 55,
+     "original": "なんじゃ、もう 集まっとるのか・・・\nおおぉぉぉっ!しかも全部集まっとるではないか!\n・・・・・・で、中身はどこじゃ?",
+     "translation": "What? Already gathered...?\nOhhhhh! And they're all gathered!\n...And where are the contents?"
+    },
+    {
+     "index": 56,
+     "original": "おー・まい・がっ!!\n\nハラの中に入れとったのか!?\n\nまぁ、しかし 消化はされとらんようじゃし、\nよしとするかのォ\n\nいやぁ、何はともあれ ごくろうじゃった\n・・・これで わしも安心じゃわい\n\nんっ?・・・・・・そうじゃそうじゃ\nわしに何か用が あったようじゃな\n\n・・・・・・ほう・・・・・・\nコマブタに おジィさんの形見のうでわを\nとられたのか・・・\n\nそれで コマブタたちのことを\nききたいんじゃな・・・\n\nんっ わかった・・・\nじつはのォ・・・・・・・・・・・・\n\n・・・と 言いたいところじゃが\n今回のバージョンは ここまでじゃ\nん〜〜っ ざんねんじゃのぅ・・・\n\nこのつづきは、ぜひ せいひんばんで\n楽しんでくだされ・・・\n\nイベント、アクション、もりだくさんじゃから\nきっと 気にいる はずじゃ・・・\nこのあとのムービーを 見ていくがよい・・・\n\n・・・・・・勇気ある少年よ\nぼうけんは 始まったばかりじゃ\nせいひんばんで まっておるぞ・・・",
+     "translation": "Oh my god!!\n\nDid you put it in the stomach!?\n\nWell, but it doesn't seem to be digested,\nso I'll leave it at that.\n\nWell, anyway, it was exhausting.\n...With this, I'm relieved too.\n\nHmm?...That's right, that's right.\nIt seems like there was something you wanted from me.\n\n...Hmm...\nDid Komabuta take the memento arm of Ojiisan?\n\nAnd you want to ask about Komabuta and the others...\n\nHmm, I understand...\nActually...\n\n...I want to say that, but\nThis version ends here.\nHmm~ That's disappointing...\n\nPlease enjoy the rest on the product page...\n\nThere are plenty of events and actions, so\nI'm sure you'll like it...\nPlease watch the following movies...\n\n...Bravery boy\nThe adventure has just begun\nI'm waiting for you on the product page..."
+    },
+    {
+     "index": 57,
+     "original": "集めてくれたのか?\n\n・・・おぉっ!! 全部集まったようじゃな\n・・・・・・で、中身はどこじゃ?",
+     "translation": "Did you gather them?\n\n...Oh! It looks like everything's been collected.\n...And where are the contents?"
+    },
+    {
+     "index": 58,
+     "original": "わしが話してやれる事はここまでじゃ・・・\n\nもしおまえさんがこの先の方を進むのなら、\nわしの仲間をさがしてみるといい、\nきっと力になってくれるはずじゃ・・・",
+     "translation": "This is as far as I can go in telling you...\n\nIf you're going to move forward from here,\nyou should try looking for my companions,\nand I'm sure they'll be able to help you..."
+    },
+    {
+     "index": 59,
+     "original": "もちろん、わしの力になれることじゃったら\n何でも協力してやるからの・・・\n\n・・・そうじゃ、\n\nわしは物の めききには自信があるから、\n使い方のわからない物を手に入れたら\nわしのところに持ってくるといい・・・",
+     "translation": "Of course, if there's anything I can do to help,\nI'll cooperate with you...\n\n...That's right,\n\nI have confidence in my abilities, so\nif you get something you don't know how to use,\nbring it to me..."
+    },
+    {
+     "index": 60,
+     "original": "おや?ないのぉ・・・\nおまえさんに100年のすずを\nやろうとおもったんじゃが・・・\n\nどこかで無くしてしまったようじゃな・・・\n\nもし、それらしい物をみつけたら\n持ってきておくれ・・・\n\nそのかわり、おまえさんには・・・\nホレ、これをやろう・・・100年のカギじゃ",
+     "translation": "Oh? It's gone...\nI was going to give you a hundred years of tin...\n\nIt seems like you lost it somewhere...\n\nIf you find something like it,\nbring it to me...\n\nIn exchange, I'll give you this... Here, take this—it's a hundred-year key."
+    },
+    {
+     "index": 61,
+     "original": "これで、ここにあるのとおなじ宝箱なら\nあけることができるようになったはずじゃ・・・\nん〜ラッキーじゃのぉ・・・",
+     "translation": "With this, you should now be able to open the same treasure chests as the ones here...\nHmm, what luck!"
+    },
+    {
+     "index": 62,
+     "original": "それと・・・魔ブタをさがすには、\n封印ぶくろ と呼ばれるモノが必要じゃ・・・\n\nそれがないと、\nかくれ場所が目に見えんようになっとるんじゃ・・・",
+     "translation": "And... to find the Demon Pig, you need something called a Seal Pouch...\n\nWithout it,\nthe hiding place becomes invisible..."
+    },
+    {
+     "index": 63,
+     "original": "封印ぶくろのことは、この先の森に住む\nドワーフの長老にきいてみるといい・・・\nもっとくわしくおしえてくれるはずじゃ。",
+     "translation": "As for the sealed bag, you should ask the elder of the dwarves who live in the forest ahead...\nHe should be able to tell you more about it."
+    },
+    {
+     "index": 64,
+     "original": "なんじゃ、わからない物があるなら見せてごらん・・・",
+     "translation": "What? If there's something you don't understand, show it to me..."
+    },
+    {
+     "index": 65,
+     "original": "・・・おおっ、これはまさしく100年のすず!\nよく見つけたのぉ・・・\n\nこれをつかえばいつでも、\nここに戻って来ることができるはずじゃ・・・",
+     "translation": "...Oh wow, this is exactly 100 years of Suzu!\nYou found it well...\n\nIf you use this, you should be able to come back here anytime..."
+    }
+   ]
+  },
+  {
+   "bank": "WFM D1FF",
+   "file": "TOMBA/AREA00/A006.GAM",
+   "offset": "0x1AB64",
+   "messages": [
+    {
+     "index": 0,
+     "original": "CLEAR! ",
+     "translation": null
+    },
+    {
+     "index": 1,
+     "original": "ジィちゃんの形見",
+     "translation": "Grandpa's keepsake."
+    },
+    {
+     "index": 2,
+     "original": "100年老人との出会い",
+     "translation": "Encounter with a 100-Year-Old Man"
+    },
+    {
+     "index": 3,
+     "original": "霧を吹き飛ばせ!",
+     "translation": "Blow away the fog!"
+    },
+    {
+     "index": 4,
+     "original": "カエル水にかえる",
+     "translation": "The frog returns to the water."
+    },
+    {
+     "index": 5,
+     "original": "モトクロスコース",
+     "translation": "Motocross Course"
+    },
+    {
+     "index": 6,
+     "original": "キミ、だあれ?",
+     "translation": "Who are you?"
+    },
+    {
+     "index": 7,
+     "original": "大きな水たまり?",
+     "translation": "A large puddle?"
+    },
+    {
+     "index": 8,
+     "original": "かくれ里のヤン",
+     "translation": "Yan of the Hidden Village"
+    },
+    {
+     "index": 9,
+     "original": "オイラ泳げない…",
+     "translation": "I can't swim..."
+    },
+    {
+     "index": 10,
+     "original": "コッカタマゴの中身",
+     "translation": "The contents of a cockerel egg."
+    },
+    {
+     "index": 11,
+     "original": "100年老人の話",
+     "translation": "The Story of a 100-Year-Old Man"
+    },
+    {
+     "index": 12,
+     "original": "???",
+     "translation": null
+    },
+    {
+     "index": 13,
+     "original": "ドワーフの長老",
+     "translation": "Dwarf Elder"
+    },
+    {
+     "index": 14,
+     "original": "サンタの好きなもの…",
+     "translation": "Santa's favorite things..."
+    },
+    {
+     "index": 15,
+     "original": "小さなブタ…マゴブタ?",
+     "translation": "A small pig... Magobuta?"
+    },
+    {
+     "index": 16,
+     "original": "かみつき草の花",
+     "translation": "The flowers of the biting grass."
+    }
+   ]
+  },
+  {
+   "bank": "WFM D2FF",
+   "file": "TOMBA/SYSTEM/A00012.000",
+   "offset": "0x0",
+   "messages": [
+    {
+     "index": 0,
+     "original": "うまれたてのヒヨコ",
+     "translation": "A newborn chick."
+    },
+    {
+     "index": 1,
+     "original": "かえり道をわすれたカエル",
+     "translation": "The frog who forgot its way home."
+    },
+    {
+     "index": 2,
+     "original": "かえられなくなった\nドワーフのこども",
+     "translation": "I can't be changed anymore.\nDwarf child."
+    },
+    {
+     "index": 3,
+     "original": "ハラペコな おなかに\nおいしいバナナ",
+     "translation": "A hungry stomach\ndelicious banana"
+    },
+    {
+     "index": 4,
+     "original": "何でもふき飛ばす\n強力なたつまき",
+     "translation": "Blows everything away\nA powerful gale"
+    },
+    {
+     "index": 5,
+     "original": "100年老人の小屋へ\nいつでも もどれる",
+     "translation": "To the 100-year-old man's cabin,\nI can always return."
+    },
+    {
+     "index": 6,
+     "original": "ある宝箱に合うと\nひらく事ができる",
+     "translation": "When it fits into a treasure chest,\nyou can open it."
+    },
+    {
+     "index": 7,
+     "original": "一度行った場所へ\nいつでも 行ける",
+     "translation": "To a place I once went,\nI can always go."
+    },
+    {
+     "index": 8,
+     "original": "かみつき草にさいた\nめずらしい花",
+     "translation": "I planted it in the grass.\nA rare flower."
+    },
+    {
+     "index": 9,
+     "original": "気持ちをしずめてくれる",
+     "translation": "It calms my feelings."
+    },
+    {
+     "index": 10,
+     "original": "もれない バケツ",
+     "translation": "A bucket that doesn't leak."
+    },
+    {
+     "index": 11,
+     "original": "遠くの景色が\n見られる",
+     "translation": "You can see the distant scenery."
+    },
+    {
+     "index": 12,
+     "original": "とてもきれいな\nからの小ビン",
+     "translation": "A very beautiful small bottle from."
+    },
+    {
+     "index": 13,
+     "original": "涙のつまった小ビン",
+     "translation": "A small bottle filled with tears."
+    },
+    {
+     "index": 14,
+     "original": "あしをケガしたこいぬ",
+     "translation": "A puppy with an injured leg."
+    },
+    {
+     "index": 15,
+     "original": "ホカホカ できたての\nやきいも",
+     "translation": "Hot and freshly baked yakiimo."
+    },
+    {
+     "index": 16,
+     "original": "枯れ葉の羽を持つ\n伝説のチョウチョ",
+     "translation": "A butterfly with wings of withered leaves,\na legendary butterfly."
+    },
+    {
+     "index": 17,
+     "original": "ヤミを てらす\nタイマツ",
+     "translation": "Illuminating darkness\nThai mat"
+    },
+    {
+     "index": 18,
+     "original": "水がたっぷり\n入ったバケツ",
+     "translation": "A bucket filled with plenty of water."
+    },
+    {
+     "index": 19,
+     "original": "なにも うつさないカガミ",
+     "translation": "A mirror that doesn't reflect anything."
+    },
+    {
+     "index": 20,
+     "original": "たかい所から\nユラユラおりられる",
+     "translation": "From a high place,\nyou can sway down."
+    },
+    {
+     "index": 21,
+     "original": "木でできた かるい\nブーメラン",
+     "translation": "Lightweight boomerang made of wood."
+    },
+    {
+     "index": 22,
+     "original": "イシでできた おもい\nブーメラン",
+     "translation": "A boomerang made of stone."
+    },
+    {
+     "index": 23,
+     "original": "コウテツでできた 強力な\nブーメラン",
+     "translation": "A powerful boomerang made of kouetsu."
+    },
+    {
+     "index": 24,
+     "original": "魔ブタを封じこめる\nたいせつな ふくろ",
+     "translation": "Sealing the demon pig\nA precious pouch"
+    },
+    {
+     "index": 25,
+     "original": "せかいを 見わたす\nべんりな地図",
+     "translation": "A convenient map that covers the world."
+    },
+    {
+     "index": 26,
+     "original": "ふるびた つぼ",
+     "translation": "An old pot."
+    },
+    {
+     "index": 27,
+     "original": "すべてを けちらす\n強力な ぶき",
+     "translation": "Scatter everything\nPowerful weapon"
+    },
+    {
+     "index": 28,
+     "original": "動きが はやくなる\nべんりな パンツ",
+     "translation": "Movement becomes faster.\nConvenient pants."
+    },
+    {
+     "index": 29,
+     "original": "動きが 最速になる\nすばらしい パンツ",
+     "translation": "Movement becomes fastest\nWonderful pants"
+    },
+    {
+     "index": 30,
+     "original": "バイタリティが すこし\nかいふくする",
+     "translation": "Vitality will slightly recover."
+    },
+    {
+     "index": 31,
+     "original": "バイタリティ すべてかいふく\n\nおなかいっぱい!",
+     "translation": "Vitality All Recovery"
+    },
+    {
+     "index": 32,
+     "original": "はじめから はいている\nパンツ",
+     "translation": "I've been wearing them from the beginning.\nPants."
+    },
+    {
+     "index": 33,
+     "original": "アイテム033",
+     "translation": "Item 033"
+    },
+    {
+     "index": 34,
+     "original": "アイテム034",
+     "translation": "Item 034"
+    },
+    {
+     "index": 35,
+     "original": "アイテム035",
+     "translation": "Item 035"
+    },
+    {
+     "index": 36,
+     "original": "アイテム036",
+     "translation": "Item 036"
+    },
+    {
+     "index": 37,
+     "original": "アイテム037",
+     "translation": "Item 037"
+    },
+    {
+     "index": 38,
+     "original": "アイテム038",
+     "translation": "Item 038"
+    },
+    {
+     "index": 39,
+     "original": "アイテム039",
+     "translation": "Item 039"
+    },
+    {
+     "index": 40,
+     "original": "アイテム040",
+     "translation": "Item 040"
+    },
+    {
+     "index": 41,
+     "original": "アイテム041",
+     "translation": "Item 041"
+    },
+    {
+     "index": 42,
+     "original": "アイテム042",
+     "translation": "Item 042"
+    },
+    {
+     "index": 43,
+     "original": "アイテム043",
+     "translation": "Item 043"
+    },
+    {
+     "index": 44,
+     "original": "アイテム044",
+     "translation": "Item 044"
+    },
+    {
+     "index": 45,
+     "original": "アイテム045",
+     "translation": "Item 045"
+    },
+    {
+     "index": 46,
+     "original": "アイテム046",
+     "translation": "Item 046"
+    },
+    {
+     "index": 47,
+     "original": "アイテム047",
+     "translation": "Item 047"
+    },
+    {
+     "index": 48,
+     "original": "アイテム048",
+     "translation": "Item 048"
+    },
+    {
+     "index": 49,
+     "original": "アイテム049",
+     "translation": "Item 049"
+    },
+    {
+     "index": 50,
+     "original": "アイテム050",
+     "translation": "Item 050"
+    },
+    {
+     "index": 51,
+     "original": "アイテム051",
+     "translation": "Item 051"
+    },
+    {
+     "index": 52,
+     "original": "アイテム052",
+     "translation": "Item 052"
+    },
+    {
+     "index": 53,
+     "original": "アイテム053",
+     "translation": "Item 053"
+    },
+    {
+     "index": 54,
+     "original": "アイテム054",
+     "translation": "Item 054"
+    },
+    {
+     "index": 55,
+     "original": "アイテム055",
+     "translation": "Item 055"
+    },
+    {
+     "index": 56,
+     "original": "アイテム056",
+     "translation": "Item 056"
+    },
+    {
+     "index": 57,
+     "original": "アイテム057",
+     "translation": "Item 057"
+    },
+    {
+     "index": 58,
+     "original": "アイテム058",
+     "translation": "Item 058"
+    },
+    {
+     "index": 59,
+     "original": "アイテム059",
+     "translation": "Item 059"
+    },
+    {
+     "index": 60,
+     "original": "アイテム060",
+     "translation": "Item 060"
+    },
+    {
+     "index": 61,
+     "original": "アイテム061",
+     "translation": "Item 061"
+    },
+    {
+     "index": 62,
+     "original": "アイテム062",
+     "translation": "Item 062"
+    },
+    {
+     "index": 63,
+     "original": "アイテム063",
+     "translation": "Item 063"
+    },
+    {
+     "index": 64,
+     "original": "アイテム064",
+     "translation": "Item 064"
+    },
+    {
+     "index": 65,
+     "original": "アイテム065",
+     "translation": "Item 065"
+    },
+    {
+     "index": 66,
+     "original": "アイテム066",
+     "translation": "Item 066"
+    },
+    {
+     "index": 67,
+     "original": "アイテム067",
+     "translation": "Item 067"
+    },
+    {
+     "index": 68,
+     "original": "アイテム068",
+     "translation": "Item 068"
+    },
+    {
+     "index": 69,
+     "original": "アイテム069",
+     "translation": "Item 069"
+    },
+    {
+     "index": 70,
+     "original": "アイテム070",
+     "translation": "Item 070"
+    },
+    {
+     "index": 71,
+     "original": "アイテム071",
+     "translation": "Item 071"
+    },
+    {
+     "index": 72,
+     "original": "アイテム072",
+     "translation": "Item 072"
+    },
+    {
+     "index": 73,
+     "original": "アイテム073",
+     "translation": "Item 073"
+    },
+    {
+     "index": 74,
+     "original": "アイテム074",
+     "translation": "Item 074"
+    },
+    {
+     "index": 75,
+     "original": "アイテム075",
+     "translation": "Item 075"
+    },
+    {
+     "index": 76,
+     "original": "アイテム076",
+     "translation": "Item 076"
+    },
+    {
+     "index": 77,
+     "original": "アイテム077",
+     "translation": "Item 077"
+    },
+    {
+     "index": 78,
+     "original": "アイテム078",
+     "translation": "Item 078"
+    },
+    {
+     "index": 79,
+     "original": "アイテム079",
+     "translation": "Item 079"
+    },
+    {
+     "index": 80,
+     "original": "アイテム080",
+     "translation": "Item 080"
+    },
+    {
+     "index": 81,
+     "original": "アイテム081",
+     "translation": "Item 081"
+    },
+    {
+     "index": 82,
+     "original": "アイテム082",
+     "translation": "Item 082"
+    },
+    {
+     "index": 83,
+     "original": "アイテム083",
+     "translation": "Item 083"
+    },
+    {
+     "index": 84,
+     "original": "アイテム084",
+     "translation": "Item 084"
+    },
+    {
+     "index": 85,
+     "original": "アイテム085",
+     "translation": "Item 085"
+    },
+    {
+     "index": 86,
+     "original": "アイテム086",
+     "translation": "Item 086"
+    },
+    {
+     "index": 87,
+     "original": "アイテム087",
+     "translation": "Item 087"
+    },
+    {
+     "index": 88,
+     "original": "アイテム088",
+     "translation": "Item 088"
+    },
+    {
+     "index": 89,
+     "original": "アイテム089",
+     "translation": "Item 089"
+    },
+    {
+     "index": 90,
+     "original": "アイテム090",
+     "translation": "Item 090"
+    },
+    {
+     "index": 91,
+     "original": "アイテム091",
+     "translation": "Item 091"
+    },
+    {
+     "index": 92,
+     "original": "アイテム092",
+     "translation": "Item 092"
+    },
+    {
+     "index": 93,
+     "original": "アイテム093",
+     "translation": "Item 093"
+    },
+    {
+     "index": 94,
+     "original": "アイテム094",
+     "translation": "Item 094"
+    },
+    {
+     "index": 95,
+     "original": "アイテム095",
+     "translation": "Item 095"
+    },
+    {
+     "index": 96,
+     "original": "アイテム096",
+     "translation": "Item 096"
+    },
+    {
+     "index": 97,
+     "original": "アイテム097",
+     "translation": "Item 097"
+    },
+    {
+     "index": 98,
+     "original": "アイテム098",
+     "translation": "Item 098"
+    },
+    {
+     "index": 99,
+     "original": "アイテム099",
+     "translation": "Item 099"
+    },
+    {
+     "index": 100,
+     "original": "アイテム100",
+     "translation": "Item 100"
+    },
+    {
+     "index": 101,
+     "original": "アイテム101",
+     "translation": "Item 101"
+    },
+    {
+     "index": 102,
+     "original": "アイテム102",
+     "translation": "Item 102"
+    },
+    {
+     "index": 103,
+     "original": "アイテム103",
+     "translation": "Item 103"
+    },
+    {
+     "index": 104,
+     "original": "アイテム104",
+     "translation": "Item 104"
+    },
+    {
+     "index": 105,
+     "original": "アイテム105",
+     "translation": "Item 105"
+    },
+    {
+     "index": 106,
+     "original": "アイテム106",
+     "translation": "Item 106"
+    },
+    {
+     "index": 107,
+     "original": "アイテム107",
+     "translation": "Item 107"
+    },
+    {
+     "index": 108,
+     "original": "アイテム108",
+     "translation": "Item 108"
+    },
+    {
+     "index": 109,
+     "original": "アイテム109",
+     "translation": "Item 109"
+    },
+    {
+     "index": 110,
+     "original": "アイテム110",
+     "translation": "Item 110"
+    },
+    {
+     "index": 111,
+     "original": "アイテム111",
+     "translation": "Item 111"
+    },
+    {
+     "index": 112,
+     "original": "アイテム112",
+     "translation": "Item 112"
+    },
+    {
+     "index": 113,
+     "original": "アイテム113",
+     "translation": "Item 113"
+    },
+    {
+     "index": 114,
+     "original": "アイテム114",
+     "translation": "Item 114"
+    },
+    {
+     "index": 115,
+     "original": "アイテム115",
+     "translation": "Item 115"
+    },
+    {
+     "index": 116,
+     "original": "アイテム116",
+     "translation": "Item 116"
+    },
+    {
+     "index": 117,
+     "original": "アイテム117",
+     "translation": "Item 117"
+    },
+    {
+     "index": 118,
+     "original": "アイテム118",
+     "translation": "Item 118"
+    },
+    {
+     "index": 119,
+     "original": "アイテム119",
+     "translation": "Item 119"
+    },
+    {
+     "index": 120,
+     "original": "アイテム120",
+     "translation": "Item 120"
+    },
+    {
+     "index": 121,
+     "original": "アイテム121",
+     "translation": "Item 121"
+    },
+    {
+     "index": 122,
+     "original": "アイテム122",
+     "translation": "Item 122"
+    },
+    {
+     "index": 123,
+     "original": "アイテム123",
+     "translation": "Item 123"
+    },
+    {
+     "index": 124,
+     "original": "アイテム124",
+     "translation": "Item 124"
+    },
+    {
+     "index": 125,
+     "original": "アイテム125",
+     "translation": "Item 125"
+    },
+    {
+     "index": 126,
+     "original": "アイテム126",
+     "translation": "Item 126"
+    },
+    {
+     "index": 127,
+     "original": "アイテム127",
+     "translation": "Item 127"
+    },
+    {
+     "index": 128,
+     "original": "アイテム128",
+     "translation": "Item 128"
+    },
+    {
+     "index": 129,
+     "original": "アイテム129",
+     "translation": "Item 129"
+    },
+    {
+     "index": 130,
+     "original": "アイテム130",
+     "translation": "Item 130"
+    },
+    {
+     "index": 131,
+     "original": "アイテム131",
+     "translation": "Item 131"
+    },
+    {
+     "index": 132,
+     "original": "アイテム132",
+     "translation": "Item 132"
+    },
+    {
+     "index": 133,
+     "original": "アイテム133",
+     "translation": "Item 133"
+    },
+    {
+     "index": 134,
+     "original": "アイテム134",
+     "translation": "Item 134"
+    },
+    {
+     "index": 135,
+     "original": "アイテム135",
+     "translation": "Item 135"
+    },
+    {
+     "index": 136,
+     "original": "アイテム136",
+     "translation": "Item 136"
+    },
+    {
+     "index": 137,
+     "original": "アイテム137",
+     "translation": "Item 137"
+    },
+    {
+     "index": 138,
+     "original": "アイテム138",
+     "translation": "Item 138"
+    },
+    {
+     "index": 139,
+     "original": "アイテム139",
+     "translation": "Item 139"
+    },
+    {
+     "index": 140,
+     "original": "アイテム140",
+     "translation": "Item 140"
+    },
+    {
+     "index": 141,
+     "original": "アイテム141",
+     "translation": "Item 141"
+    },
+    {
+     "index": 142,
+     "original": "アイテム142",
+     "translation": "Item 142"
+    },
+    {
+     "index": 143,
+     "original": "アイテム143",
+     "translation": "Item 143"
+    },
+    {
+     "index": 144,
+     "original": "アイテム144",
+     "translation": "Item 144"
+    },
+    {
+     "index": 145,
+     "original": "アイテム145",
+     "translation": "Item 145"
+    },
+    {
+     "index": 146,
+     "original": "アイテム146",
+     "translation": "Item 146"
+    },
+    {
+     "index": 147,
+     "original": "アイテム147",
+     "translation": "Item 147"
+    },
+    {
+     "index": 148,
+     "original": "アイテム148",
+     "translation": "Item 148"
+    },
+    {
+     "index": 149,
+     "original": "アイテム149",
+     "translation": "Item 149"
+    },
+    {
+     "index": 150,
+     "original": "アイテム150",
+     "translation": "Item 150"
+    },
+    {
+     "index": 151,
+     "original": "アイテム151",
+     "translation": "Item 151"
+    },
+    {
+     "index": 152,
+     "original": "アイテム152",
+     "translation": "Item 152"
+    },
+    {
+     "index": 153,
+     "original": "アイテム153",
+     "translation": "Item 153"
+    },
+    {
+     "index": 154,
+     "original": "アイテム154",
+     "translation": "Item 154"
+    },
+    {
+     "index": 155,
+     "original": "アイテム155",
+     "translation": "Item 155"
+    },
+    {
+     "index": 156,
+     "original": "アイテム156",
+     "translation": "Item 156"
+    },
+    {
+     "index": 157,
+     "original": "アイテム157",
+     "translation": "Item 157"
+    },
+    {
+     "index": 158,
+     "original": "アイテム158",
+     "translation": "Item 158"
+    },
+    {
+     "index": 159,
+     "original": "アイテム159",
+     "translation": "Item 159"
+    },
+    {
+     "index": 160,
+     "original": "アイテム160",
+     "translation": "Item 160"
+    },
+    {
+     "index": 161,
+     "original": "アイテム161",
+     "translation": "Item 161"
+    },
+    {
+     "index": 162,
+     "original": "アイテム162",
+     "translation": "Item 162"
+    },
+    {
+     "index": 163,
+     "original": "アイテム163",
+     "translation": "Item 163"
+    },
+    {
+     "index": 164,
+     "original": "アイテム164",
+     "translation": "Item 164"
+    },
+    {
+     "index": 165,
+     "original": "アイテム165",
+     "translation": "Item 165"
+    },
+    {
+     "index": 166,
+     "original": "アイテム166",
+     "translation": "Item 166"
+    },
+    {
+     "index": 167,
+     "original": "アイテム167",
+     "translation": "Item 167"
+    },
+    {
+     "index": 168,
+     "original": "アイテム168",
+     "translation": "Item 168"
+    },
+    {
+     "index": 169,
+     "original": "アイテム169",
+     "translation": "Item 169"
+    },
+    {
+     "index": 170,
+     "original": "アイテム170",
+     "translation": "Item 170"
+    },
+    {
+     "index": 171,
+     "original": "アイテム171",
+     "translation": "Item 171"
+    },
+    {
+     "index": 172,
+     "original": "アイテム172",
+     "translation": "Item 172"
+    },
+    {
+     "index": 173,
+     "original": "アイテム173",
+     "translation": "Item 173"
+    },
+    {
+     "index": 174,
+     "original": "アイテム174",
+     "translation": "Item 174"
+    },
+    {
+     "index": 175,
+     "original": "アイテム175",
+     "translation": "Item 175"
+    },
+    {
+     "index": 176,
+     "original": "アイテム176",
+     "translation": "Item 176"
+    },
+    {
+     "index": 177,
+     "original": "アイテム177",
+     "translation": "Item 177"
+    },
+    {
+     "index": 178,
+     "original": "アイテム178",
+     "translation": "Item 178"
+    },
+    {
+     "index": 179,
+     "original": "アイテム179",
+     "translation": "Item 179"
+    },
+    {
+     "index": 180,
+     "original": "アイテム180",
+     "translation": "Item 180"
+    },
+    {
+     "index": 181,
+     "original": "アイテム181",
+     "translation": "Item 181"
+    },
+    {
+     "index": 182,
+     "original": "アイテム182",
+     "translation": "Item 182"
+    },
+    {
+     "index": 183,
+     "original": "アイテム183",
+     "translation": "Item 183"
+    },
+    {
+     "index": 184,
+     "original": "アイテム184",
+     "translation": "Item 184"
+    },
+    {
+     "index": 185,
+     "original": "アイテム185",
+     "translation": "Item 185"
+    },
+    {
+     "index": 186,
+     "original": "アイテム186",
+     "translation": "Item 186"
+    },
+    {
+     "index": 187,
+     "original": "アイテム187",
+     "translation": "Item 187"
+    },
+    {
+     "index": 188,
+     "original": "アイテム188",
+     "translation": "Item 188"
+    },
+    {
+     "index": 189,
+     "original": "アイテム189",
+     "translation": "Item 189"
+    },
+    {
+     "index": 190,
+     "original": "アイテム190",
+     "translation": "Item 190"
+    },
+    {
+     "index": 191,
+     "original": "アイテム191",
+     "translation": "Item 191"
+    },
+    {
+     "index": 192,
+     "original": "アイテム192",
+     "translation": "Item 192"
+    },
+    {
+     "index": 193,
+     "original": "アイテム193",
+     "translation": "Item 193"
+    },
+    {
+     "index": 194,
+     "original": "アイテム194",
+     "translation": "Item 194"
+    },
+    {
+     "index": 195,
+     "original": "アイテム195",
+     "translation": "Item 195"
+    },
+    {
+     "index": 196,
+     "original": "アイテム196",
+     "translation": "Item 196"
+    },
+    {
+     "index": 197,
+     "original": "アイテム197",
+     "translation": "Item 197"
+    },
+    {
+     "index": 198,
+     "original": "アイテム198",
+     "translation": "Item 198"
+    },
+    {
+     "index": 199,
+     "original": "アイテム199",
+     "translation": "Item 199"
+    },
+    {
+     "index": 200,
+     "original": "アイテム200",
+     "translation": "Item 200"
+    }
+   ]
+  },
+  {
+   "bank": "WFM D3FF",
+   "file": "TOMBA/SYSTEM/A00013.000",
+   "offset": "0x0",
+   "messages": [
+    {
+     "index": 0,
+     "original": "コマブタにとられた うでわを\nもとめて たびだつ",
+     "translation": "I'm going to retrieve the arm taken by the pig."
+    },
+    {
+     "index": 1,
+     "original": "ものしりな100年老人に\n会いに行く",
+     "translation": "I'm going to meet a knowledgeable 100-year-old."
+    },
+    {
+     "index": 2,
+     "original": "行く手をはばむ\nきりを はらす",
+     "translation": "blocking the way,\ncutting through."
+    },
+    {
+     "index": 3,
+     "original": "カエルを つかまえた",
+     "translation": "I caught a frog."
+    },
+    {
+     "index": 4,
+     "original": "およげないと ダメらしい",
+     "translation": "It seems like I can't do it unless I run."
+    },
+    {
+     "index": 5,
+     "original": "まどから のぞいている人と\n話しをした",
+     "translation": "I talked to the person peeking through the window."
+    },
+    {
+     "index": 6,
+     "original": "おおきな みずたまり\nの話を きいた",
+     "translation": "I heard a story about a big puddle."
+    },
+    {
+     "index": 7,
+     "original": "かくれていた人の\nなまえを しった",
+     "translation": "I learned the name of the person who was hiding."
+    },
+    {
+     "index": 8,
+     "original": "泳げない自分に気づいた",
+     "translation": "I realized I couldn't swim."
+    },
+    {
+     "index": 9,
+     "original": "たまごの なかみを\nあつめる",
+     "translation": "Gather the contents of the egg."
+    },
+    {
+     "index": 10,
+     "original": "魔ブタが出たときの\n話を きいた",
+     "translation": "I heard the story when the demon pig appeared."
+    },
+    {
+     "index": 11,
+     "original": "イベント012",
+     "translation": "Event 012"
+    },
+    {
+     "index": 12,
+     "original": "ドワーフの長老に会う",
+     "translation": "Meet the Dwarf Elder"
+    },
+    {
+     "index": 13,
+     "original": "ドワーフのことばを おぼえる",
+     "translation": "Learn the Dwarven language."
+    },
+    {
+     "index": 14,
+     "original": "森でまいごになった\nこどもを さがす",
+     "translation": "Lost in the forest\nSearching for a child"
+    },
+    {
+     "index": 15,
+     "original": "イベント016",
+     "translation": "Event 016"
+    },
+    {
+     "index": 16,
+     "original": "イベント017",
+     "translation": "Event 017"
+    },
+    {
+     "index": 17,
+     "original": "森でいなくなった ドワーフたちを さがす",
+     "translation": "Search for the dwarves who disappeared in the forest."
+    },
+    {
+     "index": 18,
+     "original": "",
+     "translation": null
+    },
+    {
+     "index": 19,
+     "original": "イベント020",
+     "translation": "Event 020"
+    },
+    {
+     "index": 20,
+     "original": "ドワーフたちのケンカを やめさせる",
+     "translation": "Stop the dwarves from fighting."
+    },
+    {
+     "index": 21,
+     "original": "地下のオオドロボウと話しをする",
+     "translation": "Talk to the Oodorobou in the basement."
+    },
+    {
+     "index": 22,
+     "original": "イベント023",
+     "translation": "Event 023"
+    },
+    {
+     "index": 23,
+     "original": "ケガをした小鳥を\nたすける",
+     "translation": "Help the injured little bird."
+    },
+    {
+     "index": 24,
+     "original": "イベント025",
+     "translation": "Event 025"
+    },
+    {
+     "index": 25,
+     "original": "イベント026",
+     "translation": "Event 026"
+    },
+    {
+     "index": 26,
+     "original": "イベント027",
+     "translation": "Event 027"
+    },
+    {
+     "index": 27,
+     "original": "イベント028",
+     "translation": "Event 028"
+    },
+    {
+     "index": 28,
+     "original": "イベント029",
+     "translation": "Event 029"
+    },
+    {
+     "index": 29,
+     "original": "イベント030",
+     "translation": "Event 030"
+    },
+    {
+     "index": 30,
+     "original": "イベント031",
+     "translation": "Event 031"
+    },
+    {
+     "index": 31,
+     "original": "イベント032",
+     "translation": "Event 032"
+    },
+    {
+     "index": 32,
+     "original": "イベント033",
+     "translation": "Event 033"
+    },
+    {
+     "index": 33,
+     "original": "イベント034",
+     "translation": "Event 034"
+    },
+    {
+     "index": 34,
+     "original": "イベント035",
+     "translation": "Event 035"
+    },
+    {
+     "index": 35,
+     "original": "イベント036",
+     "translation": "Event 036"
+    },
+    {
+     "index": 36,
+     "original": "イベント037",
+     "translation": "Event 037"
+    },
+    {
+     "index": 37,
+     "original": "イベント038",
+     "translation": "Event 038"
+    },
+    {
+     "index": 38,
+     "original": "イベント039",
+     "translation": "Event 039"
+    },
+    {
+     "index": 39,
+     "original": "イベント040",
+     "translation": "Event 040"
+    },
+    {
+     "index": 40,
+     "original": "イベント041",
+     "translation": "Event 041"
+    },
+    {
+     "index": 41,
+     "original": "イベント042",
+     "translation": "Event 042"
+    },
+    {
+     "index": 42,
+     "original": "イベント043",
+     "translation": "Event 043"
+    },
+    {
+     "index": 43,
+     "original": "イベント044",
+     "translation": "Event 044"
+    },
+    {
+     "index": 44,
+     "original": "イベント045",
+     "translation": "Event 045"
+    },
+    {
+     "index": 45,
+     "original": "イベント046",
+     "translation": "Event 046"
+    },
+    {
+     "index": 46,
+     "original": "イベント047",
+     "translation": "Event 047"
+    },
+    {
+     "index": 47,
+     "original": "イベント048",
+     "translation": "Event 048"
+    },
+    {
+     "index": 48,
+     "original": "イベント049",
+     "translation": "Event 049"
+    },
+    {
+     "index": 49,
+     "original": "イベント050",
+     "translation": "Event 050"
+    },
+    {
+     "index": 50,
+     "original": "イベント051",
+     "translation": "Event 051"
+    },
+    {
+     "index": 51,
+     "original": "イベント052",
+     "translation": "Event 052"
+    },
+    {
+     "index": 52,
+     "original": "イベント053",
+     "translation": "Event 053"
+    },
+    {
+     "index": 53,
+     "original": "イベント054",
+     "translation": "Event 054"
+    },
+    {
+     "index": 54,
+     "original": "イベント055",
+     "translation": "Event 055"
+    },
+    {
+     "index": 55,
+     "original": "イベント056",
+     "translation": "Event 056"
+    },
+    {
+     "index": 56,
+     "original": "イベント057",
+     "translation": "Event 057"
+    },
+    {
+     "index": 57,
+     "original": "イベント058",
+     "translation": "Event 058"
+    },
+    {
+     "index": 58,
+     "original": "イベント059",
+     "translation": "Event 059"
+    },
+    {
+     "index": 59,
+     "original": "イベント060",
+     "translation": "Event 060"
+    },
+    {
+     "index": 60,
+     "original": "イベント061",
+     "translation": "Event 061"
+    },
+    {
+     "index": 61,
+     "original": "イベント062",
+     "translation": "Event 062"
+    },
+    {
+     "index": 62,
+     "original": "イベント063",
+     "translation": "Event 063"
+    },
+    {
+     "index": 63,
+     "original": "イベント064",
+     "translation": "Event 064"
+    },
+    {
+     "index": 64,
+     "original": "イベント065",
+     "translation": "Event 065"
+    },
+    {
+     "index": 65,
+     "original": "イベント066",
+     "translation": "Event 066"
+    },
+    {
+     "index": 66,
+     "original": "イベント067",
+     "translation": "Event 067"
+    },
+    {
+     "index": 67,
+     "original": "イベント068",
+     "translation": "Event 068"
+    },
+    {
+     "index": 68,
+     "original": "イベント069",
+     "translation": "Event 069"
+    },
+    {
+     "index": 69,
+     "original": "イベント070",
+     "translation": "Event 070"
+    },
+    {
+     "index": 70,
+     "original": "イベント071",
+     "translation": "Event 071"
+    },
+    {
+     "index": 71,
+     "original": "イベント072",
+     "translation": "Event 072"
+    },
+    {
+     "index": 72,
+     "original": "イベント073",
+     "translation": "Event 073"
+    },
+    {
+     "index": 73,
+     "original": "イベント074",
+     "translation": "Event 074"
+    },
+    {
+     "index": 74,
+     "original": "イベント075",
+     "translation": "Event 075"
+    },
+    {
+     "index": 75,
+     "original": "イベント076",
+     "translation": "Event 076"
+    },
+    {
+     "index": 76,
+     "original": "イベント077",
+     "translation": "Event 077"
+    },
+    {
+     "index": 77,
+     "original": "イベント078",
+     "translation": "Event 078"
+    },
+    {
+     "index": 78,
+     "original": "イベント079",
+     "translation": "Event 079"
+    },
+    {
+     "index": 79,
+     "original": "イベント080",
+     "translation": "Event 080"
+    },
+    {
+     "index": 80,
+     "original": "イベント081",
+     "translation": "Event 081"
+    },
+    {
+     "index": 81,
+     "original": "イベント082",
+     "translation": "Event 082"
+    },
+    {
+     "index": 82,
+     "original": "イベント083",
+     "translation": "Event 083"
+    },
+    {
+     "index": 83,
+     "original": "イベント084",
+     "translation": "Event 084"
+    },
+    {
+     "index": 84,
+     "original": "イベント085",
+     "translation": "Event 085"
+    },
+    {
+     "index": 85,
+     "original": "イベント086",
+     "translation": "Event 086"
+    },
+    {
+     "index": 86,
+     "original": "イベント087",
+     "translation": "Event 087"
+    },
+    {
+     "index": 87,
+     "original": "イベント088",
+     "translation": "Event 088"
+    },
+    {
+     "index": 88,
+     "original": "イベント089",
+     "translation": "Event 089"
+    },
+    {
+     "index": 89,
+     "original": "イベント090",
+     "translation": "Event 090"
+    },
+    {
+     "index": 90,
+     "original": "イベント091",
+     "translation": "Event 091"
+    },
+    {
+     "index": 91,
+     "original": "イベント092",
+     "translation": "Event 092"
+    },
+    {
+     "index": 92,
+     "original": "イベント093",
+     "translation": "Event 093"
+    },
+    {
+     "index": 93,
+     "original": "イベント094",
+     "translation": "Event 094"
+    },
+    {
+     "index": 94,
+     "original": "イベント095",
+     "translation": "Event 095"
+    },
+    {
+     "index": 95,
+     "original": "イベント096",
+     "translation": "Event 096"
+    },
+    {
+     "index": 96,
+     "original": "イベント097",
+     "translation": "Event 097"
+    },
+    {
+     "index": 97,
+     "original": "イベント098",
+     "translation": "Event 098"
+    },
+    {
+     "index": 98,
+     "original": "イベント099",
+     "translation": "Event 099"
+    },
+    {
+     "index": 99,
+     "original": "イベント100",
+     "translation": "Event 100"
+    },
+    {
+     "index": 100,
+     "original": "イベント101",
+     "translation": "Event 101"
+    },
+    {
+     "index": 101,
+     "original": "イベント102",
+     "translation": "Event 102"
+    },
+    {
+     "index": 102,
+     "original": "イベント103",
+     "translation": "Event 103"
+    },
+    {
+     "index": 103,
+     "original": "イベント104",
+     "translation": "Event 104"
+    },
+    {
+     "index": 104,
+     "original": "イベント105",
+     "translation": "Event 105"
+    },
+    {
+     "index": 105,
+     "original": "イベント106",
+     "translation": "Event 106"
+    },
+    {
+     "index": 106,
+     "original": "イベント107",
+     "translation": "Event 107"
+    },
+    {
+     "index": 107,
+     "original": "イベント108",
+     "translation": "Event 108"
+    },
+    {
+     "index": 108,
+     "original": "イベント109",
+     "translation": "Event 109"
+    },
+    {
+     "index": 109,
+     "original": "イベント110",
+     "translation": "Event 110"
+    },
+    {
+     "index": 110,
+     "original": "イベント111",
+     "translation": "Event 111"
+    },
+    {
+     "index": 111,
+     "original": "イベント112",
+     "translation": "Event 112"
+    },
+    {
+     "index": 112,
+     "original": "イベント113",
+     "translation": "Event 113"
+    },
+    {
+     "index": 113,
+     "original": "イベント114",
+     "translation": "Event 114"
+    },
+    {
+     "index": 114,
+     "original": "イベント115",
+     "translation": "Event 115"
+    },
+    {
+     "index": 115,
+     "original": "イベント116",
+     "translation": "Event 116"
+    },
+    {
+     "index": 116,
+     "original": "イベント117",
+     "translation": "Event 117"
+    },
+    {
+     "index": 117,
+     "original": "イベント118",
+     "translation": "Event 118"
+    },
+    {
+     "index": 118,
+     "original": "イベント119",
+     "translation": "Event 119"
+    },
+    {
+     "index": 119,
+     "original": "イベント120",
+     "translation": "Event 120"
+    },
+    {
+     "index": 120,
+     "original": "イベント121",
+     "translation": "Event 121"
+    },
+    {
+     "index": 121,
+     "original": "イベント122",
+     "translation": "Event 122"
+    },
+    {
+     "index": 122,
+     "original": "イベント123",
+     "translation": "Event 123"
+    },
+    {
+     "index": 123,
+     "original": "イベント124",
+     "translation": "Event 124"
+    },
+    {
+     "index": 124,
+     "original": "イベント125",
+     "translation": "Event 125"
+    },
+    {
+     "index": 125,
+     "original": "イベント126",
+     "translation": "Event 126"
+    },
+    {
+     "index": 126,
+     "original": "イベント127",
+     "translation": "Event 127"
+    },
+    {
+     "index": 127,
+     "original": "イベント128",
+     "translation": "Event 128"
+    },
+    {
+     "index": 128,
+     "original": "イベント129",
+     "translation": "Event 129"
+    },
+    {
+     "index": 129,
+     "original": "イベント130",
+     "translation": "Event 130"
+    },
+    {
+     "index": 130,
+     "original": "イベント131",
+     "translation": "Event 131"
+    },
+    {
+     "index": 131,
+     "original": "イベント132",
+     "translation": "Event 132"
+    },
+    {
+     "index": 132,
+     "original": "イベント133",
+     "translation": "Event 133"
+    },
+    {
+     "index": 133,
+     "original": "イベント134",
+     "translation": "Event 134"
+    },
+    {
+     "index": 134,
+     "original": "イベント135",
+     "translation": "Event 135"
+    },
+    {
+     "index": 135,
+     "original": "イベント136",
+     "translation": "Event 136"
+    },
+    {
+     "index": 136,
+     "original": "イベント137",
+     "translation": "Event 137"
+    },
+    {
+     "index": 137,
+     "original": "イベント138",
+     "translation": "Event 138"
+    },
+    {
+     "index": 138,
+     "original": "イベント139",
+     "translation": "Event 139"
+    },
+    {
+     "index": 139,
+     "original": "イベント140",
+     "translation": "Event 140"
+    },
+    {
+     "index": 140,
+     "original": "イベント141",
+     "translation": "Event 141"
+    },
+    {
+     "index": 141,
+     "original": "イベント142",
+     "translation": "Event 142"
+    },
+    {
+     "index": 142,
+     "original": "イベント143",
+     "translation": "Event 143"
+    },
+    {
+     "index": 143,
+     "original": "イベント144",
+     "translation": "Event 144"
+    },
+    {
+     "index": 144,
+     "original": "イベント145",
+     "translation": "Event 145"
+    },
+    {
+     "index": 145,
+     "original": "イベント146",
+     "translation": "Event 146"
+    },
+    {
+     "index": 146,
+     "original": "イベント147",
+     "translation": "Event 147"
+    },
+    {
+     "index": 147,
+     "original": "イベント148",
+     "translation": "Event 148"
+    },
+    {
+     "index": 148,
+     "original": "イベント149",
+     "translation": "Event 149"
+    },
+    {
+     "index": 149,
+     "original": "イベント150",
+     "translation": "Event 150"
+    },
+    {
+     "index": 150,
+     "original": "イベント151",
+     "translation": "Event 151"
+    },
+    {
+     "index": 151,
+     "original": "イベント152",
+     "translation": "Event 152"
+    },
+    {
+     "index": 152,
+     "original": "イベント153",
+     "translation": "Event 153"
+    },
+    {
+     "index": 153,
+     "original": "イベント154",
+     "translation": "Event 154"
+    },
+    {
+     "index": 154,
+     "original": "イベント155",
+     "translation": "Event 155"
+    },
+    {
+     "index": 155,
+     "original": "イベント156",
+     "translation": "Event 156"
+    },
+    {
+     "index": 156,
+     "original": "イベント157",
+     "translation": "Event 157"
+    },
+    {
+     "index": 157,
+     "original": "イベント158",
+     "translation": "Event 158"
+    },
+    {
+     "index": 158,
+     "original": "イベント159",
+     "translation": "Event 159"
+    },
+    {
+     "index": 159,
+     "original": "イベント160",
+     "translation": "Event 160"
+    },
+    {
+     "index": 160,
+     "original": "イベント161",
+     "translation": "Event 161"
+    },
+    {
+     "index": 161,
+     "original": "イベント162",
+     "translation": "Event 162"
+    },
+    {
+     "index": 162,
+     "original": "イベント163",
+     "translation": "Event 163"
+    },
+    {
+     "index": 163,
+     "original": "イベント164",
+     "translation": "Event 164"
+    },
+    {
+     "index": 164,
+     "original": "イベント165",
+     "translation": "Event 165"
+    },
+    {
+     "index": 165,
+     "original": "イベント166",
+     "translation": "Event 166"
+    },
+    {
+     "index": 166,
+     "original": "サルのサンタは おなかが すいているようだ\nなにか たべものを さがしてこようか?",
+     "translation": "The monkey Santa seems hungry. Shall I go look for something to eat?"
+    },
+    {
+     "index": 167,
+     "original": "イベント168",
+     "translation": "Event 168"
+    },
+    {
+     "index": 168,
+     "original": "イベント169",
+     "translation": "Event 169"
+    },
+    {
+     "index": 169,
+     "original": "イベント170",
+     "translation": "Event 170"
+    },
+    {
+     "index": 170,
+     "original": "イベント171",
+     "translation": "Event 171"
+    },
+    {
+     "index": 171,
+     "original": "イベント172",
+     "translation": "Event 172"
+    },
+    {
+     "index": 172,
+     "original": "イベント173",
+     "translation": "Event 173"
+    },
+    {
+     "index": 173,
+     "original": "イベント174",
+     "translation": "Event 174"
+    },
+    {
+     "index": 174,
+     "original": "イベント175",
+     "translation": "Event 175"
+    },
+    {
+     "index": 175,
+     "original": "イベント176",
+     "translation": "Event 176"
+    },
+    {
+     "index": 176,
+     "original": "イベント177",
+     "translation": "Event 177"
+    },
+    {
+     "index": 177,
+     "original": "イベント178",
+     "translation": "Event 178"
+    },
+    {
+     "index": 178,
+     "original": "イベント179",
+     "translation": "Event 179"
+    },
+    {
+     "index": 179,
+     "original": "イベント180",
+     "translation": "Event 180"
+    },
+    {
+     "index": 180,
+     "original": "イベント181",
+     "translation": "Event 181"
+    },
+    {
+     "index": 181,
+     "original": "イベント182",
+     "translation": "Event 182"
+    },
+    {
+     "index": 182,
+     "original": "イベント183",
+     "translation": "Event 183"
+    },
+    {
+     "index": 183,
+     "original": "イベント184",
+     "translation": "Event 184"
+    },
+    {
+     "index": 184,
+     "original": "イベント185",
+     "translation": "Event 185"
+    },
+    {
+     "index": 185,
+     "original": "イベント186",
+     "translation": "Event 186"
+    },
+    {
+     "index": 186,
+     "original": "イベント187",
+     "translation": "Event 187"
+    },
+    {
+     "index": 187,
+     "original": "イベント188",
+     "translation": "Event 188"
+    },
+    {
+     "index": 188,
+     "original": "イベント189",
+     "translation": "Event 189"
+    },
+    {
+     "index": 189,
+     "original": "イベント190",
+     "translation": "Event 190"
+    },
+    {
+     "index": 190,
+     "original": "イベント191",
+     "translation": "Event 191"
+    },
+    {
+     "index": 191,
+     "original": "イベント192",
+     "translation": "Event 192"
+    },
+    {
+     "index": 192,
+     "original": "イベント193",
+     "translation": "Event 193"
+    },
+    {
+     "index": 193,
+     "original": "イベント194",
+     "translation": "Event 194"
+    },
+    {
+     "index": 194,
+     "original": "イベント195",
+     "translation": "Event 195"
+    },
+    {
+     "index": 195,
+     "original": "イベント196",
+     "translation": "Event 196"
+    },
+    {
+     "index": 196,
+     "original": "イベント197",
+     "translation": "Event 197"
+    },
+    {
+     "index": 197,
+     "original": "イベント198",
+     "translation": "Event 198"
+    },
+    {
+     "index": 198,
+     "original": "イベント199",
+     "translation": "Event 199"
+    },
+    {
+     "index": 199,
+     "original": "イベント200",
+     "translation": "Event 200"
+    }
+   ]
+  },
+  {
+   "bank": "WFM D2FF",
+   "file": "TOMBA/SYSTEM/A00015.000",
+   "offset": "0x0",
+   "messages": [
+    {
+     "index": 0,
+     "original": "うまれたてのヒヨコ",
+     "translation": "A newborn chick."
+    },
+    {
+     "index": 1,
+     "original": "かえり道をわすれたカエル",
+     "translation": "The frog who forgot its way home."
+    },
+    {
+     "index": 2,
+     "original": "かえられなくなった\nドワーフのこども",
+     "translation": "I can't be changed anymore.\nDwarf child."
+    },
+    {
+     "index": 3,
+     "original": "ハラペコな おなかに\nおいしいバナナ",
+     "translation": "A hungry stomach\ndelicious banana"
+    },
+    {
+     "index": 4,
+     "original": "何でもふき飛ばす\n強力なたつまき",
+     "translation": "Blows everything away\nA powerful gale"
+    },
+    {
+     "index": 5,
+     "original": "100年老人の小屋へ\nいつでも もどれる",
+     "translation": "To the 100-year-old man's cabin,\nI can always return."
+    },
+    {
+     "index": 6,
+     "original": "ある宝箱に合うと\nひらく事ができる",
+     "translation": "When it fits into a treasure chest,\nyou can open it."
+    },
+    {
+     "index": 7,
+     "original": "一度行った場所へ\nいつでも 行ける",
+     "translation": "To a place I once went,\nI can always go."
+    },
+    {
+     "index": 8,
+     "original": "かみつき草にさいた\nめずらしい花",
+     "translation": "I planted it in the grass.\nA rare flower."
+    },
+    {
+     "index": 9,
+     "original": "気持ちをしずめてくれる",
+     "translation": "It calms my feelings."
+    },
+    {
+     "index": 10,
+     "original": "もれない バケツ",
+     "translation": "A bucket that doesn't leak."
+    },
+    {
+     "index": 11,
+     "original": "遠くの景色が\n見られる",
+     "translation": "You can see the distant scenery."
+    },
+    {
+     "index": 12,
+     "original": "とてもきれいな\nからの小ビン",
+     "translation": "A very beautiful small bottle from."
+    },
+    {
+     "index": 13,
+     "original": "涙のつまった小ビン",
+     "translation": "A small bottle filled with tears."
+    },
+    {
+     "index": 14,
+     "original": "あしをケガしたこいぬ",
+     "translation": "A puppy with an injured leg."
+    },
+    {
+     "index": 15,
+     "original": "ホカホカ できたての\nやきいも",
+     "translation": "Hot and freshly baked yakiimo."
+    },
+    {
+     "index": 16,
+     "original": "枯れ葉の羽を持つ\n伝説のチョウチョ",
+     "translation": "A butterfly with wings of withered leaves,\na legendary butterfly."
+    },
+    {
+     "index": 17,
+     "original": "ヤミを てらす\nタイマツ",
+     "translation": "Illuminating darkness\nThai mat"
+    },
+    {
+     "index": 18,
+     "original": "水がたっぷり\n入ったバケツ",
+     "translation": "A bucket filled with plenty of water."
+    },
+    {
+     "index": 19,
+     "original": "なにも うつさないカガミ",
+     "translation": "A mirror that doesn't reflect anything."
+    },
+    {
+     "index": 20,
+     "original": "たかい所から\nユラユラおりられる",
+     "translation": "From a high place,\nyou can sway down."
+    },
+    {
+     "index": 21,
+     "original": "木でできた かるい\nブーメラン",
+     "translation": "Lightweight boomerang made of wood."
+    },
+    {
+     "index": 22,
+     "original": "イシでできた おもい\nブーメラン",
+     "translation": "A boomerang made of stone."
+    },
+    {
+     "index": 23,
+     "original": "コウテツでできた 強力な\nブーメラン",
+     "translation": "A powerful boomerang made of kouetsu."
+    },
+    {
+     "index": 24,
+     "original": "魔ブタを封じこめる\nたいせつな ふくろ",
+     "translation": "Sealing the demon pig\nA precious pouch"
+    },
+    {
+     "index": 25,
+     "original": "せかいを 見わたす\nべんりな地図",
+     "translation": "A convenient map that covers the world."
+    },
+    {
+     "index": 26,
+     "original": "ふるびた つぼ",
+     "translation": "An old pot."
+    },
+    {
+     "index": 27,
+     "original": "すべてを けちらす\n強力な ぶき",
+     "translation": "Scatter everything\nPowerful weapon"
+    },
+    {
+     "index": 28,
+     "original": "動きが はやくなる\nべんりな パンツ",
+     "translation": "Movement becomes faster.\nConvenient pants."
+    },
+    {
+     "index": 29,
+     "original": "動きが 最速になる\nすばらしい パンツ",
+     "translation": "Movement becomes fastest\nWonderful pants"
+    },
+    {
+     "index": 30,
+     "original": "バイタリティが すこし\nかいふくする",
+     "translation": "Vitality will slightly recover."
+    },
+    {
+     "index": 31,
+     "original": "バイタリティ すべてかいふく\n\nおなかいっぱい!",
+     "translation": "Vitality All Recovery"
+    },
+    {
+     "index": 32,
+     "original": "はじめから はいている\nパンツ",
+     "translation": "I've been wearing them from the beginning.\nPants."
+    },
+    {
+     "index": 33,
+     "original": "アイテム033",
+     "translation": "Item 033"
+    },
+    {
+     "index": 34,
+     "original": "アイテム034",
+     "translation": "Item 034"
+    },
+    {
+     "index": 35,
+     "original": "アイテム035",
+     "translation": "Item 035"
+    },
+    {
+     "index": 36,
+     "original": "アイテム036",
+     "translation": "Item 036"
+    },
+    {
+     "index": 37,
+     "original": "アイテム037",
+     "translation": "Item 037"
+    },
+    {
+     "index": 38,
+     "original": "アイテム038",
+     "translation": "Item 038"
+    },
+    {
+     "index": 39,
+     "original": "アイテム039",
+     "translation": "Item 039"
+    },
+    {
+     "index": 40,
+     "original": "アイテム040",
+     "translation": "Item 040"
+    },
+    {
+     "index": 41,
+     "original": "アイテム041",
+     "translation": "Item 041"
+    },
+    {
+     "index": 42,
+     "original": "アイテム042",
+     "translation": "Item 042"
+    },
+    {
+     "index": 43,
+     "original": "アイテム043",
+     "translation": "Item 043"
+    },
+    {
+     "index": 44,
+     "original": "アイテム044",
+     "translation": "Item 044"
+    },
+    {
+     "index": 45,
+     "original": "アイテム045",
+     "translation": "Item 045"
+    },
+    {
+     "index": 46,
+     "original": "アイテム046",
+     "translation": "Item 046"
+    },
+    {
+     "index": 47,
+     "original": "アイテム047",
+     "translation": "Item 047"
+    },
+    {
+     "index": 48,
+     "original": "アイテム048",
+     "translation": "Item 048"
+    },
+    {
+     "index": 49,
+     "original": "アイテム049",
+     "translation": "Item 049"
+    },
+    {
+     "index": 50,
+     "original": "アイテム050",
+     "translation": "Item 050"
+    },
+    {
+     "index": 51,
+     "original": "アイテム051",
+     "translation": "Item 051"
+    },
+    {
+     "index": 52,
+     "original": "アイテム052",
+     "translation": "Item 052"
+    },
+    {
+     "index": 53,
+     "original": "アイテム053",
+     "translation": "Item 053"
+    },
+    {
+     "index": 54,
+     "original": "アイテム054",
+     "translation": "Item 054"
+    },
+    {
+     "index": 55,
+     "original": "アイテム055",
+     "translation": "Item 055"
+    },
+    {
+     "index": 56,
+     "original": "アイテム056",
+     "translation": "Item 056"
+    },
+    {
+     "index": 57,
+     "original": "アイテム057",
+     "translation": "Item 057"
+    },
+    {
+     "index": 58,
+     "original": "アイテム058",
+     "translation": "Item 058"
+    },
+    {
+     "index": 59,
+     "original": "アイテム059",
+     "translation": "Item 059"
+    },
+    {
+     "index": 60,
+     "original": "アイテム060",
+     "translation": "Item 060"
+    },
+    {
+     "index": 61,
+     "original": "アイテム061",
+     "translation": "Item 061"
+    },
+    {
+     "index": 62,
+     "original": "アイテム062",
+     "translation": "Item 062"
+    },
+    {
+     "index": 63,
+     "original": "アイテム063",
+     "translation": "Item 063"
+    },
+    {
+     "index": 64,
+     "original": "アイテム064",
+     "translation": "Item 064"
+    },
+    {
+     "index": 65,
+     "original": "アイテム065",
+     "translation": "Item 065"
+    },
+    {
+     "index": 66,
+     "original": "アイテム066",
+     "translation": "Item 066"
+    },
+    {
+     "index": 67,
+     "original": "アイテム067",
+     "translation": "Item 067"
+    },
+    {
+     "index": 68,
+     "original": "アイテム068",
+     "translation": "Item 068"
+    },
+    {
+     "index": 69,
+     "original": "アイテム069",
+     "translation": "Item 069"
+    },
+    {
+     "index": 70,
+     "original": "アイテム070",
+     "translation": "Item 070"
+    },
+    {
+     "index": 71,
+     "original": "アイテム071",
+     "translation": "Item 071"
+    },
+    {
+     "index": 72,
+     "original": "アイテム072",
+     "translation": "Item 072"
+    },
+    {
+     "index": 73,
+     "original": "アイテム073",
+     "translation": "Item 073"
+    },
+    {
+     "index": 74,
+     "original": "アイテム074",
+     "translation": "Item 074"
+    },
+    {
+     "index": 75,
+     "original": "アイテム075",
+     "translation": "Item 075"
+    },
+    {
+     "index": 76,
+     "original": "アイテム076",
+     "translation": "Item 076"
+    },
+    {
+     "index": 77,
+     "original": "アイテム077",
+     "translation": "Item 077"
+    },
+    {
+     "index": 78,
+     "original": "アイテム078",
+     "translation": "Item 078"
+    },
+    {
+     "index": 79,
+     "original": "アイテム079",
+     "translation": "Item 079"
+    },
+    {
+     "index": 80,
+     "original": "アイテム080",
+     "translation": "Item 080"
+    },
+    {
+     "index": 81,
+     "original": "アイテム081",
+     "translation": "Item 081"
+    },
+    {
+     "index": 82,
+     "original": "アイテム082",
+     "translation": "Item 082"
+    },
+    {
+     "index": 83,
+     "original": "アイテム083",
+     "translation": "Item 083"
+    },
+    {
+     "index": 84,
+     "original": "アイテム084",
+     "translation": "Item 084"
+    },
+    {
+     "index": 85,
+     "original": "アイテム085",
+     "translation": "Item 085"
+    },
+    {
+     "index": 86,
+     "original": "アイテム086",
+     "translation": "Item 086"
+    },
+    {
+     "index": 87,
+     "original": "アイテム087",
+     "translation": "Item 087"
+    },
+    {
+     "index": 88,
+     "original": "アイテム088",
+     "translation": "Item 088"
+    },
+    {
+     "index": 89,
+     "original": "アイテム089",
+     "translation": "Item 089"
+    },
+    {
+     "index": 90,
+     "original": "アイテム090",
+     "translation": "Item 090"
+    },
+    {
+     "index": 91,
+     "original": "アイテム091",
+     "translation": "Item 091"
+    },
+    {
+     "index": 92,
+     "original": "アイテム092",
+     "translation": "Item 092"
+    },
+    {
+     "index": 93,
+     "original": "アイテム093",
+     "translation": "Item 093"
+    },
+    {
+     "index": 94,
+     "original": "アイテム094",
+     "translation": "Item 094"
+    },
+    {
+     "index": 95,
+     "original": "アイテム095",
+     "translation": "Item 095"
+    },
+    {
+     "index": 96,
+     "original": "アイテム096",
+     "translation": "Item 096"
+    },
+    {
+     "index": 97,
+     "original": "アイテム097",
+     "translation": "Item 097"
+    },
+    {
+     "index": 98,
+     "original": "アイテム098",
+     "translation": "Item 098"
+    },
+    {
+     "index": 99,
+     "original": "アイテム099",
+     "translation": "Item 099"
+    },
+    {
+     "index": 100,
+     "original": "アイテム100",
+     "translation": "Item 100"
+    },
+    {
+     "index": 101,
+     "original": "アイテム101",
+     "translation": "Item 101"
+    },
+    {
+     "index": 102,
+     "original": "アイテム102",
+     "translation": "Item 102"
+    },
+    {
+     "index": 103,
+     "original": "アイテム103",
+     "translation": "Item 103"
+    },
+    {
+     "index": 104,
+     "original": "アイテム104",
+     "translation": "Item 104"
+    },
+    {
+     "index": 105,
+     "original": "アイテム105",
+     "translation": "Item 105"
+    },
+    {
+     "index": 106,
+     "original": "アイテム106",
+     "translation": "Item 106"
+    },
+    {
+     "index": 107,
+     "original": "アイテム107",
+     "translation": "Item 107"
+    },
+    {
+     "index": 108,
+     "original": "アイテム108",
+     "translation": "Item 108"
+    },
+    {
+     "index": 109,
+     "original": "アイテム109",
+     "translation": "Item 109"
+    },
+    {
+     "index": 110,
+     "original": "アイテム110",
+     "translation": "Item 110"
+    },
+    {
+     "index": 111,
+     "original": "アイテム111",
+     "translation": "Item 111"
+    },
+    {
+     "index": 112,
+     "original": "アイテム112",
+     "translation": "Item 112"
+    },
+    {
+     "index": 113,
+     "original": "アイテム113",
+     "translation": "Item 113"
+    },
+    {
+     "index": 114,
+     "original": "アイテム114",
+     "translation": "Item 114"
+    },
+    {
+     "index": 115,
+     "original": "アイテム115",
+     "translation": "Item 115"
+    },
+    {
+     "index": 116,
+     "original": "アイテム116",
+     "translation": "Item 116"
+    },
+    {
+     "index": 117,
+     "original": "アイテム117",
+     "translation": "Item 117"
+    },
+    {
+     "index": 118,
+     "original": "アイテム118",
+     "translation": "Item 118"
+    },
+    {
+     "index": 119,
+     "original": "アイテム119",
+     "translation": "Item 119"
+    },
+    {
+     "index": 120,
+     "original": "アイテム120",
+     "translation": "Item 120"
+    },
+    {
+     "index": 121,
+     "original": "アイテム121",
+     "translation": "Item 121"
+    },
+    {
+     "index": 122,
+     "original": "アイテム122",
+     "translation": "Item 122"
+    },
+    {
+     "index": 123,
+     "original": "アイテム123",
+     "translation": "Item 123"
+    },
+    {
+     "index": 124,
+     "original": "アイテム124",
+     "translation": "Item 124"
+    },
+    {
+     "index": 125,
+     "original": "アイテム125",
+     "translation": "Item 125"
+    },
+    {
+     "index": 126,
+     "original": "アイテム126",
+     "translation": "Item 126"
+    },
+    {
+     "index": 127,
+     "original": "アイテム127",
+     "translation": "Item 127"
+    },
+    {
+     "index": 128,
+     "original": "アイテム128",
+     "translation": "Item 128"
+    },
+    {
+     "index": 129,
+     "original": "アイテム129",
+     "translation": "Item 129"
+    },
+    {
+     "index": 130,
+     "original": "アイテム130",
+     "translation": "Item 130"
+    },
+    {
+     "index": 131,
+     "original": "アイテム131",
+     "translation": "Item 131"
+    },
+    {
+     "index": 132,
+     "original": "アイテム132",
+     "translation": "Item 132"
+    },
+    {
+     "index": 133,
+     "original": "アイテム133",
+     "translation": "Item 133"
+    },
+    {
+     "index": 134,
+     "original": "アイテム134",
+     "translation": "Item 134"
+    },
+    {
+     "index": 135,
+     "original": "アイテム135",
+     "translation": "Item 135"
+    },
+    {
+     "index": 136,
+     "original": "アイテム136",
+     "translation": "Item 136"
+    },
+    {
+     "index": 137,
+     "original": "アイテム137",
+     "translation": "Item 137"
+    },
+    {
+     "index": 138,
+     "original": "アイテム138",
+     "translation": "Item 138"
+    },
+    {
+     "index": 139,
+     "original": "アイテム139",
+     "translation": "Item 139"
+    },
+    {
+     "index": 140,
+     "original": "アイテム140",
+     "translation": "Item 140"
+    },
+    {
+     "index": 141,
+     "original": "アイテム141",
+     "translation": "Item 141"
+    },
+    {
+     "index": 142,
+     "original": "アイテム142",
+     "translation": "Item 142"
+    },
+    {
+     "index": 143,
+     "original": "アイテム143",
+     "translation": "Item 143"
+    },
+    {
+     "index": 144,
+     "original": "アイテム144",
+     "translation": "Item 144"
+    },
+    {
+     "index": 145,
+     "original": "アイテム145",
+     "translation": "Item 145"
+    },
+    {
+     "index": 146,
+     "original": "アイテム146",
+     "translation": "Item 146"
+    },
+    {
+     "index": 147,
+     "original": "アイテム147",
+     "translation": "Item 147"
+    },
+    {
+     "index": 148,
+     "original": "アイテム148",
+     "translation": "Item 148"
+    },
+    {
+     "index": 149,
+     "original": "アイテム149",
+     "translation": "Item 149"
+    },
+    {
+     "index": 150,
+     "original": "アイテム150",
+     "translation": "Item 150"
+    },
+    {
+     "index": 151,
+     "original": "アイテム151",
+     "translation": "Item 151"
+    },
+    {
+     "index": 152,
+     "original": "アイテム152",
+     "translation": "Item 152"
+    },
+    {
+     "index": 153,
+     "original": "アイテム153",
+     "translation": "Item 153"
+    },
+    {
+     "index": 154,
+     "original": "アイテム154",
+     "translation": "Item 154"
+    },
+    {
+     "index": 155,
+     "original": "アイテム155",
+     "translation": "Item 155"
+    },
+    {
+     "index": 156,
+     "original": "アイテム156",
+     "translation": "Item 156"
+    },
+    {
+     "index": 157,
+     "original": "アイテム157",
+     "translation": "Item 157"
+    },
+    {
+     "index": 158,
+     "original": "アイテム158",
+     "translation": "Item 158"
+    },
+    {
+     "index": 159,
+     "original": "アイテム159",
+     "translation": "Item 159"
+    },
+    {
+     "index": 160,
+     "original": "アイテム160",
+     "translation": "Item 160"
+    },
+    {
+     "index": 161,
+     "original": "アイテム161",
+     "translation": "Item 161"
+    },
+    {
+     "index": 162,
+     "original": "アイテム162",
+     "translation": "Item 162"
+    },
+    {
+     "index": 163,
+     "original": "アイテム163",
+     "translation": "Item 163"
+    },
+    {
+     "index": 164,
+     "original": "アイテム164",
+     "translation": "Item 164"
+    },
+    {
+     "index": 165,
+     "original": "アイテム165",
+     "translation": "Item 165"
+    },
+    {
+     "index": 166,
+     "original": "アイテム166",
+     "translation": "Item 166"
+    },
+    {
+     "index": 167,
+     "original": "アイテム167",
+     "translation": "Item 167"
+    },
+    {
+     "index": 168,
+     "original": "アイテム168",
+     "translation": "Item 168"
+    },
+    {
+     "index": 169,
+     "original": "アイテム169",
+     "translation": "Item 169"
+    },
+    {
+     "index": 170,
+     "original": "アイテム170",
+     "translation": "Item 170"
+    },
+    {
+     "index": 171,
+     "original": "アイテム171",
+     "translation": "Item 171"
+    },
+    {
+     "index": 172,
+     "original": "アイテム172",
+     "translation": "Item 172"
+    },
+    {
+     "index": 173,
+     "original": "アイテム173",
+     "translation": "Item 173"
+    },
+    {
+     "index": 174,
+     "original": "アイテム174",
+     "translation": "Item 174"
+    },
+    {
+     "index": 175,
+     "original": "アイテム175",
+     "translation": "Item 175"
+    },
+    {
+     "index": 176,
+     "original": "アイテム176",
+     "translation": "Item 176"
+    },
+    {
+     "index": 177,
+     "original": "アイテム177",
+     "translation": "Item 177"
+    },
+    {
+     "index": 178,
+     "original": "アイテム178",
+     "translation": "Item 178"
+    },
+    {
+     "index": 179,
+     "original": "アイテム179",
+     "translation": "Item 179"
+    },
+    {
+     "index": 180,
+     "original": "アイテム180",
+     "translation": "Item 180"
+    },
+    {
+     "index": 181,
+     "original": "アイテム181",
+     "translation": "Item 181"
+    },
+    {
+     "index": 182,
+     "original": "アイテム182",
+     "translation": "Item 182"
+    },
+    {
+     "index": 183,
+     "original": "アイテム183",
+     "translation": "Item 183"
+    },
+    {
+     "index": 184,
+     "original": "アイテム184",
+     "translation": "Item 184"
+    },
+    {
+     "index": 185,
+     "original": "アイテム185",
+     "translation": "Item 185"
+    },
+    {
+     "index": 186,
+     "original": "アイテム186",
+     "translation": "Item 186"
+    },
+    {
+     "index": 187,
+     "original": "アイテム187",
+     "translation": "Item 187"
+    },
+    {
+     "index": 188,
+     "original": "アイテム188",
+     "translation": "Item 188"
+    },
+    {
+     "index": 189,
+     "original": "アイテム189",
+     "translation": "Item 189"
+    },
+    {
+     "index": 190,
+     "original": "アイテム190",
+     "translation": "Item 190"
+    },
+    {
+     "index": 191,
+     "original": "アイテム191",
+     "translation": "Item 191"
+    },
+    {
+     "index": 192,
+     "original": "アイテム192",
+     "translation": "Item 192"
+    },
+    {
+     "index": 193,
+     "original": "アイテム193",
+     "translation": "Item 193"
+    },
+    {
+     "index": 194,
+     "original": "アイテム194",
+     "translation": "Item 194"
+    },
+    {
+     "index": 195,
+     "original": "アイテム195",
+     "translation": "Item 195"
+    },
+    {
+     "index": 196,
+     "original": "アイテム196",
+     "translation": "Item 196"
+    },
+    {
+     "index": 197,
+     "original": "アイテム197",
+     "translation": "Item 197"
+    },
+    {
+     "index": 198,
+     "original": "アイテム198",
+     "translation": "Item 198"
+    },
+    {
+     "index": 199,
+     "original": "アイテム199",
+     "translation": "Item 199"
+    },
+    {
+     "index": 200,
+     "original": "アイテム200",
+     "translation": "Item 200"
+    }
+   ]
+  }
+ ]
+}

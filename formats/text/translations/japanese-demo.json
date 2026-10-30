@@ -1,0 +1,5500 @@
+{
+ "format": 1,
+ "language": "ja",
+ "build": "Japanese demo",
+ "model": "CAT-Translate-7b",
+ "builds": {
+  "Japanese demo": 721
+ },
+ "messages": 943,
+ "translated": 721,
+ "entries": {
+  "カギがかかっている": "The key is locked.",
+  "ヒヨコをつかった": "I used a chick.",
+  "カエルをつかった": "Used a frog.",
+  "バナナをつかった": "I used a banana.",
+  "あばれ竜巻をつかった": "I used a rampaging tornado.",
+  "100年のカギをつかった": "I used the key of 100 years.",
+  "100年の鍵をつかった": "I used the key from 100 years ago.",
+  "めぐみの羽根をつかった": "I used Megumi's feather.",
+  "かみつき草の花をつかった": "I used the flowers of the biting grass.",
+  "マゴブタをつかった": "I used a pig.",
+  "ケモノダッシュ": "Kemono Dash",
+  "カエルがにげた": "The frog ran away.",
+  "ライフゲージかくだい": "Life Gauge Kakudai",
+  "奥のカベには ↑と×ボタンで とびつくことができ、\nそのまま上に上がると 奥のラインを歩けるよ\n手前にもどりたいときはその逆だよ": "You can jump onto the wall at the back using the ↑ and × buttons,\nand if you go up from there, you can walk along the back line.\nTo return to the front, do the opposite.",
+  "木の枝にぶら下がったときは→で回転\nどんどん速くなる。ジャンプしたい\n方向と×ボタンで飛び出す!": "When hanging from a tree branch → rotate\nIt gets faster and faster. I want to jump.\nUse direction and the × button to jump out!",
+  "○ボタンをおしつづけると、\nより強力な攻撃ができる": "If you continue pressing the ○ button,\nyou can perform a more powerful attack.",
+  "人と話すときは ○ボタン": "When talking to people, press the ○ button.",
+  "ここがセーブポイントです。\n↑で奥を向いているときに\n○を押せばセーブができます": "This is the save point.\nWhen facing backward with ↑,\npressing ○ will save.",
+  "ポスト あけるな!": "Don't open the mailbox!",
+  "始まりの村": "The Beginning Village",
+  "始まりの森": "The Beginning Forest",
+  "100年老人の小屋": "The 100-Year-Old Man's Cabin",
+  "ふるいけ": "sieve",
+  "この土地は はじめてか?\n\nオレは前に ここに住んでたんだけど、\nなんか ようすがかわっちまってよォ\n\nなんかわからんが、しりたいことがあるなら\nこの先の ずーっと上の小屋に住んでる\n\n100年老人というジィさんに\n会ってきいてみろよ\n\nでも、このあたりもあぶなくなったから\n気ィつけていけよ\n\nあっ そうだ! たてふだは見てけよ\n見るときは ↑と○ボタンだぜ\n\n・・・じゃあな!": "Is this land new to you?\n\nI used to live here before,\nbut things have changed a lot since then.\n\nI don't know what it is, but if you want to know something,\nthere's a cabin way up ahead.\n\nMeet the 100-year-old old man and ask him.\n\nBut things around here have gotten dangerous,\nso be careful.\n\nOh, right! Look at the foot pedals.\nWhen looking, use the ↑ and ○ buttons.\n\n...See ya!",
+  "よぉ、にィちゃんも\nこの先に行きたいのかい?\n\nそりゃぁムリだ・・・\nこの先はキリで まっ白だぜ\n\nキリがなくなりゃぁ\n行けるんだけどな・・・": "Hey, Niichan too,\ndo you want to go further?\n\nThat's impossible...\nBeyond this point, it's completely white.\n\nIf the Kiri runs out,\nyou can go, though...",
+  "まぁーきくところによると あばれ竜巻 があれば\n何とかなるみたいだけど・・・\nじっさい どこにあるんだよ、そんなもん・・・\n\nオレは あきらめた!\nにぃちゃんも考えた方がいいぜ・・・\n\nあばよ!": "Well, according to what I heard, if there's a violent tornado,\nit seems like we can manage somehow...\nBut seriously, where on earth is something like that...?\n\nI've given up!\nYou should think about it too, big brother...\n\nGoodbye!",
+  "ちょっと まてよ": "Wait a minute.",
+  "ウワッ!やめろョ": "Whoa! Stop it!",
+  "オレは今、ハラがへってて イライラしてんだ\n何か たべるもん ないか?・・・\nなけりゃ またあとにしてくれョ": "I'm hungry right now and I'm getting irritated.\nIs there anything I can eat?...\nIf not, please save it for later.",
+  "オ〜〜〜ッ!\nなんだ それくれるのか?\n\nサンキュー! たすかったゼ\nもう ハラがへって、うごけなかったんだ\n\nオレ サンタ ってんだ、よろしくな": "Ohhhh!\nWhat? You're giving me that?\n\nThanks! That saved me.\nI was so hungry I couldn't move.\n\nI'm Santa—nice to meet you.",
+  "そうだ!!\nとっておきの技をおしえてやるョ\n\nいいか?": "That's right!!\nI'll teach you my secret technique!\n\nIs that okay?",
+  "×ボタンを押しながら走るとスピードが速くなる、\n人よんで ケモノダッシュっていう技だゼ": "Pressing the X button while running makes your speed increase—it's called \"Kemono Dash,\" a technique used by humans.",
+  "おぼえたか?\n×ボタンを押しながらだぞ・・・・・・\nじゃぁオレはいくゼ\n\nあばよ!": "Did you remember?\nWhile pressing the X button...\nWell then, I'm off!\n\nGoodbye!",
+  "サンキュ": "Thank you.",
+  "バイバイ・・・": "Bye-bye...",
+  "・・・あらら・・・もう見つかっちゃった!\n\nかくれてたんだけど よくわかったな・・・": "...Oh dear... I've already been found!\n\nI was hiding, but you figured it out so well...",
+  "よし! いいことおしえてやるよ\n\nこの小屋のウラをまっすぐ奥に行くと ふるいけ、\nそして、この小屋の先を上に行くと\n100年老人っていう ジィさんが住んでるんだ": "Alright! I'll tell you something good.\n\nIf you go straight to the back of this hut, there's a gate,\nAnd if you go up past this hut,\nThere's an old man called the 100-year-old living there.",
+  "え?・・・オイラかい?・・・・・・\nそんなことより まず行ってみろよ、\nウソじゃないから・・・\n\nそのあとで また会おうや": "Huh?... Is that me?...\nRather than that, first go and see it,\nIt's not a lie...\n\nAfter that, let's meet again.",
+  "えっ?!もう行ったのか?・・・そうか・・・": "Huh?! Already gone?... I see...",
+  "100年老人には会ったのかい?\n\n会ったら また会おうや": "Have you met the 100-year-old?\n\nIf you do, let's meet again.",
+  "ふるいけ には行ったかい?\n\n行ったら また会おうや": "Did you go to Furuike?\n\nIf you did, let's meet again.",
+  "どうだい、ウソじゃなかっただろ\n\nじまんじゃないけどオイラいろいろ しってんだ": "How about it, it wasn't a lie, right?\n\nIt's not a joke, but I know a lot.",
+  "・・・あぁ、オイラかい?\n\nオイラ、ヤン かくれ里のヤンていうんだ・・・": "...Ah, me?\n\nI'm Yan, from the Hidden Village...",
+  "いつも かくれてるんだけど、\nだれも見つけられないんだ・・・\n\nまた見つけられたら そのときも\nいいことおしえてやるよ!\n・・・見つけることができたらな": "I always hide,\nbut no one can find me...\n\nIf I can be found again,\nI'll tell you something good then too!\n...If I can be found.",
+  "う〜ん・・・なんだか楽しくなってきたな・・・\nがんばって見つけてくれよ\n\nじゃあな!": "Hmm... I'm starting to feel like I'm having fun now...\nPlease do your best to find it!\n\nSee ya!",
+  "この先に行く気か?\n\nでも・・・おまえ泳げるんかィ?": "Are you going to go ahead?\n\nBut… can you swim?",
+  "いかん、いかん\n\n今はカメさんに たすけてもらったが\n次からそうはいかん\n\nそこのトビラの先は\n泳げないと行けんのだから・・・\n\n悪いことはいわん、\n今はやめた方がいい・・・\n\nいつか 泳げるようになってから行くんだナ\n\nおっ そうだ!\nおまえ ハラへってないかィ?\n\nこれ もってけよ!": "No, no.\n\nI got help from the turtle this time,\nbut I can't do that again next time.\n\nBeyond that door,\nyou can't go unless you can swim...\n\nDon't say bad things,\nit's better to stop now...\n\nI'll go when I can swim someday.\n\nOh, right!\nAre you hungry?\n\nTake this!",
+  "じゃあなボウズ 気ィつけて行けや": "See ya, loser. Be careful.",
+  "・・・うーん・・・こまったのォ・・・\n\nどーしたもんかのォ・・・\n\nんっ?": "...Hmm... I'm in trouble...\n\nWhat should I do...?\n\nHmm?",
+  "なんじゃ?・・・\nわしが100年老人じゃが・・・何か用かな?": "What is it?...\nI am a 100-year-old old man... Is there something you need?",
+  "すまんが、ちょっと\n考えごとをしておってな・・・・・・\n\n・・・おお そうじゃ!!\nちょっと おまえさん、たのまれてくれんか?\nたのみというのはのォ・・・\n\nおまえさんも ここへ来るとき 見たと思うが、\n赤いトリのコッカのやつめ、\n\nよそからタマゴを盗んできては、\nああやって自分のものにしておってな・・・\n\nあのままでは\n中のヒナが かわいそうなんじゃ・・・\n\nそこでおまえさん、このへんにあるタマゴの中にいる\nヒナを全部 集めてくれんか?": "Sorry, I'm just thinking about something...\n\n...Oh, that's right!\nHey, would you do me a favor?\nWhat I mean by \"favor\" is...\n\nYou probably saw it when you came here,\nthat red-breasted chick,\n\nstealing eggs from other places\nand then making them his own...\n\nIf things continue like this,\nthe chicks inside will be pitiful...\n\nSo, could you gather all the chicks\ninside the eggs around here?",
+  "しんぱいじゃからな・・・\nたのんだぞ": "I'm worried...\nI'm counting on you.",
+  "なんじゃ、もう 集まっとるのか?\n\nん〜〜〜っ・・・\nじゃが まだ残っとるようじゃのォ・・・\n\nすまんがもう一度 行ってくれんか?": "What? Are they already gathering?\n\nHmm~~~...\nBut it seems like there's still some left...\n\nSorry, could you go again?",
+  "集めてくれたのか?・・・\nん〜〜〜っ・・・\n\nじゃが まだ残っとるようじゃのォ・・・\nすまんがもう一度 行ってくれんか?": "Did you collect them?...\nHmmmmm...\n\nBut it seems there's still some left...\nSorry, but could you go again?",
+  "なんじゃ、もう 集まっとるのか・・・\nおおぉぉぉっ!しかも全部集まっとるではないか!\n・・・・・・で、中身はどこじゃ?": "What? Already gathered...?\nOhhhhh! And they're all gathered!\n...And where are the contents?",
+  "おー・まい・がっ!!\n\nハラの中に入れとったのか!?\n\nまぁ、しかし 消化はされとらんようじゃし、\nよしとするかのォ\n\nいやぁ、何はともあれ ごくろうじゃった\n・・・これで わしも安心じゃわい\n\nんっ?・・・・・・そうじゃそうじゃ\nわしに何か用が あったようじゃな\n\n・・・・・・ほう・・・・・・\nコマブタに おジィさんの形見のうでわを\nとられたのか・・・\n\nそれで コマブタたちのことを\nききたいんじゃな・・・\n\nんっ わかった・・・\nじつはのォ・・・・・・・・・・・・": "Oh my god!!\n\nDid you put it in the stomach!?\n\nWell, but it doesn't seem to be digested,\nso I'll leave it at that.\n\nWell, anyway, it was exhausting.\n...With this, I can rest easy.\n\nHmm?...That's right, that's right.\nIt seems like there was something you wanted from me.\n\n...Hmm...\nDid Komabuta take the memento of Ojiisan's arm...?\n\nSo, you want to ask about Komabuta and the others...\n\nHmm, I understand...\nActually, no...",
+  "集めてくれたのか?\n\n・・・おぉっ!! 全部集まったようじゃな\n・・・・・・で、中身はどこじゃ?": "Did you gather them?\n\n...Oh! It looks like everything's been collected.\n...And where are the contents?",
+  "わしが 今回、話してやれる事は\nここまでじゃ・・・\n\nん〜〜っ ざんねんじゃのぅ・・・\n\nこのつづきは、ぜひ せいひんばんで\n楽しんでくだされ・・・\n\nイベント、アクション、もりだくさんじゃから\nきっと 気にいる はずじゃ・・・\nこのあとのムービーを 見ていくがよい・・・\n\n・・・・・・勇気ある少年よ\nぼうけんは 始まったばかりじゃ\nせいひんばんで まっておるぞ・・・": "What I can tell you this time is\nthis far...\n\nHmm~~, what a shame...\n\nPlease enjoy the rest at the product page...\n\nThere's plenty of events and actions, so\nI'm sure you'll like it...\nYou should watch the movie after this...\n\n... ...Braver boy,\nyour adventure has just begun\nI'm waiting for you at the product page...",
+  "もちろん、わしの力になれることじゃったら\n何でも協力してやるからの・・・\n\n・・・そうじゃ、\n\nわしは物の めききには自信があるから、\n使い方のわからない物を手に入れたら\nわしのところに持ってくるといい・・・": "Of course, if there's anything I can do to help,\nI'll cooperate with you...\n\n...That's right,\n\nI have confidence in my abilities, so\nif you get something you don't know how to use,\nbring it to me...",
+  "おや?ないのぉ・・・\nおまえさんに100年のすずを\nやろうとおもったんじゃが・・・\n\nどこかで無くしてしまったようじゃな・・・\n\nもし、それらしい物をみつけたら\n持ってきておくれ・・・\n\nそのかわり、おまえさんには・・・\nホレ、これをやろう・・・100年のカギじゃ": "Oh? It's gone...\nI was going to give you a hundred years of tin...\n\nIt seems like you lost it somewhere...\n\nIf you find something like it,\nbring it to me...\n\nIn exchange, I'll give you this... Here, take this—it's a hundred-year key.",
+  "これで、ここにあるのとおなじ宝箱なら\nあけることができるようになったはずじゃ・・・\nん〜ラッキーじゃのぉ・・・": "With this, you should now be able to open the same treasure chests as the ones here...\nHmm, what luck!",
+  "それと・・・魔ブタをさがすには、\n封印ぶくろ と呼ばれるモノが必要じゃ・・・\n\nそれがないと、\nかくれ場所が目に見えんようになっとるんじゃ・・・": "And... to find the Demon Pig, you need something called a Seal Pouch...\n\nWithout it,\nthe hiding place becomes invisible...",
+  "封印ぶくろのことは、この先の森に住む\nドワーフの長老にきいてみるといい・・・\nもっとくわしくおしえてくれるはずじゃ。": "As for the sealed bag, you should ask the elder of the dwarves who live in the forest ahead...\nHe should be able to tell you more about it.",
+  "なんじゃ、わからない物があるなら見せてごらん・・・": "What? If there's something you don't understand, show it to me...",
+  "・・・おおっ、これはまさしく100年のすず!\nよく見つけたのぉ・・・\n\nこれをつかえばいつでも、\nここに戻って来ることができるはずじゃ・・・": "...Oh wow, this is exactly 100 years of Suzu!\nYou found it well...\n\nIf you use this, you should be able to come back here anytime...",
+  "ジィちゃんの形見": "Grandpa's keepsake.",
+  "100年老人との出会い": "Encounter with a 100-Year-Old Man",
+  "霧を吹き飛ばせ!": "Blow away the fog!",
+  "カエル水にかえる": "The frog returns to the water.",
+  "モトクロスコース": "Motocross Course",
+  "キミ、だあれ?": "Who are you?",
+  "大きな水たまり?": "A large puddle?",
+  "かくれ里のヤン": "Yan of the Hidden Village",
+  "オイラ泳げない…": "I can't swim...",
+  "コッカタマゴの中身": "The contents of a cockerel egg.",
+  "100年老人の話": "The Story of a 100-Year-Old Man",
+  "ドワーフの長老": "Dwarf Elder",
+  "サンタの好きなもの…": "Santa's favorite things...",
+  "小さなブタ…マゴブタ?": "A small pig... Magobuta?",
+  "かみつき草の花": "The flowers of the biting grass.",
+  "うまれたてのヒヨコ": "A newborn chick.",
+  "かえり道をわすれたカエル": "The frog who forgot its way home.",
+  "かえられなくなった\nドワーフのこども": "I can't be changed anymore.\nDwarf child.",
+  "ハラペコな おなかに\nおいしいバナナ": "A hungry stomach\ndelicious banana",
+  "何でもふき飛ばす\n強力なたつまき": "Blows everything away\nA powerful gale",
+  "100年老人の小屋へ\nいつでも もどれる": "To the 100-year-old man's cabin,\nI can always return.",
+  "ある宝箱に合うと\nひらく事ができる": "When it fits into a treasure chest,\nyou can open it.",
+  "一度行った場所へ\nいつでも 行ける": "To a place I once went,\nI can always go.",
+  "かみつき草にさいた\nめずらしい花": "I planted it in the grass.\nA rare flower.",
+  "気持ちをしずめてくれる": "It calms my feelings.",
+  "もれない バケツ": "A bucket that doesn't leak.",
+  "遠くの景色が\n見られる": "You can see the distant scenery.",
+  "とてもきれいな\nからの小ビン": "A very beautiful small bottle from.",
+  "涙のつまった小ビン": "A small bottle filled with tears.",
+  "あしをケガしたこいぬ": "A puppy with an injured leg.",
+  "ホカホカ できたての\nやきいも": "Hot and freshly baked yakiimo.",
+  "枯れ葉の羽を持つ\n伝説のチョウチョ": "A butterfly with wings of withered leaves,\na legendary butterfly.",
+  "ヤミを てらす\nタイマツ": "Illuminating darkness\nThai mat",
+  "水がたっぷり\n入ったバケツ": "A bucket filled with plenty of water.",
+  "なにも うつさないカガミ": "A mirror that doesn't reflect anything.",
+  "たかい所から\nユラユラおりられる": "From a high place,\nyou can sway down.",
+  "木でできた かるい\nブーメラン": "Lightweight boomerang made of wood.",
+  "イシでできた おもい\nブーメラン": "A boomerang made of stone.",
+  "コウテツでできた 強力な\nブーメラン": "A powerful boomerang made of kouetsu.",
+  "魔ブタを封じこめる\nたいせつな ふくろ": "Sealing the demon pig\nA precious pouch",
+  "せかいを 見わたす\nべんりな地図": "A convenient map that covers the world.",
+  "ふるびた つぼ": "An old pot.",
+  "すべてを けちらす\n強力な ぶき": "Scatter everything\nPowerful weapon",
+  "動きが はやくなる\nべんりな パンツ": "Movement becomes faster.\nConvenient pants.",
+  "動きが 最速になる\nすばらしい パンツ": "Movement becomes fastest\nWonderful pants",
+  "バイタリティが すこし\nかいふくする": "Vitality will slightly recover.",
+  "バイタリティ すべてかいふく\n\nおなかいっぱい!": "Vitality All Recovery",
+  "はじめから はいている\nパンツ": "I've been wearing them from the beginning.\nPants.",
+  "アイテム033": "Item 033",
+  "アイテム034": "Item 034",
+  "アイテム035": "Item 035",
+  "アイテム036": "Item 036",
+  "アイテム037": "Item 037",
+  "アイテム038": "Item 038",
+  "アイテム039": "Item 039",
+  "アイテム040": "Item 040",
+  "アイテム041": "Item 041",
+  "アイテム042": "Item 042",
+  "アイテム043": "Item 043",
+  "アイテム044": "Item 044",
+  "アイテム045": "Item 045",
+  "アイテム046": "Item 046",
+  "アイテム047": "Item 047",
+  "アイテム048": "Item 048",
+  "アイテム049": "Item 049",
+  "アイテム050": "Item 050",
+  "アイテム051": "Item 051",
+  "アイテム052": "Item 052",
+  "アイテム053": "Item 053",
+  "アイテム054": "Item 054",
+  "アイテム055": "Item 055",
+  "アイテム056": "Item 056",
+  "アイテム057": "Item 057",
+  "アイテム058": "Item 058",
+  "アイテム059": "Item 059",
+  "アイテム060": "Item 060",
+  "アイテム061": "Item 061",
+  "アイテム062": "Item 062",
+  "アイテム063": "Item 063",
+  "アイテム064": "Item 064",
+  "アイテム065": "Item 065",
+  "アイテム066": "Item 066",
+  "アイテム067": "Item 067",
+  "アイテム068": "Item 068",
+  "アイテム069": "Item 069",
+  "アイテム070": "Item 070",
+  "アイテム071": "Item 071",
+  "アイテム072": "Item 072",
+  "アイテム073": "Item 073",
+  "アイテム074": "Item 074",
+  "アイテム075": "Item 075",
+  "アイテム076": "Item 076",
+  "アイテム077": "Item 077",
+  "アイテム078": "Item 078",
+  "アイテム079": "Item 079",
+  "アイテム080": "Item 080",
+  "アイテム081": "Item 081",
+  "アイテム082": "Item 082",
+  "アイテム083": "Item 083",
+  "アイテム084": "Item 084",
+  "アイテム085": "Item 085",
+  "アイテム086": "Item 086",
+  "アイテム087": "Item 087",
+  "アイテム088": "Item 088",
+  "アイテム089": "Item 089",
+  "アイテム090": "Item 090",
+  "アイテム091": "Item 091",
+  "アイテム092": "Item 092",
+  "アイテム093": "Item 093",
+  "アイテム094": "Item 094",
+  "アイテム095": "Item 095",
+  "アイテム096": "Item 096",
+  "アイテム097": "Item 097",
+  "アイテム098": "Item 098",
+  "アイテム099": "Item 099",
+  "アイテム100": "Item 100",
+  "アイテム101": "Item 101",
+  "アイテム102": "Item 102",
+  "アイテム103": "Item 103",
+  "アイテム104": "Item 104",
+  "アイテム105": "Item 105",
+  "アイテム106": "Item 106",
+  "アイテム107": "Item 107",
+  "アイテム108": "Item 108",
+  "アイテム109": "Item 109",
+  "アイテム110": "Item 110",
+  "アイテム111": "Item 111",
+  "アイテム112": "Item 112",
+  "アイテム113": "Item 113",
+  "アイテム114": "Item 114",
+  "アイテム115": "Item 115",
+  "アイテム116": "Item 116",
+  "アイテム117": "Item 117",
+  "アイテム118": "Item 118",
+  "アイテム119": "Item 119",
+  "アイテム120": "Item 120",
+  "アイテム121": "Item 121",
+  "アイテム122": "Item 122",
+  "アイテム123": "Item 123",
+  "アイテム124": "Item 124",
+  "アイテム125": "Item 125",
+  "アイテム126": "Item 126",
+  "アイテム127": "Item 127",
+  "アイテム128": "Item 128",
+  "アイテム129": "Item 129",
+  "アイテム130": "Item 130",
+  "アイテム131": "Item 131",
+  "アイテム132": "Item 132",
+  "アイテム133": "Item 133",
+  "アイテム134": "Item 134",
+  "アイテム135": "Item 135",
+  "アイテム136": "Item 136",
+  "アイテム137": "Item 137",
+  "アイテム138": "Item 138",
+  "アイテム139": "Item 139",
+  "アイテム140": "Item 140",
+  "アイテム141": "Item 141",
+  "アイテム142": "Item 142",
+  "アイテム143": "Item 143",
+  "アイテム144": "Item 144",
+  "アイテム145": "Item 145",
+  "アイテム146": "Item 146",
+  "アイテム147": "Item 147",
+  "アイテム148": "Item 148",
+  "アイテム149": "Item 149",
+  "アイテム150": "Item 150",
+  "アイテム151": "Item 151",
+  "アイテム152": "Item 152",
+  "アイテム153": "Item 153",
+  "アイテム154": "Item 154",
+  "アイテム155": "Item 155",
+  "アイテム156": "Item 156",
+  "アイテム157": "Item 157",
+  "アイテム158": "Item 158",
+  "アイテム159": "Item 159",
+  "アイテム160": "Item 160",
+  "アイテム161": "Item 161",
+  "アイテム162": "Item 162",
+  "アイテム163": "Item 163",
+  "アイテム164": "Item 164",
+  "アイテム165": "Item 165",
+  "アイテム166": "Item 166",
+  "アイテム167": "Item 167",
+  "アイテム168": "Item 168",
+  "アイテム169": "Item 169",
+  "アイテム170": "Item 170",
+  "アイテム171": "Item 171",
+  "アイテム172": "Item 172",
+  "アイテム173": "Item 173",
+  "アイテム174": "Item 174",
+  "アイテム175": "Item 175",
+  "アイテム176": "Item 176",
+  "アイテム177": "Item 177",
+  "アイテム178": "Item 178",
+  "アイテム179": "Item 179",
+  "アイテム180": "Item 180",
+  "アイテム181": "Item 181",
+  "アイテム182": "Item 182",
+  "アイテム183": "Item 183",
+  "アイテム184": "Item 184",
+  "アイテム185": "Item 185",
+  "アイテム186": "Item 186",
+  "アイテム187": "Item 187",
+  "アイテム188": "Item 188",
+  "アイテム189": "Item 189",
+  "アイテム190": "Item 190",
+  "アイテム191": "Item 191",
+  "アイテム192": "Item 192",
+  "アイテム193": "Item 193",
+  "アイテム194": "Item 194",
+  "アイテム195": "Item 195",
+  "アイテム196": "Item 196",
+  "アイテム197": "Item 197",
+  "アイテム198": "Item 198",
+  "アイテム199": "Item 199",
+  "アイテム200": "Item 200",
+  "コマブタにとられた うでわを\nもとめて たびだつ": "I'm going to retrieve the arm taken by the pig.",
+  "ものしりな100年老人に\n会いに行く": "I'm going to meet a knowledgeable 100-year-old.",
+  "行く手をはばむ\nきりを はらす": "blocking the way,\ncutting through.",
+  "カエルを つかまえた": "I caught a frog.",
+  "わくわくする コースだ": "It's an exciting course.",
+  "まどから のぞいている人と\n話しをした": "I talked to the person peeking through the window.",
+  "おおきな みずたまりの\n話を きいた": "I heard a story about a big puddle.",
+  "かくれていた人の\nなまえを しった": "I learned the name of the person who was hiding.",
+  "泳げない自分に気づいた": "I realized I couldn't swim.",
+  "たまごの なかみを\nあつめる": "Gather the contents of the egg.",
+  "魔ブタが出たときの\n話を きいた": "I heard the story when the demon pig appeared.",
+  "イベント012": "Event 012",
+  "ドワーフの長老に会う": "Meet the Dwarf Elder",
+  "ドワーフのことばを おぼえる": "Learn the Dwarven language.",
+  "森でまいごになった\nこどもを さがす": "Lost in the forest\nSearching for a child",
+  "イベント016": "Event 016",
+  "イベント017": "Event 017",
+  "森でいなくなった ドワーフたちを さがす": "Search for the dwarves who disappeared in the forest.",
+  "イベント020": "Event 020",
+  "ドワーフたちのケンカを やめさせる": "Stop the dwarves from fighting.",
+  "地下のオオドロボウと話しをする": "Talk to the Oodorobou in the basement.",
+  "イベント023": "Event 023",
+  "ケガをした小鳥を\nたすける": "Help the injured little bird.",
+  "イベント025": "Event 025",
+  "イベント026": "Event 026",
+  "イベント027": "Event 027",
+  "イベント028": "Event 028",
+  "イベント029": "Event 029",
+  "イベント030": "Event 030",
+  "イベント031": "Event 031",
+  "イベント032": "Event 032",
+  "イベント033": "Event 033",
+  "イベント034": "Event 034",
+  "イベント035": "Event 035",
+  "イベント036": "Event 036",
+  "イベント037": "Event 037",
+  "イベント038": "Event 038",
+  "イベント039": "Event 039",
+  "イベント040": "Event 040",
+  "イベント041": "Event 041",
+  "イベント042": "Event 042",
+  "イベント043": "Event 043",
+  "イベント044": "Event 044",
+  "イベント045": "Event 045",
+  "イベント046": "Event 046",
+  "イベント047": "Event 047",
+  "イベント048": "Event 048",
+  "イベント049": "Event 049",
+  "イベント050": "Event 050",
+  "イベント051": "Event 051",
+  "イベント052": "Event 052",
+  "イベント053": "Event 053",
+  "イベント054": "Event 054",
+  "イベント055": "Event 055",
+  "イベント056": "Event 056",
+  "イベント057": "Event 057",
+  "イベント058": "Event 058",
+  "イベント059": "Event 059",
+  "イベント060": "Event 060",
+  "イベント061": "Event 061",
+  "イベント062": "Event 062",
+  "イベント063": "Event 063",
+  "イベント064": "Event 064",
+  "イベント065": "Event 065",
+  "イベント066": "Event 066",
+  "イベント067": "Event 067",
+  "イベント068": "Event 068",
+  "イベント069": "Event 069",
+  "イベント070": "Event 070",
+  "イベント071": "Event 071",
+  "イベント072": "Event 072",
+  "イベント073": "Event 073",
+  "イベント074": "Event 074",
+  "イベント075": "Event 075",
+  "イベント076": "Event 076",
+  "イベント077": "Event 077",
+  "イベント078": "Event 078",
+  "イベント079": "Event 079",
+  "イベント080": "Event 080",
+  "イベント081": "Event 081",
+  "イベント082": "Event 082",
+  "イベント083": "Event 083",
+  "イベント084": "Event 084",
+  "イベント085": "Event 085",
+  "イベント086": "Event 086",
+  "イベント087": "Event 087",
+  "イベント088": "Event 088",
+  "イベント089": "Event 089",
+  "イベント090": "Event 090",
+  "イベント091": "Event 091",
+  "イベント092": "Event 092",
+  "イベント093": "Event 093",
+  "イベント094": "Event 094",
+  "イベント095": "Event 095",
+  "イベント096": "Event 096",
+  "イベント097": "Event 097",
+  "イベント098": "Event 098",
+  "イベント099": "Event 099",
+  "イベント100": "Event 100",
+  "イベント101": "Event 101",
+  "イベント102": "Event 102",
+  "イベント103": "Event 103",
+  "イベント104": "Event 104",
+  "イベント105": "Event 105",
+  "イベント106": "Event 106",
+  "イベント107": "Event 107",
+  "イベント108": "Event 108",
+  "イベント109": "Event 109",
+  "イベント110": "Event 110",
+  "イベント111": "Event 111",
+  "イベント112": "Event 112",
+  "イベント113": "Event 113",
+  "イベント114": "Event 114",
+  "イベント115": "Event 115",
+  "イベント116": "Event 116",
+  "イベント117": "Event 117",
+  "イベント118": "Event 118",
+  "イベント119": "Event 119",
+  "イベント120": "Event 120",
+  "イベント121": "Event 121",
+  "イベント122": "Event 122",
+  "イベント123": "Event 123",
+  "イベント124": "Event 124",
+  "イベント125": "Event 125",
+  "イベント126": "Event 126",
+  "イベント127": "Event 127",
+  "イベント128": "Event 128",
+  "イベント129": "Event 129",
+  "イベント130": "Event 130",
+  "イベント131": "Event 131",
+  "イベント132": "Event 132",
+  "イベント133": "Event 133",
+  "イベント134": "Event 134",
+  "イベント135": "Event 135",
+  "イベント136": "Event 136",
+  "イベント137": "Event 137",
+  "イベント138": "Event 138",
+  "イベント139": "Event 139",
+  "イベント140": "Event 140",
+  "イベント141": "Event 141",
+  "イベント142": "Event 142",
+  "イベント143": "Event 143",
+  "イベント144": "Event 144",
+  "イベント145": "Event 145",
+  "イベント146": "Event 146",
+  "イベント147": "Event 147",
+  "イベント148": "Event 148",
+  "イベント149": "Event 149",
+  "イベント150": "Event 150",
+  "イベント151": "Event 151",
+  "イベント152": "Event 152",
+  "イベント153": "Event 153",
+  "イベント154": "Event 154",
+  "イベント155": "Event 155",
+  "イベント156": "Event 156",
+  "イベント157": "Event 157",
+  "イベント158": "Event 158",
+  "イベント159": "Event 159",
+  "イベント160": "Event 160",
+  "イベント161": "Event 161",
+  "イベント162": "Event 162",
+  "イベント163": "Event 163",
+  "イベント164": "Event 164",
+  "イベント165": "Event 165",
+  "イベント166": "Event 166",
+  "サルのサンタは おなかが すいているようだ\nなにか たべものを さがしてこようか?": "The monkey Santa seems hungry. Shall I go look for something to eat?",
+  "イベント168": "Event 168",
+  "イベント169": "Event 169",
+  "イベント170": "Event 170",
+  "イベント171": "Event 171",
+  "イベント172": "Event 172",
+  "イベント173": "Event 173",
+  "イベント174": "Event 174",
+  "イベント175": "Event 175",
+  "イベント176": "Event 176",
+  "イベント177": "Event 177",
+  "イベント178": "Event 178",
+  "イベント179": "Event 179",
+  "イベント180": "Event 180",
+  "イベント181": "Event 181",
+  "イベント182": "Event 182",
+  "イベント183": "Event 183",
+  "イベント184": "Event 184",
+  "イベント185": "Event 185",
+  "イベント186": "Event 186",
+  "イベント187": "Event 187",
+  "イベント188": "Event 188",
+  "イベント189": "Event 189",
+  "イベント190": "Event 190",
+  "イベント191": "Event 191",
+  "イベント192": "Event 192",
+  "イベント193": "Event 193",
+  "イベント194": "Event 194",
+  "イベント195": "Event 195",
+  "イベント196": "Event 196",
+  "イベント197": "Event 197",
+  "イベント198": "Event 198",
+  "イベント199": "Event 199",
+  "イベント200": "Event 200",
+  "ドワーフの迷子をつかった": "I used a lost dwarf.",
+  "ワライダケをつかった": "I used Warai Dake.",
+  "ナキダケをつかった": "I used Nakidake.",
+  "げどくダケをつかった": "I used only the dagger.",
+  "バケツをつかった": "Used a bucket.",
+  "ぼうえんきょうをつかった": "I used a parachute.",
+  "ナミダのビン(カラ)をつかった": "I used a tear bottle (empty).",
+  "フラワーのナミダをつかった": "I used Flower's tears.",
+  "あかの封印ぶくろをつかった": "I used the red sealed bag.",
+  "バンクの実をつかった": "I used the bank's fruit.",
+  "アルコールをつかった": "I used alcohol.",
+  "エサねんりょうをつかった": "I used the feed.",
+  "ケガをしたコイヌをつかった": "I used a injured puppy.",
+  "水がはいったバケツをつかった": "I used a bucket filled with water.",
+  "ちずをつかった": "I used a map.",
+  "はやさレベル+1をつかった": "I used Hayasa Level +1.",
+  "かっとびのパンツをつかった": "I used a pair of cuttobi pants.",
+  "いだてんのパンツをつかった": "I used the idaten pants.",
+  "べんとうをつかった": "I used a bento box.",
+  "おおもりべんとうをつかった": "I used a large bento box.",
+  "ケモノダッシュをつかった": "I used Kemono Dash.",
+  "パラソルをつかった": "Used a parasol.",
+  "グルドカをつかった": "I used Gurudka.",
+  "グルピンをつかった": "I used Gurupin.",
+  "ドカピンをつかった": "I used Dokapin.",
+  "ウッドブーメランをつかった": "Used a wooden boomerang.",
+  "ストーンブーメランをつかった": "I used a stone boomerang.",
+  "アイアンブーメランをつかった": "Used an iron boomerang.",
+  "1UPをつかった": "I used 1UP.",
+  "ライフゲージかくだいをつかった": "Used life gauge.",
+  "ライフゲージぞうかをつかった": "I used a life gauge.",
+  "みえないカガミをつかった": "I used an invisible mirror.",
+  "ヤキイモをつかった": "I used yakimo.",
+  "たいまつをつかった": "I used a torch.",
+  "カレハチョウをつかった": "I used a butterfly.",
+  "ドワーフを1人たすけた": "I saved one dwarf.",
+  "ドワーフを2人たすけた": "I saved two dwarves.",
+  "ドワーフを3人たすけた": "I helped three dwarves.",
+  "ドワーフを4人たすけた": "I helped four dwarves.",
+  "ドワーフを5人たすけた": "I saved five dwarves.",
+  "ドワーフを6人たすけた": "I saved six dwarves.",
+  "ドワーフを7人たすけた": "I saved seven dwarves.",
+  "ドワーフのコトバ": "Dwarf Words",
+  "ドワーフのコトバ レベル1": "Dwarf Word Level 1",
+  "ドワーフのコトバ レベル2": "Dwarf Word Level 2",
+  "ドワーフのコトバ レベル3": "Dwarf Word Level 3",
+  "水てき 3分の1": "Water 1/3",
+  "水てき 3分の2": "Water 2/3",
+  "バケツをしまった": "I put away the bucket.",
+  "小鳥がにげた": "The little bird ran away.",
+  "小鳥をたすけた": "I helped a small bird.",
+  "迷子をたすけた": "I helped a lost child.",
+  "森の地下迷路\n\nセーブしますか?\n  はい→× いいえ→×": "Forest Underground Maze\n\nSave?\nYes → × No → ×",
+  "ドワーフの集落\n\nセーブしますか?\n  はい→× いいえ→×": "Dwarven Settlement\n\nSave?\nYes → × No → ×",
+  "ドワーフの集落の広場\n\nセーブしますか?\n  はい→× いいえ→×": "Dwarven Village Square\n\nSave?\nYes → × No → ×",
+  "○△ーー○!!": "○△ーー○!!",
+  "う△ーー○!!": "Uu△---○!!",
+  "うわーーっ!!": "Whoa!!",
+  "◎○□□□・・・○○○◎△○○○●○○・・・": "◎○□□□・・・○○○◎△○○○●○○・・・",
+  "わし、けっこうアタマいい\nおまえのコトバわかる・・・けど、\nおまえ、ドワーフのコトバ知らない・・・\n\nわしらのコトバ、ドワーフにかみつけば\nおぼえられる・・・\nいっかいじゃ ダメかもしれないけど・・・": "I'm pretty smart.\nI understand your words... but\nyou don't understand dwarven words...\n\nIf you bite into our words,\nyou'll remember them...\nIt might take more than once though...",
+  "コ○バ・・・\nわ○○○ない・・・": "Ko-ba...\nI don't have a wa-wa-wa...",
+  "◎のまえ●、◎◎\nいなくな△た・・・": "◎'s front ●, ◎◎\ndisappeared…",
+  "な○とか ひ△しで\n◎●てきた・・・": "I've been doing ◎● with な○ or ひ△...",
+  "目のまえで、なかま\nいなくなった・・・": "Right before my eyes, my comrade disappeared...",
+  "なんとか ひっしで\nにげてきた・・・": "I somehow managed to escape...",
+  "どうしようかねぇ・・・\nあれがないと こまるんだけどねぇ\n・・・おや、きいてたのかい?\n\n・・・じつは・・・森の中に だいじなものを\nかくしておいたんだけど・・・\n\n今の森には、コマブタがウヨウヨいるから\nとりにいけないのさ・・・\nとっても だいじなものなんだけどねぇ・・・": "What should I do...?\nI'm in trouble if I don't have that...\n...Oh, were you listening?\n\n...Actually... I hid something important in the forest,\nbut...\n\nThere are so many Komabuta in the forest right now,\nso I can't go get it...\nIt's a very important thing though...",
+  "森の中に だいじなものを\nかくしておいたんだけど・・・\n\n今の森には、コマブタがウヨウヨいるから\nとりにいけないのさ・・・\nとっても だいじなものなんだけどねぇ・・・": "I hid something important in the forest,\nbut...\n\nThere are so many Komabuta in the forest now,\nso I can't go get it...\nIt's such an important thing though...",
+  "おやっ!これ、とってきてくれたのかい?\nうれしいねぇ・・・えんりょなく いただくよ\n・・・・・・きたきたきた!・・・・・・": "Oh! Did you bring this for me?\nI'm so happy... I'll gladly take it.\n...Here it comes! Here it comes!...",
+  "・・・ふうーーーっ・・・じつは、\nおなかの中にガスがたまってて\nくるしかったんだよ\n\nおかげで たすかったよ・・・\nありがとうね・・・\nそうだ、よくは わからないんだけど\n\n・・・かわりに これをもらっとくれ\n・・・めずらしいモノらしいよ": "...Whew... Actually,\nthere was gas building up in my stomach\nand it was uncomfortable.\n\nThanks to that, I was saved...\nThank you...\nWell, I don't really understand it,\nbut...\n\n...Instead, please take this.\n...It seems to be a rare item.",
+  "この先、通さない・・・\nこれ わしのしごと・・・": "I won't let you through from here on out...\nThis is my job...",
+  "ん?なんだ、おまえ\nこれ欲しいのか?\n\n・・・先、あぶないから\nきをつけてもっていけ・・・": "Hmm? What is it, you?\nDo you want this?\n\n...It's dangerous ahead, so\nBe careful and take it...",
+  "お〜い・・・ だれかいないかぁ〜\n・・・あかりがきれたぞぉ〜": "Hey... Is anyone there?\n...The lights are out!",
+  "こども!・・・こども見なかったか?\n\nこども、高見ヤグラに 花のたね\nさがしにいったまま・・・かえってこない!\n\nしんぱい、しんぱい・・・\nとてもしんぱい・・・": "Child! ... Didn't you see the child?\n\nThe child went to Takami Yagura to look for flower seeds... and hasn't come back!\n\nWorried, worried...\nVery worried...",
+  "・・・まだひとりも、\nかえってこない・・・": "...no one has returned yet...",
+  "・・・あと6人、\nかえってこない・・・": "...six more people,\nthey won't come back...",
+  "・・・あと5人、\nかえってこない・・・": "...five more people,\nthey won't come back...",
+  "・・・あと4人、\nかえってこない・・・": "...four more people,\nthey won't come back...",
+  "・・・あと3人、\nかえってこない・・・": "...Three more people,\nthey won't come back...",
+  "・・・あと2人、\nかえってこない・・・": "...two more people,\nthey won't come back...",
+  "・・・あとひとりだけ、\nかえってこない・・・": "...just one more person,\nwho hasn't come back...",
+  "しんぱい、しんぱい・・・\nとてもしんぱい・・・": "Worried, worried...\nVery worried...",
+  "おお!おまえ、こども、たすけてくれたか!\n\nおまえ、とてもやさしいこころもってる\n・・・わし、とてもうれしい\n\nおれいに、これ、もってゆけ、きっとやくにたつ": "Oh! You, child, did you help me!\n\nYou have a very kind heart... I am very happy.\n\nTake this with you, it will surely be useful.",
+  "こども見つけてくれて\nありがとう・・・\nわしとおまえ、ともだち": "Thank you for finding me...\nYou and I, we're friends.",
+  "おにいちゃん、\n花のたね みつけたら\nおしえてね!": "Big brother,\nif you find flower seeds,\nplease let me know!",
+  "この花だんにお花咲かせたいなぁ・・・\n\nちょっと前までは、\n森にたくさんの種があったんだよ・・・\n\nでも、今はみんなしおれてた・・・\n\n魔ブタのせいだけじゃないような気がするんだけど・・・": "I wish I could make flowers bloom in this flowerbed...\n\nJust a little while ago,\nthere were so many seeds in the forest...\n\nBut now they've all withered...\n\nI don't think it's just the evil pig's fault...",
+  "もう、お花見れないのかなぁ・・・": "I wonder if I'll never be able to see cherry blossoms again...",
+  "おまえ、APと書かれた\nへんなモノ見たか?": "Did you see something weird that said AP?",
+  "わしらのなかま、あれと同じ\nマークの入ったトビラや箱も\n見たこと、あるらしい・・・": "It seems our comrades have also seen doors and boxes with the same mark…",
+  "どうすれば、ひらくか?\n・・・気になる・・・": "How can I open it?\n...I'm curious...",
+  "ドワーフ、\nとてもこまってる・・・": "Dwarf,\nI'm really in trouble...",
+  "くわしいはなし、ひろばにいる\nなかまがしってる・・・": "Detailed information is available on the forum.\nMy friends know...",
+  "おお、おまえ、ドワーフのことばわかるか!?\nドワーフ、とてもこまってる・・・\n\nじつは・・・このドワーフの森、\n魔ブタの魔法かかってる・・・\n花々はかれ、木々たちも すがた変えた・・・\n\nさっき、7人の なかま、森で しょくぶつに取り囲まれ\nゆくえ知れずになった・・・\n\nたぶん、大きめの しょくぶつの中か、\nほうしに取り付かれて\nうごけなくなってるハズ・・・\n\nいそいで 森にある小屋と\n村の入口ちかくのとびらをあけて、\n森のおく、みはりにいったところ・・・\n\nなかま見つからないと、\n森のおく とおしてくれないはず・・・": "Oh, you, do you understand the Dwarvish language!?\nDwarves, they're very troubled...\n\nActually... this Dwarven forest,\nis under the spell of the Demon Pig's magic...\nThe flowers and trees have also changed their forms...\n\nJust now, seven companions were surrounded by monsters in the forest\nand became lost...\n\nProbably, inside the larger monsters,\npossessed by the Hoshi,\nthey're unable to move...\n\nHurry up and open the door near the entrance to the village\nand the hut in the forest,\nand go deep into the forest, to the very edge...\n\nIf you can't find your companions,\nthey won't let you pass through the forest...",
+  "なかま見つからないと、\n森のおく\nとおしてくれないはず・・・": "If you can't find your friends,\nthey won't let you through the forest...",
+  "おお・・・なかま、\nぜんいん助けてくれたか・・・\nほんとうにありがとう": "Oh... comrades,\ndid you all help me...?\nThank you very much.",
+  "ドワーフの長老、\nとてもよろこんでる・・・\nはなし きいてみるといい": "The dwarf elder,\nis very pleased...\nyou should listen to the story.",
+  "・・・7人のなかま、かえってきたけど・・・\nじつは、こどもがひとり・・・\n森のなかで迷子になったまま・・・": "...Seven companions have returned, but...\nActually, one child is missing...\nStill lost in the forest...",
+  "おまえ、とても、ゆうきある\nドワーフ、おまえ、そんけいする": "You, very, have courage.\nDwarf, you, are scared.",
+  "勇気ある少年よ・・・\nわしがドワーフの\n長老ですじゃ・・・": "A brave boy...\nI am the elder of the dwarves...",
+  "7人のドワーフは\nかえってきたんじゃが・・・\n\n子どもがまだ\nかえってこないんじゃ・・・": "The seven dwarfs\nhave returned...\n\nBut the children\nhaven't come back yet...",
+  "子どもの両親は、この集落の\n入口のちかくの家におる・・・\n話をきいてくれんかのぅ・・": "The child's parents live in a house near the entrance of this village…\nWill you listen to what I have to say?",
+  "村人代表になりかわり、\n礼を言わせてほしい・・・\n\nなかまをたすけてくれて\n本当にありがとう・・・\n\nこんな村じゃから、\nたいしたお礼も\nできないんじゃが・・・\n\n・・・そうじゃ・・・\n100年老人から話は\n聞いたんじゃが、\n\n魔ブタのゆくえを\nおっているとか・・・": "On behalf of the villagers,\nI would like to express my gratitude...\n\nThank you very much for helping my comrades...\n\nSince this is such a small village,\nI can't offer much in return...\n\n...That's right...\nI heard a story from a 100-year-old man,\n\nthat he is watching over the fate of the demon pig...",
+  "おぉ、あったあった、\nこれじゃ・・・": "Oh, there it is,\nthis is...",
+  "これは、この森に魔法をかけた魔ブタの\n封印ぶくろ ですじゃ・・・\n\nこれがあれば魔ブタのかくれている場所へ近づくだけで、\nかくれ場所への入口、すなわち魔ブタゲートを\n見つけてくれるハズじゃ・・・": "This is the Seal Pouch of the magical pig that cast magic on this forest...\n\nWith this, simply approaching where the magical pig is hiding should lead you to the entrance to its hiding place—the Magical Pig Gate...",
+  "でも、魔ブタ、\n自分が魔法をかけた場所には\nかくれない・・・": "But the demon pig,\nit doesn't hide in places where I cast magic...",
+  "それに、魔ブタにはそれぞれに対する封印ぶくろがあり、\n1匹づつ封印できる\n\n・・・つまり、7匹の魔ブタに対して\n7つの封印ぶくろが必要なわけじゃ": "Moreover, each demon pig has its own sealing bag, allowing you to seal them one at a time.\n...In other words, you need seven sealing bags for seven demon pigs.",
+  "ふくろ、\n魔法をかけられた場所の\nちかくに必ずあるハズ・・・": "A bag,\nnear the place where magic was cast,\nshould definitely be there…",
+  "魔ブタのゆくえを知りたいのなら、\nそれぞれの 封印ぶくろ をさがすことが\n一番の近道じゃろう・・・\n\nしかし・・・魔ブタの力は強大じゃ・・・\nムリはせんようにな・・・\n\nもう、森のおくを見はる必要もないじゃろう・・・\n自由に通ってくだされ・・・": "If you want to know where the Demon Pig is headed,\nsearching for each of its sealed pouches would be the quickest path...\n\nBut... the Demon Pig's power is immense...\nDon't try to force it...\n\nYou probably don't need to look deep into the forest anymore...\nFeel free to pass through freely...",
+  "もう、森のおくを\n見はる必要もないじゃろう・・・\n自由に通ってくだされ・・・": "You don't need to look at the forest anymore...\nPlease feel free to pass through...",
+  "魔ブタ・・・\n自分が魔法をかけた場所にはかくれない・・・\n\n封印ぶくろあれば\n魔ブタゲート見つけることできる・・・\n\nでも、魔ブタには\nそれぞれに対する封印ぶくろがあって、\n1匹づつ封印できる・・・\n\nつまり、7匹の魔ブタに対して\n7つの封印ぶくろ ひつよう・・・\n\nふくろ、魔法をかけられた場所のちかくに\n必ずあるハズ・・・": "Magic pig...\nIt doesn't hide in places where I cast magic...\n\nIf I had a sealing bag,\nI could find the magic pig gate...\n\nBut each magic pig has\nits own sealing bag,\nand I can seal them one by one...\n\nIn other words, for seven magic pigs,\nI need seven sealing bags...\n\nThe bag should definitely be near the place where the magic was cast...",
+  "ドワーフ、木を切るのとくい・・・\n\nおまえ、わしら助けてくれた・・・\nだからおまえも困ったことあったら、\nわしらの なかまにたのむといい・・・": "Dwarves are skilled at cutting trees...\n\nYou helped us...\nSo if you ever get into trouble,\nyou should ask one of our comrades...",
+  "ん・・・木を切ってほしいのか?\n\nでも、ドワーフが切るのは\nやくめをおえた ふるい木だけ・・・\n\nとりあえず、おまえのあとついていく・・・": "Hmm... do you want me to cut down the tree?\n\nBut dwarves only cut down old trees...\n\nFor now, I'll follow you...",
+  "・・・うん、この木ならだいじょうぶ・・・\nじゃあ、すこしさがって まってろ・・・": "...Yeah, this tree will be fine...\nThen, go back a little and wait...",
+  "おや、あんたも長老をさがしてるのかい?\nこまったねぇ・・・\n\n実は、村のドワーフ2人が\nケンカをはじめちやってね・・・\nいつもだったら、ほっとくんだけど・・・\n\nよりによって、村の入り口でもみ張ってるから、\n外に出られなくなっちゃったんだ・・・\n\n・・・あんた、とめてくれないかい?": "Oh, are you also looking for an elder?\nThis is troublesome...\n\nActually, two dwarves from the village have started fighting...\nNormally I would just leave them alone, but...\n\nAnd of all places, they're standing guard at the entrance to the village,\nso I can't get out anymore...\n\n...Could you stop them?",
+  "長老がいたら、\n一発でおさめてくれるのにねぇ・・・": "If there was an elder,\nhe would put an end to it in one shot…",
+  "うまく かくしたから だいじょうぶ!\n\nそんなの すぐに見つかる・・・\n\nやっぱり、あやまったほうがいい!": "I wrote it well, so it's okay!\n\nThat kind of thing will be found quickly…\n\nAfter all, I should apologize!",
+  "何か こわしたとか\nなんとか・・・": "Did you break something?\nSomehow...",
+  "あの2人、長老から\n何かあずかってたらしい・・・": "It seems those two received something from the elder…",
+  "あっ!・・・そ、\nそれは・・・!!": "Ah! ... So,\nThat is...!!",
+  "ほ、ほら・・・やっぱり見つかった!\n\nおまえがわるい!\n\nいや、こわしたのは おまえ!": "Ho, ho... I found it after all!\n\nIt's your fault!\n\nNo, you broke it!",
+  "ぶわっかもーん!!\nわしの大切なつぼを\nこわすとはなにごとゃ!": "Bwah! What's going on?!\nYou dare to break my precious pot?!",
+  "ご、ごめんなさーい・・・": "I'm sorry...",
+  "ふぅ・・・やっと穴から抜け出せたわい・・・\nおまえさん悪いがこの穴をうめといてくれんか?\n\n・・・しかし、だれがこんな穴をほったんじゃろうな・・・\n\n・・・ん?なんじゃ?なんだか外がさわがしいのぉ・・・\nことのついでじゃ\n・・・おまえさん ちょっと見てきてくれんか?": "Phew... I finally managed to get out of this hole...\nSorry, but could you fill this hole back up?\n\n...But who on earth dug this hole anyway...?\n\n...Hmm? What's going on? It's getting noisy outside...\nJust as a side note,\n...Hey, could you go take a look?",
+  "ふぅ・・・おまえさんがなかなか来ないから、\nいちど村にもどってきたんじゃが、\nこの穴にみごとにハマってのぉ・・・\n\nやっと穴から抜け出せたわい・・・\n\n・・・おまえさん、\n悪いがこの穴をうめといてくれんか?\n\n・・・しかし、だれがこんな穴を\nほったんじゃろうな・・・\n\nわしはまた、山でまっておるからの・・・\nあまり、としよりをまたせるでないぞ・・・": "Hmm... since you haven't come back for so long,\nI returned to the village once,\nbut I got stuck in this hole splendidly...\n\nFinally, I managed to get out of the hole...\n\n...You,\ncould you please fill this hole for me?\n\n...But who would dig such a hole...\n\nI'll be waiting in the mountains again...\nso don't make me wait too long...",
+  "・・・・・・あぁ!お前は!\nぬけ道をふさいじまったガキじゃねえか!\n\n・・・ったく・・・\nコマブタ達のすきを見てにげ出そうとしたら、\n目の前で出口をふさいじまいやがって・・・\n\nおかげでこの通り、\nまた ろうやにぎゃく戻りさ・・・": "...Ah! You're!\nThe kid who blocked the escape route!\n\n...Good grief...\nJust as I was about to run away when the pigs were distracted,\nthey blocked the exit right in front of me...\n\nThanks to that, I'm back on this street again...\nLike a rat caught in a trap...",
+  "これじゃぁ屋敷の宝物どころか\nパン一切れさえぬすめやしねえ・・・\n\nくそっ、ふてねしてやる!": "This isn't even a treasure of the mansion,\nit's not even stealing a slice of bread...\n\nDamn it, I'll show them!",
+  "すぴ〜すかかか・・・んがんごっ\n・・・すぴょぴょぴょ・・・": "Supi~ sukaka ka ka... ngan go.\n...Supyo pyo pyo pyo...",
+  "おや、かわいいボウヤだね。\nでも見たところ元気そうじゃないか・・・\n\nわたしゃこう見えても医者だからね、\nケガでもしたらまたおいで": "Oh, what a cute little boy.\nBut from the looks of it, he seems fine...\n\nI may look like this, but I'm a doctor,\nso come see me again if you get hurt.",
+  "ボウヤ・・・\nわたしゃこう見えても\nいそがしいんだよ・・・": "Boy...\nEven though I look like this,\nI'm busy...",
+  "みんなを助けてくれたんだって?\nけっこうやるじゃないか・・・ありがとね": "I heard you helped everyone?\nYou're pretty good at this... thank you.",
+  "あんたがケガしたら\nまっ先に見てあげるからね": "If you get hurt, I'll be the first to check on you.",
+  "おや、どうしたんだいその小鳥・・・\nケガしてるじゃないか!\nちょっと見せてごらん\n\n・・・・・・・・・・\n・・・これはちょっとじかんがかかりそうだね・・・\n\nボウヤ、この小鳥しばらく私があずかるよ・・・\nなぁに心配はいらないよ、\nわたしがせきにんもって みるからさ\n\n・・・あぁ、この鳥なんて名前だい?\n・・・・?\nなんだい・・・名前ぐらい付けてあげなよ・・・\n\n・・・・・・バロン?・・・そうか、バロンか\n・・・いい名前じゃないか!": "Oh, what's wrong with that little bird...\nIt's injured!\nLet me take a look.\n\n・・・・・・・・・・\n・・・This will take a while, huh...\n\nBoy, I'll take care of this little bird for a while...\nDon't worry,\nI'll take care of it.\n\n・・・Ah, what's the name of this bird?\n・・・?\nWhat... at least give it a name...\n\n・・・・・・Baron?・・・I see, Baron.\n・・・What a good name!",
+  "しばらくしたら また、\n見に来ておくれ": "Please come see me again soon.",
+  "おまえ、森の外出るのか?\nだったら一度、近道行ってみるといい\n\nとてもキレイ・・・とおくに大きな屋敷も見える\nウワサでは宝物もあるらしい・・・\nおまえ、勇気ある、キョウミあったら行ってみるといい": "Are you going outside the forest?\nIf so, you should try taking a shortcut once.\n\nIt's very beautiful... and you can also see a large mansion in the distance.\nRumor has it there are treasures inside too...\nYou have courage, Kyomi. If you have the chance, you should go.",
+  "・・・そういえば、むかし、\n近からこのむらに、魔王きたことある・・・\n\n森にあるふしぎな水晶、魔王のわすれものらしい・・・\nたぶん、開けかたは魔王が知ってる・・・": "...Come to think of it, a long time ago,\nthe Demon King came to this village from near...\n\nA mysterious crystal in the forest, apparently something the Demon King forgot...\nProbably, the Demon King knows how to open it...",
+  "おまえ、ともだち・・・\nまたあそびにこい": "You, my friend...\nCome play again.",
+  "おにいちゃん!おにいちゃん!\n・・・お花が咲いたんだよ!": "Big brother! Big brother!\n...Flowers have bloomed!",
+  "わく わく!・・・": "Waku waku!...",
+  "キレイだね・・・": "It's beautiful...",
+  "・・・楽しみだね": "...I'm looking forward to it.",
+  "○○○◎◎○◎◎・・・◎◎○○○\n●△○○・・・○○◎△○○?": "○○○◎◎○◎◎・・・◎◎○○○\n●△○○・・・○○◎△○○?",
+  "○○○、□□□□○◎・・・○○、\n○△○○○○○○": "○○○, □□□□○◎...○○,\n○△○○○○○○",
+  "た○へ○だ!た○へ○だぁ!": "It's ta○he○da! It's ta○he○da!",
+  "たいへんだ!たいへんだぁ!": "Oh no! Oh no!",
+  "○○○、○△○○○・・・\n○○○○○△○○○●・・・": "○○○, ○△○○○...\n○○○○○△○○○●...",
+  "○○、○○○○□□□○○・・・": "○○, ○○○○□□□○○・・・",
+  "○△、◎△○○○○●○△・・・": "○△, ◎△○○○○●○△...",
+  "◎○◎○○●○○○・・・": "◎○◎○○●○○○・・・",
+  "そ○の◎◎の◎◎・・・◎◎に\nつな○△てる・・・もう◎△たか?": "That ○○'s ○○... ○○ is connected... Is it already ○○?",
+  "○○●・・・\n○○○○○": "○○●・・・\n○○○○○",
+  "コ○バ・・・\nわ○○ない・・・": "Ko-ba...\nI don't have it...",
+  "◎●、へ○な□□◎た\n・・・お○え◎たか?": "◎●, he○na□□◎ta\n...was it ○e◎ka?",
+  "○や、か○いい□□□だね・・・": "○Ya, ka○i □□□ ne…",
+  "ね△、◎△て○いいでし△・・・": "It's good, isn't it?",
+  "◎の◎はあ●ないよ・・・": "The ◎ of the ◎ doesn't have a ●...",
+  "わ○ら、○ても◎△て○": "I'm sorry, but I can't help with that.",
+  "な○まの○と・・・とても○ん◎い": "The ○ of ○ma and… very ○n◎i",
+  "な○まの○と・・・\nと○も○ん◎い": "The ○ of ○ma...\nAnd ○ is also ○n◎i.",
+  "ねぇ、行ってもいいでしょ・・・": "Hey, can I go...?",
+  "森の中、とてもあぶない\n・・・ぜったいダメ!": "In the forest, it's very dangerous... absolutely no!",
+  "そこの右側の入口・・・\n長老の家につながってる\n\n・・・でも、今みんな\nいそがしい・・・": "The entrance on the right side over there...\nIt leads to the elder's house.\n\n...But everyone is busy now...",
+  "こ○は、□□□□の◎・・・": "This is ◎ of □□□□...",
+  "おおっ! コトバ少し おぼえたか・・・\nでも、まだ かんぜんには わからない\n\n・・・あと、ひとりに かみつけば\nたぶんコトバおぼえられる・・・": "Oh! Did you remember a few words...?\nBut I still don't understand completely.\n\n...Also, if I bite someone alone,\nI think I can remember the words...",
+  "ここ、ドワーフの村\n・・・なかまいなくなって\nおおさわぎ・・・": "Here, the dwarven village.\n...it's no longer worth mentioning.\nA great commotion...",
+  "たいへん!たいへん!\nなかま、いなくなった!\n\nいま、みんなで 森にある小屋と\n村の入口ちかくのとびらをあけて、\n\nグラグラ桟橋と、高見ヤグラに\nさがしにいったところ・・・": "Oh no! Oh no!\nMy friend is gone!\n\nRight now, everyone is opening the door near the entrance to the village and the cabin in the forest,\n\nand we went looking for the rickety pier and the Takami Yagura...",
+  "なかま、木にとりついた\nホウシにつかまって\n木にぶらさがってた・・・\n\nぶらさがると のびるホウシダマ\n・・・とても あやしい・・・": "A companion, clinging to the tree,\nHolding onto a fern,\nHanging from the tree...\n\nWhen hanging, the fern stretches out\n...It's very suspicious...",
+  "・・・・・・・・・・・": "...........",
+  "このへんなキカイ、\n昔からここにある・・・\nわしらには動かせない・・・": "This strange machine,\nhas been here since ancient times...\nwe can't move it...",
+  "わし・・・長老のいちばんでし": "I... I am the oldest.",
+  "なかまのこと・・・\nとてもしんぱい": "About my friends...\nI'm very worried.",
+  "たいへん!たいへん!\n何がたいへんって、\nそりゃーもーたいへん!": "Oh dear! Oh dear!\nWhat's so terrible?\nOh my, it's absolutely terrible!",
+  "この小屋のこども、\nまだかえってこないらしい": "The child in this hut,\nseems to still not have returned.",
+  "封印ぶくろ?・・・そういえば、\n森の封印ぶくろとかいうもの\nちょうろうがもってる・・・": "Seal gloves? ... Speaking of which,\nthere's something called seal gloves in the forest.\nChorou has them...",
+  "おまえ、友だち・・・\nまぁ、ゆっくりしていけ": "You, friend...\nWell, take your time.",
+  "森で、へんなイヌ見た・・・\nおまえ見たか?": "I saw a strange dog in the forest...\nDid you see it?",
+  "あのイヌ、\nケガしてたんだってな・・・": "That dog,\nI heard it was injured...",
+  "森の中で こども\n見なかったか?": "Didn't you see the child in the forest?",
+  "森の中にある恵みの広場\n・・・もう行ったか?": "The bountiful square within the forest...\n...Have you already gone?",
+  "こどものこと・・・\nとてもしんぱい": "About children...\nVery worried.",
+  "わし・・・見はり・・・ん?何の見はりか?\n・・・・・それはおしえられない・・・": "I… watch… hmm? What kind of watch?\n…I can’t tell you that…",
+  "長老にはもうあったか?": "Is the elder already there?",
+  "なかま たすけてくれた\n・・・ありがとう": "My friend helped me... thank you.",
+  "そう言えば・・・\n始まりの森のかみつき草にも\n花が咲くらしい・・・\n\nでも、わしら見たことない・・・": "Come to think of it...\nI hear flowers bloom on the biting grass in the forest of beginnings...\n\nBut we've never seen them...",
+  "キノコの森を右側にぬけた先に\n山がある・・・でも、\nとてもキケンな山・・・": "Beyond the mushroom forest on the right lies a mountain... but it's a very dangerous one...",
+  "キノコの森には、\nいろんなキノコはえてるけど\nむやみに食べない方がいい": "In the mushroom forest,\nthere are various mushrooms growing,\nbut it's better not to eat them recklessly.",
+  "高見ヤグラのぼうえんきょう、もう見たか?\nあそこのけしき、とてもキレイ・・・": "Have you seen the Noboru Kyo of Takami Yagura yet?\nThat scenery over there is very beautiful...",
+  "このキカイこわれてる・・・\n\nたまに来る、赤い服をきたヤツなら\nなおせるかもしれない": "This machine is broken...\n\nIf it's the guy who comes occasionally wearing a red outfit,\nI might be able to fix it.",
+  "わし・・・見はり・・・\nちょっとたいへん・・・": "I... I'm a lookout...\nIt's a little difficult...",
+  "◎○□□□・・・○○○◎\n△○○○●○○・・・": "◎○□□□・・・○○○◎\n△○○○●○○・・・",
+  "わしらの◎◎、いなくな△た・・・\n◎は◎に◎ないほう●いい・・・": "Our ◎◎ has disappeared…\nIt's better if ◎ doesn't exist…",
+  "わしらの◎◎にはもう◎△たか?": "Has our ◎◎ already ◎△?",
+  "わしらのなかま、いなくなった・・・\n今は森に出ないほうがいい・・・": "Our comrades have disappeared…\nIt's better not to go into the forest now…",
+  "わしらの長老にはもう会ったか?": "Have you met our elder yet?",
+  "たき先といえば・・・\n・・・・・・ヤキイモだねぇ・・・\n\nそういえば、\n森の中でいいニオイがするんだけどねぇ・・・": "Speaking of firewood...\n...It's yakiimo, huh...\n\nCome to think of it,\nthere's a nice smell in the forest, you know...",
+  "おやっ!\n・・・これ、くれるのかい?\nうれしいねぇ・・・\n\nそうだ、何かわからないんだけど・・・\nかわりに これをもらっとくれ": "Oh!\n...Is this what you're giving me?\nI'm so happy...\n\nWell, I don't really understand what's going on, but...\nPlease take this instead.",
+  "ケガしてるね・・・\nかわいそう・・・": "You're hurt...\nPoor thing...",
+  "とがった木にぶら下がっている\nホウシまんじゅう・・・ぜんぶ見たか?": "Hanging from a sharp tree.\nHoushi manju... Have you seen them all?",
+  "とがった木にぶら下がっている\nホウシまんじゅうの中に\nなかま2人 とりこまれた": "Hanging from a sharp tree,\ninside a hōshi manju,\ntwo companions were captivated.",
+  "ユラユラゆれるホウシダマ・・・\nとてもあやしい・・・": "The swaying fern...\nIt's very suspicious...",
+  "ホウシダマがかぶさっている\n木の先のなかま、2人いるハズ・・・": "The houjidama is overlapping.\nThere should be two people among the tips of the trees…",
+  "グラグラさんばしに なかまひとり\nつかまってた・・・": "I was caught by Guragura-sanbashi, with one companion.",
+  "高見ヤグラ・・・ひろくてたいへん\n・・・なかま見つけにくい・・・\n回復する液、うまくつかわないと・・・": "Takami Yagura... It's wide and difficult.\n... It's hard to find companions...\nRecovery liquid, if you don't use it well...",
+  "たしか高見ヤグラに2人のなかま\nつかまっているハズ": "I'm sure there are two of them trapped in Takami Yagura.",
+  "たき先といえば・・・・・・\nヤキイモだねぇ・・・": "Speaking of the tip...\nIt's a yakimo, huh...",
+  "ありがとう": "Thank you.",
+  "ドワーフ、とても\nかんしゃしてる": "Dwarf, very grateful.",
+  "こども・・・森から\nまだかえってこないらしい・・・": "Children... from the forest.\nIt seems they haven't returned yet...",
+  "そういえば、高見ヤグラで\nこどものこえ きこえたような・・・": "Come to think of it, at Takami Yagura,\nI think I heard a child's voice...",
+  "ありがとう!": "Thank you!",
+  "ドワーフの長老、\nとても よろこんでる": "The dwarf elder,\nis very pleased.",
+  "おまえ、とても\nゆうきある": "You are very brave.",
+  "ドワーフ、とてもかんげき!": "Dwarves, very effective!",
+  "あくしゅ してほしい・・・": "I want you to shake hands...",
+  "サイン してほしい・・・": "I want you to sign...",
+  "・・・・・・・・・スキ!": "......... I like you!",
+  "コトバを吸いとろう!": "Let's inhale words!",
+  "たき火といえば…": "When it comes to bonfires...",
+  "伝説のカレハチョウ": "The Legendary Swallowtail Butterfly",
+  "火が消えちゃった…": "The fire went out...",
+  "まいごのドワーフ": "Lost Dwarf",
+  "花のたね": "Flower Seeds",
+  "AP・ピラー": "AP Pillar",
+  "ドワーフを数え": "Count the dwarves.",
+  "タルのゆくえ": "The Fate of Taru",
+  "森の封印ぶくろ": "Forest Seal Pouch",
+  "花の森": "Flower Forest",
+  "ドワーフの助け": "Dwarf help",
+  "魔王の忘れもの": "The Demon's Forgotten Item",
+  "見えないカガミ?": "Invisible mirror?",
+  "ケンカをとめて": "Stop the fight.",
+  "地下ロウの大ドロボウ": "The Great Robbery of the Underground Row",
+  "のぞいてごらん?!": "Take a peek?!",
+  "ヨ〜イ…ドン!": "Yo~i... Don!",
+  "バロンは友だち": "Baron is a friend.",
+  "これ、な〜んだ?": "What is this?",
+  "やしきの宝物?": "Yashiki's treasure?",
+  "水晶のじゅもん": "Crystal Spell",
+  "とびっきりの笑がお!": "A burst of laughter!",
+  "とびっきりの泣きがお?": "Is there a particularly big cry?",
+  "動かない恵みコゾウ": "The Unmoving Blessing Kozo",
+  "怪物?勝てるかな?": "Monster? Can I win?",
+  "死神の巣をつぶせ": "Destroy the Death God's Nest"
+ },
+ "banks": [
+  {
+   "bank": "WFM D0FF",
+   "file": "AREA00/A006.GAM",
+   "offset": "0x14A58",
+   "messages": [
+    {
+     "index": 0,
+     "original": "カギがかかっている",
+     "translation": "The key is locked."
+    },
+    {
+     "index": 1,
+     "original": "ヒヨコをつかった",
+     "translation": "I used a chick."
+    },
+    {
+     "index": 2,
+     "original": "カエルをつかった",
+     "translation": "Used a frog."
+    },
+    {
+     "index": 3,
+     "original": "バナナをつかった",
+     "translation": "I used a banana."
+    },
+    {
+     "index": 4,
+     "original": "あばれ竜巻をつかった",
+     "translation": "I used a rampaging tornado."
+    },
+    {
+     "index": 5,
+     "original": "100年のカギをつかった",
+     "translation": "I used the key of 100 years."
+    },
+    {
+     "index": 6,
+     "original": "100年の鍵をつかった",
+     "translation": "I used the key from 100 years ago."
+    },
+    {
+     "index": 7,
+     "original": "めぐみの羽根をつかった",
+     "translation": "I used Megumi's feather."
+    },
+    {
+     "index": 8,
+     "original": "かみつき草の花をつかった",
+     "translation": "I used the flowers of the biting grass."
+    },
+    {
+     "index": 9,
+     "original": "マゴブタをつかった",
+     "translation": "I used a pig."
+    },
+    {
+     "index": 10,
+     "original": "ケモノダッシュ",
+     "translation": "Kemono Dash"
+    },
+    {
+     "index": 11,
+     "original": "カエルがにげた",
+     "translation": "The frog ran away."
+    },
+    {
+     "index": 12,
+     "original": "1UP",
+     "translation": null
+    },
+    {
+     "index": 13,
+     "original": "ライフゲージかくだい",
+     "translation": "Life Gauge Kakudai"
+    },
+    {
+     "index": 14,
+     "original": "奥のカベには ↑と×ボタンで とびつくことができ、\nそのまま上に上がると 奥のラインを歩けるよ\n手前にもどりたいときはその逆だよ",
+     "translation": "You can jump onto the wall at the back using the ↑ and × buttons,\nand if you go up from there, you can walk along the back line.\nTo return to the front, do the opposite."
+    },
+    {
+     "index": 15,
+     "original": "木の枝にぶら下がったときは→で回転\nどんどん速くなる。ジャンプしたい\n方向と×ボタンで飛び出す!",
+     "translation": "When hanging from a tree branch → rotate\nIt gets faster and faster. I want to jump.\nUse direction and the × button to jump out!"
+    },
+    {
+     "index": 16,
+     "original": "○ボタンをおしつづけると、\nより強力な攻撃ができる",
+     "translation": "If you continue pressing the ○ button,\nyou can perform a more powerful attack."
+    },
+    {
+     "index": 17,
+     "original": "人と話すときは ○ボタン",
+     "translation": "When talking to people, press the ○ button."
+    },
+    {
+     "index": 18,
+     "original": "ここがセーブポイントです。\n↑で奥を向いているときに\n○を押せばセーブができます",
+     "translation": "This is the save point.\nWhen facing backward with ↑,\npressing ○ will save."
+    },
+    {
+     "index": 19,
+     "original": "ポスト あけるな!",
+     "translation": "Don't open the mailbox!"
+    },
+    {
+     "index": 20,
+     "original": "始まりの村",
+     "translation": "The Beginning Village"
+    },
+    {
+     "index": 21,
+     "original": "始まりの森",
+     "translation": "The Beginning Forest"
+    },
+    {
+     "index": 22,
+     "original": "100年老人の小屋",
+     "translation": "The 100-Year-Old Man's Cabin"
+    },
+    {
+     "index": 23,
+     "original": "ふるいけ",
+     "translation": "sieve"
+    },
+    {
+     "index": 24,
+     "original": "この土地は はじめてか?\n\nオレは前に ここに住んでたんだけど、\nなんか ようすがかわっちまってよォ\n\nなんかわからんが、しりたいことがあるなら\nこの先の ずーっと上の小屋に住んでる\n\n100年老人というジィさんに\n会ってきいてみろよ\n\nでも、このあたりもあぶなくなったから\n気ィつけていけよ\n\nあっ そうだ! たてふだは見てけよ\n見るときは ↑と○ボタンだぜ\n\n・・・じゃあな!",
+     "translation": "Is this land new to you?\n\nI used to live here before,\nbut things have changed a lot since then.\n\nI don't know what it is, but if you want to know something,\nthere's a cabin way up ahead.\n\nMeet the 100-year-old old man and ask him.\n\nBut things around here have gotten dangerous,\nso be careful.\n\nOh, right! Look at the foot pedals.\nWhen looking, use the ↑ and ○ buttons.\n\n...See ya!"
+    },
+    {
+     "index": 25,
+     "original": "よぉ、にィちゃんも\nこの先に行きたいのかい?\n\nそりゃぁムリだ・・・\nこの先はキリで まっ白だぜ\n\nキリがなくなりゃぁ\n行けるんだけどな・・・",
+     "translation": "Hey, Niichan too,\ndo you want to go further?\n\nThat's impossible...\nBeyond this point, it's completely white.\n\nIf the Kiri runs out,\nyou can go, though..."
+    },
+    {
+     "index": 26,
+     "original": "まぁーきくところによると あばれ竜巻 があれば\n何とかなるみたいだけど・・・\nじっさい どこにあるんだよ、そんなもん・・・\n\nオレは あきらめた!\nにぃちゃんも考えた方がいいぜ・・・\n\nあばよ!",
+     "translation": "Well, according to what I heard, if there's a violent tornado,\nit seems like we can manage somehow...\nBut seriously, where on earth is something like that...?\n\nI've given up!\nYou should think about it too, big brother...\n\nGoodbye!"
+    },
+    {
+     "index": 27,
+     "original": "ちょっと まてよ",
+     "translation": "Wait a minute."
+    },
+    {
+     "index": 28,
+     "original": "ウワッ!やめろョ",
+     "translation": "Whoa! Stop it!"
+    },
+    {
+     "index": 29,
+     "original": "オレは今、ハラがへってて イライラしてんだ\n何か たべるもん ないか?・・・\nなけりゃ またあとにしてくれョ",
+     "translation": "I'm hungry right now and I'm getting irritated.\nIs there anything I can eat?...\nIf not, please save it for later."
+    },
+    {
+     "index": 30,
+     "original": "オ〜〜〜ッ!\nなんだ それくれるのか?\n\nサンキュー! たすかったゼ\nもう ハラがへって、うごけなかったんだ\n\nオレ サンタ ってんだ、よろしくな",
+     "translation": "Ohhhh!\nWhat? You're giving me that?\n\nThanks! That saved me.\nI was so hungry I couldn't move.\n\nI'm Santa—nice to meet you."
+    },
+    {
+     "index": 31,
+     "original": "そうだ!!\nとっておきの技をおしえてやるョ\n\nいいか?",
+     "translation": "That's right!!\nI'll teach you my secret technique!\n\nIs that okay?"
+    },
+    {
+     "index": 32,
+     "original": "×ボタンを押しながら走るとスピードが速くなる、\n人よんで ケモノダッシュっていう技だゼ",
+     "translation": "Pressing the X button while running makes your speed increase—it's called \"Kemono Dash,\" a technique used by humans."
+    },
+    {
+     "index": 33,
+     "original": "おぼえたか?\n×ボタンを押しながらだぞ・・・・・・\nじゃぁオレはいくゼ\n\nあばよ!",
+     "translation": "Did you remember?\nWhile pressing the X button...\nWell then, I'm off!\n\nGoodbye!"
+    },
+    {
+     "index": 34,
+     "original": "サンキュ",
+     "translation": "Thank you."
+    },
+    {
+     "index": 35,
+     "original": "バイバイ・・・",
+     "translation": "Bye-bye..."
+    },
+    {
+     "index": 36,
+     "original": "・・・あらら・・・もう見つかっちゃった!\n\nかくれてたんだけど よくわかったな・・・",
+     "translation": "...Oh dear... I've already been found!\n\nI was hiding, but you figured it out so well..."
+    },
+    {
+     "index": 37,
+     "original": "よし! いいことおしえてやるよ\n\nこの小屋のウラをまっすぐ奥に行くと ふるいけ、\nそして、この小屋の先を上に行くと\n100年老人っていう ジィさんが住んでるんだ",
+     "translation": "Alright! I'll tell you something good.\n\nIf you go straight to the back of this hut, there's a gate,\nAnd if you go up past this hut,\nThere's an old man called the 100-year-old living there."
+    },
+    {
+     "index": 38,
+     "original": "え?・・・オイラかい?・・・・・・\nそんなことより まず行ってみろよ、\nウソじゃないから・・・\n\nそのあとで また会おうや",
+     "translation": "Huh?... Is that me?...\nRather than that, first go and see it,\nIt's not a lie...\n\nAfter that, let's meet again."
+    },
+    {
+     "index": 39,
+     "original": "えっ?!もう行ったのか?・・・そうか・・・",
+     "translation": "Huh?! Already gone?... I see..."
+    },
+    {
+     "index": 40,
+     "original": "100年老人には会ったのかい?\n\n会ったら また会おうや",
+     "translation": "Have you met the 100-year-old?\n\nIf you do, let's meet again."
+    },
+    {
+     "index": 41,
+     "original": "ふるいけ には行ったかい?\n\n行ったら また会おうや",
+     "translation": "Did you go to Furuike?\n\nIf you did, let's meet again."
+    },
+    {
+     "index": 42,
+     "original": "どうだい、ウソじゃなかっただろ\n\nじまんじゃないけどオイラいろいろ しってんだ",
+     "translation": "How about it, it wasn't a lie, right?\n\nIt's not a joke, but I know a lot."
+    },
+    {
+     "index": 43,
+     "original": "・・・あぁ、オイラかい?\n\nオイラ、ヤン かくれ里のヤンていうんだ・・・",
+     "translation": "...Ah, me?\n\nI'm Yan, from the Hidden Village..."
+    },
+    {
+     "index": 44,
+     "original": "いつも かくれてるんだけど、\nだれも見つけられないんだ・・・\n\nまた見つけられたら そのときも\nいいことおしえてやるよ!\n・・・見つけることができたらな",
+     "translation": "I always hide,\nbut no one can find me...\n\nIf I can be found again,\nI'll tell you something good then too!\n...If I can be found."
+    },
+    {
+     "index": 45,
+     "original": "う〜ん・・・なんだか楽しくなってきたな・・・\nがんばって見つけてくれよ\n\nじゃあな!",
+     "translation": "Hmm... I'm starting to feel like I'm having fun now...\nPlease do your best to find it!\n\nSee ya!"
+    },
+    {
+     "index": 46,
+     "original": "この先に行く気か?\n\nでも・・・おまえ泳げるんかィ?",
+     "translation": "Are you going to go ahead?\n\nBut… can you swim?"
+    },
+    {
+     "index": 47,
+     "original": "いかん、いかん\n\n今はカメさんに たすけてもらったが\n次からそうはいかん\n\nそこのトビラの先は\n泳げないと行けんのだから・・・\n\n悪いことはいわん、\n今はやめた方がいい・・・\n\nいつか 泳げるようになってから行くんだナ\n\nおっ そうだ!\nおまえ ハラへってないかィ?\n\nこれ もってけよ!",
+     "translation": "No, no.\n\nI got help from the turtle this time,\nbut I can't do that again next time.\n\nBeyond that door,\nyou can't go unless you can swim...\n\nDon't say bad things,\nit's better to stop now...\n\nI'll go when I can swim someday.\n\nOh, right!\nAre you hungry?\n\nTake this!"
+    },
+    {
+     "index": 48,
+     "original": "じゃあなボウズ 気ィつけて行けや",
+     "translation": "See ya, loser. Be careful."
+    },
+    {
+     "index": 49,
+     "original": "・・・うーん・・・こまったのォ・・・\n\nどーしたもんかのォ・・・\n\nんっ?",
+     "translation": "...Hmm... I'm in trouble...\n\nWhat should I do...?\n\nHmm?"
+    },
+    {
+     "index": 50,
+     "original": "なんじゃ?・・・\nわしが100年老人じゃが・・・何か用かな?",
+     "translation": "What is it?...\nI am a 100-year-old old man... Is there something you need?"
+    },
+    {
+     "index": 51,
+     "original": "すまんが、ちょっと\n考えごとをしておってな・・・・・・\n\n・・・おお そうじゃ!!\nちょっと おまえさん、たのまれてくれんか?\nたのみというのはのォ・・・\n\nおまえさんも ここへ来るとき 見たと思うが、\n赤いトリのコッカのやつめ、\n\nよそからタマゴを盗んできては、\nああやって自分のものにしておってな・・・\n\nあのままでは\n中のヒナが かわいそうなんじゃ・・・\n\nそこでおまえさん、このへんにあるタマゴの中にいる\nヒナを全部 集めてくれんか?",
+     "translation": "Sorry, I'm just thinking about something...\n\n...Oh, that's right!\nHey, would you do me a favor?\nWhat I mean by \"favor\" is...\n\nYou probably saw it when you came here,\nthat red-breasted chick,\n\nstealing eggs from other places\nand then making them his own...\n\nIf things continue like this,\nthe chicks inside will be pitiful...\n\nSo, could you gather all the chicks\ninside the eggs around here?"
+    },
+    {
+     "index": 52,
+     "original": "しんぱいじゃからな・・・\nたのんだぞ",
+     "translation": "I'm worried...\nI'm counting on you."
+    },
+    {
+     "index": 53,
+     "original": "なんじゃ、もう 集まっとるのか?\n\nん〜〜〜っ・・・\nじゃが まだ残っとるようじゃのォ・・・\n\nすまんがもう一度 行ってくれんか?",
+     "translation": "What? Are they already gathering?\n\nHmm~~~...\nBut it seems like there's still some left...\n\nSorry, could you go again?"
+    },
+    {
+     "index": 54,
+     "original": "集めてくれたのか?・・・\nん〜〜〜っ・・・\n\nじゃが まだ残っとるようじゃのォ・・・\nすまんがもう一度 行ってくれんか?",
+     "translation": "Did you collect them?...\nHmmmmm...\n\nBut it seems there's still some left...\nSorry, but could you go again?"
+    },
+    {
+     "index": 55,
+     "original": "なんじゃ、もう 集まっとるのか・・・\nおおぉぉぉっ!しかも全部集まっとるではないか!\n・・・・・・で、中身はどこじゃ?",
+     "translation": "What? Already gathered...?\nOhhhhh! And they're all gathered!\n...And where are the contents?"
+    },
+    {
+     "index": 56,
+     "original": "おー・まい・がっ!!\n\nハラの中に入れとったのか!?\n\nまぁ、しかし 消化はされとらんようじゃし、\nよしとするかのォ\n\nいやぁ、何はともあれ ごくろうじゃった\n・・・これで わしも安心じゃわい\n\nんっ?・・・・・・そうじゃそうじゃ\nわしに何か用が あったようじゃな\n\n・・・・・・ほう・・・・・・\nコマブタに おジィさんの形見のうでわを\nとられたのか・・・\n\nそれで コマブタたちのことを\nききたいんじゃな・・・\n\nんっ わかった・・・\nじつはのォ・・・・・・・・・・・・",
+     "translation": "Oh my god!!\n\nDid you put it in the stomach!?\n\nWell, but it doesn't seem to be digested,\nso I'll leave it at that.\n\nWell, anyway, it was exhausting.\n...With this, I can rest easy.\n\nHmm?...That's right, that's right.\nIt seems like there was something you wanted from me.\n\n...Hmm...\nDid Komabuta take the memento of Ojiisan's arm...?\n\nSo, you want to ask about Komabuta and the others...\n\nHmm, I understand...\nActually, no..."
+    },
+    {
+     "index": 57,
+     "original": "集めてくれたのか?\n\n・・・おぉっ!! 全部集まったようじゃな\n・・・・・・で、中身はどこじゃ?",
+     "translation": "Did you gather them?\n\n...Oh! It looks like everything's been collected.\n...And where are the contents?"
+    },
+    {
+     "index": 58,
+     "original": "わしが 今回、話してやれる事は\nここまでじゃ・・・\n\nん〜〜っ ざんねんじゃのぅ・・・\n\nこのつづきは、ぜひ せいひんばんで\n楽しんでくだされ・・・\n\nイベント、アクション、もりだくさんじゃから\nきっと 気にいる はずじゃ・・・\nこのあとのムービーを 見ていくがよい・・・\n\n・・・・・・勇気ある少年よ\nぼうけんは 始まったばかりじゃ\nせいひんばんで まっておるぞ・・・",
+     "translation": "What I can tell you this time is\nthis far...\n\nHmm~~, what a shame...\n\nPlease enjoy the rest at the product page...\n\nThere's plenty of events and actions, so\nI'm sure you'll like it...\nYou should watch the movie after this...\n\n... ...Braver boy,\nyour adventure has just begun\nI'm waiting for you at the product page..."
+    },
+    {
+     "index": 59,
+     "original": "もちろん、わしの力になれることじゃったら\n何でも協力してやるからの・・・\n\n・・・そうじゃ、\n\nわしは物の めききには自信があるから、\n使い方のわからない物を手に入れたら\nわしのところに持ってくるといい・・・",
+     "translation": "Of course, if there's anything I can do to help,\nI'll cooperate with you...\n\n...That's right,\n\nI have confidence in my abilities, so\nif you get something you don't know how to use,\nbring it to me..."
+    },
+    {
+     "index": 60,
+     "original": "おや?ないのぉ・・・\nおまえさんに100年のすずを\nやろうとおもったんじゃが・・・\n\nどこかで無くしてしまったようじゃな・・・\n\nもし、それらしい物をみつけたら\n持ってきておくれ・・・\n\nそのかわり、おまえさんには・・・\nホレ、これをやろう・・・100年のカギじゃ",
+     "translation": "Oh? It's gone...\nI was going to give you a hundred years of tin...\n\nIt seems like you lost it somewhere...\n\nIf you find something like it,\nbring it to me...\n\nIn exchange, I'll give you this... Here, take this—it's a hundred-year key."
+    },
+    {
+     "index": 61,
+     "original": "これで、ここにあるのとおなじ宝箱なら\nあけることができるようになったはずじゃ・・・\nん〜ラッキーじゃのぉ・・・",
+     "translation": "With this, you should now be able to open the same treasure chests as the ones here...\nHmm, what luck!"
+    },
+    {
+     "index": 62,
+     "original": "それと・・・魔ブタをさがすには、\n封印ぶくろ と呼ばれるモノが必要じゃ・・・\n\nそれがないと、\nかくれ場所が目に見えんようになっとるんじゃ・・・",
+     "translation": "And... to find the Demon Pig, you need something called a Seal Pouch...\n\nWithout it,\nthe hiding place becomes invisible..."
+    },
+    {
+     "index": 63,
+     "original": "封印ぶくろのことは、この先の森に住む\nドワーフの長老にきいてみるといい・・・\nもっとくわしくおしえてくれるはずじゃ。",
+     "translation": "As for the sealed bag, you should ask the elder of the dwarves who live in the forest ahead...\nHe should be able to tell you more about it."
+    },
+    {
+     "index": 64,
+     "original": "なんじゃ、わからない物があるなら見せてごらん・・・",
+     "translation": "What? If there's something you don't understand, show it to me..."
+    },
+    {
+     "index": 65,
+     "original": "・・・おおっ、これはまさしく100年のすず!\nよく見つけたのぉ・・・\n\nこれをつかえばいつでも、\nここに戻って来ることができるはずじゃ・・・",
+     "translation": "...Oh wow, this is exactly 100 years of Suzu!\nYou found it well...\n\nIf you use this, you should be able to come back here anytime..."
+    }
+   ]
+  },
+  {
+   "bank": "WFM D1FF",
+   "file": "AREA00/A006.GAM",
+   "offset": "0x1A95C",
+   "messages": [
+    {
+     "index": 0,
+     "original": "CLEAR! ",
+     "translation": null
+    },
+    {
+     "index": 1,
+     "original": "ジィちゃんの形見",
+     "translation": "Grandpa's keepsake."
+    },
+    {
+     "index": 2,
+     "original": "100年老人との出会い",
+     "translation": "Encounter with a 100-Year-Old Man"
+    },
+    {
+     "index": 3,
+     "original": "霧を吹き飛ばせ!",
+     "translation": "Blow away the fog!"
+    },
+    {
+     "index": 4,
+     "original": "カエル水にかえる",
+     "translation": "The frog returns to the water."
+    },
+    {
+     "index": 5,
+     "original": "モトクロスコース",
+     "translation": "Motocross Course"
+    },
+    {
+     "index": 6,
+     "original": "キミ、だあれ?",
+     "translation": "Who are you?"
+    },
+    {
+     "index": 7,
+     "original": "大きな水たまり?",
+     "translation": "A large puddle?"
+    },
+    {
+     "index": 8,
+     "original": "かくれ里のヤン",
+     "translation": "Yan of the Hidden Village"
+    },
+    {
+     "index": 9,
+     "original": "オイラ泳げない…",
+     "translation": "I can't swim..."
+    },
+    {
+     "index": 10,
+     "original": "コッカタマゴの中身",
+     "translation": "The contents of a cockerel egg."
+    },
+    {
+     "index": 11,
+     "original": "100年老人の話",
+     "translation": "The Story of a 100-Year-Old Man"
+    },
+    {
+     "index": 12,
+     "original": "???",
+     "translation": null
+    },
+    {
+     "index": 13,
+     "original": "ドワーフの長老",
+     "translation": "Dwarf Elder"
+    },
+    {
+     "index": 14,
+     "original": "サンタの好きなもの…",
+     "translation": "Santa's favorite things..."
+    },
+    {
+     "index": 15,
+     "original": "小さなブタ…マゴブタ?",
+     "translation": "A small pig... Magobuta?"
+    },
+    {
+     "index": 16,
+     "original": "かみつき草の花",
+     "translation": "The flowers of the biting grass."
+    }
+   ]
+  },
+  {
+   "bank": "WFM D2FF",
+   "file": "SYSTEM/A00013.000",
+   "offset": "0x0",
+   "messages": [
+    {
+     "index": 0,
+     "original": "うまれたてのヒヨコ",
+     "translation": "A newborn chick."
+    },
+    {
+     "index": 1,
+     "original": "かえり道をわすれたカエル",
+     "translation": "The frog who forgot its way home."
+    },
+    {
+     "index": 2,
+     "original": "かえられなくなった\nドワーフのこども",
+     "translation": "I can't be changed anymore.\nDwarf child."
+    },
+    {
+     "index": 3,
+     "original": "ハラペコな おなかに\nおいしいバナナ",
+     "translation": "A hungry stomach\ndelicious banana"
+    },
+    {
+     "index": 4,
+     "original": "何でもふき飛ばす\n強力なたつまき",
+     "translation": "Blows everything away\nA powerful gale"
+    },
+    {
+     "index": 5,
+     "original": "100年老人の小屋へ\nいつでも もどれる",
+     "translation": "To the 100-year-old man's cabin,\nI can always return."
+    },
+    {
+     "index": 6,
+     "original": "ある宝箱に合うと\nひらく事ができる",
+     "translation": "When it fits into a treasure chest,\nyou can open it."
+    },
+    {
+     "index": 7,
+     "original": "一度行った場所へ\nいつでも 行ける",
+     "translation": "To a place I once went,\nI can always go."
+    },
+    {
+     "index": 8,
+     "original": "かみつき草にさいた\nめずらしい花",
+     "translation": "I planted it in the grass.\nA rare flower."
+    },
+    {
+     "index": 9,
+     "original": "気持ちをしずめてくれる",
+     "translation": "It calms my feelings."
+    },
+    {
+     "index": 10,
+     "original": "もれない バケツ",
+     "translation": "A bucket that doesn't leak."
+    },
+    {
+     "index": 11,
+     "original": "遠くの景色が\n見られる",
+     "translation": "You can see the distant scenery."
+    },
+    {
+     "index": 12,
+     "original": "とてもきれいな\nからの小ビン",
+     "translation": "A very beautiful small bottle from."
+    },
+    {
+     "index": 13,
+     "original": "涙のつまった小ビン",
+     "translation": "A small bottle filled with tears."
+    },
+    {
+     "index": 14,
+     "original": "あしをケガしたこいぬ",
+     "translation": "A puppy with an injured leg."
+    },
+    {
+     "index": 15,
+     "original": "ホカホカ できたての\nやきいも",
+     "translation": "Hot and freshly baked yakiimo."
+    },
+    {
+     "index": 16,
+     "original": "枯れ葉の羽を持つ\n伝説のチョウチョ",
+     "translation": "A butterfly with wings of withered leaves,\na legendary butterfly."
+    },
+    {
+     "index": 17,
+     "original": "ヤミを てらす\nタイマツ",
+     "translation": "Illuminating darkness\nThai mat"
+    },
+    {
+     "index": 18,
+     "original": "水がたっぷり\n入ったバケツ",
+     "translation": "A bucket filled with plenty of water."
+    },
+    {
+     "index": 19,
+     "original": "なにも うつさないカガミ",
+     "translation": "A mirror that doesn't reflect anything."
+    },
+    {
+     "index": 20,
+     "original": "たかい所から\nユラユラおりられる",
+     "translation": "From a high place,\nyou can sway down."
+    },
+    {
+     "index": 21,
+     "original": "木でできた かるい\nブーメラン",
+     "translation": "Lightweight boomerang made of wood."
+    },
+    {
+     "index": 22,
+     "original": "イシでできた おもい\nブーメラン",
+     "translation": "A boomerang made of stone."
+    },
+    {
+     "index": 23,
+     "original": "コウテツでできた 強力な\nブーメラン",
+     "translation": "A powerful boomerang made of kouetsu."
+    },
+    {
+     "index": 24,
+     "original": "魔ブタを封じこめる\nたいせつな ふくろ",
+     "translation": "Sealing the demon pig\nA precious pouch"
+    },
+    {
+     "index": 25,
+     "original": "せかいを 見わたす\nべんりな地図",
+     "translation": "A convenient map that covers the world."
+    },
+    {
+     "index": 26,
+     "original": "ふるびた つぼ",
+     "translation": "An old pot."
+    },
+    {
+     "index": 27,
+     "original": "すべてを けちらす\n強力な ぶき",
+     "translation": "Scatter everything\nPowerful weapon"
+    },
+    {
+     "index": 28,
+     "original": "動きが はやくなる\nべんりな パンツ",
+     "translation": "Movement becomes faster.\nConvenient pants."
+    },
+    {
+     "index": 29,
+     "original": "動きが 最速になる\nすばらしい パンツ",
+     "translation": "Movement becomes fastest\nWonderful pants"
+    },
+    {
+     "index": 30,
+     "original": "バイタリティが すこし\nかいふくする",
+     "translation": "Vitality will slightly recover."
+    },
+    {
+     "index": 31,
+     "original": "バイタリティ すべてかいふく\n\nおなかいっぱい!",
+     "translation": "Vitality All Recovery"
+    },
+    {
+     "index": 32,
+     "original": "はじめから はいている\nパンツ",
+     "translation": "I've been wearing them from the beginning.\nPants."
+    },
+    {
+     "index": 33,
+     "original": "アイテム033",
+     "translation": "Item 033"
+    },
+    {
+     "index": 34,
+     "original": "アイテム034",
+     "translation": "Item 034"
+    },
+    {
+     "index": 35,
+     "original": "アイテム035",
+     "translation": "Item 035"
+    },
+    {
+     "index": 36,
+     "original": "アイテム036",
+     "translation": "Item 036"
+    },
+    {
+     "index": 37,
+     "original": "アイテム037",
+     "translation": "Item 037"
+    },
+    {
+     "index": 38,
+     "original": "アイテム038",
+     "translation": "Item 038"
+    },
+    {
+     "index": 39,
+     "original": "アイテム039",
+     "translation": "Item 039"
+    },
+    {
+     "index": 40,
+     "original": "アイテム040",
+     "translation": "Item 040"
+    },
+    {
+     "index": 41,
+     "original": "アイテム041",
+     "translation": "Item 041"
+    },
+    {
+     "index": 42,
+     "original": "アイテム042",
+     "translation": "Item 042"
+    },
+    {
+     "index": 43,
+     "original": "アイテム043",
+     "translation": "Item 043"
+    },
+    {
+     "index": 44,
+     "original": "アイテム044",
+     "translation": "Item 044"
+    },
+    {
+     "index": 45,
+     "original": "アイテム045",
+     "translation": "Item 045"
+    },
+    {
+     "index": 46,
+     "original": "アイテム046",
+     "translation": "Item 046"
+    },
+    {
+     "index": 47,
+     "original": "アイテム047",
+     "translation": "Item 047"
+    },
+    {
+     "index": 48,
+     "original": "アイテム048",
+     "translation": "Item 048"
+    },
+    {
+     "index": 49,
+     "original": "アイテム049",
+     "translation": "Item 049"
+    },
+    {
+     "index": 50,
+     "original": "アイテム050",
+     "translation": "Item 050"
+    },
+    {
+     "index": 51,
+     "original": "アイテム051",
+     "translation": "Item 051"
+    },
+    {
+     "index": 52,
+     "original": "アイテム052",
+     "translation": "Item 052"
+    },
+    {
+     "index": 53,
+     "original": "アイテム053",
+     "translation": "Item 053"
+    },
+    {
+     "index": 54,
+     "original": "アイテム054",
+     "translation": "Item 054"
+    },
+    {
+     "index": 55,
+     "original": "アイテム055",
+     "translation": "Item 055"
+    },
+    {
+     "index": 56,
+     "original": "アイテム056",
+     "translation": "Item 056"
+    },
+    {
+     "index": 57,
+     "original": "アイテム057",
+     "translation": "Item 057"
+    },
+    {
+     "index": 58,
+     "original": "アイテム058",
+     "translation": "Item 058"
+    },
+    {
+     "index": 59,
+     "original": "アイテム059",
+     "translation": "Item 059"
+    },
+    {
+     "index": 60,
+     "original": "アイテム060",
+     "translation": "Item 060"
+    },
+    {
+     "index": 61,
+     "original": "アイテム061",
+     "translation": "Item 061"
+    },
+    {
+     "index": 62,
+     "original": "アイテム062",
+     "translation": "Item 062"
+    },
+    {
+     "index": 63,
+     "original": "アイテム063",
+     "translation": "Item 063"
+    },
+    {
+     "index": 64,
+     "original": "アイテム064",
+     "translation": "Item 064"
+    },
+    {
+     "index": 65,
+     "original": "アイテム065",
+     "translation": "Item 065"
+    },
+    {
+     "index": 66,
+     "original": "アイテム066",
+     "translation": "Item 066"
+    },
+    {
+     "index": 67,
+     "original": "アイテム067",
+     "translation": "Item 067"
+    },
+    {
+     "index": 68,
+     "original": "アイテム068",
+     "translation": "Item 068"
+    },
+    {
+     "index": 69,
+     "original": "アイテム069",
+     "translation": "Item 069"
+    },
+    {
+     "index": 70,
+     "original": "アイテム070",
+     "translation": "Item 070"
+    },
+    {
+     "index": 71,
+     "original": "アイテム071",
+     "translation": "Item 071"
+    },
+    {
+     "index": 72,
+     "original": "アイテム072",
+     "translation": "Item 072"
+    },
+    {
+     "index": 73,
+     "original": "アイテム073",
+     "translation": "Item 073"
+    },
+    {
+     "index": 74,
+     "original": "アイテム074",
+     "translation": "Item 074"
+    },
+    {
+     "index": 75,
+     "original": "アイテム075",
+     "translation": "Item 075"
+    },
+    {
+     "index": 76,
+     "original": "アイテム076",
+     "translation": "Item 076"
+    },
+    {
+     "index": 77,
+     "original": "アイテム077",
+     "translation": "Item 077"
+    },
+    {
+     "index": 78,
+     "original": "アイテム078",
+     "translation": "Item 078"
+    },
+    {
+     "index": 79,
+     "original": "アイテム079",
+     "translation": "Item 079"
+    },
+    {
+     "index": 80,
+     "original": "アイテム080",
+     "translation": "Item 080"
+    },
+    {
+     "index": 81,
+     "original": "アイテム081",
+     "translation": "Item 081"
+    },
+    {
+     "index": 82,
+     "original": "アイテム082",
+     "translation": "Item 082"
+    },
+    {
+     "index": 83,
+     "original": "アイテム083",
+     "translation": "Item 083"
+    },
+    {
+     "index": 84,
+     "original": "アイテム084",
+     "translation": "Item 084"
+    },
+    {
+     "index": 85,
+     "original": "アイテム085",
+     "translation": "Item 085"
+    },
+    {
+     "index": 86,
+     "original": "アイテム086",
+     "translation": "Item 086"
+    },
+    {
+     "index": 87,
+     "original": "アイテム087",
+     "translation": "Item 087"
+    },
+    {
+     "index": 88,
+     "original": "アイテム088",
+     "translation": "Item 088"
+    },
+    {
+     "index": 89,
+     "original": "アイテム089",
+     "translation": "Item 089"
+    },
+    {
+     "index": 90,
+     "original": "アイテム090",
+     "translation": "Item 090"
+    },
+    {
+     "index": 91,
+     "original": "アイテム091",
+     "translation": "Item 091"
+    },
+    {
+     "index": 92,
+     "original": "アイテム092",
+     "translation": "Item 092"
+    },
+    {
+     "index": 93,
+     "original": "アイテム093",
+     "translation": "Item 093"
+    },
+    {
+     "index": 94,
+     "original": "アイテム094",
+     "translation": "Item 094"
+    },
+    {
+     "index": 95,
+     "original": "アイテム095",
+     "translation": "Item 095"
+    },
+    {
+     "index": 96,
+     "original": "アイテム096",
+     "translation": "Item 096"
+    },
+    {
+     "index": 97,
+     "original": "アイテム097",
+     "translation": "Item 097"
+    },
+    {
+     "index": 98,
+     "original": "アイテム098",
+     "translation": "Item 098"
+    },
+    {
+     "index": 99,
+     "original": "アイテム099",
+     "translation": "Item 099"
+    },
+    {
+     "index": 100,
+     "original": "アイテム100",
+     "translation": "Item 100"
+    },
+    {
+     "index": 101,
+     "original": "アイテム101",
+     "translation": "Item 101"
+    },
+    {
+     "index": 102,
+     "original": "アイテム102",
+     "translation": "Item 102"
+    },
+    {
+     "index": 103,
+     "original": "アイテム103",
+     "translation": "Item 103"
+    },
+    {
+     "index": 104,
+     "original": "アイテム104",
+     "translation": "Item 104"
+    },
+    {
+     "index": 105,
+     "original": "アイテム105",
+     "translation": "Item 105"
+    },
+    {
+     "index": 106,
+     "original": "アイテム106",
+     "translation": "Item 106"
+    },
+    {
+     "index": 107,
+     "original": "アイテム107",
+     "translation": "Item 107"
+    },
+    {
+     "index": 108,
+     "original": "アイテム108",
+     "translation": "Item 108"
+    },
+    {
+     "index": 109,
+     "original": "アイテム109",
+     "translation": "Item 109"
+    },
+    {
+     "index": 110,
+     "original": "アイテム110",
+     "translation": "Item 110"
+    },
+    {
+     "index": 111,
+     "original": "アイテム111",
+     "translation": "Item 111"
+    },
+    {
+     "index": 112,
+     "original": "アイテム112",
+     "translation": "Item 112"
+    },
+    {
+     "index": 113,
+     "original": "アイテム113",
+     "translation": "Item 113"
+    },
+    {
+     "index": 114,
+     "original": "アイテム114",
+     "translation": "Item 114"
+    },
+    {
+     "index": 115,
+     "original": "アイテム115",
+     "translation": "Item 115"
+    },
+    {
+     "index": 116,
+     "original": "アイテム116",
+     "translation": "Item 116"
+    },
+    {
+     "index": 117,
+     "original": "アイテム117",
+     "translation": "Item 117"
+    },
+    {
+     "index": 118,
+     "original": "アイテム118",
+     "translation": "Item 118"
+    },
+    {
+     "index": 119,
+     "original": "アイテム119",
+     "translation": "Item 119"
+    },
+    {
+     "index": 120,
+     "original": "アイテム120",
+     "translation": "Item 120"
+    },
+    {
+     "index": 121,
+     "original": "アイテム121",
+     "translation": "Item 121"
+    },
+    {
+     "index": 122,
+     "original": "アイテム122",
+     "translation": "Item 122"
+    },
+    {
+     "index": 123,
+     "original": "アイテム123",
+     "translation": "Item 123"
+    },
+    {
+     "index": 124,
+     "original": "アイテム124",
+     "translation": "Item 124"
+    },
+    {
+     "index": 125,
+     "original": "アイテム125",
+     "translation": "Item 125"
+    },
+    {
+     "index": 126,
+     "original": "アイテム126",
+     "translation": "Item 126"
+    },
+    {
+     "index": 127,
+     "original": "アイテム127",
+     "translation": "Item 127"
+    },
+    {
+     "index": 128,
+     "original": "アイテム128",
+     "translation": "Item 128"
+    },
+    {
+     "index": 129,
+     "original": "アイテム129",
+     "translation": "Item 129"
+    },
+    {
+     "index": 130,
+     "original": "アイテム130",
+     "translation": "Item 130"
+    },
+    {
+     "index": 131,
+     "original": "アイテム131",
+     "translation": "Item 131"
+    },
+    {
+     "index": 132,
+     "original": "アイテム132",
+     "translation": "Item 132"
+    },
+    {
+     "index": 133,
+     "original": "アイテム133",
+     "translation": "Item 133"
+    },
+    {
+     "index": 134,
+     "original": "アイテム134",
+     "translation": "Item 134"
+    },
+    {
+     "index": 135,
+     "original": "アイテム135",
+     "translation": "Item 135"
+    },
+    {
+     "index": 136,
+     "original": "アイテム136",
+     "translation": "Item 136"
+    },
+    {
+     "index": 137,
+     "original": "アイテム137",
+     "translation": "Item 137"
+    },
+    {
+     "index": 138,
+     "original": "アイテム138",
+     "translation": "Item 138"
+    },
+    {
+     "index": 139,
+     "original": "アイテム139",
+     "translation": "Item 139"
+    },
+    {
+     "index": 140,
+     "original": "アイテム140",
+     "translation": "Item 140"
+    },
+    {
+     "index": 141,
+     "original": "アイテム141",
+     "translation": "Item 141"
+    },
+    {
+     "index": 142,
+     "original": "アイテム142",
+     "translation": "Item 142"
+    },
+    {
+     "index": 143,
+     "original": "アイテム143",
+     "translation": "Item 143"
+    },
+    {
+     "index": 144,
+     "original": "アイテム144",
+     "translation": "Item 144"
+    },
+    {
+     "index": 145,
+     "original": "アイテム145",
+     "translation": "Item 145"
+    },
+    {
+     "index": 146,
+     "original": "アイテム146",
+     "translation": "Item 146"
+    },
+    {
+     "index": 147,
+     "original": "アイテム147",
+     "translation": "Item 147"
+    },
+    {
+     "index": 148,
+     "original": "アイテム148",
+     "translation": "Item 148"
+    },
+    {
+     "index": 149,
+     "original": "アイテム149",
+     "translation": "Item 149"
+    },
+    {
+     "index": 150,
+     "original": "アイテム150",
+     "translation": "Item 150"
+    },
+    {
+     "index": 151,
+     "original": "アイテム151",
+     "translation": "Item 151"
+    },
+    {
+     "index": 152,
+     "original": "アイテム152",
+     "translation": "Item 152"
+    },
+    {
+     "index": 153,
+     "original": "アイテム153",
+     "translation": "Item 153"
+    },
+    {
+     "index": 154,
+     "original": "アイテム154",
+     "translation": "Item 154"
+    },
+    {
+     "index": 155,
+     "original": "アイテム155",
+     "translation": "Item 155"
+    },
+    {
+     "index": 156,
+     "original": "アイテム156",
+     "translation": "Item 156"
+    },
+    {
+     "index": 157,
+     "original": "アイテム157",
+     "translation": "Item 157"
+    },
+    {
+     "index": 158,
+     "original": "アイテム158",
+     "translation": "Item 158"
+    },
+    {
+     "index": 159,
+     "original": "アイテム159",
+     "translation": "Item 159"
+    },
+    {
+     "index": 160,
+     "original": "アイテム160",
+     "translation": "Item 160"
+    },
+    {
+     "index": 161,
+     "original": "アイテム161",
+     "translation": "Item 161"
+    },
+    {
+     "index": 162,
+     "original": "アイテム162",
+     "translation": "Item 162"
+    },
+    {
+     "index": 163,
+     "original": "アイテム163",
+     "translation": "Item 163"
+    },
+    {
+     "index": 164,
+     "original": "アイテム164",
+     "translation": "Item 164"
+    },
+    {
+     "index": 165,
+     "original": "アイテム165",
+     "translation": "Item 165"
+    },
+    {
+     "index": 166,
+     "original": "アイテム166",
+     "translation": "Item 166"
+    },
+    {
+     "index": 167,
+     "original": "アイテム167",
+     "translation": "Item 167"
+    },
+    {
+     "index": 168,
+     "original": "アイテム168",
+     "translation": "Item 168"
+    },
+    {
+     "index": 169,
+     "original": "アイテム169",
+     "translation": "Item 169"
+    },
+    {
+     "index": 170,
+     "original": "アイテム170",
+     "translation": "Item 170"
+    },
+    {
+     "index": 171,
+     "original": "アイテム171",
+     "translation": "Item 171"
+    },
+    {
+     "index": 172,
+     "original": "アイテム172",
+     "translation": "Item 172"
+    },
+    {
+     "index": 173,
+     "original": "アイテム173",
+     "translation": "Item 173"
+    },
+    {
+     "index": 174,
+     "original": "アイテム174",
+     "translation": "Item 174"
+    },
+    {
+     "index": 175,
+     "original": "アイテム175",
+     "translation": "Item 175"
+    },
+    {
+     "index": 176,
+     "original": "アイテム176",
+     "translation": "Item 176"
+    },
+    {
+     "index": 177,
+     "original": "アイテム177",
+     "translation": "Item 177"
+    },
+    {
+     "index": 178,
+     "original": "アイテム178",
+     "translation": "Item 178"
+    },
+    {
+     "index": 179,
+     "original": "アイテム179",
+     "translation": "Item 179"
+    },
+    {
+     "index": 180,
+     "original": "アイテム180",
+     "translation": "Item 180"
+    },
+    {
+     "index": 181,
+     "original": "アイテム181",
+     "translation": "Item 181"
+    },
+    {
+     "index": 182,
+     "original": "アイテム182",
+     "translation": "Item 182"
+    },
+    {
+     "index": 183,
+     "original": "アイテム183",
+     "translation": "Item 183"
+    },
+    {
+     "index": 184,
+     "original": "アイテム184",
+     "translation": "Item 184"
+    },
+    {
+     "index": 185,
+     "original": "アイテム185",
+     "translation": "Item 185"
+    },
+    {
+     "index": 186,
+     "original": "アイテム186",
+     "translation": "Item 186"
+    },
+    {
+     "index": 187,
+     "original": "アイテム187",
+     "translation": "Item 187"
+    },
+    {
+     "index": 188,
+     "original": "アイテム188",
+     "translation": "Item 188"
+    },
+    {
+     "index": 189,
+     "original": "アイテム189",
+     "translation": "Item 189"
+    },
+    {
+     "index": 190,
+     "original": "アイテム190",
+     "translation": "Item 190"
+    },
+    {
+     "index": 191,
+     "original": "アイテム191",
+     "translation": "Item 191"
+    },
+    {
+     "index": 192,
+     "original": "アイテム192",
+     "translation": "Item 192"
+    },
+    {
+     "index": 193,
+     "original": "アイテム193",
+     "translation": "Item 193"
+    },
+    {
+     "index": 194,
+     "original": "アイテム194",
+     "translation": "Item 194"
+    },
+    {
+     "index": 195,
+     "original": "アイテム195",
+     "translation": "Item 195"
+    },
+    {
+     "index": 196,
+     "original": "アイテム196",
+     "translation": "Item 196"
+    },
+    {
+     "index": 197,
+     "original": "アイテム197",
+     "translation": "Item 197"
+    },
+    {
+     "index": 198,
+     "original": "アイテム198",
+     "translation": "Item 198"
+    },
+    {
+     "index": 199,
+     "original": "アイテム199",
+     "translation": "Item 199"
+    },
+    {
+     "index": 200,
+     "original": "アイテム200",
+     "translation": "Item 200"
+    }
+   ]
+  },
+  {
+   "bank": "WFM D3FF",
+   "file": "SYSTEM/A00014.000",
+   "offset": "0x0",
+   "messages": [
+    {
+     "index": 0,
+     "original": "コマブタにとられた うでわを\nもとめて たびだつ",
+     "translation": "I'm going to retrieve the arm taken by the pig."
+    },
+    {
+     "index": 1,
+     "original": "ものしりな100年老人に\n会いに行く",
+     "translation": "I'm going to meet a knowledgeable 100-year-old."
+    },
+    {
+     "index": 2,
+     "original": "行く手をはばむ\nきりを はらす",
+     "translation": "blocking the way,\ncutting through."
+    },
+    {
+     "index": 3,
+     "original": "カエルを つかまえた",
+     "translation": "I caught a frog."
+    },
+    {
+     "index": 4,
+     "original": "わくわくする コースだ",
+     "translation": "It's an exciting course."
+    },
+    {
+     "index": 5,
+     "original": "まどから のぞいている人と\n話しをした",
+     "translation": "I talked to the person peeking through the window."
+    },
+    {
+     "index": 6,
+     "original": "おおきな みずたまりの\n話を きいた",
+     "translation": "I heard a story about a big puddle."
+    },
+    {
+     "index": 7,
+     "original": "かくれていた人の\nなまえを しった",
+     "translation": "I learned the name of the person who was hiding."
+    },
+    {
+     "index": 8,
+     "original": "泳げない自分に気づいた",
+     "translation": "I realized I couldn't swim."
+    },
+    {
+     "index": 9,
+     "original": "たまごの なかみを\nあつめる",
+     "translation": "Gather the contents of the egg."
+    },
+    {
+     "index": 10,
+     "original": "魔ブタが出たときの\n話を きいた",
+     "translation": "I heard the story when the demon pig appeared."
+    },
+    {
+     "index": 11,
+     "original": "イベント012",
+     "translation": "Event 012"
+    },
+    {
+     "index": 12,
+     "original": "ドワーフの長老に会う",
+     "translation": "Meet the Dwarf Elder"
+    },
+    {
+     "index": 13,
+     "original": "ドワーフのことばを おぼえる",
+     "translation": "Learn the Dwarven language."
+    },
+    {
+     "index": 14,
+     "original": "森でまいごになった\nこどもを さがす",
+     "translation": "Lost in the forest\nSearching for a child"
+    },
+    {
+     "index": 15,
+     "original": "イベント016",
+     "translation": "Event 016"
+    },
+    {
+     "index": 16,
+     "original": "イベント017",
+     "translation": "Event 017"
+    },
+    {
+     "index": 17,
+     "original": "森でいなくなった ドワーフたちを さがす",
+     "translation": "Search for the dwarves who disappeared in the forest."
+    },
+    {
+     "index": 18,
+     "original": "",
+     "translation": null
+    },
+    {
+     "index": 19,
+     "original": "イベント020",
+     "translation": "Event 020"
+    },
+    {
+     "index": 20,
+     "original": "ドワーフたちのケンカを やめさせる",
+     "translation": "Stop the dwarves from fighting."
+    },
+    {
+     "index": 21,
+     "original": "地下のオオドロボウと話しをする",
+     "translation": "Talk to the Oodorobou in the basement."
+    },
+    {
+     "index": 22,
+     "original": "イベント023",
+     "translation": "Event 023"
+    },
+    {
+     "index": 23,
+     "original": "ケガをした小鳥を\nたすける",
+     "translation": "Help the injured little bird."
+    },
+    {
+     "index": 24,
+     "original": "イベント025",
+     "translation": "Event 025"
+    },
+    {
+     "index": 25,
+     "original": "イベント026",
+     "translation": "Event 026"
+    },
+    {
+     "index": 26,
+     "original": "イベント027",
+     "translation": "Event 027"
+    },
+    {
+     "index": 27,
+     "original": "イベント028",
+     "translation": "Event 028"
+    },
+    {
+     "index": 28,
+     "original": "イベント029",
+     "translation": "Event 029"
+    },
+    {
+     "index": 29,
+     "original": "イベント030",
+     "translation": "Event 030"
+    },
+    {
+     "index": 30,
+     "original": "イベント031",
+     "translation": "Event 031"
+    },
+    {
+     "index": 31,
+     "original": "イベント032",
+     "translation": "Event 032"
+    },
+    {
+     "index": 32,
+     "original": "イベント033",
+     "translation": "Event 033"
+    },
+    {
+     "index": 33,
+     "original": "イベント034",
+     "translation": "Event 034"
+    },
+    {
+     "index": 34,
+     "original": "イベント035",
+     "translation": "Event 035"
+    },
+    {
+     "index": 35,
+     "original": "イベント036",
+     "translation": "Event 036"
+    },
+    {
+     "index": 36,
+     "original": "イベント037",
+     "translation": "Event 037"
+    },
+    {
+     "index": 37,
+     "original": "イベント038",
+     "translation": "Event 038"
+    },
+    {
+     "index": 38,
+     "original": "イベント039",
+     "translation": "Event 039"
+    },
+    {
+     "index": 39,
+     "original": "イベント040",
+     "translation": "Event 040"
+    },
+    {
+     "index": 40,
+     "original": "イベント041",
+     "translation": "Event 041"
+    },
+    {
+     "index": 41,
+     "original": "イベント042",
+     "translation": "Event 042"
+    },
+    {
+     "index": 42,
+     "original": "イベント043",
+     "translation": "Event 043"
+    },
+    {
+     "index": 43,
+     "original": "イベント044",
+     "translation": "Event 044"
+    },
+    {
+     "index": 44,
+     "original": "イベント045",
+     "translation": "Event 045"
+    },
+    {
+     "index": 45,
+     "original": "イベント046",
+     "translation": "Event 046"
+    },
+    {
+     "index": 46,
+     "original": "イベント047",
+     "translation": "Event 047"
+    },
+    {
+     "index": 47,
+     "original": "イベント048",
+     "translation": "Event 048"
+    },
+    {
+     "index": 48,
+     "original": "イベント049",
+     "translation": "Event 049"
+    },
+    {
+     "index": 49,
+     "original": "イベント050",
+     "translation": "Event 050"
+    },
+    {
+     "index": 50,
+     "original": "イベント051",
+     "translation": "Event 051"
+    },
+    {
+     "index": 51,
+     "original": "イベント052",
+     "translation": "Event 052"
+    },
+    {
+     "index": 52,
+     "original": "イベント053",
+     "translation": "Event 053"
+    },
+    {
+     "index": 53,
+     "original": "イベント054",
+     "translation": "Event 054"
+    },
+    {
+     "index": 54,
+     "original": "イベント055",
+     "translation": "Event 055"
+    },
+    {
+     "index": 55,
+     "original": "イベント056",
+     "translation": "Event 056"
+    },
+    {
+     "index": 56,
+     "original": "イベント057",
+     "translation": "Event 057"
+    },
+    {
+     "index": 57,
+     "original": "イベント058",
+     "translation": "Event 058"
+    },
+    {
+     "index": 58,
+     "original": "イベント059",
+     "translation": "Event 059"
+    },
+    {
+     "index": 59,
+     "original": "イベント060",
+     "translation": "Event 060"
+    },
+    {
+     "index": 60,
+     "original": "イベント061",
+     "translation": "Event 061"
+    },
+    {
+     "index": 61,
+     "original": "イベント062",
+     "translation": "Event 062"
+    },
+    {
+     "index": 62,
+     "original": "イベント063",
+     "translation": "Event 063"
+    },
+    {
+     "index": 63,
+     "original": "イベント064",
+     "translation": "Event 064"
+    },
+    {
+     "index": 64,
+     "original": "イベント065",
+     "translation": "Event 065"
+    },
+    {
+     "index": 65,
+     "original": "イベント066",
+     "translation": "Event 066"
+    },
+    {
+     "index": 66,
+     "original": "イベント067",
+     "translation": "Event 067"
+    },
+    {
+     "index": 67,
+     "original": "イベント068",
+     "translation": "Event 068"
+    },
+    {
+     "index": 68,
+     "original": "イベント069",
+     "translation": "Event 069"
+    },
+    {
+     "index": 69,
+     "original": "イベント070",
+     "translation": "Event 070"
+    },
+    {
+     "index": 70,
+     "original": "イベント071",
+     "translation": "Event 071"
+    },
+    {
+     "index": 71,
+     "original": "イベント072",
+     "translation": "Event 072"
+    },
+    {
+     "index": 72,
+     "original": "イベント073",
+     "translation": "Event 073"
+    },
+    {
+     "index": 73,
+     "original": "イベント074",
+     "translation": "Event 074"
+    },
+    {
+     "index": 74,
+     "original": "イベント075",
+     "translation": "Event 075"
+    },
+    {
+     "index": 75,
+     "original": "イベント076",
+     "translation": "Event 076"
+    },
+    {
+     "index": 76,
+     "original": "イベント077",
+     "translation": "Event 077"
+    },
+    {
+     "index": 77,
+     "original": "イベント078",
+     "translation": "Event 078"
+    },
+    {
+     "index": 78,
+     "original": "イベント079",
+     "translation": "Event 079"
+    },
+    {
+     "index": 79,
+     "original": "イベント080",
+     "translation": "Event 080"
+    },
+    {
+     "index": 80,
+     "original": "イベント081",
+     "translation": "Event 081"
+    },
+    {
+     "index": 81,
+     "original": "イベント082",
+     "translation": "Event 082"
+    },
+    {
+     "index": 82,
+     "original": "イベント083",
+     "translation": "Event 083"
+    },
+    {
+     "index": 83,
+     "original": "イベント084",
+     "translation": "Event 084"
+    },
+    {
+     "index": 84,
+     "original": "イベント085",
+     "translation": "Event 085"
+    },
+    {
+     "index": 85,
+     "original": "イベント086",
+     "translation": "Event 086"
+    },
+    {
+     "index": 86,
+     "original": "イベント087",
+     "translation": "Event 087"
+    },
+    {
+     "index": 87,
+     "original": "イベント088",
+     "translation": "Event 088"
+    },
+    {
+     "index": 88,
+     "original": "イベント089",
+     "translation": "Event 089"
+    },
+    {
+     "index": 89,
+     "original": "イベント090",
+     "translation": "Event 090"
+    },
+    {
+     "index": 90,
+     "original": "イベント091",
+     "translation": "Event 091"
+    },
+    {
+     "index": 91,
+     "original": "イベント092",
+     "translation": "Event 092"
+    },
+    {
+     "index": 92,
+     "original": "イベント093",
+     "translation": "Event 093"
+    },
+    {
+     "index": 93,
+     "original": "イベント094",
+     "translation": "Event 094"
+    },
+    {
+     "index": 94,
+     "original": "イベント095",
+     "translation": "Event 095"
+    },
+    {
+     "index": 95,
+     "original": "イベント096",
+     "translation": "Event 096"
+    },
+    {
+     "index": 96,
+     "original": "イベント097",
+     "translation": "Event 097"
+    },
+    {
+     "index": 97,
+     "original": "イベント098",
+     "translation": "Event 098"
+    },
+    {
+     "index": 98,
+     "original": "イベント099",
+     "translation": "Event 099"
+    },
+    {
+     "index": 99,
+     "original": "イベント100",
+     "translation": "Event 100"
+    },
+    {
+     "index": 100,
+     "original": "イベント101",
+     "translation": "Event 101"
+    },
+    {
+     "index": 101,
+     "original": "イベント102",
+     "translation": "Event 102"
+    },
+    {
+     "index": 102,
+     "original": "イベント103",
+     "translation": "Event 103"
+    },
+    {
+     "index": 103,
+     "original": "イベント104",
+     "translation": "Event 104"
+    },
+    {
+     "index": 104,
+     "original": "イベント105",
+     "translation": "Event 105"
+    },
+    {
+     "index": 105,
+     "original": "イベント106",
+     "translation": "Event 106"
+    },
+    {
+     "index": 106,
+     "original": "イベント107",
+     "translation": "Event 107"
+    },
+    {
+     "index": 107,
+     "original": "イベント108",
+     "translation": "Event 108"
+    },
+    {
+     "index": 108,
+     "original": "イベント109",
+     "translation": "Event 109"
+    },
+    {
+     "index": 109,
+     "original": "イベント110",
+     "translation": "Event 110"
+    },
+    {
+     "index": 110,
+     "original": "イベント111",
+     "translation": "Event 111"
+    },
+    {
+     "index": 111,
+     "original": "イベント112",
+     "translation": "Event 112"
+    },
+    {
+     "index": 112,
+     "original": "イベント113",
+     "translation": "Event 113"
+    },
+    {
+     "index": 113,
+     "original": "イベント114",
+     "translation": "Event 114"
+    },
+    {
+     "index": 114,
+     "original": "イベント115",
+     "translation": "Event 115"
+    },
+    {
+     "index": 115,
+     "original": "イベント116",
+     "translation": "Event 116"
+    },
+    {
+     "index": 116,
+     "original": "イベント117",
+     "translation": "Event 117"
+    },
+    {
+     "index": 117,
+     "original": "イベント118",
+     "translation": "Event 118"
+    },
+    {
+     "index": 118,
+     "original": "イベント119",
+     "translation": "Event 119"
+    },
+    {
+     "index": 119,
+     "original": "イベント120",
+     "translation": "Event 120"
+    },
+    {
+     "index": 120,
+     "original": "イベント121",
+     "translation": "Event 121"
+    },
+    {
+     "index": 121,
+     "original": "イベント122",
+     "translation": "Event 122"
+    },
+    {
+     "index": 122,
+     "original": "イベント123",
+     "translation": "Event 123"
+    },
+    {
+     "index": 123,
+     "original": "イベント124",
+     "translation": "Event 124"
+    },
+    {
+     "index": 124,
+     "original": "イベント125",
+     "translation": "Event 125"
+    },
+    {
+     "index": 125,
+     "original": "イベント126",
+     "translation": "Event 126"
+    },
+    {
+     "index": 126,
+     "original": "イベント127",
+     "translation": "Event 127"
+    },
+    {
+     "index": 127,
+     "original": "イベント128",
+     "translation": "Event 128"
+    },
+    {
+     "index": 128,
+     "original": "イベント129",
+     "translation": "Event 129"
+    },
+    {
+     "index": 129,
+     "original": "イベント130",
+     "translation": "Event 130"
+    },
+    {
+     "index": 130,
+     "original": "イベント131",
+     "translation": "Event 131"
+    },
+    {
+     "index": 131,
+     "original": "イベント132",
+     "translation": "Event 132"
+    },
+    {
+     "index": 132,
+     "original": "イベント133",
+     "translation": "Event 133"
+    },
+    {
+     "index": 133,
+     "original": "イベント134",
+     "translation": "Event 134"
+    },
+    {
+     "index": 134,
+     "original": "イベント135",
+     "translation": "Event 135"
+    },
+    {
+     "index": 135,
+     "original": "イベント136",
+     "translation": "Event 136"
+    },
+    {
+     "index": 136,
+     "original": "イベント137",
+     "translation": "Event 137"
+    },
+    {
+     "index": 137,
+     "original": "イベント138",
+     "translation": "Event 138"
+    },
+    {
+     "index": 138,
+     "original": "イベント139",
+     "translation": "Event 139"
+    },
+    {
+     "index": 139,
+     "original": "イベント140",
+     "translation": "Event 140"
+    },
+    {
+     "index": 140,
+     "original": "イベント141",
+     "translation": "Event 141"
+    },
+    {
+     "index": 141,
+     "original": "イベント142",
+     "translation": "Event 142"
+    },
+    {
+     "index": 142,
+     "original": "イベント143",
+     "translation": "Event 143"
+    },
+    {
+     "index": 143,
+     "original": "イベント144",
+     "translation": "Event 144"
+    },
+    {
+     "index": 144,
+     "original": "イベント145",
+     "translation": "Event 145"
+    },
+    {
+     "index": 145,
+     "original": "イベント146",
+     "translation": "Event 146"
+    },
+    {
+     "index": 146,
+     "original": "イベント147",
+     "translation": "Event 147"
+    },
+    {
+     "index": 147,
+     "original": "イベント148",
+     "translation": "Event 148"
+    },
+    {
+     "index": 148,
+     "original": "イベント149",
+     "translation": "Event 149"
+    },
+    {
+     "index": 149,
+     "original": "イベント150",
+     "translation": "Event 150"
+    },
+    {
+     "index": 150,
+     "original": "イベント151",
+     "translation": "Event 151"
+    },
+    {
+     "index": 151,
+     "original": "イベント152",
+     "translation": "Event 152"
+    },
+    {
+     "index": 152,
+     "original": "イベント153",
+     "translation": "Event 153"
+    },
+    {
+     "index": 153,
+     "original": "イベント154",
+     "translation": "Event 154"
+    },
+    {
+     "index": 154,
+     "original": "イベント155",
+     "translation": "Event 155"
+    },
+    {
+     "index": 155,
+     "original": "イベント156",
+     "translation": "Event 156"
+    },
+    {
+     "index": 156,
+     "original": "イベント157",
+     "translation": "Event 157"
+    },
+    {
+     "index": 157,
+     "original": "イベント158",
+     "translation": "Event 158"
+    },
+    {
+     "index": 158,
+     "original": "イベント159",
+     "translation": "Event 159"
+    },
+    {
+     "index": 159,
+     "original": "イベント160",
+     "translation": "Event 160"
+    },
+    {
+     "index": 160,
+     "original": "イベント161",
+     "translation": "Event 161"
+    },
+    {
+     "index": 161,
+     "original": "イベント162",
+     "translation": "Event 162"
+    },
+    {
+     "index": 162,
+     "original": "イベント163",
+     "translation": "Event 163"
+    },
+    {
+     "index": 163,
+     "original": "イベント164",
+     "translation": "Event 164"
+    },
+    {
+     "index": 164,
+     "original": "イベント165",
+     "translation": "Event 165"
+    },
+    {
+     "index": 165,
+     "original": "イベント166",
+     "translation": "Event 166"
+    },
+    {
+     "index": 166,
+     "original": "サルのサンタは おなかが すいているようだ\nなにか たべものを さがしてこようか?",
+     "translation": "The monkey Santa seems hungry. Shall I go look for something to eat?"
+    },
+    {
+     "index": 167,
+     "original": "イベント168",
+     "translation": "Event 168"
+    },
+    {
+     "index": 168,
+     "original": "イベント169",
+     "translation": "Event 169"
+    },
+    {
+     "index": 169,
+     "original": "イベント170",
+     "translation": "Event 170"
+    },
+    {
+     "index": 170,
+     "original": "イベント171",
+     "translation": "Event 171"
+    },
+    {
+     "index": 171,
+     "original": "イベント172",
+     "translation": "Event 172"
+    },
+    {
+     "index": 172,
+     "original": "イベント173",
+     "translation": "Event 173"
+    },
+    {
+     "index": 173,
+     "original": "イベント174",
+     "translation": "Event 174"
+    },
+    {
+     "index": 174,
+     "original": "イベント175",
+     "translation": "Event 175"
+    },
+    {
+     "index": 175,
+     "original": "イベント176",
+     "translation": "Event 176"
+    },
+    {
+     "index": 176,
+     "original": "イベント177",
+     "translation": "Event 177"
+    },
+    {
+     "index": 177,
+     "original": "イベント178",
+     "translation": "Event 178"
+    },
+    {
+     "index": 178,
+     "original": "イベント179",
+     "translation": "Event 179"
+    },
+    {
+     "index": 179,
+     "original": "イベント180",
+     "translation": "Event 180"
+    },
+    {
+     "index": 180,
+     "original": "イベント181",
+     "translation": "Event 181"
+    },
+    {
+     "index": 181,
+     "original": "イベント182",
+     "translation": "Event 182"
+    },
+    {
+     "index": 182,
+     "original": "イベント183",
+     "translation": "Event 183"
+    },
+    {
+     "index": 183,
+     "original": "イベント184",
+     "translation": "Event 184"
+    },
+    {
+     "index": 184,
+     "original": "イベント185",
+     "translation": "Event 185"
+    },
+    {
+     "index": 185,
+     "original": "イベント186",
+     "translation": "Event 186"
+    },
+    {
+     "index": 186,
+     "original": "イベント187",
+     "translation": "Event 187"
+    },
+    {
+     "index": 187,
+     "original": "イベント188",
+     "translation": "Event 188"
+    },
+    {
+     "index": 188,
+     "original": "イベント189",
+     "translation": "Event 189"
+    },
+    {
+     "index": 189,
+     "original": "イベント190",
+     "translation": "Event 190"
+    },
+    {
+     "index": 190,
+     "original": "イベント191",
+     "translation": "Event 191"
+    },
+    {
+     "index": 191,
+     "original": "イベント192",
+     "translation": "Event 192"
+    },
+    {
+     "index": 192,
+     "original": "イベント193",
+     "translation": "Event 193"
+    },
+    {
+     "index": 193,
+     "original": "イベント194",
+     "translation": "Event 194"
+    },
+    {
+     "index": 194,
+     "original": "イベント195",
+     "translation": "Event 195"
+    },
+    {
+     "index": 195,
+     "original": "イベント196",
+     "translation": "Event 196"
+    },
+    {
+     "index": 196,
+     "original": "イベント197",
+     "translation": "Event 197"
+    },
+    {
+     "index": 197,
+     "original": "イベント198",
+     "translation": "Event 198"
+    },
+    {
+     "index": 198,
+     "original": "イベント199",
+     "translation": "Event 199"
+    },
+    {
+     "index": 199,
+     "original": "イベント200",
+     "translation": "Event 200"
+    }
+   ]
+  },
+  {
+   "bank": "WFM D2FF",
+   "file": "SYSTEM/A00016.000",
+   "offset": "0x0",
+   "messages": [
+    {
+     "index": 0,
+     "original": "うまれたてのヒヨコ",
+     "translation": "A newborn chick."
+    },
+    {
+     "index": 1,
+     "original": "かえり道をわすれたカエル",
+     "translation": "The frog who forgot its way home."
+    },
+    {
+     "index": 2,
+     "original": "かえられなくなった\nドワーフのこども",
+     "translation": "I can't be changed anymore.\nDwarf child."
+    },
+    {
+     "index": 3,
+     "original": "ハラペコな おなかに\nおいしいバナナ",
+     "translation": "A hungry stomach\ndelicious banana"
+    },
+    {
+     "index": 4,
+     "original": "何でもふき飛ばす\n強力なたつまき",
+     "translation": "Blows everything away\nA powerful gale"
+    },
+    {
+     "index": 5,
+     "original": "100年老人の小屋へ\nいつでも もどれる",
+     "translation": "To the 100-year-old man's cabin,\nI can always return."
+    },
+    {
+     "index": 6,
+     "original": "ある宝箱に合うと\nひらく事ができる",
+     "translation": "When it fits into a treasure chest,\nyou can open it."
+    },
+    {
+     "index": 7,
+     "original": "一度行った場所へ\nいつでも 行ける",
+     "translation": "To a place I once went,\nI can always go."
+    },
+    {
+     "index": 8,
+     "original": "かみつき草にさいた\nめずらしい花",
+     "translation": "I planted it in the grass.\nA rare flower."
+    },
+    {
+     "index": 9,
+     "original": "気持ちをしずめてくれる",
+     "translation": "It calms my feelings."
+    },
+    {
+     "index": 10,
+     "original": "もれない バケツ",
+     "translation": "A bucket that doesn't leak."
+    },
+    {
+     "index": 11,
+     "original": "遠くの景色が\n見られる",
+     "translation": "You can see the distant scenery."
+    },
+    {
+     "index": 12,
+     "original": "とてもきれいな\nからの小ビン",
+     "translation": "A very beautiful small bottle from."
+    },
+    {
+     "index": 13,
+     "original": "涙のつまった小ビン",
+     "translation": "A small bottle filled with tears."
+    },
+    {
+     "index": 14,
+     "original": "あしをケガしたこいぬ",
+     "translation": "A puppy with an injured leg."
+    },
+    {
+     "index": 15,
+     "original": "ホカホカ できたての\nやきいも",
+     "translation": "Hot and freshly baked yakiimo."
+    },
+    {
+     "index": 16,
+     "original": "枯れ葉の羽を持つ\n伝説のチョウチョ",
+     "translation": "A butterfly with wings of withered leaves,\na legendary butterfly."
+    },
+    {
+     "index": 17,
+     "original": "ヤミを てらす\nタイマツ",
+     "translation": "Illuminating darkness\nThai mat"
+    },
+    {
+     "index": 18,
+     "original": "水がたっぷり\n入ったバケツ",
+     "translation": "A bucket filled with plenty of water."
+    },
+    {
+     "index": 19,
+     "original": "なにも うつさないカガミ",
+     "translation": "A mirror that doesn't reflect anything."
+    },
+    {
+     "index": 20,
+     "original": "たかい所から\nユラユラおりられる",
+     "translation": "From a high place,\nyou can sway down."
+    },
+    {
+     "index": 21,
+     "original": "木でできた かるい\nブーメラン",
+     "translation": "Lightweight boomerang made of wood."
+    },
+    {
+     "index": 22,
+     "original": "イシでできた おもい\nブーメラン",
+     "translation": "A boomerang made of stone."
+    },
+    {
+     "index": 23,
+     "original": "コウテツでできた 強力な\nブーメラン",
+     "translation": "A powerful boomerang made of kouetsu."
+    },
+    {
+     "index": 24,
+     "original": "魔ブタを封じこめる\nたいせつな ふくろ",
+     "translation": "Sealing the demon pig\nA precious pouch"
+    },
+    {
+     "index": 25,
+     "original": "せかいを 見わたす\nべんりな地図",
+     "translation": "A convenient map that covers the world."
+    },
+    {
+     "index": 26,
+     "original": "ふるびた つぼ",
+     "translation": "An old pot."
+    },
+    {
+     "index": 27,
+     "original": "すべてを けちらす\n強力な ぶき",
+     "translation": "Scatter everything\nPowerful weapon"
+    },
+    {
+     "index": 28,
+     "original": "動きが はやくなる\nべんりな パンツ",
+     "translation": "Movement becomes faster.\nConvenient pants."
+    },
+    {
+     "index": 29,
+     "original": "動きが 最速になる\nすばらしい パンツ",
+     "translation": "Movement becomes fastest\nWonderful pants"
+    },
+    {
+     "index": 30,
+     "original": "バイタリティが すこし\nかいふくする",
+     "translation": "Vitality will slightly recover."
+    },
+    {
+     "index": 31,
+     "original": "バイタリティ すべてかいふく\n\nおなかいっぱい!",
+     "translation": "Vitality All Recovery"
+    },
+    {
+     "index": 32,
+     "original": "はじめから はいている\nパンツ",
+     "translation": "I've been wearing them from the beginning.\nPants."
+    },
+    {
+     "index": 33,
+     "original": "アイテム033",
+     "translation": "Item 033"
+    },
+    {
+     "index": 34,
+     "original": "アイテム034",
+     "translation": "Item 034"
+    },
+    {
+     "index": 35,
+     "original": "アイテム035",
+     "translation": "Item 035"
+    },
+    {
+     "index": 36,
+     "original": "アイテム036",
+     "translation": "Item 036"
+    },
+    {
+     "index": 37,
+     "original": "アイテム037",
+     "translation": "Item 037"
+    },
+    {
+     "index": 38,
+     "original": "アイテム038",
+     "translation": "Item 038"
+    },
+    {
+     "index": 39,
+     "original": "アイテム039",
+     "translation": "Item 039"
+    },
+    {
+     "index": 40,
+     "original": "アイテム040",
+     "translation": "Item 040"
+    },
+    {
+     "index": 41,
+     "original": "アイテム041",
+     "translation": "Item 041"
+    },
+    {
+     "index": 42,
+     "original": "アイテム042",
+     "translation": "Item 042"
+    },
+    {
+     "index": 43,
+     "original": "アイテム043",
+     "translation": "Item 043"
+    },
+    {
+     "index": 44,
+     "original": "アイテム044",
+     "translation": "Item 044"
+    },
+    {
+     "index": 45,
+     "original": "アイテム045",
+     "translation": "Item 045"
+    },
+    {
+     "index": 46,
+     "original": "アイテム046",
+     "translation": "Item 046"
+    },
+    {
+     "index": 47,
+     "original": "アイテム047",
+     "translation": "Item 047"
+    },
+    {
+     "index": 48,
+     "original": "アイテム048",
+     "translation": "Item 048"
+    },
+    {
+     "index": 49,
+     "original": "アイテム049",
+     "translation": "Item 049"
+    },
+    {
+     "index": 50,
+     "original": "アイテム050",
+     "translation": "Item 050"
+    },
+    {
+     "index": 51,
+     "original": "アイテム051",
+     "translation": "Item 051"
+    },
+    {
+     "index": 52,
+     "original": "アイテム052",
+     "translation": "Item 052"
+    },
+    {
+     "index": 53,
+     "original": "アイテム053",
+     "translation": "Item 053"
+    },
+    {
+     "index": 54,
+     "original": "アイテム054",
+     "translation": "Item 054"
+    },
+    {
+     "index": 55,
+     "original": "アイテム055",
+     "translation": "Item 055"
+    },
+    {
+     "index": 56,
+     "original": "アイテム056",
+     "translation": "Item 056"
+    },
+    {
+     "index": 57,
+     "original": "アイテム057",
+     "translation": "Item 057"
+    },
+    {
+     "index": 58,
+     "original": "アイテム058",
+     "translation": "Item 058"
+    },
+    {
+     "index": 59,
+     "original": "アイテム059",
+     "translation": "Item 059"
+    },
+    {
+     "index": 60,
+     "original": "アイテム060",
+     "translation": "Item 060"
+    },
+    {
+     "index": 61,
+     "original": "アイテム061",
+     "translation": "Item 061"
+    },
+    {
+     "index": 62,
+     "original": "アイテム062",
+     "translation": "Item 062"
+    },
+    {
+     "index": 63,
+     "original": "アイテム063",
+     "translation": "Item 063"
+    },
+    {
+     "index": 64,
+     "original": "アイテム064",
+     "translation": "Item 064"
+    },
+    {
+     "index": 65,
+     "original": "アイテム065",
+     "translation": "Item 065"
+    },
+    {
+     "index": 66,
+     "original": "アイテム066",
+     "translation": "Item 066"
+    },
+    {
+     "index": 67,
+     "original": "アイテム067",
+     "translation": "Item 067"
+    },
+    {
+     "index": 68,
+     "original": "アイテム068",
+     "translation": "Item 068"
+    },
+    {
+     "index": 69,
+     "original": "アイテム069",
+     "translation": "Item 069"
+    },
+    {
+     "index": 70,
+     "original": "アイテム070",
+     "translation": "Item 070"
+    },
+    {
+     "index": 71,
+     "original": "アイテム071",
+     "translation": "Item 071"
+    },
+    {
+     "index": 72,
+     "original": "アイテム072",
+     "translation": "Item 072"
+    },
+    {
+     "index": 73,
+     "original": "アイテム073",
+     "translation": "Item 073"
+    },
+    {
+     "index": 74,
+     "original": "アイテム074",
+     "translation": "Item 074"
+    },
+    {
+     "index": 75,
+     "original": "アイテム075",
+     "translation": "Item 075"
+    },
+    {
+     "index": 76,
+     "original": "アイテム076",
+     "translation": "Item 076"
+    },
+    {
+     "index": 77,
+     "original": "アイテム077",
+     "translation": "Item 077"
+    },
+    {
+     "index": 78,
+     "original": "アイテム078",
+     "translation": "Item 078"
+    },
+    {
+     "index": 79,
+     "original": "アイテム079",
+     "translation": "Item 079"
+    },
+    {
+     "index": 80,
+     "original": "アイテム080",
+     "translation": "Item 080"
+    },
+    {
+     "index": 81,
+     "original": "アイテム081",
+     "translation": "Item 081"
+    },
+    {
+     "index": 82,
+     "original": "アイテム082",
+     "translation": "Item 082"
+    },
+    {
+     "index": 83,
+     "original": "アイテム083",
+     "translation": "Item 083"
+    },
+    {
+     "index": 84,
+     "original": "アイテム084",
+     "translation": "Item 084"
+    },
+    {
+     "index": 85,
+     "original": "アイテム085",
+     "translation": "Item 085"
+    },
+    {
+     "index": 86,
+     "original": "アイテム086",
+     "translation": "Item 086"
+    },
+    {
+     "index": 87,
+     "original": "アイテム087",
+     "translation": "Item 087"
+    },
+    {
+     "index": 88,
+     "original": "アイテム088",
+     "translation": "Item 088"
+    },
+    {
+     "index": 89,
+     "original": "アイテム089",
+     "translation": "Item 089"
+    },
+    {
+     "index": 90,
+     "original": "アイテム090",
+     "translation": "Item 090"
+    },
+    {
+     "index": 91,
+     "original": "アイテム091",
+     "translation": "Item 091"
+    },
+    {
+     "index": 92,
+     "original": "アイテム092",
+     "translation": "Item 092"
+    },
+    {
+     "index": 93,
+     "original": "アイテム093",
+     "translation": "Item 093"
+    },
+    {
+     "index": 94,
+     "original": "アイテム094",
+     "translation": "Item 094"
+    },
+    {
+     "index": 95,
+     "original": "アイテム095",
+     "translation": "Item 095"
+    },
+    {
+     "index": 96,
+     "original": "アイテム096",
+     "translation": "Item 096"
+    },
+    {
+     "index": 97,
+     "original": "アイテム097",
+     "translation": "Item 097"
+    },
+    {
+     "index": 98,
+     "original": "アイテム098",
+     "translation": "Item 098"
+    },
+    {
+     "index": 99,
+     "original": "アイテム099",
+     "translation": "Item 099"
+    },
+    {
+     "index": 100,
+     "original": "アイテム100",
+     "translation": "Item 100"
+    },
+    {
+     "index": 101,
+     "original": "アイテム101",
+     "translation": "Item 101"
+    },
+    {
+     "index": 102,
+     "original": "アイテム102",
+     "translation": "Item 102"
+    },
+    {
+     "index": 103,
+     "original": "アイテム103",
+     "translation": "Item 103"
+    },
+    {
+     "index": 104,
+     "original": "アイテム104",
+     "translation": "Item 104"
+    },
+    {
+     "index": 105,
+     "original": "アイテム105",
+     "translation": "Item 105"
+    },
+    {
+     "index": 106,
+     "original": "アイテム106",
+     "translation": "Item 106"
+    },
+    {
+     "index": 107,
+     "original": "アイテム107",
+     "translation": "Item 107"
+    },
+    {
+     "index": 108,
+     "original": "アイテム108",
+     "translation": "Item 108"
+    },
+    {
+     "index": 109,
+     "original": "アイテム109",
+     "translation": "Item 109"
+    },
+    {
+     "index": 110,
+     "original": "アイテム110",
+     "translation": "Item 110"
+    },
+    {
+     "index": 111,
+     "original": "アイテム111",
+     "translation": "Item 111"
+    },
+    {
+     "index": 112,
+     "original": "アイテム112",
+     "translation": "Item 112"
+    },
+    {
+     "index": 113,
+     "original": "アイテム113",
+     "translation": "Item 113"
+    },
+    {
+     "index": 114,
+     "original": "アイテム114",
+     "translation": "Item 114"
+    },
+    {
+     "index": 115,
+     "original": "アイテム115",
+     "translation": "Item 115"
+    },
+    {
+     "index": 116,
+     "original": "アイテム116",
+     "translation": "Item 116"
+    },
+    {
+     "index": 117,
+     "original": "アイテム117",
+     "translation": "Item 117"
+    },
+    {
+     "index": 118,
+     "original": "アイテム118",
+     "translation": "Item 118"
+    },
+    {
+     "index": 119,
+     "original": "アイテム119",
+     "translation": "Item 119"
+    },
+    {
+     "index": 120,
+     "original": "アイテム120",
+     "translation": "Item 120"
+    },
+    {
+     "index": 121,
+     "original": "アイテム121",
+     "translation": "Item 121"
+    },
+    {
+     "index": 122,
+     "original": "アイテム122",
+     "translation": "Item 122"
+    },
+    {
+     "index": 123,
+     "original": "アイテム123",
+     "translation": "Item 123"
+    },
+    {
+     "index": 124,
+     "original": "アイテム124",
+     "translation": "Item 124"
+    },
+    {
+     "index": 125,
+     "original": "アイテム125",
+     "translation": "Item 125"
+    },
+    {
+     "index": 126,
+     "original": "アイテム126",
+     "translation": "Item 126"
+    },
+    {
+     "index": 127,
+     "original": "アイテム127",
+     "translation": "Item 127"
+    },
+    {
+     "index": 128,
+     "original": "アイテム128",
+     "translation": "Item 128"
+    },
+    {
+     "index": 129,
+     "original": "アイテム129",
+     "translation": "Item 129"
+    },
+    {
+     "index": 130,
+     "original": "アイテム130",
+     "translation": "Item 130"
+    },
+    {
+     "index": 131,
+     "original": "アイテム131",
+     "translation": "Item 131"
+    },
+    {
+     "index": 132,
+     "original": "アイテム132",
+     "translation": "Item 132"
+    },
+    {
+     "index": 133,
+     "original": "アイテム133",
+     "translation": "Item 133"
+    },
+    {
+     "index": 134,
+     "original": "アイテム134",
+     "translation": "Item 134"
+    },
+    {
+     "index": 135,
+     "original": "アイテム135",
+     "translation": "Item 135"
+    },
+    {
+     "index": 136,
+     "original": "アイテム136",
+     "translation": "Item 136"
+    },
+    {
+     "index": 137,
+     "original": "アイテム137",
+     "translation": "Item 137"
+    },
+    {
+     "index": 138,
+     "original": "アイテム138",
+     "translation": "Item 138"
+    },
+    {
+     "index": 139,
+     "original": "アイテム139",
+     "translation": "Item 139"
+    },
+    {
+     "index": 140,
+     "original": "アイテム140",
+     "translation": "Item 140"
+    },
+    {
+     "index": 141,
+     "original": "アイテム141",
+     "translation": "Item 141"
+    },
+    {
+     "index": 142,
+     "original": "アイテム142",
+     "translation": "Item 142"
+    },
+    {
+     "index": 143,
+     "original": "アイテム143",
+     "translation": "Item 143"
+    },
+    {
+     "index": 144,
+     "original": "アイテム144",
+     "translation": "Item 144"
+    },
+    {
+     "index": 145,
+     "original": "アイテム145",
+     "translation": "Item 145"
+    },
+    {
+     "index": 146,
+     "original": "アイテム146",
+     "translation": "Item 146"
+    },
+    {
+     "index": 147,
+     "original": "アイテム147",
+     "translation": "Item 147"
+    },
+    {
+     "index": 148,
+     "original": "アイテム148",
+     "translation": "Item 148"
+    },
+    {
+     "index": 149,
+     "original": "アイテム149",
+     "translation": "Item 149"
+    },
+    {
+     "index": 150,
+     "original": "アイテム150",
+     "translation": "Item 150"
+    },
+    {
+     "index": 151,
+     "original": "アイテム151",
+     "translation": "Item 151"
+    },
+    {
+     "index": 152,
+     "original": "アイテム152",
+     "translation": "Item 152"
+    },
+    {
+     "index": 153,
+     "original": "アイテム153",
+     "translation": "Item 153"
+    },
+    {
+     "index": 154,
+     "original": "アイテム154",
+     "translation": "Item 154"
+    },
+    {
+     "index": 155,
+     "original": "アイテム155",
+     "translation": "Item 155"
+    },
+    {
+     "index": 156,
+     "original": "アイテム156",
+     "translation": "Item 156"
+    },
+    {
+     "index": 157,
+     "original": "アイテム157",
+     "translation": "Item 157"
+    },
+    {
+     "index": 158,
+     "original": "アイテム158",
+     "translation": "Item 158"
+    },
+    {
+     "index": 159,
+     "original": "アイテム159",
+     "translation": "Item 159"
+    },
+    {
+     "index": 160,
+     "original": "アイテム160",
+     "translation": "Item 160"
+    },
+    {
+     "index": 161,
+     "original": "アイテム161",
+     "translation": "Item 161"
+    },
+    {
+     "index": 162,
+     "original": "アイテム162",
+     "translation": "Item 162"
+    },
+    {
+     "index": 163,
+     "original": "アイテム163",
+     "translation": "Item 163"
+    },
+    {
+     "index": 164,
+     "original": "アイテム164",
+     "translation": "Item 164"
+    },
+    {
+     "index": 165,
+     "original": "アイテム165",
+     "translation": "Item 165"
+    },
+    {
+     "index": 166,
+     "original": "アイテム166",
+     "translation": "Item 166"
+    },
+    {
+     "index": 167,
+     "original": "アイテム167",
+     "translation": "Item 167"
+    },
+    {
+     "index": 168,
+     "original": "アイテム168",
+     "translation": "Item 168"
+    },
+    {
+     "index": 169,
+     "original": "アイテム169",
+     "translation": "Item 169"
+    },
+    {
+     "index": 170,
+     "original": "アイテム170",
+     "translation": "Item 170"
+    },
+    {
+     "index": 171,
+     "original": "アイテム171",
+     "translation": "Item 171"
+    },
+    {
+     "index": 172,
+     "original": "アイテム172",
+     "translation": "Item 172"
+    },
+    {
+     "index": 173,
+     "original": "アイテム173",
+     "translation": "Item 173"
+    },
+    {
+     "index": 174,
+     "original": "アイテム174",
+     "translation": "Item 174"
+    },
+    {
+     "index": 175,
+     "original": "アイテム175",
+     "translation": "Item 175"
+    },
+    {
+     "index": 176,
+     "original": "アイテム176",
+     "translation": "Item 176"
+    },
+    {
+     "index": 177,
+     "original": "アイテム177",
+     "translation": "Item 177"
+    },
+    {
+     "index": 178,
+     "original": "アイテム178",
+     "translation": "Item 178"
+    },
+    {
+     "index": 179,
+     "original": "アイテム179",
+     "translation": "Item 179"
+    },
+    {
+     "index": 180,
+     "original": "アイテム180",
+     "translation": "Item 180"
+    },
+    {
+     "index": 181,
+     "original": "アイテム181",
+     "translation": "Item 181"
+    },
+    {
+     "index": 182,
+     "original": "アイテム182",
+     "translation": "Item 182"
+    },
+    {
+     "index": 183,
+     "original": "アイテム183",
+     "translation": "Item 183"
+    },
+    {
+     "index": 184,
+     "original": "アイテム184",
+     "translation": "Item 184"
+    },
+    {
+     "index": 185,
+     "original": "アイテム185",
+     "translation": "Item 185"
+    },
+    {
+     "index": 186,
+     "original": "アイテム186",
+     "translation": "Item 186"
+    },
+    {
+     "index": 187,
+     "original": "アイテム187",
+     "translation": "Item 187"
+    },
+    {
+     "index": 188,
+     "original": "アイテム188",
+     "translation": "Item 188"
+    },
+    {
+     "index": 189,
+     "original": "アイテム189",
+     "translation": "Item 189"
+    },
+    {
+     "index": 190,
+     "original": "アイテム190",
+     "translation": "Item 190"
+    },
+    {
+     "index": 191,
+     "original": "アイテム191",
+     "translation": "Item 191"
+    },
+    {
+     "index": 192,
+     "original": "アイテム192",
+     "translation": "Item 192"
+    },
+    {
+     "index": 193,
+     "original": "アイテム193",
+     "translation": "Item 193"
+    },
+    {
+     "index": 194,
+     "original": "アイテム194",
+     "translation": "Item 194"
+    },
+    {
+     "index": 195,
+     "original": "アイテム195",
+     "translation": "Item 195"
+    },
+    {
+     "index": 196,
+     "original": "アイテム196",
+     "translation": "Item 196"
+    },
+    {
+     "index": 197,
+     "original": "アイテム197",
+     "translation": "Item 197"
+    },
+    {
+     "index": 198,
+     "original": "アイテム198",
+     "translation": "Item 198"
+    },
+    {
+     "index": 199,
+     "original": "アイテム199",
+     "translation": "Item 199"
+    },
+    {
+     "index": 200,
+     "original": "アイテム200",
+     "translation": "Item 200"
+    }
+   ]
+  },
+  {
+   "bank": "A003 @5044",
+   "file": "AREA08/A003.GAM",
+   "offset": "0x5044",
+   "messages": [
+    {
+     "index": 0,
+     "original": "カギがかかっている",
+     "translation": "The key is locked."
+    },
+    {
+     "index": 1,
+     "original": "めぐみの羽根をつかった",
+     "translation": "I used Megumi's feather."
+    },
+    {
+     "index": 2,
+     "original": "マゴブタをつかった",
+     "translation": "I used a pig."
+    },
+    {
+     "index": 3,
+     "original": "ドワーフの迷子をつかった",
+     "translation": "I used a lost dwarf."
+    },
+    {
+     "index": 4,
+     "original": "ワライダケをつかった",
+     "translation": "I used Warai Dake."
+    },
+    {
+     "index": 5,
+     "original": "ナキダケをつかった",
+     "translation": "I used Nakidake."
+    },
+    {
+     "index": 6,
+     "original": "げどくダケをつかった",
+     "translation": "I used only the dagger."
+    },
+    {
+     "index": 7,
+     "original": "バケツをつかった",
+     "translation": "Used a bucket."
+    },
+    {
+     "index": 8,
+     "original": "ぼうえんきょうをつかった",
+     "translation": "I used a parachute."
+    },
+    {
+     "index": 9,
+     "original": "ナミダのビン(カラ)をつかった",
+     "translation": "I used a tear bottle (empty)."
+    },
+    {
+     "index": 10,
+     "original": "フラワーのナミダをつかった",
+     "translation": "I used Flower's tears."
+    },
+    {
+     "index": 11,
+     "original": "あかの封印ぶくろをつかった",
+     "translation": "I used the red sealed bag."
+    },
+    {
+     "index": 12,
+     "original": "バンクの実をつかった",
+     "translation": "I used the bank's fruit."
+    },
+    {
+     "index": 13,
+     "original": "アルコールをつかった",
+     "translation": "I used alcohol."
+    },
+    {
+     "index": 14,
+     "original": "エサねんりょうをつかった",
+     "translation": "I used the feed."
+    },
+    {
+     "index": 15,
+     "original": "ケガをしたコイヌをつかった",
+     "translation": "I used a injured puppy."
+    },
+    {
+     "index": 16,
+     "original": "水がはいったバケツをつかった",
+     "translation": "I used a bucket filled with water."
+    },
+    {
+     "index": 17,
+     "original": "ちずをつかった",
+     "translation": "I used a map."
+    },
+    {
+     "index": 18,
+     "original": "はやさレベル+1をつかった",
+     "translation": "I used Hayasa Level +1."
+    },
+    {
+     "index": 19,
+     "original": "かっとびのパンツをつかった",
+     "translation": "I used a pair of cuttobi pants."
+    },
+    {
+     "index": 20,
+     "original": "いだてんのパンツをつかった",
+     "translation": "I used the idaten pants."
+    },
+    {
+     "index": 21,
+     "original": "べんとうをつかった",
+     "translation": "I used a bento box."
+    },
+    {
+     "index": 22,
+     "original": "おおもりべんとうをつかった",
+     "translation": "I used a large bento box."
+    },
+    {
+     "index": 23,
+     "original": "ケモノダッシュをつかった",
+     "translation": "I used Kemono Dash."
+    },
+    {
+     "index": 24,
+     "original": "パラソルをつかった",
+     "translation": "Used a parasol."
+    },
+    {
+     "index": 25,
+     "original": "グルドカをつかった",
+     "translation": "I used Gurudka."
+    },
+    {
+     "index": 26,
+     "original": "グルピンをつかった",
+     "translation": "I used Gurupin."
+    },
+    {
+     "index": 27,
+     "original": "ドカピンをつかった",
+     "translation": "I used Dokapin."
+    },
+    {
+     "index": 28,
+     "original": "ウッドブーメランをつかった",
+     "translation": "Used a wooden boomerang."
+    },
+    {
+     "index": 29,
+     "original": "ストーンブーメランをつかった",
+     "translation": "I used a stone boomerang."
+    },
+    {
+     "index": 30,
+     "original": "アイアンブーメランをつかった",
+     "translation": "Used an iron boomerang."
+    },
+    {
+     "index": 31,
+     "original": "1UPをつかった",
+     "translation": "I used 1UP."
+    },
+    {
+     "index": 32,
+     "original": "ライフゲージかくだいをつかった",
+     "translation": "Used life gauge."
+    },
+    {
+     "index": 33,
+     "original": "ライフゲージぞうかをつかった",
+     "translation": "I used a life gauge."
+    },
+    {
+     "index": 34,
+     "original": "みえないカガミをつかった",
+     "translation": "I used an invisible mirror."
+    },
+    {
+     "index": 35,
+     "original": "ヤキイモをつかった",
+     "translation": "I used yakimo."
+    },
+    {
+     "index": 36,
+     "original": "たいまつをつかった",
+     "translation": "I used a torch."
+    },
+    {
+     "index": 37,
+     "original": "カレハチョウをつかった",
+     "translation": "I used a butterfly."
+    },
+    {
+     "index": 38,
+     "original": "ドワーフを1人たすけた",
+     "translation": "I saved one dwarf."
+    },
+    {
+     "index": 39,
+     "original": "ドワーフを2人たすけた",
+     "translation": "I saved two dwarves."
+    },
+    {
+     "index": 40,
+     "original": "ドワーフを3人たすけた",
+     "translation": "I helped three dwarves."
+    },
+    {
+     "index": 41,
+     "original": "ドワーフを4人たすけた",
+     "translation": "I helped four dwarves."
+    },
+    {
+     "index": 42,
+     "original": "ドワーフを5人たすけた",
+     "translation": "I saved five dwarves."
+    },
+    {
+     "index": 43,
+     "original": "ドワーフを6人たすけた",
+     "translation": "I saved six dwarves."
+    },
+    {
+     "index": 44,
+     "original": "ドワーフを7人たすけた",
+     "translation": "I saved seven dwarves."
+    },
+    {
+     "index": 45,
+     "original": "ドワーフのコトバ",
+     "translation": "Dwarf Words"
+    },
+    {
+     "index": 46,
+     "original": "ドワーフのコトバ レベル1",
+     "translation": "Dwarf Word Level 1"
+    },
+    {
+     "index": 47,
+     "original": "ドワーフのコトバ レベル2",
+     "translation": "Dwarf Word Level 2"
+    },
+    {
+     "index": 48,
+     "original": "ドワーフのコトバ レベル3",
+     "translation": "Dwarf Word Level 3"
+    },
+    {
+     "index": 49,
+     "original": "ケモノダッシュ",
+     "translation": "Kemono Dash"
+    },
+    {
+     "index": 50,
+     "original": "水てき 3分の1",
+     "translation": "Water 1/3"
+    },
+    {
+     "index": 51,
+     "original": "水てき 3分の2",
+     "translation": "Water 2/3"
+    },
+    {
+     "index": 52,
+     "original": "バケツをしまった",
+     "translation": "I put away the bucket."
+    },
+    {
+     "index": 53,
+     "original": "小鳥がにげた",
+     "translation": "The little bird ran away."
+    },
+    {
+     "index": 54,
+     "original": "小鳥をたすけた",
+     "translation": "I helped a small bird."
+    },
+    {
+     "index": 55,
+     "original": "迷子をたすけた",
+     "translation": "I helped a lost child."
+    },
+    {
+     "index": 56,
+     "original": "森の地下迷路\n\nセーブしますか?\n  はい→× いいえ→×",
+     "translation": "Forest Underground Maze\n\nSave?\nYes → × No → ×"
+    },
+    {
+     "index": 57,
+     "original": "ドワーフの集落\n\nセーブしますか?\n  はい→× いいえ→×",
+     "translation": "Dwarven Settlement\n\nSave?\nYes → × No → ×"
+    },
+    {
+     "index": 58,
+     "original": "ドワーフの集落の広場\n\nセーブしますか?\n  はい→× いいえ→×",
+     "translation": "Dwarven Village Square\n\nSave?\nYes → × No → ×"
+    },
+    {
+     "index": 59,
+     "original": "○△ーー○!!",
+     "translation": "○△ーー○!!"
+    },
+    {
+     "index": 60,
+     "original": "う△ーー○!!",
+     "translation": "Uu△---○!!"
+    },
+    {
+     "index": 61,
+     "original": "うわーーっ!!",
+     "translation": "Whoa!!"
+    },
+    {
+     "index": 62,
+     "original": "◎○□□□・・・○○○◎△○○○●○○・・・",
+     "translation": "◎○□□□・・・○○○◎△○○○●○○・・・"
+    },
+    {
+     "index": 63,
+     "original": "わし、けっこうアタマいい\nおまえのコトバわかる・・・けど、\nおまえ、ドワーフのコトバ知らない・・・\n\nわしらのコトバ、ドワーフにかみつけば\nおぼえられる・・・\nいっかいじゃ ダメかもしれないけど・・・",
+     "translation": "I'm pretty smart.\nI understand your words... but\nyou don't understand dwarven words...\n\nIf you bite into our words,\nyou'll remember them...\nIt might take more than once though..."
+    },
+    {
+     "index": 64,
+     "original": "コ○バ・・・\nわ○○○ない・・・",
+     "translation": "Ko-ba...\nI don't have a wa-wa-wa..."
+    },
+    {
+     "index": 65,
+     "original": "◎のまえ●、◎◎\nいなくな△た・・・",
+     "translation": "◎'s front ●, ◎◎\ndisappeared…"
+    },
+    {
+     "index": 66,
+     "original": "な○とか ひ△しで\n◎●てきた・・・",
+     "translation": "I've been doing ◎● with な○ or ひ△..."
+    },
+    {
+     "index": 67,
+     "original": "目のまえで、なかま\nいなくなった・・・",
+     "translation": "Right before my eyes, my comrade disappeared..."
+    },
+    {
+     "index": 68,
+     "original": "なんとか ひっしで\nにげてきた・・・",
+     "translation": "I somehow managed to escape..."
+    },
+    {
+     "index": 69,
+     "original": "どうしようかねぇ・・・\nあれがないと こまるんだけどねぇ\n・・・おや、きいてたのかい?\n\n・・・じつは・・・森の中に だいじなものを\nかくしておいたんだけど・・・\n\n今の森には、コマブタがウヨウヨいるから\nとりにいけないのさ・・・\nとっても だいじなものなんだけどねぇ・・・",
+     "translation": "What should I do...?\nI'm in trouble if I don't have that...\n...Oh, were you listening?\n\n...Actually... I hid something important in the forest,\nbut...\n\nThere are so many Komabuta in the forest right now,\nso I can't go get it...\nIt's a very important thing though..."
+    },
+    {
+     "index": 70,
+     "original": "森の中に だいじなものを\nかくしておいたんだけど・・・\n\n今の森には、コマブタがウヨウヨいるから\nとりにいけないのさ・・・\nとっても だいじなものなんだけどねぇ・・・",
+     "translation": "I hid something important in the forest,\nbut...\n\nThere are so many Komabuta in the forest now,\nso I can't go get it...\nIt's such an important thing though..."
+    },
+    {
+     "index": 71,
+     "original": "おやっ!これ、とってきてくれたのかい?\nうれしいねぇ・・・えんりょなく いただくよ\n・・・・・・きたきたきた!・・・・・・",
+     "translation": "Oh! Did you bring this for me?\nI'm so happy... I'll gladly take it.\n...Here it comes! Here it comes!..."
+    },
+    {
+     "index": 72,
+     "original": "・・・ふうーーーっ・・・じつは、\nおなかの中にガスがたまってて\nくるしかったんだよ\n\nおかげで たすかったよ・・・\nありがとうね・・・\nそうだ、よくは わからないんだけど\n\n・・・かわりに これをもらっとくれ\n・・・めずらしいモノらしいよ",
+     "translation": "...Whew... Actually,\nthere was gas building up in my stomach\nand it was uncomfortable.\n\nThanks to that, I was saved...\nThank you...\nWell, I don't really understand it,\nbut...\n\n...Instead, please take this.\n...It seems to be a rare item."
+    },
+    {
+     "index": 73,
+     "original": "この先、通さない・・・\nこれ わしのしごと・・・",
+     "translation": "I won't let you through from here on out...\nThis is my job..."
+    },
+    {
+     "index": 74,
+     "original": "ん?なんだ、おまえ\nこれ欲しいのか?\n\n・・・先、あぶないから\nきをつけてもっていけ・・・",
+     "translation": "Hmm? What is it, you?\nDo you want this?\n\n...It's dangerous ahead, so\nBe careful and take it..."
+    },
+    {
+     "index": 75,
+     "original": "お〜い・・・ だれかいないかぁ〜\n・・・あかりがきれたぞぉ〜",
+     "translation": "Hey... Is anyone there?\n...The lights are out!"
+    },
+    {
+     "index": 76,
+     "original": "こども!・・・こども見なかったか?\n\nこども、高見ヤグラに 花のたね\nさがしにいったまま・・・かえってこない!\n\nしんぱい、しんぱい・・・\nとてもしんぱい・・・",
+     "translation": "Child! ... Didn't you see the child?\n\nThe child went to Takami Yagura to look for flower seeds... and hasn't come back!\n\nWorried, worried...\nVery worried..."
+    },
+    {
+     "index": 77,
+     "original": "・・・まだひとりも、\nかえってこない・・・",
+     "translation": "...no one has returned yet..."
+    },
+    {
+     "index": 78,
+     "original": "・・・あと6人、\nかえってこない・・・",
+     "translation": "...six more people,\nthey won't come back..."
+    },
+    {
+     "index": 79,
+     "original": "・・・あと5人、\nかえってこない・・・",
+     "translation": "...five more people,\nthey won't come back..."
+    },
+    {
+     "index": 80,
+     "original": "・・・あと4人、\nかえってこない・・・",
+     "translation": "...four more people,\nthey won't come back..."
+    },
+    {
+     "index": 81,
+     "original": "・・・あと3人、\nかえってこない・・・",
+     "translation": "...Three more people,\nthey won't come back..."
+    },
+    {
+     "index": 82,
+     "original": "・・・あと2人、\nかえってこない・・・",
+     "translation": "...two more people,\nthey won't come back..."
+    },
+    {
+     "index": 83,
+     "original": "・・・あとひとりだけ、\nかえってこない・・・",
+     "translation": "...just one more person,\nwho hasn't come back..."
+    },
+    {
+     "index": 84,
+     "original": "しんぱい、しんぱい・・・\nとてもしんぱい・・・",
+     "translation": "Worried, worried...\nVery worried..."
+    },
+    {
+     "index": 85,
+     "original": "おお!おまえ、こども、たすけてくれたか!\n\nおまえ、とてもやさしいこころもってる\n・・・わし、とてもうれしい\n\nおれいに、これ、もってゆけ、きっとやくにたつ",
+     "translation": "Oh! You, child, did you help me!\n\nYou have a very kind heart... I am very happy.\n\nTake this with you, it will surely be useful."
+    },
+    {
+     "index": 86,
+     "original": "こども見つけてくれて\nありがとう・・・\nわしとおまえ、ともだち",
+     "translation": "Thank you for finding me...\nYou and I, we're friends."
+    },
+    {
+     "index": 87,
+     "original": "おにいちゃん、\n花のたね みつけたら\nおしえてね!",
+     "translation": "Big brother,\nif you find flower seeds,\nplease let me know!"
+    },
+    {
+     "index": 88,
+     "original": "この花だんにお花咲かせたいなぁ・・・\n\nちょっと前までは、\n森にたくさんの種があったんだよ・・・\n\nでも、今はみんなしおれてた・・・\n\n魔ブタのせいだけじゃないような気がするんだけど・・・",
+     "translation": "I wish I could make flowers bloom in this flowerbed...\n\nJust a little while ago,\nthere were so many seeds in the forest...\n\nBut now they've all withered...\n\nI don't think it's just the evil pig's fault..."
+    },
+    {
+     "index": 89,
+     "original": "もう、お花見れないのかなぁ・・・",
+     "translation": "I wonder if I'll never be able to see cherry blossoms again..."
+    },
+    {
+     "index": 90,
+     "original": "おまえ、APと書かれた\nへんなモノ見たか?",
+     "translation": "Did you see something weird that said AP?"
+    },
+    {
+     "index": 91,
+     "original": "わしらのなかま、あれと同じ\nマークの入ったトビラや箱も\n見たこと、あるらしい・・・",
+     "translation": "It seems our comrades have also seen doors and boxes with the same mark…"
+    },
+    {
+     "index": 92,
+     "original": "どうすれば、ひらくか?\n・・・気になる・・・",
+     "translation": "How can I open it?\n...I'm curious..."
+    },
+    {
+     "index": 93,
+     "original": "ドワーフ、\nとてもこまってる・・・",
+     "translation": "Dwarf,\nI'm really in trouble..."
+    },
+    {
+     "index": 94,
+     "original": "くわしいはなし、ひろばにいる\nなかまがしってる・・・",
+     "translation": "Detailed information is available on the forum.\nMy friends know..."
+    },
+    {
+     "index": 95,
+     "original": "おお、おまえ、ドワーフのことばわかるか!?\nドワーフ、とてもこまってる・・・\n\nじつは・・・このドワーフの森、\n魔ブタの魔法かかってる・・・\n花々はかれ、木々たちも すがた変えた・・・\n\nさっき、7人の なかま、森で しょくぶつに取り囲まれ\nゆくえ知れずになった・・・\n\nたぶん、大きめの しょくぶつの中か、\nほうしに取り付かれて\nうごけなくなってるハズ・・・\n\nいそいで 森にある小屋と\n村の入口ちかくのとびらをあけて、\n森のおく、みはりにいったところ・・・\n\nなかま見つからないと、\n森のおく とおしてくれないはず・・・",
+     "translation": "Oh, you, do you understand the Dwarvish language!?\nDwarves, they're very troubled...\n\nActually... this Dwarven forest,\nis under the spell of the Demon Pig's magic...\nThe flowers and trees have also changed their forms...\n\nJust now, seven companions were surrounded by monsters in the forest\nand became lost...\n\nProbably, inside the larger monsters,\npossessed by the Hoshi,\nthey're unable to move...\n\nHurry up and open the door near the entrance to the village\nand the hut in the forest,\nand go deep into the forest, to the very edge...\n\nIf you can't find your companions,\nthey won't let you pass through the forest..."
+    },
+    {
+     "index": 96,
+     "original": "なかま見つからないと、\n森のおく\nとおしてくれないはず・・・",
+     "translation": "If you can't find your friends,\nthey won't let you through the forest..."
+    },
+    {
+     "index": 97,
+     "original": "おお・・・なかま、\nぜんいん助けてくれたか・・・\nほんとうにありがとう",
+     "translation": "Oh... comrades,\ndid you all help me...?\nThank you very much."
+    },
+    {
+     "index": 98,
+     "original": "ドワーフの長老、\nとてもよろこんでる・・・\nはなし きいてみるといい",
+     "translation": "The dwarf elder,\nis very pleased...\nyou should listen to the story."
+    },
+    {
+     "index": 99,
+     "original": "・・・7人のなかま、かえってきたけど・・・\nじつは、こどもがひとり・・・\n森のなかで迷子になったまま・・・",
+     "translation": "...Seven companions have returned, but...\nActually, one child is missing...\nStill lost in the forest..."
+    },
+    {
+     "index": 100,
+     "original": "おまえ、とても、ゆうきある\nドワーフ、おまえ、そんけいする",
+     "translation": "You, very, have courage.\nDwarf, you, are scared."
+    },
+    {
+     "index": 101,
+     "original": "勇気ある少年よ・・・\nわしがドワーフの\n長老ですじゃ・・・",
+     "translation": "A brave boy...\nI am the elder of the dwarves..."
+    },
+    {
+     "index": 102,
+     "original": "7人のドワーフは\nかえってきたんじゃが・・・\n\n子どもがまだ\nかえってこないんじゃ・・・",
+     "translation": "The seven dwarfs\nhave returned...\n\nBut the children\nhaven't come back yet..."
+    },
+    {
+     "index": 103,
+     "original": "子どもの両親は、この集落の\n入口のちかくの家におる・・・\n話をきいてくれんかのぅ・・",
+     "translation": "The child's parents live in a house near the entrance of this village…\nWill you listen to what I have to say?"
+    },
+    {
+     "index": 104,
+     "original": "村人代表になりかわり、\n礼を言わせてほしい・・・\n\nなかまをたすけてくれて\n本当にありがとう・・・\n\nこんな村じゃから、\nたいしたお礼も\nできないんじゃが・・・\n\n・・・そうじゃ・・・\n100年老人から話は\n聞いたんじゃが、\n\n魔ブタのゆくえを\nおっているとか・・・",
+     "translation": "On behalf of the villagers,\nI would like to express my gratitude...\n\nThank you very much for helping my comrades...\n\nSince this is such a small village,\nI can't offer much in return...\n\n...That's right...\nI heard a story from a 100-year-old man,\n\nthat he is watching over the fate of the demon pig..."
+    },
+    {
+     "index": 105,
+     "original": "おぉ、あったあった、\nこれじゃ・・・",
+     "translation": "Oh, there it is,\nthis is..."
+    },
+    {
+     "index": 106,
+     "original": "これは、この森に魔法をかけた魔ブタの\n封印ぶくろ ですじゃ・・・\n\nこれがあれば魔ブタのかくれている場所へ近づくだけで、\nかくれ場所への入口、すなわち魔ブタゲートを\n見つけてくれるハズじゃ・・・",
+     "translation": "This is the Seal Pouch of the magical pig that cast magic on this forest...\n\nWith this, simply approaching where the magical pig is hiding should lead you to the entrance to its hiding place—the Magical Pig Gate..."
+    },
+    {
+     "index": 107,
+     "original": "でも、魔ブタ、\n自分が魔法をかけた場所には\nかくれない・・・",
+     "translation": "But the demon pig,\nit doesn't hide in places where I cast magic..."
+    },
+    {
+     "index": 108,
+     "original": "それに、魔ブタにはそれぞれに対する封印ぶくろがあり、\n1匹づつ封印できる\n\n・・・つまり、7匹の魔ブタに対して\n7つの封印ぶくろが必要なわけじゃ",
+     "translation": "Moreover, each demon pig has its own sealing bag, allowing you to seal them one at a time.\n...In other words, you need seven sealing bags for seven demon pigs."
+    },
+    {
+     "index": 109,
+     "original": "ふくろ、\n魔法をかけられた場所の\nちかくに必ずあるハズ・・・",
+     "translation": "A bag,\nnear the place where magic was cast,\nshould definitely be there…"
+    },
+    {
+     "index": 110,
+     "original": "魔ブタのゆくえを知りたいのなら、\nそれぞれの 封印ぶくろ をさがすことが\n一番の近道じゃろう・・・\n\nしかし・・・魔ブタの力は強大じゃ・・・\nムリはせんようにな・・・\n\nもう、森のおくを見はる必要もないじゃろう・・・\n自由に通ってくだされ・・・",
+     "translation": "If you want to know where the Demon Pig is headed,\nsearching for each of its sealed pouches would be the quickest path...\n\nBut... the Demon Pig's power is immense...\nDon't try to force it...\n\nYou probably don't need to look deep into the forest anymore...\nFeel free to pass through freely..."
+    },
+    {
+     "index": 111,
+     "original": "もう、森のおくを\n見はる必要もないじゃろう・・・\n自由に通ってくだされ・・・",
+     "translation": "You don't need to look at the forest anymore...\nPlease feel free to pass through..."
+    },
+    {
+     "index": 112,
+     "original": "魔ブタ・・・\n自分が魔法をかけた場所にはかくれない・・・\n\n封印ぶくろあれば\n魔ブタゲート見つけることできる・・・\n\nでも、魔ブタには\nそれぞれに対する封印ぶくろがあって、\n1匹づつ封印できる・・・\n\nつまり、7匹の魔ブタに対して\n7つの封印ぶくろ ひつよう・・・\n\nふくろ、魔法をかけられた場所のちかくに\n必ずあるハズ・・・",
+     "translation": "Magic pig...\nIt doesn't hide in places where I cast magic...\n\nIf I had a sealing bag,\nI could find the magic pig gate...\n\nBut each magic pig has\nits own sealing bag,\nand I can seal them one by one...\n\nIn other words, for seven magic pigs,\nI need seven sealing bags...\n\nThe bag should definitely be near the place where the magic was cast..."
+    },
+    {
+     "index": 113,
+     "original": "ドワーフ、木を切るのとくい・・・\n\nおまえ、わしら助けてくれた・・・\nだからおまえも困ったことあったら、\nわしらの なかまにたのむといい・・・",
+     "translation": "Dwarves are skilled at cutting trees...\n\nYou helped us...\nSo if you ever get into trouble,\nyou should ask one of our comrades..."
+    },
+    {
+     "index": 114,
+     "original": "ん・・・木を切ってほしいのか?\n\nでも、ドワーフが切るのは\nやくめをおえた ふるい木だけ・・・\n\nとりあえず、おまえのあとついていく・・・",
+     "translation": "Hmm... do you want me to cut down the tree?\n\nBut dwarves only cut down old trees...\n\nFor now, I'll follow you..."
+    },
+    {
+     "index": 115,
+     "original": "・・・うん、この木ならだいじょうぶ・・・\nじゃあ、すこしさがって まってろ・・・",
+     "translation": "...Yeah, this tree will be fine...\nThen, go back a little and wait..."
+    },
+    {
+     "index": 116,
+     "original": "おや、あんたも長老をさがしてるのかい?\nこまったねぇ・・・\n\n実は、村のドワーフ2人が\nケンカをはじめちやってね・・・\nいつもだったら、ほっとくんだけど・・・\n\nよりによって、村の入り口でもみ張ってるから、\n外に出られなくなっちゃったんだ・・・\n\n・・・あんた、とめてくれないかい?",
+     "translation": "Oh, are you also looking for an elder?\nThis is troublesome...\n\nActually, two dwarves from the village have started fighting...\nNormally I would just leave them alone, but...\n\nAnd of all places, they're standing guard at the entrance to the village,\nso I can't get out anymore...\n\n...Could you stop them?"
+    },
+    {
+     "index": 117,
+     "original": "長老がいたら、\n一発でおさめてくれるのにねぇ・・・",
+     "translation": "If there was an elder,\nhe would put an end to it in one shot…"
+    },
+    {
+     "index": 118,
+     "original": "うまく かくしたから だいじょうぶ!\n\nそんなの すぐに見つかる・・・\n\nやっぱり、あやまったほうがいい!",
+     "translation": "I wrote it well, so it's okay!\n\nThat kind of thing will be found quickly…\n\nAfter all, I should apologize!"
+    },
+    {
+     "index": 119,
+     "original": "何か こわしたとか\nなんとか・・・",
+     "translation": "Did you break something?\nSomehow..."
+    },
+    {
+     "index": 120,
+     "original": "あの2人、長老から\n何かあずかってたらしい・・・",
+     "translation": "It seems those two received something from the elder…"
+    },
+    {
+     "index": 121,
+     "original": "あっ!・・・そ、\nそれは・・・!!",
+     "translation": "Ah! ... So,\nThat is...!!"
+    },
+    {
+     "index": 122,
+     "original": "ほ、ほら・・・やっぱり見つかった!\n\nおまえがわるい!\n\nいや、こわしたのは おまえ!",
+     "translation": "Ho, ho... I found it after all!\n\nIt's your fault!\n\nNo, you broke it!"
+    },
+    {
+     "index": 123,
+     "original": "ぶわっかもーん!!\nわしの大切なつぼを\nこわすとはなにごとゃ!",
+     "translation": "Bwah! What's going on?!\nYou dare to break my precious pot?!"
+    },
+    {
+     "index": 124,
+     "original": "ご、ごめんなさーい・・・",
+     "translation": "I'm sorry..."
+    },
+    {
+     "index": 125,
+     "original": "ふぅ・・・やっと穴から抜け出せたわい・・・\nおまえさん悪いがこの穴をうめといてくれんか?\n\n・・・しかし、だれがこんな穴をほったんじゃろうな・・・\n\n・・・ん?なんじゃ?なんだか外がさわがしいのぉ・・・\nことのついでじゃ\n・・・おまえさん ちょっと見てきてくれんか?",
+     "translation": "Phew... I finally managed to get out of this hole...\nSorry, but could you fill this hole back up?\n\n...But who on earth dug this hole anyway...?\n\n...Hmm? What's going on? It's getting noisy outside...\nJust as a side note,\n...Hey, could you go take a look?"
+    },
+    {
+     "index": 126,
+     "original": "ふぅ・・・おまえさんがなかなか来ないから、\nいちど村にもどってきたんじゃが、\nこの穴にみごとにハマってのぉ・・・\n\nやっと穴から抜け出せたわい・・・\n\n・・・おまえさん、\n悪いがこの穴をうめといてくれんか?\n\n・・・しかし、だれがこんな穴を\nほったんじゃろうな・・・\n\nわしはまた、山でまっておるからの・・・\nあまり、としよりをまたせるでないぞ・・・",
+     "translation": "Hmm... since you haven't come back for so long,\nI returned to the village once,\nbut I got stuck in this hole splendidly...\n\nFinally, I managed to get out of the hole...\n\n...You,\ncould you please fill this hole for me?\n\n...But who would dig such a hole...\n\nI'll be waiting in the mountains again...\nso don't make me wait too long..."
+    },
+    {
+     "index": 127,
+     "original": "・・・・・・あぁ!お前は!\nぬけ道をふさいじまったガキじゃねえか!\n\n・・・ったく・・・\nコマブタ達のすきを見てにげ出そうとしたら、\n目の前で出口をふさいじまいやがって・・・\n\nおかげでこの通り、\nまた ろうやにぎゃく戻りさ・・・",
+     "translation": "...Ah! You're!\nThe kid who blocked the escape route!\n\n...Good grief...\nJust as I was about to run away when the pigs were distracted,\nthey blocked the exit right in front of me...\n\nThanks to that, I'm back on this street again...\nLike a rat caught in a trap..."
+    },
+    {
+     "index": 128,
+     "original": "これじゃぁ屋敷の宝物どころか\nパン一切れさえぬすめやしねえ・・・\n\nくそっ、ふてねしてやる!",
+     "translation": "This isn't even a treasure of the mansion,\nit's not even stealing a slice of bread...\n\nDamn it, I'll show them!"
+    },
+    {
+     "index": 129,
+     "original": "すぴ〜すかかか・・・んがんごっ\n・・・すぴょぴょぴょ・・・",
+     "translation": "Supi~ sukaka ka ka... ngan go.\n...Supyo pyo pyo pyo..."
+    },
+    {
+     "index": 130,
+     "original": "おや、かわいいボウヤだね。\nでも見たところ元気そうじゃないか・・・\n\nわたしゃこう見えても医者だからね、\nケガでもしたらまたおいで",
+     "translation": "Oh, what a cute little boy.\nBut from the looks of it, he seems fine...\n\nI may look like this, but I'm a doctor,\nso come see me again if you get hurt."
+    },
+    {
+     "index": 131,
+     "original": "ボウヤ・・・\nわたしゃこう見えても\nいそがしいんだよ・・・",
+     "translation": "Boy...\nEven though I look like this,\nI'm busy..."
+    },
+    {
+     "index": 132,
+     "original": "みんなを助けてくれたんだって?\nけっこうやるじゃないか・・・ありがとね",
+     "translation": "I heard you helped everyone?\nYou're pretty good at this... thank you."
+    },
+    {
+     "index": 133,
+     "original": "あんたがケガしたら\nまっ先に見てあげるからね",
+     "translation": "If you get hurt, I'll be the first to check on you."
+    },
+    {
+     "index": 134,
+     "original": "おや、どうしたんだいその小鳥・・・\nケガしてるじゃないか!\nちょっと見せてごらん\n\n・・・・・・・・・・\n・・・これはちょっとじかんがかかりそうだね・・・\n\nボウヤ、この小鳥しばらく私があずかるよ・・・\nなぁに心配はいらないよ、\nわたしがせきにんもって みるからさ\n\n・・・あぁ、この鳥なんて名前だい?\n・・・・?\nなんだい・・・名前ぐらい付けてあげなよ・・・\n\n・・・・・・バロン?・・・そうか、バロンか\n・・・いい名前じゃないか!",
+     "translation": "Oh, what's wrong with that little bird...\nIt's injured!\nLet me take a look.\n\n・・・・・・・・・・\n・・・This will take a while, huh...\n\nBoy, I'll take care of this little bird for a while...\nDon't worry,\nI'll take care of it.\n\n・・・Ah, what's the name of this bird?\n・・・?\nWhat... at least give it a name...\n\n・・・・・・Baron?・・・I see, Baron.\n・・・What a good name!"
+    },
+    {
+     "index": 135,
+     "original": "しばらくしたら また、\n見に来ておくれ",
+     "translation": "Please come see me again soon."
+    },
+    {
+     "index": 136,
+     "original": "おまえ、森の外出るのか?\nだったら一度、近道行ってみるといい\n\nとてもキレイ・・・とおくに大きな屋敷も見える\nウワサでは宝物もあるらしい・・・\nおまえ、勇気ある、キョウミあったら行ってみるといい",
+     "translation": "Are you going outside the forest?\nIf so, you should try taking a shortcut once.\n\nIt's very beautiful... and you can also see a large mansion in the distance.\nRumor has it there are treasures inside too...\nYou have courage, Kyomi. If you have the chance, you should go."
+    },
+    {
+     "index": 137,
+     "original": "・・・そういえば、むかし、\n近からこのむらに、魔王きたことある・・・\n\n森にあるふしぎな水晶、魔王のわすれものらしい・・・\nたぶん、開けかたは魔王が知ってる・・・",
+     "translation": "...Come to think of it, a long time ago,\nthe Demon King came to this village from near...\n\nA mysterious crystal in the forest, apparently something the Demon King forgot...\nProbably, the Demon King knows how to open it..."
+    },
+    {
+     "index": 138,
+     "original": "おまえ、ともだち・・・\nまたあそびにこい",
+     "translation": "You, my friend...\nCome play again."
+    },
+    {
+     "index": 139,
+     "original": "おにいちゃん!おにいちゃん!\n・・・お花が咲いたんだよ!",
+     "translation": "Big brother! Big brother!\n...Flowers have bloomed!"
+    },
+    {
+     "index": 140,
+     "original": "わく わく!・・・",
+     "translation": "Waku waku!..."
+    },
+    {
+     "index": 141,
+     "original": "キレイだね・・・",
+     "translation": "It's beautiful..."
+    },
+    {
+     "index": 142,
+     "original": "・・・楽しみだね",
+     "translation": "...I'm looking forward to it."
+    },
+    {
+     "index": 143,
+     "original": "○○○◎◎○◎◎・・・◎◎○○○\n●△○○・・・○○◎△○○?",
+     "translation": "○○○◎◎○◎◎・・・◎◎○○○\n●△○○・・・○○◎△○○?"
+    },
+    {
+     "index": 144,
+     "original": "○○○、□□□□○◎・・・○○、\n○△○○○○○○",
+     "translation": "○○○, □□□□○◎...○○,\n○△○○○○○○"
+    },
+    {
+     "index": 145,
+     "original": "◎◎○○○○◎○○○?",
+     "translation": null
+    },
+    {
+     "index": 146,
+     "original": "た○へ○だ!た○へ○だぁ!",
+     "translation": "It's ta○he○da! It's ta○he○da!"
+    },
+    {
+     "index": 147,
+     "original": "た○へ○だ!た○へ○だぁ!",
+     "translation": "It's ta○he○da! It's ta○he○da!"
+    },
+    {
+     "index": 148,
+     "original": "たいへんだ!たいへんだぁ!",
+     "translation": "Oh no! Oh no!"
+    },
+    {
+     "index": 149,
+     "original": "たいへんだ!たいへんだぁ!",
+     "translation": "Oh no! Oh no!"
+    },
+    {
+     "index": 150,
+     "original": "○○○、○△○○○・・・\n○○○○○△○○○●・・・",
+     "translation": "○○○, ○△○○○...\n○○○○○△○○○●..."
+    },
+    {
+     "index": 151,
+     "original": "○○、○○○○□□□○○・・・",
+     "translation": "○○, ○○○○□□□○○・・・"
+    },
+    {
+     "index": 152,
+     "original": "○△、◎△○○○○●○△・・・",
+     "translation": "○△, ◎△○○○○●○△..."
+    },
+    {
+     "index": 153,
+     "original": "◎○◎○○●○○○・・・",
+     "translation": "◎○◎○○●○○○・・・"
+    },
+    {
+     "index": 154,
+     "original": "○○○、○○○◎△○○",
+     "translation": null
+    },
+    {
+     "index": 155,
+     "original": "○○○、○○○◎△○○",
+     "translation": null
+    },
+    {
+     "index": 156,
+     "original": "そ○の◎◎の◎◎・・・◎◎に\nつな○△てる・・・もう◎△たか?",
+     "translation": "That ○○'s ○○... ○○ is connected... Is it already ○○?"
+    },
+    {
+     "index": 157,
+     "original": "○○●・・・\n○○○○○",
+     "translation": "○○●・・・\n○○○○○"
+    },
+    {
+     "index": 158,
+     "original": "コ○バ・・・\nわ○○ない・・・",
+     "translation": "Ko-ba...\nI don't have it..."
+    },
+    {
+     "index": 159,
+     "original": "◎●、へ○な□□◎た\n・・・お○え◎たか?",
+     "translation": "◎●, he○na□□◎ta\n...was it ○e◎ka?"
+    },
+    {
+     "index": 160,
+     "original": "◎のまえ●、◎◎\nいなくな△た・・・",
+     "translation": "◎'s front ●, ◎◎\ndisappeared…"
+    },
+    {
+     "index": 161,
+     "original": "な○とか ひ△しで\n◎●てきた・・・",
+     "translation": "I've been doing ◎● with な○ or ひ△..."
+    },
+    {
+     "index": 162,
+     "original": "○や、か○いい□□□だね・・・",
+     "translation": "○Ya, ka○i □□□ ne…"
+    },
+    {
+     "index": 163,
+     "original": "ね△、◎△て○いいでし△・・・",
+     "translation": "It's good, isn't it?"
+    },
+    {
+     "index": 164,
+     "original": "◎の◎はあ●ないよ・・・",
+     "translation": "The ◎ of the ◎ doesn't have a ●..."
+    },
+    {
+     "index": 165,
+     "original": "わ○ら、○ても◎△て○",
+     "translation": "I'm sorry, but I can't help with that."
+    },
+    {
+     "index": 166,
+     "original": "わ○ら、○ても◎△て○",
+     "translation": "I'm sorry, but I can't help with that."
+    },
+    {
+     "index": 167,
+     "original": "な○まの○と・・・とても○ん◎い",
+     "translation": "The ○ of ○ma and… very ○n◎i"
+    },
+    {
+     "index": 168,
+     "original": "な○まの○と・・・\nと○も○ん◎い",
+     "translation": "The ○ of ○ma...\nAnd ○ is also ○n◎i."
+    },
+    {
+     "index": 169,
+     "original": "ねぇ、行ってもいいでしょ・・・",
+     "translation": "Hey, can I go...?"
+    },
+    {
+     "index": 170,
+     "original": "森の中、とてもあぶない\n・・・ぜったいダメ!",
+     "translation": "In the forest, it's very dangerous... absolutely no!"
+    },
+    {
+     "index": 171,
+     "original": "そこの右側の入口・・・\n長老の家につながってる\n\n・・・でも、今みんな\nいそがしい・・・",
+     "translation": "The entrance on the right side over there...\nIt leads to the elder's house.\n\n...But everyone is busy now..."
+    },
+    {
+     "index": 172,
+     "original": "こ○は、□□□□の◎・・・",
+     "translation": "This is ◎ of □□□□..."
+    },
+    {
+     "index": 173,
+     "original": "おおっ! コトバ少し おぼえたか・・・\nでも、まだ かんぜんには わからない\n\n・・・あと、ひとりに かみつけば\nたぶんコトバおぼえられる・・・",
+     "translation": "Oh! Did you remember a few words...?\nBut I still don't understand completely.\n\n...Also, if I bite someone alone,\nI think I can remember the words..."
+    },
+    {
+     "index": 174,
+     "original": "ここ、ドワーフの村\n・・・なかまいなくなって\nおおさわぎ・・・",
+     "translation": "Here, the dwarven village.\n...it's no longer worth mentioning.\nA great commotion..."
+    },
+    {
+     "index": 175,
+     "original": "たいへん!たいへん!\nなかま、いなくなった!\n\nいま、みんなで 森にある小屋と\n村の入口ちかくのとびらをあけて、\n\nグラグラ桟橋と、高見ヤグラに\nさがしにいったところ・・・",
+     "translation": "Oh no! Oh no!\nMy friend is gone!\n\nRight now, everyone is opening the door near the entrance to the village and the cabin in the forest,\n\nand we went looking for the rickety pier and the Takami Yagura..."
+    },
+    {
+     "index": 176,
+     "original": "目のまえで、なかま\nいなくなった・・・",
+     "translation": "Right before my eyes, my comrade disappeared..."
+    },
+    {
+     "index": 177,
+     "original": "なかま、木にとりついた\nホウシにつかまって\n木にぶらさがってた・・・\n\nぶらさがると のびるホウシダマ\n・・・とても あやしい・・・",
+     "translation": "A companion, clinging to the tree,\nHolding onto a fern,\nHanging from the tree...\n\nWhen hanging, the fern stretches out\n...It's very suspicious..."
+    },
+    {
+     "index": 178,
+     "original": "・・・・・・・・・・・",
+     "translation": "..........."
+    },
+    {
+     "index": 179,
+     "original": "このへんなキカイ、\n昔からここにある・・・\nわしらには動かせない・・・",
+     "translation": "This strange machine,\nhas been here since ancient times...\nwe can't move it..."
+    },
+    {
+     "index": 180,
+     "original": "わし・・・長老のいちばんでし",
+     "translation": "I... I am the oldest."
+    },
+    {
+     "index": 181,
+     "original": "なんとか ひっしで\nにげてきた・・・",
+     "translation": "I somehow managed to escape..."
+    },
+    {
+     "index": 182,
+     "original": "なかまのこと・・・\nとてもしんぱい",
+     "translation": "About my friends...\nI'm very worried."
+    },
+    {
+     "index": 183,
+     "original": "たいへん!たいへん!\n何がたいへんって、\nそりゃーもーたいへん!",
+     "translation": "Oh dear! Oh dear!\nWhat's so terrible?\nOh my, it's absolutely terrible!"
+    },
+    {
+     "index": 184,
+     "original": "この小屋のこども、\nまだかえってこないらしい",
+     "translation": "The child in this hut,\nseems to still not have returned."
+    },
+    {
+     "index": 185,
+     "original": "封印ぶくろ?・・・そういえば、\n森の封印ぶくろとかいうもの\nちょうろうがもってる・・・",
+     "translation": "Seal gloves? ... Speaking of which,\nthere's something called seal gloves in the forest.\nChorou has them..."
+    },
+    {
+     "index": 186,
+     "original": "おまえ、友だち・・・\nまぁ、ゆっくりしていけ",
+     "translation": "You, friend...\nWell, take your time."
+    },
+    {
+     "index": 187,
+     "original": "森で、へんなイヌ見た・・・\nおまえ見たか?",
+     "translation": "I saw a strange dog in the forest...\nDid you see it?"
+    },
+    {
+     "index": 188,
+     "original": "あのイヌ、\nケガしてたんだってな・・・",
+     "translation": "That dog,\nI heard it was injured..."
+    },
+    {
+     "index": 189,
+     "original": "森の中で こども\n見なかったか?",
+     "translation": "Didn't you see the child in the forest?"
+    },
+    {
+     "index": 190,
+     "original": "森の中にある恵みの広場\n・・・もう行ったか?",
+     "translation": "The bountiful square within the forest...\n...Have you already gone?"
+    },
+    {
+     "index": 191,
+     "original": "こどものこと・・・\nとてもしんぱい",
+     "translation": "About children...\nVery worried."
+    },
+    {
+     "index": 192,
+     "original": "わし・・・見はり・・・ん?何の見はりか?\n・・・・・それはおしえられない・・・",
+     "translation": "I… watch… hmm? What kind of watch?\n…I can’t tell you that…"
+    },
+    {
+     "index": 193,
+     "original": "長老にはもうあったか?",
+     "translation": "Is the elder already there?"
+    },
+    {
+     "index": 194,
+     "original": "なかま たすけてくれた\n・・・ありがとう",
+     "translation": "My friend helped me... thank you."
+    },
+    {
+     "index": 195,
+     "original": "そう言えば・・・\n始まりの森のかみつき草にも\n花が咲くらしい・・・\n\nでも、わしら見たことない・・・",
+     "translation": "Come to think of it...\nI hear flowers bloom on the biting grass in the forest of beginnings...\n\nBut we've never seen them..."
+    },
+    {
+     "index": 196,
+     "original": "キノコの森を右側にぬけた先に\n山がある・・・でも、\nとてもキケンな山・・・",
+     "translation": "Beyond the mushroom forest on the right lies a mountain... but it's a very dangerous one..."
+    },
+    {
+     "index": 197,
+     "original": "キノコの森には、\nいろんなキノコはえてるけど\nむやみに食べない方がいい",
+     "translation": "In the mushroom forest,\nthere are various mushrooms growing,\nbut it's better not to eat them recklessly."
+    },
+    {
+     "index": 198,
+     "original": "高見ヤグラのぼうえんきょう、もう見たか?\nあそこのけしき、とてもキレイ・・・",
+     "translation": "Have you seen the Noboru Kyo of Takami Yagura yet?\nThat scenery over there is very beautiful..."
+    },
+    {
+     "index": 199,
+     "original": "このキカイこわれてる・・・\n\nたまに来る、赤い服をきたヤツなら\nなおせるかもしれない",
+     "translation": "This machine is broken...\n\nIf it's the guy who comes occasionally wearing a red outfit,\nI might be able to fix it."
+    },
+    {
+     "index": 200,
+     "original": "わし・・・見はり・・・\nちょっとたいへん・・・",
+     "translation": "I... I'm a lookout...\nIt's a little difficult..."
+    },
+    {
+     "index": 201,
+     "original": "◎○□□□・・・○○○◎\n△○○○●○○・・・",
+     "translation": "◎○□□□・・・○○○◎\n△○○○●○○・・・"
+    },
+    {
+     "index": 202,
+     "original": "わしらの◎◎、いなくな△た・・・\n◎は◎に◎ないほう●いい・・・",
+     "translation": "Our ◎◎ has disappeared…\nIt's better if ◎ doesn't exist…"
+    },
+    {
+     "index": 203,
+     "original": "わしらの◎◎にはもう◎△たか?",
+     "translation": "Has our ◎◎ already ◎△?"
+    },
+    {
+     "index": 204,
+     "original": "わしらのなかま、いなくなった・・・\n今は森に出ないほうがいい・・・",
+     "translation": "Our comrades have disappeared…\nIt's better not to go into the forest now…"
+    },
+    {
+     "index": 205,
+     "original": "わしらの長老にはもう会ったか?",
+     "translation": "Have you met our elder yet?"
+    },
+    {
+     "index": 206,
+     "original": "たき先といえば・・・\n・・・・・・ヤキイモだねぇ・・・\n\nそういえば、\n森の中でいいニオイがするんだけどねぇ・・・",
+     "translation": "Speaking of firewood...\n...It's yakiimo, huh...\n\nCome to think of it,\nthere's a nice smell in the forest, you know..."
+    },
+    {
+     "index": 207,
+     "original": "おやっ!\n・・・これ、くれるのかい?\nうれしいねぇ・・・\n\nそうだ、何かわからないんだけど・・・\nかわりに これをもらっとくれ",
+     "translation": "Oh!\n...Is this what you're giving me?\nI'm so happy...\n\nWell, I don't really understand what's going on, but...\nPlease take this instead."
+    },
+    {
+     "index": 208,
+     "original": "ケガしてるね・・・\nかわいそう・・・",
+     "translation": "You're hurt...\nPoor thing..."
+    },
+    {
+     "index": 209,
+     "original": "とがった木にぶら下がっている\nホウシまんじゅう・・・ぜんぶ見たか?",
+     "translation": "Hanging from a sharp tree.\nHoushi manju... Have you seen them all?"
+    },
+    {
+     "index": 210,
+     "original": "とがった木にぶら下がっている\nホウシまんじゅうの中に\nなかま2人 とりこまれた",
+     "translation": "Hanging from a sharp tree,\ninside a hōshi manju,\ntwo companions were captivated."
+    },
+    {
+     "index": 211,
+     "original": "ユラユラゆれるホウシダマ・・・\nとてもあやしい・・・",
+     "translation": "The swaying fern...\nIt's very suspicious..."
+    },
+    {
+     "index": 212,
+     "original": "ホウシダマがかぶさっている\n木の先のなかま、2人いるハズ・・・",
+     "translation": "The houjidama is overlapping.\nThere should be two people among the tips of the trees…"
+    },
+    {
+     "index": 213,
+     "original": "グラグラさんばしに なかまひとり\nつかまってた・・・",
+     "translation": "I was caught by Guragura-sanbashi, with one companion."
+    },
+    {
+     "index": 214,
+     "original": "高見ヤグラ・・・ひろくてたいへん\n・・・なかま見つけにくい・・・\n回復する液、うまくつかわないと・・・",
+     "translation": "Takami Yagura... It's wide and difficult.\n... It's hard to find companions...\nRecovery liquid, if you don't use it well..."
+    },
+    {
+     "index": 215,
+     "original": "たしか高見ヤグラに2人のなかま\nつかまっているハズ",
+     "translation": "I'm sure there are two of them trapped in Takami Yagura."
+    },
+    {
+     "index": 216,
+     "original": "たき先といえば・・・・・・\nヤキイモだねぇ・・・",
+     "translation": "Speaking of the tip...\nIt's a yakimo, huh..."
+    },
+    {
+     "index": 217,
+     "original": "ありがとう",
+     "translation": "Thank you."
+    },
+    {
+     "index": 218,
+     "original": "ドワーフ、とても\nかんしゃしてる",
+     "translation": "Dwarf, very grateful."
+    },
+    {
+     "index": 219,
+     "original": "こども・・・森から\nまだかえってこないらしい・・・",
+     "translation": "Children... from the forest.\nIt seems they haven't returned yet..."
+    },
+    {
+     "index": 220,
+     "original": "そういえば、高見ヤグラで\nこどものこえ きこえたような・・・",
+     "translation": "Come to think of it, at Takami Yagura,\nI think I heard a child's voice..."
+    },
+    {
+     "index": 221,
+     "original": "ありがとう!",
+     "translation": "Thank you!"
+    },
+    {
+     "index": 222,
+     "original": "ドワーフの長老、\nとても よろこんでる",
+     "translation": "The dwarf elder,\nis very pleased."
+    },
+    {
+     "index": 223,
+     "original": "おまえ、とても\nゆうきある",
+     "translation": "You are very brave."
+    },
+    {
+     "index": 224,
+     "original": "ドワーフ、とてもかんげき!",
+     "translation": "Dwarves, very effective!"
+    },
+    {
+     "index": 225,
+     "original": "あくしゅ してほしい・・・",
+     "translation": "I want you to shake hands..."
+    },
+    {
+     "index": 226,
+     "original": "サイン してほしい・・・",
+     "translation": "I want you to sign..."
+    },
+    {
+     "index": 227,
+     "original": "・・・・・・・・・スキ!",
+     "translation": "......... I like you!"
+    }
+   ]
+  },
+  {
+   "bank": "A003 @EEF4",
+   "file": "AREA08/A003.GAM",
+   "offset": "0xEEF4",
+   "messages": [
+    {
+     "index": 0,
+     "original": "CLEAR! ",
+     "translation": null
+    },
+    {
+     "index": 1,
+     "original": "ドワーフの長老",
+     "translation": "Dwarf Elder"
+    },
+    {
+     "index": 2,
+     "original": "コトバを吸いとろう!",
+     "translation": "Let's inhale words!"
+    },
+    {
+     "index": 3,
+     "original": "たき火といえば…",
+     "translation": "When it comes to bonfires..."
+    },
+    {
+     "index": 4,
+     "original": "伝説のカレハチョウ",
+     "translation": "The Legendary Swallowtail Butterfly"
+    },
+    {
+     "index": 5,
+     "original": "火が消えちゃった…",
+     "translation": "The fire went out..."
+    },
+    {
+     "index": 6,
+     "original": "まいごのドワーフ",
+     "translation": "Lost Dwarf"
+    },
+    {
+     "index": 7,
+     "original": "花のたね",
+     "translation": "Flower Seeds"
+    },
+    {
+     "index": 8,
+     "original": "AP・ピラー",
+     "translation": "AP Pillar"
+    },
+    {
+     "index": 9,
+     "original": "ドワーフを数え",
+     "translation": "Count the dwarves."
+    },
+    {
+     "index": 10,
+     "original": "タルのゆくえ",
+     "translation": "The Fate of Taru"
+    },
+    {
+     "index": 11,
+     "original": "森の封印ぶくろ",
+     "translation": "Forest Seal Pouch"
+    },
+    {
+     "index": 12,
+     "original": "花の森",
+     "translation": "Flower Forest"
+    },
+    {
+     "index": 13,
+     "original": "かみつき草の花",
+     "translation": "The flowers of the biting grass."
+    },
+    {
+     "index": 14,
+     "original": "ドワーフの助け",
+     "translation": "Dwarf help"
+    },
+    {
+     "index": 15,
+     "original": "魔王の忘れもの",
+     "translation": "The Demon's Forgotten Item"
+    },
+    {
+     "index": 16,
+     "original": "見えないカガミ?",
+     "translation": "Invisible mirror?"
+    },
+    {
+     "index": 17,
+     "original": "ケンカをとめて",
+     "translation": "Stop the fight."
+    },
+    {
+     "index": 18,
+     "original": "地下ロウの大ドロボウ",
+     "translation": "The Great Robbery of the Underground Row"
+    },
+    {
+     "index": 19,
+     "original": "のぞいてごらん?!",
+     "translation": "Take a peek?!"
+    },
+    {
+     "index": 20,
+     "original": "ヨ〜イ…ドン!",
+     "translation": "Yo~i... Don!"
+    },
+    {
+     "index": 21,
+     "original": "バロンは友だち",
+     "translation": "Baron is a friend."
+    },
+    {
+     "index": 22,
+     "original": "これ、な〜んだ?",
+     "translation": "What is this?"
+    },
+    {
+     "index": 23,
+     "original": "やしきの宝物?",
+     "translation": "Yashiki's treasure?"
+    },
+    {
+     "index": 24,
+     "original": "水晶のじゅもん",
+     "translation": "Crystal Spell"
+    },
+    {
+     "index": 25,
+     "original": "とびっきりの笑がお!",
+     "translation": "A burst of laughter!"
+    },
+    {
+     "index": 26,
+     "original": "とびっきりの泣きがお?",
+     "translation": "Is there a particularly big cry?"
+    },
+    {
+     "index": 27,
+     "original": "動かない恵みコゾウ",
+     "translation": "The Unmoving Blessing Kozo"
+    },
+    {
+     "index": 28,
+     "original": "怪物?勝てるかな?",
+     "translation": "Monster? Can I win?"
+    },
+    {
+     "index": 29,
+     "original": "死神の巣をつぶせ",
+     "translation": "Destroy the Death God's Nest"
+    }
+   ]
+  }
+ ]
+}

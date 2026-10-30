@@ -72,6 +72,28 @@ def translatable_texts(banks):
     return list(ordered), skipped
 
 
+def degenerate(source, translation):
+    """True when the model ran away: a very long answer, or one letter or one phrase repeated over and over."""
+    return (len(translation) > 6 * max(len(source), 6) + 40 or re.search(r'(.)\1{11,}', translation.replace('.', '')) is not None
+            or re.search(r'(.{3,24}?)\1{5,}', translation) is not None)
+
+
+def symbols_only(text):
+    return re.fullmatch(r'[\s・.…!?。、〜ー~\-]*', text) is not None
+
+
+def as_dots(text):
+    return text.replace('・', '.')
+
+
+def save_cache(path, cache, model):
+    import json
+    path = Path(path)
+    path.parent.mkdir(parents=True, exist_ok=True)
+    path.write_text(json.dumps(dict(format=1, language='ja', model=model, entries=cache), ensure_ascii=False, indent=0),
+                    encoding='utf8')
+
+
 def slug(name):
     return re.sub(r'[^a-z0-9]+', '-', name.lower()).strip('-')
 
@@ -134,6 +156,8 @@ def main():
     parser.add_argument('--limit', type=int, default=0, help='stop after this many new translations (to try it out)')
     parser.add_argument('--dry-run', action='store_true', help='only count what would be translated')
     parser.add_argument('--files-only', action='store_true', help='write the build files from the cache, translate nothing')
+    parser.add_argument('--repair', action='store_true',
+                        help='translate again, line by line, the answers in which the model ran away')
     args = parser.parse_args()
     if args.worker:
         print(f'model {args.model}; runtime {use_runtime(args.model)}', flush=True)
@@ -160,6 +184,17 @@ def main():
             if text not in cache:
                 pending.setdefault(text, None)
     todo = list(pending)
+    bad = []
+    if args.repair:
+        bad = [text for text, value in cache.items() if degenerate(text, value)]
+        print(f'{len(bad)} translations ran away; they are translated again, a line at a time', flush=True)
+        todo = []
+        for text in bad:
+            for piece in text.split('\n'):
+                if piece.strip() and not symbols_only(piece) and piece not in todo:
+                    if piece in cache and degenerate(piece, cache[piece]):
+                        cache.pop(piece)
+                    todo.append(piece)
     print(f'{len(todo)} messages to translate', flush=True)
     if args.dry_run:
         return
@@ -197,6 +232,21 @@ def main():
                 print(f'  graphics-card error after {len(cache) - before} messages: starting the model again', flush=True)
         if left_out:
             print(f'{len(left_out)} messages could not be translated', flush=True)
+    for text in bad:
+        lines = []
+        for piece in text.split('\n'):
+            if not piece.strip():
+                lines.append('')
+            elif symbols_only(piece):
+                lines.append(as_dots(piece))
+            else:
+                lines.append(cache.get(piece, ''))
+        fixed = '\n'.join(lines)
+        if degenerate(text, fixed) or not fixed.strip():
+            fixed = re.sub(r'(.)\1{5,}', r'\1\1\1', fixed)
+        cache[text] = fixed
+    if bad:
+        save_cache(args.cache, cache, model)
     write_builds(discs, cache, model, args.folder)
     if Path(args.cache) == CACHE and LEGACY.is_file():
         LEGACY.unlink()         # the build files replace the one file for everything

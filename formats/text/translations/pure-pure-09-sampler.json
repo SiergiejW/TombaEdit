@@ -1,0 +1,2419 @@
+{
+ "format": 1,
+ "language": "ja",
+ "build": "Pure Pure 09 sampler",
+ "model": "CAT-Translate-7b",
+ "builds": {
+  "Pure Pure 09 sampler": 311
+ },
+ "messages": 413,
+ "translated": 311,
+ "entries": {
+  "カギがかかっている": "The key is locked.",
+  "めぐみの羽根をつかった": "I used Megumi's feather.",
+  "マゴブタをつかった": "I used a pig.",
+  "ドワーフの迷子をつかった": "I used a lost dwarf.",
+  "ワライダケをつかった": "I used Warai Dake.",
+  "ナキダケをつかった": "I used Nakidake.",
+  "げどくダケをつかった": "I used only the dagger.",
+  "バケツをつかった": "Used a bucket.",
+  "ぼうえんきょうをつかった": "I used a parachute.",
+  "ナミダのビン(カラ)をつかった": "I used a tear bottle (empty).",
+  "フラワーのナミダをつかった": "I used Flower's tears.",
+  "あかの封印ぶくろをつかった": "I used the red sealed bag.",
+  "バンクの実をつかった": "I used the bank's fruit.",
+  "アルコールをつかった": "I used alcohol.",
+  "エサねんりょうをつかった": "I used the feed.",
+  "ケガをしたコイヌをつかった": "I used a injured puppy.",
+  "水がはいったバケツをつかった": "I used a bucket filled with water.",
+  "ちずをつかった": "I used a map.",
+  "はやさレベル+1をつかった": "I used Hayasa Level +1.",
+  "かっとびのパンツをつかった": "I used a pair of cuttobi pants.",
+  "いだてんのパンツをつかった": "I used the idaten pants.",
+  "べんとうをつかった": "I used a bento box.",
+  "おおもりべんとうをつかった": "I used a large bento box.",
+  "ケモノダッシュをつかった": "I used Kemono Dash.",
+  "パラソルをつかった": "Used a parasol.",
+  "グルドカをつかった": "I used Gurudka.",
+  "グルピンをつかった": "I used Gurupin.",
+  "ドカピンをつかった": "I used Dokapin.",
+  "ウッドブーメランをつかった": "Used a wooden boomerang.",
+  "ストーンブーメランをつかった": "I used a stone boomerang.",
+  "アイアンブーメランをつかった": "Used an iron boomerang.",
+  "1UPをつかった": "I used 1UP.",
+  "ライフゲージかくだいをつかった": "Used life gauge.",
+  "ライフゲージぞうかをつかった": "I used a life gauge.",
+  "みえないカガミをつかった": "I used an invisible mirror.",
+  "ヤキイモをつかった": "I used yakimo.",
+  "たいまつをつかった": "I used a torch.",
+  "カレハチョウをつかった": "I used a butterfly.",
+  "ドワーフを1人たすけた": "I saved one dwarf.",
+  "ドワーフを2人たすけた": "I saved two dwarves.",
+  "ドワーフを3人たすけた": "I helped three dwarves.",
+  "ドワーフを4人たすけた": "I helped four dwarves.",
+  "ドワーフを5人たすけた": "I saved five dwarves.",
+  "ドワーフを6人たすけた": "I saved six dwarves.",
+  "ドワーフを7人たすけた": "I saved seven dwarves.",
+  "ドワーフのコトバ": "Dwarf Words",
+  "ドワーフのコトバ レベル1": "Dwarf Word Level 1",
+  "ドワーフのコトバ レベル2": "Dwarf Word Level 2",
+  "ドワーフのコトバ レベル3": "Dwarf Word Level 3",
+  "ケモノダッシュ": "Kemono Dash",
+  "水てき 3分の1": "Water 1/3",
+  "水てき 3分の2": "Water 2/3",
+  "バケツをしまった": "I put away the bucket.",
+  "小鳥がにげた": "The little bird ran away.",
+  "小鳥をたすけた": "I helped a small bird.",
+  "迷子をたすけた": "I helped a lost child.",
+  "百花の森\n\nセーブしますか?\n  はい→△ いいえ→×": "Hyakka Forest\n\nDo you want to save?\nYes → △ No → ×",
+  "グラグラ桟橋\n\nセーブしますか?\n  はい→△ いいえ→×": "Guragura Pier\n\nDo you want to save?\nYes → △ No → ×",
+  "高見ヤグラ\n\nセーブしますか?\n  はい→△ いいえ→×": "Takami Yagura\n\nDo you want to save?\nYes → △ No → ×",
+  "恵みの広場\n\nセーブしますか?\n  はい→△ いいえ→×": "Blessed Square\n\nSave?\nYes → △ No → ×",
+  "キノコの森\n\nセーブしますか?\n  はい→△ いいえ→×": "Mushroom Forest\n\nSave?\nYes → △ No → ×",
+  "リーフスライダー\n\nセーブしますか?\n  はい→△ いいえ→×": "Leaf Slider\n\nSave?\nYes → △ No → ×",
+  "○△ーー○!!": "○△ーー○!!",
+  "う△ーー○!!": "Uu△---○!!",
+  "うわーーっ!!": "Whoa!!",
+  "いてぇーーーっ!!": "Ouch!!!",
+  "よぉ!びっくりしたかい?\n・・・オレは、カレハチョウを\n集めてるんだ・・・\n\nウワサによると、カレハチョウには\nふしぎな力があって・・・\n\n何匹か集めるとスゴイことが\nおこるらしいゼ・・・\n\n何がおこるか、もし見たいんだったら、\nつかまえた カレハチョウを\nこのムシカゴの中に入れてくれよ": "Hey! Were you surprised?\n...I'm collecting butterflies...\n\nAccording to rumors, butterflies have\nmysterious powers...\n\nIf you collect a few, something amazing\nseems to happen...\n\nIf you want to see what happens,\nput the butterflies you caught\ninside this Mukashio.",
+  "なんだ・・・もう\nもってたのか・・・": "What... already?\nDid you have it...?",
+  "ひぃ・・・ふぅ・・・みぃ・・・\nカレハチョウは今  匹ぐらいだな・・・": "Hii... fuu... mi...\nThere are about X butterflies now...",
+  "ん?・・・やけに\nさわがしいなぁ・・・": "Hmm? ...It's unusually noisy...",
+  "な!?…何だ、何だ?": "What!?... What is it, what is it?",
+  "う・・・ うわーーーっ!\n\nたすけてーーーっ!!": "U... Uwaaaah!\n\nHelp meeeee!!",
+  "・・・おりれなくなっちゃった\n\n花の種をさがしにきたんだけど・・・\nどこにもないんだ・・・\n\nかえりたいよぉ・・・": "...I can't go back anymore.\n\nI came looking for flower seeds, but...\nI can't find any anywhere...\n\nI want to go home...",
+  "・・・おにいちゃん、\nつれてってくれるの?\n・・・・・・ありがとう!": "...Big brother,\nwill you take me?\n...Thank you!",
+  "・・・おにいちゃん、\nそっちじゃないとおもうよ": "...Older brother,\nI don't think it's that way.",
+  "いたか?": "Was it there?",
+  "いや・・・\nどこにもいない": "No...\nHe's nowhere to be found.",
+  "やはり、\nただのウワサか?": "Is it just a rumor?",
+  "いや、それ\nわからない・・・": "No, that... I don't know...",
+  "でも、このもりで\n見たドワーフいる": "But, there's a dwarf I saw in this forest.",
+  "でも、いくら 大ドロボウでも\nこんなところまでぬけ道つくるのは、とても大変・・・": "But even for a great thief,\nit's very difficult to create a secret passage like this...",
+  "・・・もういちど、\n地下ロウみにいく": "...I'll go underground again.",
+  "・・・・・・・・・・・・": "............",
+  "・・・うわぁっ!!!\n・・・び・・・びっくりしたぁ・・・\nなんだ、いつかのガキか・・・": "...Whoa!!!\n...B-...I was startled...\nOh, it's that kid from before...",
+  "い、いやぁ・・・\nやっと、ここから出してもらえてさぁ・・・\nけ、けっして ぬけ出したわけじゃないぞ・・・\nじゃぁ、オレはこれで・・・": "I, no...\nFinally, I've been let out of here...\nI, I didn't escape at all...\nWell then, I'll be going now...",
+  "よぉ・・・お前のくるのをまってたんだ・・・\nどうだい?オレと ひとしょうぶしないか?": "Hey… I was waiting for you to come…\nHow about it? Want to hang out with me?",
+  "じつは、この先の高見ヤグラのてっぺんに\nある宝をかくしておいたんだ\n\nそこでだ、高見ヤグラの下からスタートして、\nオレより早く宝にたどりついたら\nその宝はお前にやるよ・・・\n\nどうだい、おもしろそうだろう?": "Actually, I've hidden a treasure at the very top of Takami Yagura ahead.\nSo, starting from the bottom of Takami Yagura,\nif you reach the treasure faster than me,\nI'll give that treasure to you...\n\nHow about it, doesn't sound interesting?",
+  "じゃ・・・いくゼ!": "Well then... let's go!",
+  "よーい・・・どん!": "Ready... go!",
+  "はぁ・・・はぁ・・・\nお前さん はやいなぁ・・・\n\nしょうがない、オレのまけだ・・・\nその地図はお前さんにやるよ・・・": "Haa... haa...\nYou're fast, aren't you...\n\nIt can't be helped, it's my defeat...\nI'll give you that map...",
+  "いやぁ、ひさしぶりに\nたのしかったゼ\n・・・じゃあ、アバヨ!": "Wow, it's been a while since I had fun...\nWell then, bye!",
+  "どうやら、オレの\nかち みたいだな・・・": "It seems like my win…",
+  "ん? なんだい、くやしそうなカオだな・・・\nまぁ、オレはどうせ ヒマだからな・・・\n\nもう一度チャレンジしたくなったら、\nいつでもオレに はなしかけてくれ": "Hmm? What's wrong? You look frustrated...\nWell, I'm just bored anyway...\n\nIf you ever want to try again,\nfeel free to talk to me anytime.",
+  "よし! リトライだな・・・\nじゃあ、下におりようか・・・": "Alright! Time for a retry...\nWell then, let's go down...",
+  "あの鳥、ケガしてるみたいで\nあそこからおりられないんだ": "That bird seems to be injured,\nand it can't get down from there.",
+  "あの鳥、\nもどってきちゃったね": "That bird,\nit came back, didn't it?",
+  "この鳥 ケガしてるね・・・": "This bird looks injured...",
+  "このさき嵐の山・・・\n\nいつもつよい風ふく とてもきけんな山・・・\nわし、長老にいわれて ここ、見はってる・・・\n・・・けど、とてもたいくつ・・・\n\nだから、いつもここで れんしゅうしてる\nえっ?何のれんしゅうか?\n\n・・・・・・じつは、わし役者になるのがゆめ・・・\n役者になって、みんなを笑わせたり、\n泣かせたり してみたい・・・\n\nでも、れんしゅう とてもたいへん・・・\nどんなカオすれば みんなかんどうするのか・・・": "This mountain ahead...\n\nIt's always windy, a very dangerous mountain...\nI'm watching here, as told by the elder...\n...but it's very boring...\n\nSo, I always practice here.\nHuh? What kind of practice?\n\n...Actually, my dream is to become an actor...\nI want to become an actor and make everyone laugh,\nor cry...\n\nBut practice is very difficult...\nWhat kind of face will make everyone feel...",
+  "おおっ!そのカオ、\nそのひょうじょう・・・とてもいい!!\n\n・・・なるほど\n・・・ふむふむ\n・・・んーとても さんこうになる": "Oh! That Kao,\nthat hyojou... very good!!\n\n...I see\n...Hmm hmm\n...Hmm, it will become very sankou.",
+  "・・・う〜ん\n・・・でも、まだ何か足りない・・・\n\nたとえば・・・\n人に かなしみをつたえるには\nどんなカオすればいいのか?・・・": "...Hmm...\n...But something is still missing...\n\nFor example...\nTo convey sadness to people,\nwhat kind of kao should I do?...",
+  "ん?・・・うおおぉぉぉっ!\nそ、その あいしゅうにみちたカオ!・・・\n・・・そうか・・・\n\nさっきの笑がおと、いまの泣きがおをマスターして・・・\nふむふむ・・・\n・・・んーーーーーーっ\n\n見えた!!\nうん!ありがとう!! \n\nキミのおかげで何かつかめそうな気がする!\nおっと、こうしちゃいられない\n・・・今から とっくんだ!!": "Huh?... Whoa!\nThat, that Kaoshi filled with love! ...\n...I see...\n\nI mastered the laughter from earlier and the crying from now...\nHmm... hmm...\n...nnn\n\nI saw it!!\nYeah! Thanks!!\n\nI feel like I can grasp something thanks to you!\nOops, I can't stay like this.\n...From now on, it's over!!",
+  "おっと、わすれてた・・・\nさっき、長老、山の方へ入っていった・・・\n\n何でも、キミに用があるらしい・・・\nはやく行ったほうがいいよ": "Oops, I forgot...\nJust now, the elder went towards the mountains...\n\nApparently, he has something to say to you...\nYou should go quickly.",
+  "立ち入り禁止\nこの森には怪物がすんでいます。\n\nキケンですので立ち入らないで下さい\n赤ちゃん村しぜんかんりきょく": "No entry allowed.\nThis forest is inhabited by monsters.\n\nPlease do not enter as it is dangerous.\nBaby Village Nature Conservation Office.",
+  "おれ、花のナミダとりに来た・・・\n花のナミダ、恵みさまの復活にかかせない・・・\n\nでも・・・\nどうやってナミダ、集めるのかわからない・・・": "I came to collect the flower tears...\nThe flower tears, they are essential for the revival of Eimi-sama...\n\nBut...\nI don't know how to collect the tears...",
+  "・・・こまった・・・": "...I'm in trouble...",
+  "○○○◎◎○◎◎・・・◎◎○○○\n●△○○・・・○○◎△○○?": "○○○◎◎○◎◎・・・◎◎○○○\n●△○○・・・○○◎△○○?",
+  "ここ、恵みの広場・・・": "Here, the square of blessings...",
+  "高見ヤグラの下のほう、\n木でできてるところ・・・\n\nこわれやすいから\n気をつけたほうがいい・・・": "The lower part of the Takami Yagura,\nthe part made of wood...\n\nIt's fragile, so you should be careful...",
+  "あの、まんなかにいるのが\n恵みコゾウさまたち・・・\nでも、うごかない・・・": "Um, the ones in the middle are\nthe blessed Kozo-sama and others...\nBut they don't move...",
+  "ココロあらわれるこのポーズ\n・・・うつくしい・・・": "This pose reveals the heart...\n...beautiful...",
+  "恵みさまが復活し、\n動きはじめるとき・・・\n何かがおこるといわれてる・・・": "When Ema-sama revives and begins to move...\nit is said that something will happen...",
+  "ここ、恵みの広場・・・\n魔ブタの魔法さえとければ、\nもっとキレイなところ・・・": "Here, the Square of Blessings...\nIf only I could remove the magic of the Demon Pig,\nthere would be a more beautiful place...",
+  "キノコの森には\n怪物がすんでるというウワサ・・・\n気をつけたほうがいい・・・": "There's a rumor that a monster lives in the mushroom forest...\nYou should be careful...",
+  "恵みさま・・・\nやっぱり動かない・・・": "Emi-sama...\nIt still doesn't work...",
+  "そう言えば、恵みさまの\n動いてるところ・・・\nだれも見たことない・・・": "Come to think of it, no one has ever seen Ema-sama's moving…",
+  "わし、きょうは村の\n地下ロウの見はり当番・・・\n\nあれ?これ、\nないしょだったっけ??": "Today, I'm on watch duty in the village's underground passage...\n\nHuh? Wasn't this supposed to be a secret??",
+  "この森も、昔はキレイな花が\nいっぱい咲いてた・・・\nこれもみんな、魔ブタのせい・・・": "This forest too used to be full of beautiful flowers...\nBut now, it's all because of the demon pigs...",
+  "魔ブタのかくれ家、\n目には見えないらしい・・・\n\nでも、入口は\nどこかにあるハズ・・・": "The devil pig's hideout,\nit seems invisible to the eye...\n\nBut, the entrance must be somewhere...",
+  "ここは・・・もう知ってるよね・・・": "You already know this place, right?",
+  "バッカスの湖にある水は、\nぜんぶアルコール・・・\n\nよっぱらうから、\n気をつけたほうがいい・・・": "The water in Lake Bacchus is all alcohol...\n\nBecause it's intoxicating, you should be careful...",
+  "恵みさまを復活させるには、\nなにかが必要らしい・・・\n\nえ〜と・・・\nどわすれした・・・": "To revive Ema-sama,\nit seems something is needed...\n\nUm...\nI forgot...",
+  "ん?・・・\n恵みさまを復活させるもの?\n\n・・・そういえば、なにかの\nなみだが必要とか・・・": "Hmm?...\nSomething to revive Eimi-sama?\n\n...Come to think of it, I need some\ntears or something...",
+  "恵みコゾウさま、\n人気者・・・みんな、\nこの広場にあつまってくる": "Dear Blessed Kozo,\nPopular... everyone,\ngathers in this square.",
+  "嵐の山にも魔ブタの魔法が\nかかっているらしい・・・\n封印ぶくろ、どこかにあるハズ・・・": "It seems the magic of the demon pig is also on the stormy mountain...\nThe sealed bag must be somewhere...",
+  "ときどき、森の地面の下から、\nものおとがきこえてくる・・・\nちょっとコワイ・・・": "Sometimes, from under the forest floor,\nI hear footsteps...\nIt's a little scary...",
+  "わし、村の入口ちかくにある、\nへんならくがきと同じもの、\n怪物マンションで見つけた・・・": "I found something like a strange doodle near the entrance of the village, at the Monster Mansion…",
+  "この先のリーフスライダーをぬけて、\nキノコの森を左に行けば、\n近道がある・・・": "Go past the leaf slider ahead,\nand if you go left through the mushroom forest,\nthere's a shortcut...",
+  "キノコの森のむこうがわには、\n赤ちゃん村とバッカスの湖がある・・・": "Beyond the mushroom forest lies Baby Village and Bacchus Lake...",
+  "わしら、おまえに助けてもらった・・・\nだから、このタマゴおまえにやる・・・": "We were saved by you...\nSo, I'll give you this egg...",
+  "なかま・・・みつかっていない・・・\nここからさきは いかないほうがいい": "I haven't found my companion...\nIt's better not to go any further from here.",
+  "ドワーフのこども 迷子になった・・・\nもりのおくへ いかないように\nみはってる・・・": "A dwarf child got lost...\nDon't go deep into the forest.\nIt's spreading...",
+  "よぉ!びっくりしたかい?\n・・・オレは、カレハチョウを集めてるんだ・・・": "Hey! Were you surprised?\n...I'm collecting butterflies...",
+  "ウワサによると、\nカレハチョウにはふしぎな力があって・・・\n何匹か集めるとスゴイことがおこるらしいゼ・・・": "According to rumors,\nthe butterfly has mysterious powers...\nApparently, if you gather several of them, something amazing happens...",
+  "何がおこるか、もし見たいんだったら、\nつかまえた カレハチョウを\nこのムシカゴの中に入れてくれよ": "If you want to see what happens,\nput the butterfly I caught inside this mug.",
+  "なんだ・・・\nもうもってたのか・・・": "What...\nDid you already have it...?",
+  "ひぃ・・・ふぅ・・・みぃ・・・\nカレハチョウは今・・・\n00匹ぐらいだな・・・": "Hii... fuu... mi...\nThe butterflies are now...\nAbout 00 or so...",
+  "今回のバージョンは、ここまでです。\nこの先のエリアに進むと\nゲームは自動的に終了します。": "This version ends here.\nIf you proceed to the next area,\nthe game will automatically end.",
+  "ドワーフの長老": "Dwarf Elder",
+  "コトバを吸いとろう!": "Let's inhale words!",
+  "たき火といえば…": "When it comes to bonfires...",
+  "伝説のカレハチョウ": "The Legendary Swallowtail Butterfly",
+  "火が消えちゃった…": "The fire went out...",
+  "まいごのドワーフ": "Lost Dwarf",
+  "花のたね": "Flower Seeds",
+  "AP・ピラー": "AP Pillar",
+  "ドワーフを数え": "Count the dwarves.",
+  "タルのゆくえ": "The Fate of Taru",
+  "森の封印ぶくろ": "Forest Seal Pouch",
+  "花の森": "Flower Forest",
+  "かみつき草の花": "The flowers of the biting grass.",
+  "ドワーフの助け": "Dwarf help",
+  "魔王の忘れもの": "The Demon's Forgotten Item",
+  "見えないカガミ?": "Invisible mirror?",
+  "ケンカをとめて": "Stop the fight.",
+  "地下ロウの大ドロボウ": "The Great Robbery of the Underground Row",
+  "のぞいてごらん?!": "Take a peek?!",
+  "ヨ〜イ…ドン!": "Yo~i... Don!",
+  "バロンは友だち": "Baron is a friend.",
+  "これ、な〜んだ?": "What is this?",
+  "やしきの宝物?": "Yashiki's treasure?",
+  "水晶のじゅもん": "Crystal Spell",
+  "とびっきりの笑がお!": "A burst of laughter!",
+  "とびっきりの泣きがお?": "Is there a particularly big cry?",
+  "動かない恵みコゾウ": "The Unmoving Blessing Kozo",
+  "怪物?勝てるかな?": "Monster? Can I win?",
+  "死神の巣をつぶせ": "Destroy the Death God's Nest",
+  "森の地下迷路": "Forest Underground Maze",
+  "ドワーフの集落": "Dwarven settlement",
+  "ドワーフの集落の広場": "Dwarven Village Square",
+  "◎○□□□・・・○○○◎△○○○●○○・・・": "◎○□□□・・・○○○◎△○○○●○○・・・",
+  "わし、けっこうアタマいい\nおまえのコトバわかる・・・けど、\nおまえ、ドワーフのコトバ知らない・・・\n\nわしらのコトバ、ドワーフにかみつけば\nおぼえられる・・・\nいっかいじゃ ダメかもしれないけど・・・": "I'm pretty smart.\nI understand your words... but\nyou don't understand dwarven words...\n\nIf you bite into our words,\nyou'll remember them...\nIt might take more than once though...",
+  "コ○バ・・・\nわ○○○ない・・・": "Ko-ba...\nI don't have a wa-wa-wa...",
+  "◎のまえ●、◎◎\nいなくな△た・・・": "◎'s front ●, ◎◎\ndisappeared…",
+  "な○とか ひ△しで\n◎●てきた・・・": "I've been doing ◎● with な○ or ひ△...",
+  "目のまえで、なかま\nいなくなった・・・": "Right before my eyes, my comrade disappeared...",
+  "なんとか ひっしで\nにげてきた・・・": "I somehow managed to escape...",
+  "どうしちゃったのかねぇ\nいきなり 4人も いなくなったんだって?\n\nきっと あれだね\nまた コマブタたちが いたずらで\nかくしちまったんだろうねぇ・・・": "I wonder what happened?\nApparently four people disappeared suddenly?\n\nIt must be that again.\nThe Komabuta guys probably hid them as a prank...",
+  "しんぱいだけど・・・\nほら みんな ちいさいだろ?\n\n高いところや ホウシのなかだと\nてが だせないんだよ・・・": "It's scary, but...\nLook, everyone is small, right?\n\nIn high places or inside a cage,\nyou can't reach out...",
+  "おやっ!\n・・・これ、くれるのかい?\nうれしいねぇ・・・\n\nそうだ、何かわからないんだけど・・・\nかわりに これをもらっとくれ": "Oh!\n...Is this what you're giving me?\nI'm so happy...\n\nWell, I don't really understand what's going on, but...\nPlease take this instead.",
+  "・・・ふうーーーっ・・・じつは、\nおなかの中にガスがたまってて\nくるしかったんだよ\n\nおかげで たすかったよ・・・\nありがとうね・・・\nそうだ、よくは わからないんだけど\n\n・・・かわりに これをもらっとくれ\n・・・めずらしいモノらしいよ": "...Whew... Actually,\nthere was gas building up in my stomach\nand it was uncomfortable.\n\nThanks to that, I was saved...\nThank you...\nWell, I don't really understand it,\nbut...\n\n...Instead, please take this.\n...It seems to be a rare item.",
+  "この先、通さない・・・\nこれ わしのしごと・・・": "I won't let you through from here on out...\nThis is my job...",
+  "ん?なんだ、おまえ\nこれ欲しいのか?\n\n・・・先、あぶないから\nきをつけてもっていけ・・・": "Hmm? What is it, you?\nDo you want this?\n\n...It's dangerous ahead, so\nBe careful and take it...",
+  "お〜い・・・ だれかいないかぁ〜\n・・・あかりがきれたぞぉ〜": "Hey... Is anyone there?\n...The lights are out!",
+  "こども!・・・こども見なかったか?\n\nこども、高見ヤグラに 花のたね\nさがしにいったまま・・・かえってこない!\n\nしんぱい、しんぱい・・・\nとてもしんぱい・・・": "Child! ... Didn't you see the child?\n\nThe child went to Takami Yagura to look for flower seeds... and hasn't come back!\n\nWorried, worried...\nVery worried...",
+  "・・・まだひとりも、\nかえってこない・・・": "...no one has returned yet...",
+  "・・・あと6人、\nかえってこない・・・": "...six more people,\nthey won't come back...",
+  "・・・あと5人、\nかえってこない・・・": "...five more people,\nthey won't come back...",
+  "・・・あと4人、\nかえってこない・・・": "...four more people,\nthey won't come back...",
+  "・・・あと3人、\nかえってこない・・・": "...Three more people,\nthey won't come back...",
+  "・・・あと2人、\nかえってこない・・・": "...two more people,\nthey won't come back...",
+  "・・・あとひとりだけ、\nかえってこない・・・": "...just one more person,\nwho hasn't come back...",
+  "しんぱい、しんぱい・・・\nとてもしんぱい・・・": "Worried, worried...\nVery worried...",
+  "おお!おまえ、こども、たすけてくれたか!\n\nおまえ、とてもやさしいこころもってる\n・・・わし、とてもうれしい\n\nおれいに、これ、もってゆけ、きっとやくにたつ": "Oh! You, child, did you help me!\n\nYou have a very kind heart... I am very happy.\n\nTake this with you, it will surely be useful.",
+  "こども見つけてくれて\nありがとう・・・\nわしとおまえ、ともだち": "Thank you for finding me...\nYou and I, we're friends.",
+  "おにいちゃん、\n花のたね みつけたら\nおしえてね!": "Big brother,\nif you find flower seeds,\nplease let me know!",
+  "この花だんにお花咲かせたいなぁ・・・\n\nちょっと前までは、\n森にたくさんの種があったんだよ・・・\n\nでも、今はみんなしおれてた・・・\n\n魔ブタのせいだけじゃないような気がするんだけど・・・": "I wish I could make flowers bloom in this flowerbed...\n\nJust a little while ago,\nthere were so many seeds in the forest...\n\nBut now they've all withered...\n\nI don't think it's just the evil pig's fault...",
+  "もう、お花見れないのかなぁ・・・": "I wonder if I'll never be able to see cherry blossoms again...",
+  "おまえ、APと書かれた\nへんなモノ見たか?": "Did you see something weird that said AP?",
+  "わしらのなかま、あれと同じ\nマークの入ったトビラや箱も\n見たこと、あるらしい・・・": "It seems our comrades have also seen doors and boxes with the same mark…",
+  "どうすれば、ひらくか?\n・・・気になる・・・": "How can I open it?\n...I'm curious...",
+  "ドワーフ、\nとてもこまってる・・・": "Dwarf,\nI'm really in trouble...",
+  "くわしいはなし、ひろばにいる\nなかまがしってる・・・": "Detailed information is available on the forum.\nMy friends know...",
+  "おお、おまえ、よくきてくれた!\nドワーフ、とてもこまってる・・・\n\nじつは・・・このドワーフの森、\n魔ブタの魔法かかってる・・・\n花々はかれ、木々たちも すがた変えた・・・\n\nさっき、4人の なかま、森で しょくぶつに取り囲まれ\nゆくえ知れずになった・・・\n\nたぶん、とんがった木の先にくっついた\n ホウシまんじゅうの中か\n\nぶらさがったホウシダマに取り付かれて\nうごけなくなってるハズ・・・\n\nなかま 見つかるまで 森のおくいけないように\nしてある・・・\nおまえ なかま 助けてくれないか・・・": "Oh, you've come!\nThe dwarves are in great trouble...\n\nActually... this forest of dwarves,\nis under the spell of the Demon Pig's magic...\nThe flowers and trees have all changed their forms...\n\nJust now, four of my companions were surrounded by creatures in the forest\nand their fate became unknown...\n\nProbably, they're stuck inside the Houshi Manju attached to the tip of a pointed tree,\nor perhaps they're trapped in the hanging Houshi Dama.\n\nThey're probably stuck to the Houshi Dama and can't move...\n\nI've made it so they can't leave the forest until they find their companions...\nWill you help my companions?",
+  "たぶん、なかまは とんがった木の先の\n ホウシまんじゅうの中か\n\nぶらさがったホウシダマに取り付かれて\nうごけなくなってるハズ・・・": "Probably, my friend is inside the pointed end of the tree,\ninside the hoshi manju.\n\nHe's stuck to the hanging hoshidama and can't move…",
+  "おお!\n\nおまえ・・・なかま、\nぜんいん助けてくれたか・・・\n\nほんとうに・・・ありがとう・・・": "Oh!\n\nYou... comrades,\ndid you save everyone...?\n\nTruly... thank you...",
+  "こんかいのバージョンは、ここでおわり・・・\nおまえ、もっと プレイしたいなら\nぜひ せいひんばんを あそんでくれ・・・・\n\nなかま たすけてくれた おまえなら\nこのゲーム きっと たのしいハズ・・・\nドワーフ みんな まってる!!": "This version ends here...\nIf you want to play more,\nplease try the product banner...\n\nIf you helped your friends,\nyou'll surely enjoy this game...\nAll the dwarves are waiting!!",
+  "・・・7人のなかま、かえってきたけど・・・\nじつは、こどもがひとり・・・\n森のなかで迷子になったまま・・・": "...Seven companions have returned, but...\nActually, one child is missing...\nStill lost in the forest...",
+  "おまえ、とても、ゆうきある\nドワーフ、おまえ、そんけいする": "You, very, have courage.\nDwarf, you, are scared.",
+  "勇気ある少年よ・・・\nわしがドワーフの\n長老ですじゃ・・・": "A brave boy...\nI am the elder of the dwarves...",
+  "7人のドワーフは\nかえってきたんじゃが・・・\n\n子どもがまだ\nかえってこないんじゃ・・・": "The seven dwarfs\nhave returned...\n\nBut the children\nhaven't come back yet...",
+  "子どもの両親は、この集落の\n入口のちかくの家におる・・・\n話をきいてくれんかのぅ・・": "The child's parents live in a house near the entrance of this village…\nWill you listen to what I have to say?",
+  "村人代表になりかわり、\n礼を言わせてほしい・・・\n\nなかまをたすけてくれて\n本当にありがとう・・・\n\nこんな村じゃから、\nたいしたお礼も\nできないんじゃが・・・\n\n・・・そうじゃ・・・\n100年老人から話は\n聞いたんじゃが、\n\n魔ブタのゆくえを\nおっているとか・・・": "On behalf of the villagers,\nI would like to express my gratitude...\n\nThank you very much for helping my comrades...\n\nSince this is such a small village,\nI can't offer much in return...\n\n...That's right...\nI heard a story from a 100-year-old man,\n\nthat he is watching over the fate of the demon pig...",
+  "おぉ、あったあった、\nこれじゃ・・・": "Oh, there it is,\nthis is...",
+  "これは、この森に魔法をかけた魔ブタの\n封印ぶくろ ですじゃ・・・\n\nこれがあれば魔ブタのかくれている場所へ近づくだけで、\nかくれ場所への入口、すなわち魔ブタゲートを\n見つけてくれるハズじゃ・・・": "This is the Seal Pouch of the magical pig that cast magic on this forest...\n\nWith this, simply approaching where the magical pig is hiding should lead you to the entrance to its hiding place—the Magical Pig Gate...",
+  "でも、魔ブタ、\n自分が魔法をかけた場所には\nかくれない・・・": "But the demon pig,\nit doesn't hide in places where I cast magic...",
+  "それに、魔ブタにはそれぞれに対する封印ぶくろがあり、\n1匹づつ封印できる\n\n・・・つまり、7匹の魔ブタに対して\n7つの封印ぶくろが必要なわけじゃ": "Moreover, each demon pig has its own sealing bag, allowing you to seal them one at a time.\n...In other words, you need seven sealing bags for seven demon pigs.",
+  "ふくろ、\n魔法をかけられた場所の\nちかくに必ずあるハズ・・・": "A bag,\nnear the place where magic was cast,\nshould definitely be there…",
+  "魔ブタのゆくえを知りたいのなら、\nそれぞれの 封印ぶくろ をさがすことが\n一番の近道じゃろう・・・\n\nしかし・・・魔ブタの力は強大じゃ・・・\nムリはせんようにな・・・\n\nもう、森のおくを見はる必要もないじゃろう・・・\n自由に通ってくだされ・・・": "If you want to know where the Demon Pig is headed,\nsearching for each of its sealed pouches would be the quickest path...\n\nBut... the Demon Pig's power is immense...\nDon't try to force it...\n\nYou probably don't need to look deep into the forest anymore...\nFeel free to pass through freely...",
+  "もう、森のおくを\n見はる必要もないじゃろう・・・\n自由に通ってくだされ・・・": "You don't need to look at the forest anymore...\nPlease feel free to pass through...",
+  "魔ブタ・・・\n自分が魔法をかけた場所にはかくれない・・・\n\n封印ぶくろあれば\n魔ブタゲート見つけることできる・・・\n\nでも、魔ブタには\nそれぞれに対する封印ぶくろがあって、\n1匹づつ封印できる・・・\n\nつまり、7匹の魔ブタに対して\n7つの封印ぶくろ ひつよう・・・\n\nふくろ、魔法をかけられた場所のちかくに\n必ずあるハズ・・・": "Magic pig...\nIt doesn't hide in places where I cast magic...\n\nIf I had a sealing bag,\nI could find the magic pig gate...\n\nBut each magic pig has\nits own sealing bag,\nand I can seal them one by one...\n\nIn other words, for seven magic pigs,\nI need seven sealing bags...\n\nThe bag should definitely be near the place where the magic was cast...",
+  "ドワーフ、木を切るのとくい・・・\n\nおまえ、わしら助けてくれた・・・\nだからおまえも困ったことあったら、\nわしらの なかまにたのむといい・・・": "Dwarves are skilled at cutting trees...\n\nYou helped us...\nSo if you ever get into trouble,\nyou should ask one of our comrades...",
+  "ん・・・木を切ってほしいのか?\n\nでも、ドワーフが切るのは\nやくめをおえた ふるい木だけ・・・\n\nとりあえず、おまえのあとついていく・・・": "Hmm... do you want me to cut down the tree?\n\nBut dwarves only cut down old trees...\n\nFor now, I'll follow you...",
+  "・・・うん、この木ならだいじょうぶ・・・\nじゃあ、すこしさがって まってろ・・・": "...Yeah, this tree will be fine...\nThen, go back a little and wait...",
+  "おや、あんたも長老をさがしてるのかい?\nこまったねぇ・・・\n\n実は、村のドワーフ2人が\nケンカをはじめちやってね・・・\nいつもだったら、ほっとくんだけど・・・\n\nよりによって、村の入り口でもみ張ってるから、\n外に出られなくなっちゃったんだ・・・\n\n・・・あんた、とめてくれないかい?": "Oh, are you also looking for an elder?\nThis is troublesome...\n\nActually, two dwarves from the village have started fighting...\nNormally I would just leave them alone, but...\n\nAnd of all places, they're standing guard at the entrance to the village,\nso I can't get out anymore...\n\n...Could you stop them?",
+  "長老がいたら、\n一発でおさめてくれるのにねぇ・・・": "If there was an elder,\nhe would put an end to it in one shot…",
+  "うまく かくしたから だいじょうぶ!\n\nそんなの すぐに見つかる・・・\n\nやっぱり、あやまったほうがいい!": "I wrote it well, so it's okay!\n\nThat kind of thing will be found quickly…\n\nAfter all, I should apologize!",
+  "何か こわしたとか\nなんとか・・・": "Did you break something?\nSomehow...",
+  "あの2人、長老から\n何かあずかってたらしい・・・": "It seems those two received something from the elder…",
+  "あっ!・・・そ、\nそれは・・・!!": "Ah! ... So,\nThat is...!!",
+  "ほ、ほら・・・やっぱり見つかった!\n\nおまえがわるい!\n\nいや、こわしたのは おまえ!": "Ho, ho... I found it after all!\n\nIt's your fault!\n\nNo, you broke it!",
+  "ぶわっかもーん!!\nわしの大切なつぼを\nこわすとはなにごとゃ!": "Bwah! What's going on?!\nYou dare to break my precious pot?!",
+  "ご、ごめんなさーい・・・": "I'm sorry...",
+  "ふぅ・・・やっと穴から抜け出せたわい・・・\nおまえさん悪いがこの穴をうめといてくれんか?\n\n・・・しかし、だれがこんな穴をほったんじゃろうな・・・\n\n・・・ん?なんじゃ?なんだか外がさわがしいのぉ・・・\nことのついでじゃ\n・・・おまえさん ちょっと見てきてくれんか?": "Phew... I finally managed to get out of this hole...\nSorry, but could you fill this hole back up?\n\n...But who on earth dug this hole anyway...?\n\n...Hmm? What's going on? It's getting noisy outside...\nJust as a side note,\n...Hey, could you go take a look?",
+  "ふぅ・・・おまえさんがなかなか来ないから、\nいちど村にもどってきたんじゃが、\nこの穴にみごとにハマってのぉ・・・\n\nやっと穴から抜け出せたわい・・・\n\n・・・おまえさん、\n悪いがこの穴をうめといてくれんか?\n\n・・・しかし、だれがこんな穴を\nほったんじゃろうな・・・\n\nわしはまた、山でまっておるからの・・・\nあまり、としよりをまたせるでないぞ・・・": "Hmm... since you haven't come back for so long,\nI returned to the village once,\nbut I got stuck in this hole splendidly...\n\nFinally, I managed to get out of the hole...\n\n...You,\ncould you please fill this hole for me?\n\n...But who would dig such a hole...\n\nI'll be waiting in the mountains again...\nso don't make me wait too long...",
+  "・・・・・・あぁ!お前は!\nぬけ道をふさいじまったガキじゃねえか!\n\n・・・ったく・・・\nコマブタ達のすきを見てにげ出そうとしたら、\n目の前で出口をふさいじまいやがって・・・\n\nおかげでこの通り、\nまた ろうやにぎゃく戻りさ・・・": "...Ah! You're!\nThe kid who blocked the escape route!\n\n...Good grief...\nJust as I was about to run away when the pigs were distracted,\nthey blocked the exit right in front of me...\n\nThanks to that, I'm back on this street again...\nLike a rat caught in a trap...",
+  "これじゃぁ屋敷の宝物どころか\nパン一切れさえぬすめやしねえ・・・\n\nくそっ、ふてねしてやる!": "This isn't even a treasure of the mansion,\nit's not even stealing a slice of bread...\n\nDamn it, I'll show them!",
+  "すぴ〜すかかか・・・んがんごっ\n・・・すぴょぴょぴょ・・・": "Supi~ sukaka ka ka... ngan go.\n...Supyo pyo pyo pyo...",
+  "おや、かわいいボウヤだね。\nでも見たところ元気そうじゃないか・・・\n\nわたしゃこう見えても医者だからね、\nケガでもしたらまたおいで": "Oh, what a cute little boy.\nBut from the looks of it, he seems fine...\n\nI may look like this, but I'm a doctor,\nso come see me again if you get hurt.",
+  "ボウヤ・・・\nわたしゃこう見えても\nいそがしいんだよ・・・": "Boy...\nEven though I look like this,\nI'm busy...",
+  "みんなを助けてくれたんだって?\nけっこうやるじゃないか・・・ありがとね": "I heard you helped everyone?\nYou're pretty good at this... thank you.",
+  "あんたがケガしたら\nまっ先に見てあげるからね": "If you get hurt, I'll be the first to check on you.",
+  "おや、どうしたんだいその小鳥・・・\nケガしてるじゃないか!\nちょっと見せてごらん\n\n・・・・・・・・・・\n・・・これはちょっとじかんがかかりそうだね・・・\n\nボウヤ、この小鳥しばらく私があずかるよ・・・\nなぁに心配はいらないよ、\nわたしがせきにんもって みるからさ\n\n・・・あぁ、この鳥なんて名前だい?\n・・・・?\nなんだい・・・名前ぐらい付けてあげなよ・・・\n\n・・・・・・バロン?・・・そうか、バロンか\n・・・いい名前じゃないか!": "Oh, what's wrong with that little bird...\nIt's injured!\nLet me take a look.\n\n・・・・・・・・・・\n・・・This will take a while, huh...\n\nBoy, I'll take care of this little bird for a while...\nDon't worry,\nI'll take care of it.\n\n・・・Ah, what's the name of this bird?\n・・・?\nWhat... at least give it a name...\n\n・・・・・・Baron?・・・I see, Baron.\n・・・What a good name!",
+  "しばらくしたら また、\n見に来ておくれ": "Please come see me again soon.",
+  "おまえ、森の外出るのか?\nだったら一度、近道行ってみるといい\n\nとてもキレイ・・・とおくに大きな屋敷も見える\nウワサでは宝物もあるらしい・・・\nおまえ、勇気ある、キョウミあったら行ってみるといい": "Are you going outside the forest?\nIf so, you should try taking a shortcut once.\n\nIt's very beautiful... and you can also see a large mansion in the distance.\nRumor has it there are treasures inside too...\nYou have courage, Kyomi. If you have the chance, you should go.",
+  "・・・そういえば、むかし、\n近からこのむらに、魔王きたことある・・・\n\n森にあるふしぎな水晶、魔王のわすれものらしい・・・\nたぶん、開けかたは魔王が知ってる・・・": "...Come to think of it, a long time ago,\nthe Demon King came to this village from near...\n\nA mysterious crystal in the forest, apparently something the Demon King forgot...\nProbably, the Demon King knows how to open it...",
+  "おまえ、ともだち・・・\nまたあそびにこい": "You, my friend...\nCome play again.",
+  "おにいちゃん!おにいちゃん!\n・・・お花が咲いたんだよ!": "Big brother! Big brother!\n...Flowers have bloomed!",
+  "わく わく!・・・": "Waku waku!...",
+  "キレイだね・・・": "It's beautiful...",
+  "・・・楽しみだね": "...I'm looking forward to it.",
+  "○○○、□□□□○◎・・・○○、\n○△○○○○○○": "○○○, □□□□○◎...○○,\n○△○○○○○○",
+  "た○へ○だ!た○へ○だぁ!": "It's ta○he○da! It's ta○he○da!",
+  "たいへんだ!たいへんだぁ!": "Oh no! Oh no!",
+  "○○○、○△○○○・・・\n○○○○○△○○○●・・・": "○○○, ○△○○○...\n○○○○○△○○○●...",
+  "○○、○○○○□□□○○・・・": "○○, ○○○○□□□○○・・・",
+  "○△、◎△○○○○●○△・・・": "○△, ◎△○○○○●○△...",
+  "◎○◎○○●○○○・・・": "◎○◎○○●○○○・・・",
+  "そ○の◎◎の◎◎・・・◎◎に\nつな○△てる・・・もう◎△たか?": "That ○○'s ○○... ○○ is connected... Is it already ○○?",
+  "○○●・・・\n○○○○○": "○○●・・・\n○○○○○",
+  "コ○バ・・・\nわ○○ない・・・": "Ko-ba...\nI don't have it...",
+  "◎●、へ○な□□◎た\n・・・お○え◎たか?": "◎●, he○na□□◎ta\n...was it ○e◎ka?",
+  "○や、か○いい□□□だね・・・": "○Ya, ka○i □□□ ne…",
+  "ね△、◎△て○いいでし△・・・": "It's good, isn't it?",
+  "◎の◎はあ●ないよ・・・": "The ◎ of the ◎ doesn't have a ●...",
+  "わ○ら、○ても◎△て○": "I'm sorry, but I can't help with that.",
+  "な○まの○と・・・とても○ん◎い": "The ○ of ○ma and… very ○n◎i",
+  "な○まの○と・・・\nと○も○ん◎い": "The ○ of ○ma...\nAnd ○ is also ○n◎i.",
+  "ねぇ、行ってもいいでしょ・・・": "Hey, can I go...?",
+  "森の中、とてもあぶない\n・・・ぜったいダメ!": "In the forest, it's very dangerous... absolutely no!",
+  "そこの右側の入口・・・\n長老の家につながってる\n\n・・・でも、今みんな\nいそがしい・・・": "The entrance on the right side over there...\nIt leads to the elder's house.\n\n...But everyone is busy now...",
+  "こ○は、□□□□の◎・・・": "This is ◎ of □□□□...",
+  "おおっ! コトバ少し おぼえたか・・・\nでも、まだ かんぜんには わからない\n\n・・・あと、ひとりに かみつけば\nたぶんコトバおぼえられる・・・": "Oh! Did you remember a few words...?\nBut I still don't understand completely.\n\n...Also, if I bite someone alone,\nI think I can remember the words...",
+  "ここ、ドワーフの村\n・・・なかまいなくなって\nおおさわぎ・・・": "Here, the dwarven village.\n...it's no longer worth mentioning.\nA great commotion...",
+  "たいへん!たいへん!\nなかま、いなくなった!\n\n森にある小屋はとじてあるから\nなかま きっと このもりの\nどこかに いるはず・・・": "Oh no! Oh no!\nMy friend has disappeared!\n\nThe cabin in the forest is closed,\nso my friend must be somewhere in this forest…",
+  "なかま、木にとりついた\nホウシにつかまって\n木にぶらさがってた・・・\n\nぶらさがると のびるホウシダマ\n・・・とても あやしい・・・": "A companion, clinging to the tree,\nHolding onto a fern,\nHanging from the tree...\n\nWhen hanging, the fern stretches out\n...It's very suspicious...",
+  "・・・・・・・・・・・": "...........",
+  "このへんなキカイ、\n昔からここにある・・・\nわしらには動かせない・・・": "This strange machine,\nhas been here since ancient times...\nwe can't move it...",
+  "わし・・・長老のいちばんでし": "I... I am the oldest.",
+  "なかまのこと・・・\nとてもしんぱい": "About my friends...\nI'm very worried.",
+  "たいへん!たいへん!\n何がたいへんって、\nそりゃーもーたいへん!": "Oh dear! Oh dear!\nWhat's so terrible?\nOh my, it's absolutely terrible!",
+  "みんなのこと・・・\nとてもしんぱい": "Everyone...\nI'm very worried.",
+  "封印ぶくろ?・・・そういえば、\n森の封印ぶくろとかいうもの\nちょうろうがもってる・・・": "Seal gloves? ... Speaking of which,\nthere's something called seal gloves in the forest.\nChorou has them...",
+  "おまえ、友だち・・・\nまぁ、ゆっくりしていけ": "You, friend...\nWell, take your time.",
+  "かれはのなかに\nかわったチョウチョがいるらしい・・・\n\nおまえ見たこと あるか?": "He says there's a strange butterfly inside...\n\nHave you ever seen it?",
+  "あのイヌ、\nケガしてたんだってな・・・": "That dog,\nI heard it was injured...",
+  "ぶらさがっている まるい\nホウシダマ 見なかったか?": "Hanging round, didn't you see the houjidama?",
+  "森の中にある恵みの広場\n・・・もう行ったか?": "The bountiful square within the forest...\n...Have you already gone?",
+  "なかまのこと\nとてもしんぱい": "About my friends\nVery worried",
+  "わし・・・見はり・・・ん?何の見はりか?\n・・・・・それはおしえられない・・・": "I… watch… hmm? What kind of watch?\n…I can’t tell you that…",
+  "長老にはもうあったか?": "Is the elder already there?",
+  "なかま たすけてくれた\n・・・ありがとう": "My friend helped me... thank you.",
+  "そう言えば・・・\n始まりの森のかみつき草にも\n花が咲くらしい・・・\n\nでも、わしら見たことない・・・": "Come to think of it...\nI hear flowers bloom on the biting grass in the forest of beginnings...\n\nBut we've never seen them...",
+  "キノコの森を右側にぬけた先に\n山がある・・・でも、\nとてもキケンな山・・・": "Beyond the mushroom forest on the right lies a mountain... but it's a very dangerous one...",
+  "キノコの森には、\nいろんなキノコはえてるけど\nむやみに食べない方がいい": "In the mushroom forest,\nthere are various mushrooms growing,\nbut it's better not to eat them recklessly.",
+  "高見ヤグラのぼうえんきょう、もう見たか?\nあそこのけしき、とてもキレイ・・・": "Have you seen the Noboru Kyo of Takami Yagura yet?\nThat scenery over there is very beautiful...",
+  "このキカイこわれてる・・・\n\nたまに来る、赤い服をきたヤツなら\nなおせるかもしれない": "This machine is broken...\n\nIf it's the guy who comes occasionally wearing a red outfit,\nI might be able to fix it.",
+  "わし・・・見はり・・・\nちょっとたいへん・・・": "I... I'm a lookout...\nIt's a little difficult...",
+  "◎○□□□・・・○○○◎\n△○○○●○○・・・": "◎○□□□・・・○○○◎\n△○○○●○○・・・",
+  "わしらの◎◎、いなくな△た・・・\n◎は◎に◎ないほう●いい・・・": "Our ◎◎ has disappeared…\nIt's better if ◎ doesn't exist…",
+  "わしらの◎◎にはもう◎△たか?": "Has our ◎◎ already ◎△?",
+  "わしらのなかま、いなくなった・・・\n今は森に出ないほうがいい・・・": "Our comrades have disappeared…\nIt's better not to go into the forest now…",
+  "わしらの長老にはもう会ったか?": "Have you met our elder yet?",
+  "たき先といえば・・・\n・・・・・・ヤキイモだねぇ・・・\n\nそういえば、\n森の中でいいニオイがするんだけどねぇ・・・": "Speaking of firewood...\n...It's yakiimo, huh...\n\nCome to think of it,\nthere's a nice smell in the forest, you know...",
+  "ケガしてるね・・・\nかわいそう・・・": "You're hurt...\nPoor thing...",
+  "とがった木にぶら下がっている\nホウシまんじゅう・・・ぜんぶ見たか?": "Hanging from a sharp tree.\nHoushi manju... Have you seen them all?",
+  "とがった木にぶら下がっている\nホウシまんじゅうの中に\nなかま2人 とりこまれた": "Hanging from a sharp tree,\ninside a hōshi manju,\ntwo companions were captivated.",
+  "ユラユラゆれるホウシダマ・・・\nとてもあやしい・・・": "The swaying fern...\nIt's very suspicious...",
+  "ホウシダマがかぶさっている\n木の先のなかま、2人いるハズ・・・": "The houjidama is overlapping.\nThere should be two people among the tips of the trees…",
+  "グラグラさんばしに なかまひとり\nつかまってた・・・": "I was caught by Guragura-sanbashi, with one companion.",
+  "高見ヤグラ・・・ひろくてたいへん\n・・・なかま見つけにくい・・・\n回復する液、うまくつかわないと・・・": "Takami Yagura... It's wide and difficult.\n... It's hard to find companions...\nRecovery liquid, if you don't use it well...",
+  "たしか高見ヤグラに2人のなかま\nつかまっているハズ": "I'm sure there are two of them trapped in Takami Yagura."
+ },
+ "banks": [
+  {
+   "bank": "WFM D0FF",
+   "file": "TOMBA/AREA01/A008.GAM",
+   "offset": "0x10604",
+   "messages": [
+    {
+     "index": 0,
+     "original": "カギがかかっている",
+     "translation": "The key is locked."
+    },
+    {
+     "index": 1,
+     "original": "めぐみの羽根をつかった",
+     "translation": "I used Megumi's feather."
+    },
+    {
+     "index": 2,
+     "original": "マゴブタをつかった",
+     "translation": "I used a pig."
+    },
+    {
+     "index": 3,
+     "original": "ドワーフの迷子をつかった",
+     "translation": "I used a lost dwarf."
+    },
+    {
+     "index": 4,
+     "original": "ワライダケをつかった",
+     "translation": "I used Warai Dake."
+    },
+    {
+     "index": 5,
+     "original": "ナキダケをつかった",
+     "translation": "I used Nakidake."
+    },
+    {
+     "index": 6,
+     "original": "げどくダケをつかった",
+     "translation": "I used only the dagger."
+    },
+    {
+     "index": 7,
+     "original": "バケツをつかった",
+     "translation": "Used a bucket."
+    },
+    {
+     "index": 8,
+     "original": "ぼうえんきょうをつかった",
+     "translation": "I used a parachute."
+    },
+    {
+     "index": 9,
+     "original": "ナミダのビン(カラ)をつかった",
+     "translation": "I used a tear bottle (empty)."
+    },
+    {
+     "index": 10,
+     "original": "フラワーのナミダをつかった",
+     "translation": "I used Flower's tears."
+    },
+    {
+     "index": 11,
+     "original": "あかの封印ぶくろをつかった",
+     "translation": "I used the red sealed bag."
+    },
+    {
+     "index": 12,
+     "original": "バンクの実をつかった",
+     "translation": "I used the bank's fruit."
+    },
+    {
+     "index": 13,
+     "original": "アルコールをつかった",
+     "translation": "I used alcohol."
+    },
+    {
+     "index": 14,
+     "original": "エサねんりょうをつかった",
+     "translation": "I used the feed."
+    },
+    {
+     "index": 15,
+     "original": "ケガをしたコイヌをつかった",
+     "translation": "I used a injured puppy."
+    },
+    {
+     "index": 16,
+     "original": "水がはいったバケツをつかった",
+     "translation": "I used a bucket filled with water."
+    },
+    {
+     "index": 17,
+     "original": "ちずをつかった",
+     "translation": "I used a map."
+    },
+    {
+     "index": 18,
+     "original": "はやさレベル+1をつかった",
+     "translation": "I used Hayasa Level +1."
+    },
+    {
+     "index": 19,
+     "original": "かっとびのパンツをつかった",
+     "translation": "I used a pair of cuttobi pants."
+    },
+    {
+     "index": 20,
+     "original": "いだてんのパンツをつかった",
+     "translation": "I used the idaten pants."
+    },
+    {
+     "index": 21,
+     "original": "べんとうをつかった",
+     "translation": "I used a bento box."
+    },
+    {
+     "index": 22,
+     "original": "おおもりべんとうをつかった",
+     "translation": "I used a large bento box."
+    },
+    {
+     "index": 23,
+     "original": "ケモノダッシュをつかった",
+     "translation": "I used Kemono Dash."
+    },
+    {
+     "index": 24,
+     "original": "パラソルをつかった",
+     "translation": "Used a parasol."
+    },
+    {
+     "index": 25,
+     "original": "グルドカをつかった",
+     "translation": "I used Gurudka."
+    },
+    {
+     "index": 26,
+     "original": "グルピンをつかった",
+     "translation": "I used Gurupin."
+    },
+    {
+     "index": 27,
+     "original": "ドカピンをつかった",
+     "translation": "I used Dokapin."
+    },
+    {
+     "index": 28,
+     "original": "ウッドブーメランをつかった",
+     "translation": "Used a wooden boomerang."
+    },
+    {
+     "index": 29,
+     "original": "ストーンブーメランをつかった",
+     "translation": "I used a stone boomerang."
+    },
+    {
+     "index": 30,
+     "original": "アイアンブーメランをつかった",
+     "translation": "Used an iron boomerang."
+    },
+    {
+     "index": 31,
+     "original": "1UPをつかった",
+     "translation": "I used 1UP."
+    },
+    {
+     "index": 32,
+     "original": "ライフゲージかくだいをつかった",
+     "translation": "Used life gauge."
+    },
+    {
+     "index": 33,
+     "original": "ライフゲージぞうかをつかった",
+     "translation": "I used a life gauge."
+    },
+    {
+     "index": 34,
+     "original": "みえないカガミをつかった",
+     "translation": "I used an invisible mirror."
+    },
+    {
+     "index": 35,
+     "original": "ヤキイモをつかった",
+     "translation": "I used yakimo."
+    },
+    {
+     "index": 36,
+     "original": "たいまつをつかった",
+     "translation": "I used a torch."
+    },
+    {
+     "index": 37,
+     "original": "カレハチョウをつかった",
+     "translation": "I used a butterfly."
+    },
+    {
+     "index": 38,
+     "original": "ドワーフを1人たすけた",
+     "translation": "I saved one dwarf."
+    },
+    {
+     "index": 39,
+     "original": "ドワーフを2人たすけた",
+     "translation": "I saved two dwarves."
+    },
+    {
+     "index": 40,
+     "original": "ドワーフを3人たすけた",
+     "translation": "I helped three dwarves."
+    },
+    {
+     "index": 41,
+     "original": "ドワーフを4人たすけた",
+     "translation": "I helped four dwarves."
+    },
+    {
+     "index": 42,
+     "original": "ドワーフを5人たすけた",
+     "translation": "I saved five dwarves."
+    },
+    {
+     "index": 43,
+     "original": "ドワーフを6人たすけた",
+     "translation": "I saved six dwarves."
+    },
+    {
+     "index": 44,
+     "original": "ドワーフを7人たすけた",
+     "translation": "I saved seven dwarves."
+    },
+    {
+     "index": 45,
+     "original": "ドワーフのコトバ",
+     "translation": "Dwarf Words"
+    },
+    {
+     "index": 46,
+     "original": "ドワーフのコトバ レベル1",
+     "translation": "Dwarf Word Level 1"
+    },
+    {
+     "index": 47,
+     "original": "ドワーフのコトバ レベル2",
+     "translation": "Dwarf Word Level 2"
+    },
+    {
+     "index": 48,
+     "original": "ドワーフのコトバ レベル3",
+     "translation": "Dwarf Word Level 3"
+    },
+    {
+     "index": 49,
+     "original": "ケモノダッシュ",
+     "translation": "Kemono Dash"
+    },
+    {
+     "index": 50,
+     "original": "水てき 3分の1",
+     "translation": "Water 1/3"
+    },
+    {
+     "index": 51,
+     "original": "水てき 3分の2",
+     "translation": "Water 2/3"
+    },
+    {
+     "index": 52,
+     "original": "バケツをしまった",
+     "translation": "I put away the bucket."
+    },
+    {
+     "index": 53,
+     "original": "小鳥がにげた",
+     "translation": "The little bird ran away."
+    },
+    {
+     "index": 54,
+     "original": "小鳥をたすけた",
+     "translation": "I helped a small bird."
+    },
+    {
+     "index": 55,
+     "original": "迷子をたすけた",
+     "translation": "I helped a lost child."
+    },
+    {
+     "index": 56,
+     "original": "百花の森\n\nセーブしますか?\n  はい→△ いいえ→×",
+     "translation": "Hyakka Forest\n\nDo you want to save?\nYes → △ No → ×"
+    },
+    {
+     "index": 57,
+     "original": "グラグラ桟橋\n\nセーブしますか?\n  はい→△ いいえ→×",
+     "translation": "Guragura Pier\n\nDo you want to save?\nYes → △ No → ×"
+    },
+    {
+     "index": 58,
+     "original": "高見ヤグラ\n\nセーブしますか?\n  はい→△ いいえ→×",
+     "translation": "Takami Yagura\n\nDo you want to save?\nYes → △ No → ×"
+    },
+    {
+     "index": 59,
+     "original": "恵みの広場\n\nセーブしますか?\n  はい→△ いいえ→×",
+     "translation": "Blessed Square\n\nSave?\nYes → △ No → ×"
+    },
+    {
+     "index": 60,
+     "original": "キノコの森\n\nセーブしますか?\n  はい→△ いいえ→×",
+     "translation": "Mushroom Forest\n\nSave?\nYes → △ No → ×"
+    },
+    {
+     "index": 61,
+     "original": "リーフスライダー\n\nセーブしますか?\n  はい→△ いいえ→×",
+     "translation": "Leaf Slider\n\nSave?\nYes → △ No → ×"
+    },
+    {
+     "index": 62,
+     "original": "○△ーー○!!",
+     "translation": "○△ーー○!!"
+    },
+    {
+     "index": 63,
+     "original": "う△ーー○!!",
+     "translation": "Uu△---○!!"
+    },
+    {
+     "index": 64,
+     "original": "うわーーっ!!",
+     "translation": "Whoa!!"
+    },
+    {
+     "index": 65,
+     "original": "いてぇーーーっ!!",
+     "translation": "Ouch!!!"
+    },
+    {
+     "index": 66,
+     "original": "よぉ!びっくりしたかい?\n・・・オレは、カレハチョウを\n集めてるんだ・・・\n\nウワサによると、カレハチョウには\nふしぎな力があって・・・\n\n何匹か集めるとスゴイことが\nおこるらしいゼ・・・\n\n何がおこるか、もし見たいんだったら、\nつかまえた カレハチョウを\nこのムシカゴの中に入れてくれよ",
+     "translation": "Hey! Were you surprised?\n...I'm collecting butterflies...\n\nAccording to rumors, butterflies have\nmysterious powers...\n\nIf you collect a few, something amazing\nseems to happen...\n\nIf you want to see what happens,\nput the butterflies you caught\ninside this Mukashio."
+    },
+    {
+     "index": 67,
+     "original": "なんだ・・・もう\nもってたのか・・・",
+     "translation": "What... already?\nDid you have it...?"
+    },
+    {
+     "index": 68,
+     "original": "ひぃ・・・ふぅ・・・みぃ・・・\nカレハチョウは今  匹ぐらいだな・・・",
+     "translation": "Hii... fuu... mi...\nThere are about X butterflies now..."
+    },
+    {
+     "index": 69,
+     "original": "ん?・・・やけに\nさわがしいなぁ・・・",
+     "translation": "Hmm? ...It's unusually noisy..."
+    },
+    {
+     "index": 70,
+     "original": "な!?…何だ、何だ?",
+     "translation": "What!?... What is it, what is it?"
+    },
+    {
+     "index": 71,
+     "original": "う・・・ うわーーーっ!\n\nたすけてーーーっ!!",
+     "translation": "U... Uwaaaah!\n\nHelp meeeee!!"
+    },
+    {
+     "index": 72,
+     "original": "・・・おりれなくなっちゃった\n\n花の種をさがしにきたんだけど・・・\nどこにもないんだ・・・\n\nかえりたいよぉ・・・",
+     "translation": "...I can't go back anymore.\n\nI came looking for flower seeds, but...\nI can't find any anywhere...\n\nI want to go home..."
+    },
+    {
+     "index": 73,
+     "original": "・・・おにいちゃん、\nつれてってくれるの?\n・・・・・・ありがとう!",
+     "translation": "...Big brother,\nwill you take me?\n...Thank you!"
+    },
+    {
+     "index": 74,
+     "original": "・・・おにいちゃん、\nそっちじゃないとおもうよ",
+     "translation": "...Older brother,\nI don't think it's that way."
+    },
+    {
+     "index": 75,
+     "original": "いたか?",
+     "translation": "Was it there?"
+    },
+    {
+     "index": 76,
+     "original": "いや・・・\nどこにもいない",
+     "translation": "No...\nHe's nowhere to be found."
+    },
+    {
+     "index": 77,
+     "original": "やはり、\nただのウワサか?",
+     "translation": "Is it just a rumor?"
+    },
+    {
+     "index": 78,
+     "original": "いや、それ\nわからない・・・",
+     "translation": "No, that... I don't know..."
+    },
+    {
+     "index": 79,
+     "original": "でも、このもりで\n見たドワーフいる",
+     "translation": "But, there's a dwarf I saw in this forest."
+    },
+    {
+     "index": 80,
+     "original": "でも、いくら 大ドロボウでも\nこんなところまでぬけ道つくるのは、とても大変・・・",
+     "translation": "But even for a great thief,\nit's very difficult to create a secret passage like this..."
+    },
+    {
+     "index": 81,
+     "original": "・・・もういちど、\n地下ロウみにいく",
+     "translation": "...I'll go underground again."
+    },
+    {
+     "index": 82,
+     "original": "・・・・・・・・・・・・",
+     "translation": "............"
+    },
+    {
+     "index": 83,
+     "original": "・・・うわぁっ!!!\n・・・び・・・びっくりしたぁ・・・\nなんだ、いつかのガキか・・・",
+     "translation": "...Whoa!!!\n...B-...I was startled...\nOh, it's that kid from before..."
+    },
+    {
+     "index": 84,
+     "original": "い、いやぁ・・・\nやっと、ここから出してもらえてさぁ・・・\nけ、けっして ぬけ出したわけじゃないぞ・・・\nじゃぁ、オレはこれで・・・",
+     "translation": "I, no...\nFinally, I've been let out of here...\nI, I didn't escape at all...\nWell then, I'll be going now..."
+    },
+    {
+     "index": 85,
+     "original": "よぉ・・・お前のくるのをまってたんだ・・・\nどうだい?オレと ひとしょうぶしないか?",
+     "translation": "Hey… I was waiting for you to come…\nHow about it? Want to hang out with me?"
+    },
+    {
+     "index": 86,
+     "original": "じつは、この先の高見ヤグラのてっぺんに\nある宝をかくしておいたんだ\n\nそこでだ、高見ヤグラの下からスタートして、\nオレより早く宝にたどりついたら\nその宝はお前にやるよ・・・\n\nどうだい、おもしろそうだろう?",
+     "translation": "Actually, I've hidden a treasure at the very top of Takami Yagura ahead.\nSo, starting from the bottom of Takami Yagura,\nif you reach the treasure faster than me,\nI'll give that treasure to you...\n\nHow about it, doesn't sound interesting?"
+    },
+    {
+     "index": 87,
+     "original": "じゃ・・・いくゼ!",
+     "translation": "Well then... let's go!"
+    },
+    {
+     "index": 88,
+     "original": "よーい・・・どん!",
+     "translation": "Ready... go!"
+    },
+    {
+     "index": 89,
+     "original": "はぁ・・・はぁ・・・\nお前さん はやいなぁ・・・\n\nしょうがない、オレのまけだ・・・\nその地図はお前さんにやるよ・・・",
+     "translation": "Haa... haa...\nYou're fast, aren't you...\n\nIt can't be helped, it's my defeat...\nI'll give you that map..."
+    },
+    {
+     "index": 90,
+     "original": "いやぁ、ひさしぶりに\nたのしかったゼ\n・・・じゃあ、アバヨ!",
+     "translation": "Wow, it's been a while since I had fun...\nWell then, bye!"
+    },
+    {
+     "index": 91,
+     "original": "どうやら、オレの\nかち みたいだな・・・",
+     "translation": "It seems like my win…"
+    },
+    {
+     "index": 92,
+     "original": "ん? なんだい、くやしそうなカオだな・・・\nまぁ、オレはどうせ ヒマだからな・・・\n\nもう一度チャレンジしたくなったら、\nいつでもオレに はなしかけてくれ",
+     "translation": "Hmm? What's wrong? You look frustrated...\nWell, I'm just bored anyway...\n\nIf you ever want to try again,\nfeel free to talk to me anytime."
+    },
+    {
+     "index": 93,
+     "original": "よし! リトライだな・・・\nじゃあ、下におりようか・・・",
+     "translation": "Alright! Time for a retry...\nWell then, let's go down..."
+    },
+    {
+     "index": 94,
+     "original": "あの鳥、ケガしてるみたいで\nあそこからおりられないんだ",
+     "translation": "That bird seems to be injured,\nand it can't get down from there."
+    },
+    {
+     "index": 95,
+     "original": "あの鳥、\nもどってきちゃったね",
+     "translation": "That bird,\nit came back, didn't it?"
+    },
+    {
+     "index": 96,
+     "original": "この鳥 ケガしてるね・・・",
+     "translation": "This bird looks injured..."
+    },
+    {
+     "index": 97,
+     "original": "このさき嵐の山・・・\n\nいつもつよい風ふく とてもきけんな山・・・\nわし、長老にいわれて ここ、見はってる・・・\n・・・けど、とてもたいくつ・・・\n\nだから、いつもここで れんしゅうしてる\nえっ?何のれんしゅうか?\n\n・・・・・・じつは、わし役者になるのがゆめ・・・\n役者になって、みんなを笑わせたり、\n泣かせたり してみたい・・・\n\nでも、れんしゅう とてもたいへん・・・\nどんなカオすれば みんなかんどうするのか・・・",
+     "translation": "This mountain ahead...\n\nIt's always windy, a very dangerous mountain...\nI'm watching here, as told by the elder...\n...but it's very boring...\n\nSo, I always practice here.\nHuh? What kind of practice?\n\n...Actually, my dream is to become an actor...\nI want to become an actor and make everyone laugh,\nor cry...\n\nBut practice is very difficult...\nWhat kind of face will make everyone feel..."
+    },
+    {
+     "index": 98,
+     "original": "おおっ!そのカオ、\nそのひょうじょう・・・とてもいい!!\n\n・・・なるほど\n・・・ふむふむ\n・・・んーとても さんこうになる",
+     "translation": "Oh! That Kao,\nthat hyojou... very good!!\n\n...I see\n...Hmm hmm\n...Hmm, it will become very sankou."
+    },
+    {
+     "index": 99,
+     "original": "・・・う〜ん\n・・・でも、まだ何か足りない・・・\n\nたとえば・・・\n人に かなしみをつたえるには\nどんなカオすればいいのか?・・・",
+     "translation": "...Hmm...\n...But something is still missing...\n\nFor example...\nTo convey sadness to people,\nwhat kind of kao should I do?..."
+    },
+    {
+     "index": 100,
+     "original": "ん?・・・うおおぉぉぉっ!\nそ、その あいしゅうにみちたカオ!・・・\n・・・そうか・・・\n\nさっきの笑がおと、いまの泣きがおをマスターして・・・\nふむふむ・・・\n・・・んーーーーーーっ\n\n見えた!!\nうん!ありがとう!! \n\nキミのおかげで何かつかめそうな気がする!\nおっと、こうしちゃいられない\n・・・今から とっくんだ!!",
+     "translation": "Huh?... Whoa!\nThat, that Kaoshi filled with love! ...\n...I see...\n\nI mastered the laughter from earlier and the crying from now...\nHmm... hmm...\n...nnn\n\nI saw it!!\nYeah! Thanks!!\n\nI feel like I can grasp something thanks to you!\nOops, I can't stay like this.\n...From now on, it's over!!"
+    },
+    {
+     "index": 101,
+     "original": "おっと、わすれてた・・・\nさっき、長老、山の方へ入っていった・・・\n\n何でも、キミに用があるらしい・・・\nはやく行ったほうがいいよ",
+     "translation": "Oops, I forgot...\nJust now, the elder went towards the mountains...\n\nApparently, he has something to say to you...\nYou should go quickly."
+    },
+    {
+     "index": 102,
+     "original": "立ち入り禁止\nこの森には怪物がすんでいます。\n\nキケンですので立ち入らないで下さい\n赤ちゃん村しぜんかんりきょく",
+     "translation": "No entry allowed.\nThis forest is inhabited by monsters.\n\nPlease do not enter as it is dangerous.\nBaby Village Nature Conservation Office."
+    },
+    {
+     "index": 103,
+     "original": "おれ、花のナミダとりに来た・・・\n花のナミダ、恵みさまの復活にかかせない・・・\n\nでも・・・\nどうやってナミダ、集めるのかわからない・・・",
+     "translation": "I came to collect the flower tears...\nThe flower tears, they are essential for the revival of Eimi-sama...\n\nBut...\nI don't know how to collect the tears..."
+    },
+    {
+     "index": 104,
+     "original": "・・・こまった・・・",
+     "translation": "...I'm in trouble..."
+    },
+    {
+     "index": 105,
+     "original": "○○○◎◎○◎◎・・・◎◎○○○\n●△○○・・・○○◎△○○?",
+     "translation": "○○○◎◎○◎◎・・・◎◎○○○\n●△○○・・・○○◎△○○?"
+    },
+    {
+     "index": 106,
+     "original": "ここ、恵みの広場・・・",
+     "translation": "Here, the square of blessings..."
+    },
+    {
+     "index": 107,
+     "original": "高見ヤグラの下のほう、\n木でできてるところ・・・\n\nこわれやすいから\n気をつけたほうがいい・・・",
+     "translation": "The lower part of the Takami Yagura,\nthe part made of wood...\n\nIt's fragile, so you should be careful..."
+    },
+    {
+     "index": 108,
+     "original": "あの、まんなかにいるのが\n恵みコゾウさまたち・・・\nでも、うごかない・・・",
+     "translation": "Um, the ones in the middle are\nthe blessed Kozo-sama and others...\nBut they don't move..."
+    },
+    {
+     "index": 109,
+     "original": "ココロあらわれるこのポーズ\n・・・うつくしい・・・",
+     "translation": "This pose reveals the heart...\n...beautiful..."
+    },
+    {
+     "index": 110,
+     "original": "恵みさまが復活し、\n動きはじめるとき・・・\n何かがおこるといわれてる・・・",
+     "translation": "When Ema-sama revives and begins to move...\nit is said that something will happen..."
+    },
+    {
+     "index": 111,
+     "original": "ここ、恵みの広場・・・\n魔ブタの魔法さえとければ、\nもっとキレイなところ・・・",
+     "translation": "Here, the Square of Blessings...\nIf only I could remove the magic of the Demon Pig,\nthere would be a more beautiful place..."
+    },
+    {
+     "index": 112,
+     "original": "キノコの森には\n怪物がすんでるというウワサ・・・\n気をつけたほうがいい・・・",
+     "translation": "There's a rumor that a monster lives in the mushroom forest...\nYou should be careful..."
+    },
+    {
+     "index": 113,
+     "original": "恵みさま・・・\nやっぱり動かない・・・",
+     "translation": "Emi-sama...\nIt still doesn't work..."
+    },
+    {
+     "index": 114,
+     "original": "そう言えば、恵みさまの\n動いてるところ・・・\nだれも見たことない・・・",
+     "translation": "Come to think of it, no one has ever seen Ema-sama's moving…"
+    },
+    {
+     "index": 115,
+     "original": "わし、きょうは村の\n地下ロウの見はり当番・・・\n\nあれ?これ、\nないしょだったっけ??",
+     "translation": "Today, I'm on watch duty in the village's underground passage...\n\nHuh? Wasn't this supposed to be a secret??"
+    },
+    {
+     "index": 116,
+     "original": "この森も、昔はキレイな花が\nいっぱい咲いてた・・・\nこれもみんな、魔ブタのせい・・・",
+     "translation": "This forest too used to be full of beautiful flowers...\nBut now, it's all because of the demon pigs..."
+    },
+    {
+     "index": 117,
+     "original": "魔ブタのかくれ家、\n目には見えないらしい・・・\n\nでも、入口は\nどこかにあるハズ・・・",
+     "translation": "The devil pig's hideout,\nit seems invisible to the eye...\n\nBut, the entrance must be somewhere..."
+    },
+    {
+     "index": 118,
+     "original": "ここは・・・もう知ってるよね・・・",
+     "translation": "You already know this place, right?"
+    },
+    {
+     "index": 119,
+     "original": "バッカスの湖にある水は、\nぜんぶアルコール・・・\n\nよっぱらうから、\n気をつけたほうがいい・・・",
+     "translation": "The water in Lake Bacchus is all alcohol...\n\nBecause it's intoxicating, you should be careful..."
+    },
+    {
+     "index": 120,
+     "original": "恵みさまを復活させるには、\nなにかが必要らしい・・・\n\nえ〜と・・・\nどわすれした・・・",
+     "translation": "To revive Ema-sama,\nit seems something is needed...\n\nUm...\nI forgot..."
+    },
+    {
+     "index": 121,
+     "original": "ん?・・・\n恵みさまを復活させるもの?\n\n・・・そういえば、なにかの\nなみだが必要とか・・・",
+     "translation": "Hmm?...\nSomething to revive Eimi-sama?\n\n...Come to think of it, I need some\ntears or something..."
+    },
+    {
+     "index": 122,
+     "original": "恵みコゾウさま、\n人気者・・・みんな、\nこの広場にあつまってくる",
+     "translation": "Dear Blessed Kozo,\nPopular... everyone,\ngathers in this square."
+    },
+    {
+     "index": 123,
+     "original": "嵐の山にも魔ブタの魔法が\nかかっているらしい・・・\n封印ぶくろ、どこかにあるハズ・・・",
+     "translation": "It seems the magic of the demon pig is also on the stormy mountain...\nThe sealed bag must be somewhere..."
+    },
+    {
+     "index": 124,
+     "original": "ときどき、森の地面の下から、\nものおとがきこえてくる・・・\nちょっとコワイ・・・",
+     "translation": "Sometimes, from under the forest floor,\nI hear footsteps...\nIt's a little scary..."
+    },
+    {
+     "index": 125,
+     "original": "わし、村の入口ちかくにある、\nへんならくがきと同じもの、\n怪物マンションで見つけた・・・",
+     "translation": "I found something like a strange doodle near the entrance of the village, at the Monster Mansion…"
+    },
+    {
+     "index": 126,
+     "original": "この先のリーフスライダーをぬけて、\nキノコの森を左に行けば、\n近道がある・・・",
+     "translation": "Go past the leaf slider ahead,\nand if you go left through the mushroom forest,\nthere's a shortcut..."
+    },
+    {
+     "index": 127,
+     "original": "キノコの森のむこうがわには、\n赤ちゃん村とバッカスの湖がある・・・",
+     "translation": "Beyond the mushroom forest lies Baby Village and Bacchus Lake..."
+    },
+    {
+     "index": 128,
+     "original": "わしら、おまえに助けてもらった・・・\nだから、このタマゴおまえにやる・・・",
+     "translation": "We were saved by you...\nSo, I'll give you this egg..."
+    },
+    {
+     "index": 129,
+     "original": "なかま・・・みつかっていない・・・\nここからさきは いかないほうがいい",
+     "translation": "I haven't found my companion...\nIt's better not to go any further from here."
+    },
+    {
+     "index": 130,
+     "original": "ドワーフのこども 迷子になった・・・\nもりのおくへ いかないように\nみはってる・・・",
+     "translation": "A dwarf child got lost...\nDon't go deep into the forest.\nIt's spreading..."
+    },
+    {
+     "index": 131,
+     "original": "よぉ!びっくりしたかい?\n・・・オレは、カレハチョウを集めてるんだ・・・",
+     "translation": "Hey! Were you surprised?\n...I'm collecting butterflies..."
+    },
+    {
+     "index": 132,
+     "original": "ウワサによると、\nカレハチョウにはふしぎな力があって・・・\n何匹か集めるとスゴイことがおこるらしいゼ・・・",
+     "translation": "According to rumors,\nthe butterfly has mysterious powers...\nApparently, if you gather several of them, something amazing happens..."
+    },
+    {
+     "index": 133,
+     "original": "何がおこるか、もし見たいんだったら、\nつかまえた カレハチョウを\nこのムシカゴの中に入れてくれよ",
+     "translation": "If you want to see what happens,\nput the butterfly I caught inside this mug."
+    },
+    {
+     "index": 134,
+     "original": "なんだ・・・\nもうもってたのか・・・",
+     "translation": "What...\nDid you already have it...?"
+    },
+    {
+     "index": 135,
+     "original": "ひぃ・・・ふぅ・・・みぃ・・・\nカレハチョウは今・・・\n00匹ぐらいだな・・・",
+     "translation": "Hii... fuu... mi...\nThe butterflies are now...\nAbout 00 or so..."
+    },
+    {
+     "index": 136,
+     "original": "今回のバージョンは、ここまでです。\nこの先のエリアに進むと\nゲームは自動的に終了します。",
+     "translation": "This version ends here.\nIf you proceed to the next area,\nthe game will automatically end."
+    }
+   ]
+  },
+  {
+   "bank": "WFM D1FF",
+   "file": "TOMBA/AREA01/A008.GAM",
+   "offset": "0x1725C",
+   "messages": [
+    {
+     "index": 0,
+     "original": "CLEAR! ",
+     "translation": null
+    },
+    {
+     "index": 1,
+     "original": "ドワーフの長老",
+     "translation": "Dwarf Elder"
+    },
+    {
+     "index": 2,
+     "original": "コトバを吸いとろう!",
+     "translation": "Let's inhale words!"
+    },
+    {
+     "index": 3,
+     "original": "たき火といえば…",
+     "translation": "When it comes to bonfires..."
+    },
+    {
+     "index": 4,
+     "original": "伝説のカレハチョウ",
+     "translation": "The Legendary Swallowtail Butterfly"
+    },
+    {
+     "index": 5,
+     "original": "火が消えちゃった…",
+     "translation": "The fire went out..."
+    },
+    {
+     "index": 6,
+     "original": "まいごのドワーフ",
+     "translation": "Lost Dwarf"
+    },
+    {
+     "index": 7,
+     "original": "花のたね",
+     "translation": "Flower Seeds"
+    },
+    {
+     "index": 8,
+     "original": "AP・ピラー",
+     "translation": "AP Pillar"
+    },
+    {
+     "index": 9,
+     "original": "ドワーフを数え",
+     "translation": "Count the dwarves."
+    },
+    {
+     "index": 10,
+     "original": "タルのゆくえ",
+     "translation": "The Fate of Taru"
+    },
+    {
+     "index": 11,
+     "original": "森の封印ぶくろ",
+     "translation": "Forest Seal Pouch"
+    },
+    {
+     "index": 12,
+     "original": "花の森",
+     "translation": "Flower Forest"
+    },
+    {
+     "index": 13,
+     "original": "かみつき草の花",
+     "translation": "The flowers of the biting grass."
+    },
+    {
+     "index": 14,
+     "original": "ドワーフの助け",
+     "translation": "Dwarf help"
+    },
+    {
+     "index": 15,
+     "original": "魔王の忘れもの",
+     "translation": "The Demon's Forgotten Item"
+    },
+    {
+     "index": 16,
+     "original": "見えないカガミ?",
+     "translation": "Invisible mirror?"
+    },
+    {
+     "index": 17,
+     "original": "ケンカをとめて",
+     "translation": "Stop the fight."
+    },
+    {
+     "index": 18,
+     "original": "地下ロウの大ドロボウ",
+     "translation": "The Great Robbery of the Underground Row"
+    },
+    {
+     "index": 19,
+     "original": "のぞいてごらん?!",
+     "translation": "Take a peek?!"
+    },
+    {
+     "index": 20,
+     "original": "ヨ〜イ…ドン!",
+     "translation": "Yo~i... Don!"
+    },
+    {
+     "index": 21,
+     "original": "バロンは友だち",
+     "translation": "Baron is a friend."
+    },
+    {
+     "index": 22,
+     "original": "これ、な〜んだ?",
+     "translation": "What is this?"
+    },
+    {
+     "index": 23,
+     "original": "やしきの宝物?",
+     "translation": "Yashiki's treasure?"
+    },
+    {
+     "index": 24,
+     "original": "水晶のじゅもん",
+     "translation": "Crystal Spell"
+    },
+    {
+     "index": 25,
+     "original": "とびっきりの笑がお!",
+     "translation": "A burst of laughter!"
+    },
+    {
+     "index": 26,
+     "original": "とびっきりの泣きがお?",
+     "translation": "Is there a particularly big cry?"
+    },
+    {
+     "index": 27,
+     "original": "動かない恵みコゾウ",
+     "translation": "The Unmoving Blessing Kozo"
+    },
+    {
+     "index": 28,
+     "original": "怪物?勝てるかな?",
+     "translation": "Monster? Can I win?"
+    },
+    {
+     "index": 29,
+     "original": "死神の巣をつぶせ",
+     "translation": "Destroy the Death God's Nest"
+    }
+   ]
+  },
+  {
+   "bank": "WFM D0FF",
+   "file": "TOMBA/AREA02/A003.GAM",
+   "offset": "0x4E14",
+   "messages": [
+    {
+     "index": 0,
+     "original": "カギがかかっている",
+     "translation": "The key is locked."
+    },
+    {
+     "index": 1,
+     "original": "めぐみの羽根をつかった",
+     "translation": "I used Megumi's feather."
+    },
+    {
+     "index": 2,
+     "original": "マゴブタをつかった",
+     "translation": "I used a pig."
+    },
+    {
+     "index": 3,
+     "original": "ドワーフの迷子をつかった",
+     "translation": "I used a lost dwarf."
+    },
+    {
+     "index": 4,
+     "original": "ワライダケをつかった",
+     "translation": "I used Warai Dake."
+    },
+    {
+     "index": 5,
+     "original": "ナキダケをつかった",
+     "translation": "I used Nakidake."
+    },
+    {
+     "index": 6,
+     "original": "げどくダケをつかった",
+     "translation": "I used only the dagger."
+    },
+    {
+     "index": 7,
+     "original": "バケツをつかった",
+     "translation": "Used a bucket."
+    },
+    {
+     "index": 8,
+     "original": "ぼうえんきょうをつかった",
+     "translation": "I used a parachute."
+    },
+    {
+     "index": 9,
+     "original": "ナミダのビン(カラ)をつかった",
+     "translation": "I used a tear bottle (empty)."
+    },
+    {
+     "index": 10,
+     "original": "フラワーのナミダをつかった",
+     "translation": "I used Flower's tears."
+    },
+    {
+     "index": 11,
+     "original": "あかの封印ぶくろをつかった",
+     "translation": "I used the red sealed bag."
+    },
+    {
+     "index": 12,
+     "original": "バンクの実をつかった",
+     "translation": "I used the bank's fruit."
+    },
+    {
+     "index": 13,
+     "original": "アルコールをつかった",
+     "translation": "I used alcohol."
+    },
+    {
+     "index": 14,
+     "original": "エサねんりょうをつかった",
+     "translation": "I used the feed."
+    },
+    {
+     "index": 15,
+     "original": "ケガをしたコイヌをつかった",
+     "translation": "I used a injured puppy."
+    },
+    {
+     "index": 16,
+     "original": "水がはいったバケツをつかった",
+     "translation": "I used a bucket filled with water."
+    },
+    {
+     "index": 17,
+     "original": "ちずをつかった",
+     "translation": "I used a map."
+    },
+    {
+     "index": 18,
+     "original": "はやさレベル+1をつかった",
+     "translation": "I used Hayasa Level +1."
+    },
+    {
+     "index": 19,
+     "original": "かっとびのパンツをつかった",
+     "translation": "I used a pair of cuttobi pants."
+    },
+    {
+     "index": 20,
+     "original": "いだてんのパンツをつかった",
+     "translation": "I used the idaten pants."
+    },
+    {
+     "index": 21,
+     "original": "べんとうをつかった",
+     "translation": "I used a bento box."
+    },
+    {
+     "index": 22,
+     "original": "おおもりべんとうをつかった",
+     "translation": "I used a large bento box."
+    },
+    {
+     "index": 23,
+     "original": "ケモノダッシュをつかった",
+     "translation": "I used Kemono Dash."
+    },
+    {
+     "index": 24,
+     "original": "パラソルをつかった",
+     "translation": "Used a parasol."
+    },
+    {
+     "index": 25,
+     "original": "グルドカをつかった",
+     "translation": "I used Gurudka."
+    },
+    {
+     "index": 26,
+     "original": "グルピンをつかった",
+     "translation": "I used Gurupin."
+    },
+    {
+     "index": 27,
+     "original": "ドカピンをつかった",
+     "translation": "I used Dokapin."
+    },
+    {
+     "index": 28,
+     "original": "ウッドブーメランをつかった",
+     "translation": "Used a wooden boomerang."
+    },
+    {
+     "index": 29,
+     "original": "ストーンブーメランをつかった",
+     "translation": "I used a stone boomerang."
+    },
+    {
+     "index": 30,
+     "original": "アイアンブーメランをつかった",
+     "translation": "Used an iron boomerang."
+    },
+    {
+     "index": 31,
+     "original": "1UPをつかった",
+     "translation": "I used 1UP."
+    },
+    {
+     "index": 32,
+     "original": "ライフゲージかくだいをつかった",
+     "translation": "Used life gauge."
+    },
+    {
+     "index": 33,
+     "original": "ライフゲージぞうかをつかった",
+     "translation": "I used a life gauge."
+    },
+    {
+     "index": 34,
+     "original": "みえないカガミをつかった",
+     "translation": "I used an invisible mirror."
+    },
+    {
+     "index": 35,
+     "original": "ヤキイモをつかった",
+     "translation": "I used yakimo."
+    },
+    {
+     "index": 36,
+     "original": "たいまつをつかった",
+     "translation": "I used a torch."
+    },
+    {
+     "index": 37,
+     "original": "カレハチョウをつかった",
+     "translation": "I used a butterfly."
+    },
+    {
+     "index": 38,
+     "original": "ドワーフを1人たすけた",
+     "translation": "I saved one dwarf."
+    },
+    {
+     "index": 39,
+     "original": "ドワーフを2人たすけた",
+     "translation": "I saved two dwarves."
+    },
+    {
+     "index": 40,
+     "original": "ドワーフを3人たすけた",
+     "translation": "I helped three dwarves."
+    },
+    {
+     "index": 41,
+     "original": "ドワーフを4人たすけた",
+     "translation": "I helped four dwarves."
+    },
+    {
+     "index": 42,
+     "original": "ドワーフを5人たすけた",
+     "translation": "I saved five dwarves."
+    },
+    {
+     "index": 43,
+     "original": "ドワーフを6人たすけた",
+     "translation": "I saved six dwarves."
+    },
+    {
+     "index": 44,
+     "original": "ドワーフを7人たすけた",
+     "translation": "I saved seven dwarves."
+    },
+    {
+     "index": 45,
+     "original": "ドワーフのコトバ",
+     "translation": "Dwarf Words"
+    },
+    {
+     "index": 46,
+     "original": "ドワーフのコトバ レベル1",
+     "translation": "Dwarf Word Level 1"
+    },
+    {
+     "index": 47,
+     "original": "ドワーフのコトバ レベル2",
+     "translation": "Dwarf Word Level 2"
+    },
+    {
+     "index": 48,
+     "original": "ドワーフのコトバ レベル3",
+     "translation": "Dwarf Word Level 3"
+    },
+    {
+     "index": 49,
+     "original": "ケモノダッシュ",
+     "translation": "Kemono Dash"
+    },
+    {
+     "index": 50,
+     "original": "水てき 3分の1",
+     "translation": "Water 1/3"
+    },
+    {
+     "index": 51,
+     "original": "水てき 3分の2",
+     "translation": "Water 2/3"
+    },
+    {
+     "index": 52,
+     "original": "バケツをしまった",
+     "translation": "I put away the bucket."
+    },
+    {
+     "index": 53,
+     "original": "小鳥がにげた",
+     "translation": "The little bird ran away."
+    },
+    {
+     "index": 54,
+     "original": "小鳥をたすけた",
+     "translation": "I helped a small bird."
+    },
+    {
+     "index": 55,
+     "original": "迷子をたすけた",
+     "translation": "I helped a lost child."
+    },
+    {
+     "index": 56,
+     "original": "森の地下迷路",
+     "translation": "Forest Underground Maze"
+    },
+    {
+     "index": 57,
+     "original": "ドワーフの集落",
+     "translation": "Dwarven settlement"
+    },
+    {
+     "index": 58,
+     "original": "ドワーフの集落の広場",
+     "translation": "Dwarven Village Square"
+    },
+    {
+     "index": 59,
+     "original": "○△ーー○!!",
+     "translation": "○△ーー○!!"
+    },
+    {
+     "index": 60,
+     "original": "う△ーー○!!",
+     "translation": "Uu△---○!!"
+    },
+    {
+     "index": 61,
+     "original": "うわーーっ!!",
+     "translation": "Whoa!!"
+    },
+    {
+     "index": 62,
+     "original": "◎○□□□・・・○○○◎△○○○●○○・・・",
+     "translation": "◎○□□□・・・○○○◎△○○○●○○・・・"
+    },
+    {
+     "index": 63,
+     "original": "わし、けっこうアタマいい\nおまえのコトバわかる・・・けど、\nおまえ、ドワーフのコトバ知らない・・・\n\nわしらのコトバ、ドワーフにかみつけば\nおぼえられる・・・\nいっかいじゃ ダメかもしれないけど・・・",
+     "translation": "I'm pretty smart.\nI understand your words... but\nyou don't understand dwarven words...\n\nIf you bite into our words,\nyou'll remember them...\nIt might take more than once though..."
+    },
+    {
+     "index": 64,
+     "original": "コ○バ・・・\nわ○○○ない・・・",
+     "translation": "Ko-ba...\nI don't have a wa-wa-wa..."
+    },
+    {
+     "index": 65,
+     "original": "◎のまえ●、◎◎\nいなくな△た・・・",
+     "translation": "◎'s front ●, ◎◎\ndisappeared…"
+    },
+    {
+     "index": 66,
+     "original": "な○とか ひ△しで\n◎●てきた・・・",
+     "translation": "I've been doing ◎● with な○ or ひ△..."
+    },
+    {
+     "index": 67,
+     "original": "目のまえで、なかま\nいなくなった・・・",
+     "translation": "Right before my eyes, my comrade disappeared..."
+    },
+    {
+     "index": 68,
+     "original": "なんとか ひっしで\nにげてきた・・・",
+     "translation": "I somehow managed to escape..."
+    },
+    {
+     "index": 69,
+     "original": "どうしちゃったのかねぇ\nいきなり 4人も いなくなったんだって?\n\nきっと あれだね\nまた コマブタたちが いたずらで\nかくしちまったんだろうねぇ・・・",
+     "translation": "I wonder what happened?\nApparently four people disappeared suddenly?\n\nIt must be that again.\nThe Komabuta guys probably hid them as a prank..."
+    },
+    {
+     "index": 70,
+     "original": "しんぱいだけど・・・\nほら みんな ちいさいだろ?\n\n高いところや ホウシのなかだと\nてが だせないんだよ・・・",
+     "translation": "It's scary, but...\nLook, everyone is small, right?\n\nIn high places or inside a cage,\nyou can't reach out..."
+    },
+    {
+     "index": 71,
+     "original": "おやっ!\n・・・これ、くれるのかい?\nうれしいねぇ・・・\n\nそうだ、何かわからないんだけど・・・\nかわりに これをもらっとくれ",
+     "translation": "Oh!\n...Is this what you're giving me?\nI'm so happy...\n\nWell, I don't really understand what's going on, but...\nPlease take this instead."
+    },
+    {
+     "index": 72,
+     "original": "・・・ふうーーーっ・・・じつは、\nおなかの中にガスがたまってて\nくるしかったんだよ\n\nおかげで たすかったよ・・・\nありがとうね・・・\nそうだ、よくは わからないんだけど\n\n・・・かわりに これをもらっとくれ\n・・・めずらしいモノらしいよ",
+     "translation": "...Whew... Actually,\nthere was gas building up in my stomach\nand it was uncomfortable.\n\nThanks to that, I was saved...\nThank you...\nWell, I don't really understand it,\nbut...\n\n...Instead, please take this.\n...It seems to be a rare item."
+    },
+    {
+     "index": 73,
+     "original": "この先、通さない・・・\nこれ わしのしごと・・・",
+     "translation": "I won't let you through from here on out...\nThis is my job..."
+    },
+    {
+     "index": 74,
+     "original": "ん?なんだ、おまえ\nこれ欲しいのか?\n\n・・・先、あぶないから\nきをつけてもっていけ・・・",
+     "translation": "Hmm? What is it, you?\nDo you want this?\n\n...It's dangerous ahead, so\nBe careful and take it..."
+    },
+    {
+     "index": 75,
+     "original": "お〜い・・・ だれかいないかぁ〜\n・・・あかりがきれたぞぉ〜",
+     "translation": "Hey... Is anyone there?\n...The lights are out!"
+    },
+    {
+     "index": 76,
+     "original": "こども!・・・こども見なかったか?\n\nこども、高見ヤグラに 花のたね\nさがしにいったまま・・・かえってこない!\n\nしんぱい、しんぱい・・・\nとてもしんぱい・・・",
+     "translation": "Child! ... Didn't you see the child?\n\nThe child went to Takami Yagura to look for flower seeds... and hasn't come back!\n\nWorried, worried...\nVery worried..."
+    },
+    {
+     "index": 77,
+     "original": "・・・まだひとりも、\nかえってこない・・・",
+     "translation": "...no one has returned yet..."
+    },
+    {
+     "index": 78,
+     "original": "・・・あと6人、\nかえってこない・・・",
+     "translation": "...six more people,\nthey won't come back..."
+    },
+    {
+     "index": 79,
+     "original": "・・・あと5人、\nかえってこない・・・",
+     "translation": "...five more people,\nthey won't come back..."
+    },
+    {
+     "index": 80,
+     "original": "・・・あと4人、\nかえってこない・・・",
+     "translation": "...four more people,\nthey won't come back..."
+    },
+    {
+     "index": 81,
+     "original": "・・・あと3人、\nかえってこない・・・",
+     "translation": "...Three more people,\nthey won't come back..."
+    },
+    {
+     "index": 82,
+     "original": "・・・あと2人、\nかえってこない・・・",
+     "translation": "...two more people,\nthey won't come back..."
+    },
+    {
+     "index": 83,
+     "original": "・・・あとひとりだけ、\nかえってこない・・・",
+     "translation": "...just one more person,\nwho hasn't come back..."
+    },
+    {
+     "index": 84,
+     "original": "しんぱい、しんぱい・・・\nとてもしんぱい・・・",
+     "translation": "Worried, worried...\nVery worried..."
+    },
+    {
+     "index": 85,
+     "original": "おお!おまえ、こども、たすけてくれたか!\n\nおまえ、とてもやさしいこころもってる\n・・・わし、とてもうれしい\n\nおれいに、これ、もってゆけ、きっとやくにたつ",
+     "translation": "Oh! You, child, did you help me!\n\nYou have a very kind heart... I am very happy.\n\nTake this with you, it will surely be useful."
+    },
+    {
+     "index": 86,
+     "original": "こども見つけてくれて\nありがとう・・・\nわしとおまえ、ともだち",
+     "translation": "Thank you for finding me...\nYou and I, we're friends."
+    },
+    {
+     "index": 87,
+     "original": "おにいちゃん、\n花のたね みつけたら\nおしえてね!",
+     "translation": "Big brother,\nif you find flower seeds,\nplease let me know!"
+    },
+    {
+     "index": 88,
+     "original": "この花だんにお花咲かせたいなぁ・・・\n\nちょっと前までは、\n森にたくさんの種があったんだよ・・・\n\nでも、今はみんなしおれてた・・・\n\n魔ブタのせいだけじゃないような気がするんだけど・・・",
+     "translation": "I wish I could make flowers bloom in this flowerbed...\n\nJust a little while ago,\nthere were so many seeds in the forest...\n\nBut now they've all withered...\n\nI don't think it's just the evil pig's fault..."
+    },
+    {
+     "index": 89,
+     "original": "もう、お花見れないのかなぁ・・・",
+     "translation": "I wonder if I'll never be able to see cherry blossoms again..."
+    },
+    {
+     "index": 90,
+     "original": "おまえ、APと書かれた\nへんなモノ見たか?",
+     "translation": "Did you see something weird that said AP?"
+    },
+    {
+     "index": 91,
+     "original": "わしらのなかま、あれと同じ\nマークの入ったトビラや箱も\n見たこと、あるらしい・・・",
+     "translation": "It seems our comrades have also seen doors and boxes with the same mark…"
+    },
+    {
+     "index": 92,
+     "original": "どうすれば、ひらくか?\n・・・気になる・・・",
+     "translation": "How can I open it?\n...I'm curious..."
+    },
+    {
+     "index": 93,
+     "original": "ドワーフ、\nとてもこまってる・・・",
+     "translation": "Dwarf,\nI'm really in trouble..."
+    },
+    {
+     "index": 94,
+     "original": "くわしいはなし、ひろばにいる\nなかまがしってる・・・",
+     "translation": "Detailed information is available on the forum.\nMy friends know..."
+    },
+    {
+     "index": 95,
+     "original": "おお、おまえ、よくきてくれた!\nドワーフ、とてもこまってる・・・\n\nじつは・・・このドワーフの森、\n魔ブタの魔法かかってる・・・\n花々はかれ、木々たちも すがた変えた・・・\n\nさっき、4人の なかま、森で しょくぶつに取り囲まれ\nゆくえ知れずになった・・・\n\nたぶん、とんがった木の先にくっついた\n ホウシまんじゅうの中か\n\nぶらさがったホウシダマに取り付かれて\nうごけなくなってるハズ・・・\n\nなかま 見つかるまで 森のおくいけないように\nしてある・・・\nおまえ なかま 助けてくれないか・・・",
+     "translation": "Oh, you've come!\nThe dwarves are in great trouble...\n\nActually... this forest of dwarves,\nis under the spell of the Demon Pig's magic...\nThe flowers and trees have all changed their forms...\n\nJust now, four of my companions were surrounded by creatures in the forest\nand their fate became unknown...\n\nProbably, they're stuck inside the Houshi Manju attached to the tip of a pointed tree,\nor perhaps they're trapped in the hanging Houshi Dama.\n\nThey're probably stuck to the Houshi Dama and can't move...\n\nI've made it so they can't leave the forest until they find their companions...\nWill you help my companions?"
+    },
+    {
+     "index": 96,
+     "original": "たぶん、なかまは とんがった木の先の\n ホウシまんじゅうの中か\n\nぶらさがったホウシダマに取り付かれて\nうごけなくなってるハズ・・・",
+     "translation": "Probably, my friend is inside the pointed end of the tree,\ninside the hoshi manju.\n\nHe's stuck to the hanging hoshidama and can't move…"
+    },
+    {
+     "index": 97,
+     "original": "おお!\n\nおまえ・・・なかま、\nぜんいん助けてくれたか・・・\n\nほんとうに・・・ありがとう・・・",
+     "translation": "Oh!\n\nYou... comrades,\ndid you save everyone...?\n\nTruly... thank you..."
+    },
+    {
+     "index": 98,
+     "original": "こんかいのバージョンは、ここでおわり・・・\nおまえ、もっと プレイしたいなら\nぜひ せいひんばんを あそんでくれ・・・・\n\nなかま たすけてくれた おまえなら\nこのゲーム きっと たのしいハズ・・・\nドワーフ みんな まってる!!",
+     "translation": "This version ends here...\nIf you want to play more,\nplease try the product banner...\n\nIf you helped your friends,\nyou'll surely enjoy this game...\nAll the dwarves are waiting!!"
+    },
+    {
+     "index": 99,
+     "original": "・・・7人のなかま、かえってきたけど・・・\nじつは、こどもがひとり・・・\n森のなかで迷子になったまま・・・",
+     "translation": "...Seven companions have returned, but...\nActually, one child is missing...\nStill lost in the forest..."
+    },
+    {
+     "index": 100,
+     "original": "おまえ、とても、ゆうきある\nドワーフ、おまえ、そんけいする",
+     "translation": "You, very, have courage.\nDwarf, you, are scared."
+    },
+    {
+     "index": 101,
+     "original": "勇気ある少年よ・・・\nわしがドワーフの\n長老ですじゃ・・・",
+     "translation": "A brave boy...\nI am the elder of the dwarves..."
+    },
+    {
+     "index": 102,
+     "original": "7人のドワーフは\nかえってきたんじゃが・・・\n\n子どもがまだ\nかえってこないんじゃ・・・",
+     "translation": "The seven dwarfs\nhave returned...\n\nBut the children\nhaven't come back yet..."
+    },
+    {
+     "index": 103,
+     "original": "子どもの両親は、この集落の\n入口のちかくの家におる・・・\n話をきいてくれんかのぅ・・",
+     "translation": "The child's parents live in a house near the entrance of this village…\nWill you listen to what I have to say?"
+    },
+    {
+     "index": 104,
+     "original": "村人代表になりかわり、\n礼を言わせてほしい・・・\n\nなかまをたすけてくれて\n本当にありがとう・・・\n\nこんな村じゃから、\nたいしたお礼も\nできないんじゃが・・・\n\n・・・そうじゃ・・・\n100年老人から話は\n聞いたんじゃが、\n\n魔ブタのゆくえを\nおっているとか・・・",
+     "translation": "On behalf of the villagers,\nI would like to express my gratitude...\n\nThank you very much for helping my comrades...\n\nSince this is such a small village,\nI can't offer much in return...\n\n...That's right...\nI heard a story from a 100-year-old man,\n\nthat he is watching over the fate of the demon pig..."
+    },
+    {
+     "index": 105,
+     "original": "おぉ、あったあった、\nこれじゃ・・・",
+     "translation": "Oh, there it is,\nthis is..."
+    },
+    {
+     "index": 106,
+     "original": "これは、この森に魔法をかけた魔ブタの\n封印ぶくろ ですじゃ・・・\n\nこれがあれば魔ブタのかくれている場所へ近づくだけで、\nかくれ場所への入口、すなわち魔ブタゲートを\n見つけてくれるハズじゃ・・・",
+     "translation": "This is the Seal Pouch of the magical pig that cast magic on this forest...\n\nWith this, simply approaching where the magical pig is hiding should lead you to the entrance to its hiding place—the Magical Pig Gate..."
+    },
+    {
+     "index": 107,
+     "original": "でも、魔ブタ、\n自分が魔法をかけた場所には\nかくれない・・・",
+     "translation": "But the demon pig,\nit doesn't hide in places where I cast magic..."
+    },
+    {
+     "index": 108,
+     "original": "それに、魔ブタにはそれぞれに対する封印ぶくろがあり、\n1匹づつ封印できる\n\n・・・つまり、7匹の魔ブタに対して\n7つの封印ぶくろが必要なわけじゃ",
+     "translation": "Moreover, each demon pig has its own sealing bag, allowing you to seal them one at a time.\n...In other words, you need seven sealing bags for seven demon pigs."
+    },
+    {
+     "index": 109,
+     "original": "ふくろ、\n魔法をかけられた場所の\nちかくに必ずあるハズ・・・",
+     "translation": "A bag,\nnear the place where magic was cast,\nshould definitely be there…"
+    },
+    {
+     "index": 110,
+     "original": "魔ブタのゆくえを知りたいのなら、\nそれぞれの 封印ぶくろ をさがすことが\n一番の近道じゃろう・・・\n\nしかし・・・魔ブタの力は強大じゃ・・・\nムリはせんようにな・・・\n\nもう、森のおくを見はる必要もないじゃろう・・・\n自由に通ってくだされ・・・",
+     "translation": "If you want to know where the Demon Pig is headed,\nsearching for each of its sealed pouches would be the quickest path...\n\nBut... the Demon Pig's power is immense...\nDon't try to force it...\n\nYou probably don't need to look deep into the forest anymore...\nFeel free to pass through freely..."
+    },
+    {
+     "index": 111,
+     "original": "もう、森のおくを\n見はる必要もないじゃろう・・・\n自由に通ってくだされ・・・",
+     "translation": "You don't need to look at the forest anymore...\nPlease feel free to pass through..."
+    },
+    {
+     "index": 112,
+     "original": "魔ブタ・・・\n自分が魔法をかけた場所にはかくれない・・・\n\n封印ぶくろあれば\n魔ブタゲート見つけることできる・・・\n\nでも、魔ブタには\nそれぞれに対する封印ぶくろがあって、\n1匹づつ封印できる・・・\n\nつまり、7匹の魔ブタに対して\n7つの封印ぶくろ ひつよう・・・\n\nふくろ、魔法をかけられた場所のちかくに\n必ずあるハズ・・・",
+     "translation": "Magic pig...\nIt doesn't hide in places where I cast magic...\n\nIf I had a sealing bag,\nI could find the magic pig gate...\n\nBut each magic pig has\nits own sealing bag,\nand I can seal them one by one...\n\nIn other words, for seven magic pigs,\nI need seven sealing bags...\n\nThe bag should definitely be near the place where the magic was cast..."
+    },
+    {
+     "index": 113,
+     "original": "ドワーフ、木を切るのとくい・・・\n\nおまえ、わしら助けてくれた・・・\nだからおまえも困ったことあったら、\nわしらの なかまにたのむといい・・・",
+     "translation": "Dwarves are skilled at cutting trees...\n\nYou helped us...\nSo if you ever get into trouble,\nyou should ask one of our comrades..."
+    },
+    {
+     "index": 114,
+     "original": "ん・・・木を切ってほしいのか?\n\nでも、ドワーフが切るのは\nやくめをおえた ふるい木だけ・・・\n\nとりあえず、おまえのあとついていく・・・",
+     "translation": "Hmm... do you want me to cut down the tree?\n\nBut dwarves only cut down old trees...\n\nFor now, I'll follow you..."
+    },
+    {
+     "index": 115,
+     "original": "・・・うん、この木ならだいじょうぶ・・・\nじゃあ、すこしさがって まってろ・・・",
+     "translation": "...Yeah, this tree will be fine...\nThen, go back a little and wait..."
+    },
+    {
+     "index": 116,
+     "original": "おや、あんたも長老をさがしてるのかい?\nこまったねぇ・・・\n\n実は、村のドワーフ2人が\nケンカをはじめちやってね・・・\nいつもだったら、ほっとくんだけど・・・\n\nよりによって、村の入り口でもみ張ってるから、\n外に出られなくなっちゃったんだ・・・\n\n・・・あんた、とめてくれないかい?",
+     "translation": "Oh, are you also looking for an elder?\nThis is troublesome...\n\nActually, two dwarves from the village have started fighting...\nNormally I would just leave them alone, but...\n\nAnd of all places, they're standing guard at the entrance to the village,\nso I can't get out anymore...\n\n...Could you stop them?"
+    },
+    {
+     "index": 117,
+     "original": "長老がいたら、\n一発でおさめてくれるのにねぇ・・・",
+     "translation": "If there was an elder,\nhe would put an end to it in one shot…"
+    },
+    {
+     "index": 118,
+     "original": "うまく かくしたから だいじょうぶ!\n\nそんなの すぐに見つかる・・・\n\nやっぱり、あやまったほうがいい!",
+     "translation": "I wrote it well, so it's okay!\n\nThat kind of thing will be found quickly…\n\nAfter all, I should apologize!"
+    },
+    {
+     "index": 119,
+     "original": "何か こわしたとか\nなんとか・・・",
+     "translation": "Did you break something?\nSomehow..."
+    },
+    {
+     "index": 120,
+     "original": "あの2人、長老から\n何かあずかってたらしい・・・",
+     "translation": "It seems those two received something from the elder…"
+    },
+    {
+     "index": 121,
+     "original": "あっ!・・・そ、\nそれは・・・!!",
+     "translation": "Ah! ... So,\nThat is...!!"
+    },
+    {
+     "index": 122,
+     "original": "ほ、ほら・・・やっぱり見つかった!\n\nおまえがわるい!\n\nいや、こわしたのは おまえ!",
+     "translation": "Ho, ho... I found it after all!\n\nIt's your fault!\n\nNo, you broke it!"
+    },
+    {
+     "index": 123,
+     "original": "ぶわっかもーん!!\nわしの大切なつぼを\nこわすとはなにごとゃ!",
+     "translation": "Bwah! What's going on?!\nYou dare to break my precious pot?!"
+    },
+    {
+     "index": 124,
+     "original": "ご、ごめんなさーい・・・",
+     "translation": "I'm sorry..."
+    },
+    {
+     "index": 125,
+     "original": "ふぅ・・・やっと穴から抜け出せたわい・・・\nおまえさん悪いがこの穴をうめといてくれんか?\n\n・・・しかし、だれがこんな穴をほったんじゃろうな・・・\n\n・・・ん?なんじゃ?なんだか外がさわがしいのぉ・・・\nことのついでじゃ\n・・・おまえさん ちょっと見てきてくれんか?",
+     "translation": "Phew... I finally managed to get out of this hole...\nSorry, but could you fill this hole back up?\n\n...But who on earth dug this hole anyway...?\n\n...Hmm? What's going on? It's getting noisy outside...\nJust as a side note,\n...Hey, could you go take a look?"
+    },
+    {
+     "index": 126,
+     "original": "ふぅ・・・おまえさんがなかなか来ないから、\nいちど村にもどってきたんじゃが、\nこの穴にみごとにハマってのぉ・・・\n\nやっと穴から抜け出せたわい・・・\n\n・・・おまえさん、\n悪いがこの穴をうめといてくれんか?\n\n・・・しかし、だれがこんな穴を\nほったんじゃろうな・・・\n\nわしはまた、山でまっておるからの・・・\nあまり、としよりをまたせるでないぞ・・・",
+     "translation": "Hmm... since you haven't come back for so long,\nI returned to the village once,\nbut I got stuck in this hole splendidly...\n\nFinally, I managed to get out of the hole...\n\n...You,\ncould you please fill this hole for me?\n\n...But who would dig such a hole...\n\nI'll be waiting in the mountains again...\nso don't make me wait too long..."
+    },
+    {
+     "index": 127,
+     "original": "・・・・・・あぁ!お前は!\nぬけ道をふさいじまったガキじゃねえか!\n\n・・・ったく・・・\nコマブタ達のすきを見てにげ出そうとしたら、\n目の前で出口をふさいじまいやがって・・・\n\nおかげでこの通り、\nまた ろうやにぎゃく戻りさ・・・",
+     "translation": "...Ah! You're!\nThe kid who blocked the escape route!\n\n...Good grief...\nJust as I was about to run away when the pigs were distracted,\nthey blocked the exit right in front of me...\n\nThanks to that, I'm back on this street again...\nLike a rat caught in a trap..."
+    },
+    {
+     "index": 128,
+     "original": "これじゃぁ屋敷の宝物どころか\nパン一切れさえぬすめやしねえ・・・\n\nくそっ、ふてねしてやる!",
+     "translation": "This isn't even a treasure of the mansion,\nit's not even stealing a slice of bread...\n\nDamn it, I'll show them!"
+    },
+    {
+     "index": 129,
+     "original": "すぴ〜すかかか・・・んがんごっ\n・・・すぴょぴょぴょ・・・",
+     "translation": "Supi~ sukaka ka ka... ngan go.\n...Supyo pyo pyo pyo..."
+    },
+    {
+     "index": 130,
+     "original": "おや、かわいいボウヤだね。\nでも見たところ元気そうじゃないか・・・\n\nわたしゃこう見えても医者だからね、\nケガでもしたらまたおいで",
+     "translation": "Oh, what a cute little boy.\nBut from the looks of it, he seems fine...\n\nI may look like this, but I'm a doctor,\nso come see me again if you get hurt."
+    },
+    {
+     "index": 131,
+     "original": "ボウヤ・・・\nわたしゃこう見えても\nいそがしいんだよ・・・",
+     "translation": "Boy...\nEven though I look like this,\nI'm busy..."
+    },
+    {
+     "index": 132,
+     "original": "みんなを助けてくれたんだって?\nけっこうやるじゃないか・・・ありがとね",
+     "translation": "I heard you helped everyone?\nYou're pretty good at this... thank you."
+    },
+    {
+     "index": 133,
+     "original": "あんたがケガしたら\nまっ先に見てあげるからね",
+     "translation": "If you get hurt, I'll be the first to check on you."
+    },
+    {
+     "index": 134,
+     "original": "おや、どうしたんだいその小鳥・・・\nケガしてるじゃないか!\nちょっと見せてごらん\n\n・・・・・・・・・・\n・・・これはちょっとじかんがかかりそうだね・・・\n\nボウヤ、この小鳥しばらく私があずかるよ・・・\nなぁに心配はいらないよ、\nわたしがせきにんもって みるからさ\n\n・・・あぁ、この鳥なんて名前だい?\n・・・・?\nなんだい・・・名前ぐらい付けてあげなよ・・・\n\n・・・・・・バロン?・・・そうか、バロンか\n・・・いい名前じゃないか!",
+     "translation": "Oh, what's wrong with that little bird...\nIt's injured!\nLet me take a look.\n\n・・・・・・・・・・\n・・・This will take a while, huh...\n\nBoy, I'll take care of this little bird for a while...\nDon't worry,\nI'll take care of it.\n\n・・・Ah, what's the name of this bird?\n・・・?\nWhat... at least give it a name...\n\n・・・・・・Baron?・・・I see, Baron.\n・・・What a good name!"
+    },
+    {
+     "index": 135,
+     "original": "しばらくしたら また、\n見に来ておくれ",
+     "translation": "Please come see me again soon."
+    },
+    {
+     "index": 136,
+     "original": "おまえ、森の外出るのか?\nだったら一度、近道行ってみるといい\n\nとてもキレイ・・・とおくに大きな屋敷も見える\nウワサでは宝物もあるらしい・・・\nおまえ、勇気ある、キョウミあったら行ってみるといい",
+     "translation": "Are you going outside the forest?\nIf so, you should try taking a shortcut once.\n\nIt's very beautiful... and you can also see a large mansion in the distance.\nRumor has it there are treasures inside too...\nYou have courage, Kyomi. If you have the chance, you should go."
+    },
+    {
+     "index": 137,
+     "original": "・・・そういえば、むかし、\n近からこのむらに、魔王きたことある・・・\n\n森にあるふしぎな水晶、魔王のわすれものらしい・・・\nたぶん、開けかたは魔王が知ってる・・・",
+     "translation": "...Come to think of it, a long time ago,\nthe Demon King came to this village from near...\n\nA mysterious crystal in the forest, apparently something the Demon King forgot...\nProbably, the Demon King knows how to open it..."
+    },
+    {
+     "index": 138,
+     "original": "おまえ、ともだち・・・\nまたあそびにこい",
+     "translation": "You, my friend...\nCome play again."
+    },
+    {
+     "index": 139,
+     "original": "おにいちゃん!おにいちゃん!\n・・・お花が咲いたんだよ!",
+     "translation": "Big brother! Big brother!\n...Flowers have bloomed!"
+    },
+    {
+     "index": 140,
+     "original": "わく わく!・・・",
+     "translation": "Waku waku!..."
+    },
+    {
+     "index": 141,
+     "original": "キレイだね・・・",
+     "translation": "It's beautiful..."
+    },
+    {
+     "index": 142,
+     "original": "・・・楽しみだね",
+     "translation": "...I'm looking forward to it."
+    },
+    {
+     "index": 143,
+     "original": "○○○◎◎○◎◎・・・◎◎○○○\n●△○○・・・○○◎△○○?",
+     "translation": "○○○◎◎○◎◎・・・◎◎○○○\n●△○○・・・○○◎△○○?"
+    },
+    {
+     "index": 144,
+     "original": "○○○、□□□□○◎・・・○○、\n○△○○○○○○",
+     "translation": "○○○, □□□□○◎...○○,\n○△○○○○○○"
+    },
+    {
+     "index": 145,
+     "original": "◎◎○○○○◎○○○?",
+     "translation": null
+    },
+    {
+     "index": 146,
+     "original": "た○へ○だ!た○へ○だぁ!",
+     "translation": "It's ta○he○da! It's ta○he○da!"
+    },
+    {
+     "index": 147,
+     "original": "た○へ○だ!た○へ○だぁ!",
+     "translation": "It's ta○he○da! It's ta○he○da!"
+    },
+    {
+     "index": 148,
+     "original": "たいへんだ!たいへんだぁ!",
+     "translation": "Oh no! Oh no!"
+    },
+    {
+     "index": 149,
+     "original": "たいへんだ!たいへんだぁ!",
+     "translation": "Oh no! Oh no!"
+    },
+    {
+     "index": 150,
+     "original": "○○○、○△○○○・・・\n○○○○○△○○○●・・・",
+     "translation": "○○○, ○△○○○...\n○○○○○△○○○●..."
+    },
+    {
+     "index": 151,
+     "original": "○○、○○○○□□□○○・・・",
+     "translation": "○○, ○○○○□□□○○・・・"
+    },
+    {
+     "index": 152,
+     "original": "○△、◎△○○○○●○△・・・",
+     "translation": "○△, ◎△○○○○●○△..."
+    },
+    {
+     "index": 153,
+     "original": "◎○◎○○●○○○・・・",
+     "translation": "◎○◎○○●○○○・・・"
+    },
+    {
+     "index": 154,
+     "original": "○○○、○○○◎△○○",
+     "translation": null
+    },
+    {
+     "index": 155,
+     "original": "○○○、○○○◎△○○",
+     "translation": null
+    },
+    {
+     "index": 156,
+     "original": "そ○の◎◎の◎◎・・・◎◎に\nつな○△てる・・・もう◎△たか?",
+     "translation": "That ○○'s ○○... ○○ is connected... Is it already ○○?"
+    },
+    {
+     "index": 157,
+     "original": "○○●・・・\n○○○○○",
+     "translation": "○○●・・・\n○○○○○"
+    },
+    {
+     "index": 158,
+     "original": "コ○バ・・・\nわ○○ない・・・",
+     "translation": "Ko-ba...\nI don't have it..."
+    },
+    {
+     "index": 159,
+     "original": "◎●、へ○な□□◎た\n・・・お○え◎たか?",
+     "translation": "◎●, he○na□□◎ta\n...was it ○e◎ka?"
+    },
+    {
+     "index": 160,
+     "original": "◎のまえ●、◎◎\nいなくな△た・・・",
+     "translation": "◎'s front ●, ◎◎\ndisappeared…"
+    },
+    {
+     "index": 161,
+     "original": "な○とか ひ△しで\n◎●てきた・・・",
+     "translation": "I've been doing ◎● with な○ or ひ△..."
+    },
+    {
+     "index": 162,
+     "original": "○や、か○いい□□□だね・・・",
+     "translation": "○Ya, ka○i □□□ ne…"
+    },
+    {
+     "index": 163,
+     "original": "ね△、◎△て○いいでし△・・・",
+     "translation": "It's good, isn't it?"
+    },
+    {
+     "index": 164,
+     "original": "◎の◎はあ●ないよ・・・",
+     "translation": "The ◎ of the ◎ doesn't have a ●..."
+    },
+    {
+     "index": 165,
+     "original": "わ○ら、○ても◎△て○",
+     "translation": "I'm sorry, but I can't help with that."
+    },
+    {
+     "index": 166,
+     "original": "わ○ら、○ても◎△て○",
+     "translation": "I'm sorry, but I can't help with that."
+    },
+    {
+     "index": 167,
+     "original": "な○まの○と・・・とても○ん◎い",
+     "translation": "The ○ of ○ma and… very ○n◎i"
+    },
+    {
+     "index": 168,
+     "original": "な○まの○と・・・\nと○も○ん◎い",
+     "translation": "The ○ of ○ma...\nAnd ○ is also ○n◎i."
+    },
+    {
+     "index": 169,
+     "original": "ねぇ、行ってもいいでしょ・・・",
+     "translation": "Hey, can I go...?"
+    },
+    {
+     "index": 170,
+     "original": "森の中、とてもあぶない\n・・・ぜったいダメ!",
+     "translation": "In the forest, it's very dangerous... absolutely no!"
+    },
+    {
+     "index": 171,
+     "original": "そこの右側の入口・・・\n長老の家につながってる\n\n・・・でも、今みんな\nいそがしい・・・",
+     "translation": "The entrance on the right side over there...\nIt leads to the elder's house.\n\n...But everyone is busy now..."
+    },
+    {
+     "index": 172,
+     "original": "こ○は、□□□□の◎・・・",
+     "translation": "This is ◎ of □□□□..."
+    },
+    {
+     "index": 173,
+     "original": "おおっ! コトバ少し おぼえたか・・・\nでも、まだ かんぜんには わからない\n\n・・・あと、ひとりに かみつけば\nたぶんコトバおぼえられる・・・",
+     "translation": "Oh! Did you remember a few words...?\nBut I still don't understand completely.\n\n...Also, if I bite someone alone,\nI think I can remember the words..."
+    },
+    {
+     "index": 174,
+     "original": "ここ、ドワーフの村\n・・・なかまいなくなって\nおおさわぎ・・・",
+     "translation": "Here, the dwarven village.\n...it's no longer worth mentioning.\nA great commotion..."
+    },
+    {
+     "index": 175,
+     "original": "たいへん!たいへん!\nなかま、いなくなった!\n\n森にある小屋はとじてあるから\nなかま きっと このもりの\nどこかに いるはず・・・",
+     "translation": "Oh no! Oh no!\nMy friend has disappeared!\n\nThe cabin in the forest is closed,\nso my friend must be somewhere in this forest…"
+    },
+    {
+     "index": 176,
+     "original": "目のまえで、なかま\nいなくなった・・・",
+     "translation": "Right before my eyes, my comrade disappeared..."
+    },
+    {
+     "index": 177,
+     "original": "なかま、木にとりついた\nホウシにつかまって\n木にぶらさがってた・・・\n\nぶらさがると のびるホウシダマ\n・・・とても あやしい・・・",
+     "translation": "A companion, clinging to the tree,\nHolding onto a fern,\nHanging from the tree...\n\nWhen hanging, the fern stretches out\n...It's very suspicious..."
+    },
+    {
+     "index": 178,
+     "original": "・・・・・・・・・・・",
+     "translation": "..........."
+    },
+    {
+     "index": 179,
+     "original": "このへんなキカイ、\n昔からここにある・・・\nわしらには動かせない・・・",
+     "translation": "This strange machine,\nhas been here since ancient times...\nwe can't move it..."
+    },
+    {
+     "index": 180,
+     "original": "わし・・・長老のいちばんでし",
+     "translation": "I... I am the oldest."
+    },
+    {
+     "index": 181,
+     "original": "なんとか ひっしで\nにげてきた・・・",
+     "translation": "I somehow managed to escape..."
+    },
+    {
+     "index": 182,
+     "original": "なかまのこと・・・\nとてもしんぱい",
+     "translation": "About my friends...\nI'm very worried."
+    },
+    {
+     "index": 183,
+     "original": "たいへん!たいへん!\n何がたいへんって、\nそりゃーもーたいへん!",
+     "translation": "Oh dear! Oh dear!\nWhat's so terrible?\nOh my, it's absolutely terrible!"
+    },
+    {
+     "index": 184,
+     "original": "みんなのこと・・・\nとてもしんぱい",
+     "translation": "Everyone...\nI'm very worried."
+    },
+    {
+     "index": 185,
+     "original": "封印ぶくろ?・・・そういえば、\n森の封印ぶくろとかいうもの\nちょうろうがもってる・・・",
+     "translation": "Seal gloves? ... Speaking of which,\nthere's something called seal gloves in the forest.\nChorou has them..."
+    },
+    {
+     "index": 186,
+     "original": "おまえ、友だち・・・\nまぁ、ゆっくりしていけ",
+     "translation": "You, friend...\nWell, take your time."
+    },
+    {
+     "index": 187,
+     "original": "かれはのなかに\nかわったチョウチョがいるらしい・・・\n\nおまえ見たこと あるか?",
+     "translation": "He says there's a strange butterfly inside...\n\nHave you ever seen it?"
+    },
+    {
+     "index": 188,
+     "original": "あのイヌ、\nケガしてたんだってな・・・",
+     "translation": "That dog,\nI heard it was injured..."
+    },
+    {
+     "index": 189,
+     "original": "ぶらさがっている まるい\nホウシダマ 見なかったか?",
+     "translation": "Hanging round, didn't you see the houjidama?"
+    },
+    {
+     "index": 190,
+     "original": "森の中にある恵みの広場\n・・・もう行ったか?",
+     "translation": "The bountiful square within the forest...\n...Have you already gone?"
+    },
+    {
+     "index": 191,
+     "original": "なかまのこと\nとてもしんぱい",
+     "translation": "About my friends\nVery worried"
+    },
+    {
+     "index": 192,
+     "original": "わし・・・見はり・・・ん?何の見はりか?\n・・・・・それはおしえられない・・・",
+     "translation": "I… watch… hmm? What kind of watch?\n…I can’t tell you that…"
+    },
+    {
+     "index": 193,
+     "original": "長老にはもうあったか?",
+     "translation": "Is the elder already there?"
+    },
+    {
+     "index": 194,
+     "original": "なかま たすけてくれた\n・・・ありがとう",
+     "translation": "My friend helped me... thank you."
+    },
+    {
+     "index": 195,
+     "original": "そう言えば・・・\n始まりの森のかみつき草にも\n花が咲くらしい・・・\n\nでも、わしら見たことない・・・",
+     "translation": "Come to think of it...\nI hear flowers bloom on the biting grass in the forest of beginnings...\n\nBut we've never seen them..."
+    },
+    {
+     "index": 196,
+     "original": "キノコの森を右側にぬけた先に\n山がある・・・でも、\nとてもキケンな山・・・",
+     "translation": "Beyond the mushroom forest on the right lies a mountain... but it's a very dangerous one..."
+    },
+    {
+     "index": 197,
+     "original": "キノコの森には、\nいろんなキノコはえてるけど\nむやみに食べない方がいい",
+     "translation": "In the mushroom forest,\nthere are various mushrooms growing,\nbut it's better not to eat them recklessly."
+    },
+    {
+     "index": 198,
+     "original": "高見ヤグラのぼうえんきょう、もう見たか?\nあそこのけしき、とてもキレイ・・・",
+     "translation": "Have you seen the Noboru Kyo of Takami Yagura yet?\nThat scenery over there is very beautiful..."
+    },
+    {
+     "index": 199,
+     "original": "このキカイこわれてる・・・\n\nたまに来る、赤い服をきたヤツなら\nなおせるかもしれない",
+     "translation": "This machine is broken...\n\nIf it's the guy who comes occasionally wearing a red outfit,\nI might be able to fix it."
+    },
+    {
+     "index": 200,
+     "original": "わし・・・見はり・・・\nちょっとたいへん・・・",
+     "translation": "I... I'm a lookout...\nIt's a little difficult..."
+    },
+    {
+     "index": 201,
+     "original": "◎○□□□・・・○○○◎\n△○○○●○○・・・",
+     "translation": "◎○□□□・・・○○○◎\n△○○○●○○・・・"
+    },
+    {
+     "index": 202,
+     "original": "わしらの◎◎、いなくな△た・・・\n◎は◎に◎ないほう●いい・・・",
+     "translation": "Our ◎◎ has disappeared…\nIt's better if ◎ doesn't exist…"
+    },
+    {
+     "index": 203,
+     "original": "わしらの◎◎にはもう◎△たか?",
+     "translation": "Has our ◎◎ already ◎△?"
+    },
+    {
+     "index": 204,
+     "original": "わしらのなかま、いなくなった・・・\n今は森に出ないほうがいい・・・",
+     "translation": "Our comrades have disappeared…\nIt's better not to go into the forest now…"
+    },
+    {
+     "index": 205,
+     "original": "わしらの長老にはもう会ったか?",
+     "translation": "Have you met our elder yet?"
+    },
+    {
+     "index": 206,
+     "original": "たき先といえば・・・\n・・・・・・ヤキイモだねぇ・・・\n\nそういえば、\n森の中でいいニオイがするんだけどねぇ・・・",
+     "translation": "Speaking of firewood...\n...It's yakiimo, huh...\n\nCome to think of it,\nthere's a nice smell in the forest, you know..."
+    },
+    {
+     "index": 207,
+     "original": "おやっ!\n・・・これ、くれるのかい?\nうれしいねぇ・・・\n\nそうだ、何かわからないんだけど・・・\nかわりに これをもらっとくれ",
+     "translation": "Oh!\n...Is this what you're giving me?\nI'm so happy...\n\nWell, I don't really understand what's going on, but...\nPlease take this instead."
+    },
+    {
+     "index": 208,
+     "original": "ケガしてるね・・・\nかわいそう・・・",
+     "translation": "You're hurt...\nPoor thing..."
+    },
+    {
+     "index": 209,
+     "original": "とがった木にぶら下がっている\nホウシまんじゅう・・・ぜんぶ見たか?",
+     "translation": "Hanging from a sharp tree.\nHoushi manju... Have you seen them all?"
+    },
+    {
+     "index": 210,
+     "original": "とがった木にぶら下がっている\nホウシまんじゅうの中に\nなかま2人 とりこまれた",
+     "translation": "Hanging from a sharp tree,\ninside a hōshi manju,\ntwo companions were captivated."
+    },
+    {
+     "index": 211,
+     "original": "ユラユラゆれるホウシダマ・・・\nとてもあやしい・・・",
+     "translation": "The swaying fern...\nIt's very suspicious..."
+    },
+    {
+     "index": 212,
+     "original": "ホウシダマがかぶさっている\n木の先のなかま、2人いるハズ・・・",
+     "translation": "The houjidama is overlapping.\nThere should be two people among the tips of the trees…"
+    },
+    {
+     "index": 213,
+     "original": "グラグラさんばしに なかまひとり\nつかまってた・・・",
+     "translation": "I was caught by Guragura-sanbashi, with one companion."
+    },
+    {
+     "index": 214,
+     "original": "高見ヤグラ・・・ひろくてたいへん\n・・・なかま見つけにくい・・・\n回復する液、うまくつかわないと・・・",
+     "translation": "Takami Yagura... It's wide and difficult.\n... It's hard to find companions...\nRecovery liquid, if you don't use it well..."
+    },
+    {
+     "index": 215,
+     "original": "たしか高見ヤグラに2人のなかま\nつかまっているハズ",
+     "translation": "I'm sure there are two of them trapped in Takami Yagura."
+    }
+   ]
+  },
+  {
+   "bank": "WFM D1FF",
+   "file": "TOMBA/AREA02/A003.GAM",
+   "offset": "0xE738",
+   "messages": [
+    {
+     "index": 0,
+     "original": "CLEAR! ",
+     "translation": null
+    },
+    {
+     "index": 1,
+     "original": "ドワーフの長老",
+     "translation": "Dwarf Elder"
+    },
+    {
+     "index": 2,
+     "original": "コトバを吸いとろう!",
+     "translation": "Let's inhale words!"
+    },
+    {
+     "index": 3,
+     "original": "たき火といえば…",
+     "translation": "When it comes to bonfires..."
+    },
+    {
+     "index": 4,
+     "original": "伝説のカレハチョウ",
+     "translation": "The Legendary Swallowtail Butterfly"
+    },
+    {
+     "index": 5,
+     "original": "火が消えちゃった…",
+     "translation": "The fire went out..."
+    },
+    {
+     "index": 6,
+     "original": "まいごのドワーフ",
+     "translation": "Lost Dwarf"
+    },
+    {
+     "index": 7,
+     "original": "花のたね",
+     "translation": "Flower Seeds"
+    },
+    {
+     "index": 8,
+     "original": "AP・ピラー",
+     "translation": "AP Pillar"
+    },
+    {
+     "index": 9,
+     "original": "ドワーフを数え",
+     "translation": "Count the dwarves."
+    },
+    {
+     "index": 10,
+     "original": "タルのゆくえ",
+     "translation": "The Fate of Taru"
+    },
+    {
+     "index": 11,
+     "original": "森の封印ぶくろ",
+     "translation": "Forest Seal Pouch"
+    },
+    {
+     "index": 12,
+     "original": "花の森",
+     "translation": "Flower Forest"
+    },
+    {
+     "index": 13,
+     "original": "かみつき草の花",
+     "translation": "The flowers of the biting grass."
+    },
+    {
+     "index": 14,
+     "original": "ドワーフの助け",
+     "translation": "Dwarf help"
+    },
+    {
+     "index": 15,
+     "original": "魔王の忘れもの",
+     "translation": "The Demon's Forgotten Item"
+    },
+    {
+     "index": 16,
+     "original": "見えないカガミ?",
+     "translation": "Invisible mirror?"
+    },
+    {
+     "index": 17,
+     "original": "ケンカをとめて",
+     "translation": "Stop the fight."
+    },
+    {
+     "index": 18,
+     "original": "地下ロウの大ドロボウ",
+     "translation": "The Great Robbery of the Underground Row"
+    },
+    {
+     "index": 19,
+     "original": "のぞいてごらん?!",
+     "translation": "Take a peek?!"
+    },
+    {
+     "index": 20,
+     "original": "ヨ〜イ…ドン!",
+     "translation": "Yo~i... Don!"
+    },
+    {
+     "index": 21,
+     "original": "バロンは友だち",
+     "translation": "Baron is a friend."
+    },
+    {
+     "index": 22,
+     "original": "これ、な〜んだ?",
+     "translation": "What is this?"
+    },
+    {
+     "index": 23,
+     "original": "やしきの宝物?",
+     "translation": "Yashiki's treasure?"
+    },
+    {
+     "index": 24,
+     "original": "水晶のじゅもん",
+     "translation": "Crystal Spell"
+    },
+    {
+     "index": 25,
+     "original": "とびっきりの笑がお!",
+     "translation": "A burst of laughter!"
+    },
+    {
+     "index": 26,
+     "original": "とびっきりの泣きがお?",
+     "translation": "Is there a particularly big cry?"
+    },
+    {
+     "index": 27,
+     "original": "動かない恵みコゾウ",
+     "translation": "The Unmoving Blessing Kozo"
+    },
+    {
+     "index": 28,
+     "original": "怪物?勝てるかな?",
+     "translation": "Monster? Can I win?"
+    },
+    {
+     "index": 29,
+     "original": "死神の巣をつぶせ",
+     "translation": "Destroy the Death God's Nest"
+    }
+   ]
+  }
+ ]
+}
