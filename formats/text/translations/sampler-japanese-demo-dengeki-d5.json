@@ -4,10 +4,10 @@
  "build": "Sampler: Japanese demo (Dengeki D5)",
  "model": "CAT-Translate-7b",
  "builds": {
-  "Sampler: Japanese demo (Dengeki D5)": 259
+  "Sampler: Japanese demo (Dengeki D5)": 281
  },
  "messages": 685,
- "translated": 259,
+ "translated": 281,
  "entries": {
   "カギがかかっている": "The key is locked.",
   "ヒヨコをつかった": "I used a chick.",
@@ -100,9 +100,12 @@
   "かみつき草にさいた\nめずらしい花": "I planted it in the grass.\nA rare flower.",
   "気持ちをしずめてくれる": "It calms my feelings.",
   "もれない バケツ": "A bucket that doesn't leak.",
+  "遠くの景色が 見られる": "You can see the distant scenery.",
   "とてもきれいな\nからの小ビン": "A very beautiful small bottle from.",
   "ナミダのつまった小ビン": "A small bottle filled with tears.",
+  "あしをケガした小犬": "A puppy with a leg injury.",
   "ホカホカ できたての\nやきいも": "Hot and freshly baked yakiimo.",
+  "枯れ葉の羽を持つ\n伝説のチョウチョ": "A butterfly with wings of withered leaves,\na legendary butterfly.",
   "ヤミを てらす\nタイマツ": "Illuminating darkness\nThai mat",
   "水がたっぷり\nはいったバケツ": "A bucket filled with plenty of water.",
   "なにも うつさないカガミ": "A mirror that doesn't reflect anything.",
@@ -115,6 +118,7 @@
   "ふるびた つぼ": "An old pot.",
   "すべてを けちらす\n強力な ブキ": "Scatter everything\nPowerful weapon",
   "動きが はやくなる\nべんりな パンツ": "Movement becomes faster.\nConvenient pants.",
+  "動きが 最速になる\nすばらしい パンツ": "Movement becomes fastest\nWonderful pants",
   "バイタリティが すこし\nかいふくする": "Vitality will slightly recover.",
   "バイタリティ すべてかいふく\nおなかいっぱい!": "Vitality All Recovery\nFull!",
   "はじめから はいている\nパンツ": "I've been wearing them from the beginning.\nPants.",
@@ -127,18 +131,29 @@
   "魔ブタを封じる力をもつ\n黄色の ふくろ": "A yellow pouch possessing the power to seal the demon pig.",
   "魔ブタを封じる力をもつ\n緑色の ふくろ": "A green pouch that holds the power to seal the demon pig.",
   "魔ブタを封じる力をもつ\n青色の ふくろ": "A blue pouch possessing the power to seal the demon pig.",
+  "魔ブタを封じる力をもつ\n紺色の ふくろ": "A navy blue pouch possessing the power to seal the demon pig.",
+  "魔ブタを封じる力をもつ\n紫色の ふくろ": "A purple pouch possessing the power to seal the demon pig.",
   "万年の宝箱を\nあけられる カギ": "The key that can open the treasure chest of eternity.",
   "億年の宝箱を\nあけられる カギ": "The key that can open the billion-year treasure chest.",
+  "大きな絵の 一部らしい パネル1": "It seems to be part of a large painting, Panel 1.",
+  "大きな絵の 一部らしい パネル2": "It seems to be part of a large painting, Panel 2.",
+  "大きな絵の 一部らしい パネル3": "It seems to be part of a large painting, Panel 3.",
+  "大きな絵の 一部らしい パネル4": "It seems to be part of a large painting, Panel 4.",
+  "大きな絵の 一部らしい パネル5": "It seems to be part of a large painting, Panel 5.",
+  "パワーぎれも いっきに解決できる\nありがたい アイテム": "Power outages can be solved instantly.\nA truly helpful item.",
+  "雨雲を呼んで 雨をふらせる\n奇跡のアイテム": "Calling rain clouds and making it rain.\nA miracle item.",
   "大きなカギ穴を持つ トビラをひらく\n大きなカギ": "Opening a door with a large keyhole.\nA large key.",
   "小さなカギ穴を持つ トビラをひらく\n小さなカギ": "Opening a door with a small keyhole.\nA small key.",
   "たくさん 集めると いい物がもらえる\nうれしい アイテム": "Collecting many will earn you good items.\nHappy items.",
   "いろんな ものを見ることができる\n魔法のカガミ": "A magical mirror that lets you see various things.",
   "世界をえがいた 大きな ちずの半分": "Half of a large map of the world",
+  "あぶない物を持っても\n平気な 手ぶくろ": "Even holding dangerous things,\nthese gloves are fine.",
   "大きな 物でも ふきとばす\nたのもしい アイテム": "Even large objects can be blown away.\nA powerful item.",
   "じょうぶな どうぐが つくれそうな\n鉄のかたまり": "A lump of iron that seems like it could make a strong tool.",
   "がんじょうに つくられたハグルマ": "A Haguruma built in Ganjō.",
   "どんな 花が さくのか\n楽しみな タネ": "What kind of flowers will bloom?\nA fun seed.",
   "モレ知らずの べんりな バルブ": "A convenient valve that doesn't leak.",
+  "香で ホロ酔い気分になりそうな\nアルコール": "An alcohol that makes you feel slightly tipsy with its aroma.",
   "きれいな 花をさかせる\nしょくぶつの 実": "Make beautiful flowers bloom.\nThe fruit of the plant.",
   "・・・???": "...???",
   "コマブタにとられた うでわを\nもとめて たびだつ": "I'm going to retrieve the arm taken by the pig.",
@@ -163,10 +178,12 @@
   "ふしぎな森の水晶に\n何かが入っている": "Something is inside the crystal of the mysterious forest.",
   "ドワーフたちのケンカを やめさせる": "Stop the dwarves from fighting.",
   "地下のオオドロボウと話しをする": "Talk to the Oodorobou in the basement.",
+  "遠くの 景色を見わたす": "To see the distant scenery.",
   "ケガをしたバロンを\nたすける": "Help Baron who was injured.",
   "かくれていた とまっている\nエレベーター": "I was hiding, I was standing.\nElevator.",
   "うわさの宝を\n手に入れる": "To obtain the rumored treasure.",
   "ひみつの じゅもんを\nおしえてもらう": "I will be taught a secret spell.",
+  "恵みさまを復活させると\n何かがおこる": "When you revive Ema-sama,\nsomething happens.",
   "トビラが しまって\nでられない": "The door is closed, so I can't get out.",
   "かくされた封印ぶくろを\n手に入れる": "Obtain the hidden sealed bag.",
   "魔ブタを 封印ぶくろに封じてしまう": "Sealing the Demon Pig in a Sealing Bag",
@@ -178,6 +195,8 @@
   "行く手を ふさぐ マサカリ族に\nどいてもらう": "I'll have the Masakari tribe, who block my path, move aside.",
   "キノコの森に すむという\n怪物と たたかう": "To fight the monster that lives in the mushroom forest.",
   "しょくぶつを からせてしまう\n実を みんな つぶす": "It makes the living things suffer.\nIt crushes all the fruits.",
+  "お花のたねを 畑にまいて\nきれいな お花畑にする": "Sow the flower seeds in the field\nand make a beautiful flower garden.",
+  "ナミダは 復活に かかせないの?": "Is Namida essential for revival?",
   "笑いのトビラは 笑っている人にしか\nひらかない": "The door to laughter is only open to those who are laughing.",
   "泣きのトビラは 泣いている人にしか\nひらかない": "The door of tears opens only to those who are crying.",
   "泣きやみたくても やめられない": "Even when I want to stop crying, I can't.",
@@ -193,6 +212,7 @@
   "ネズミに かえられた\n人たちを もどしてあげる": "I'll return the people who were turned into mice.",
   "魔ブタを 封印ぶくろに\n封じる": "Seal the demon pig in a sealed bag.",
   "トビラにあう 大きなカギを 手に入れる": "Obtain the large key that matches the door.",
+  "絵のパーツを すべてあつめると\nアイテムが手に入る": "When you collect all the parts of the picture,\nyou will get an item.",
   "封印をといて 1000年老人の\nはなしをきく": "Break the seal and listen to the story of a thousand-year-old man.",
   "かくされた力が めざめる": "The hidden power awakens.",
   "族長が なくしたヤリを さがす": "The chief searches for the lost spear.",
@@ -208,6 +228,7 @@
   "きけんな 電気うなぎを つかまえる": "Catching a kikenna electric eel.",
   "ぬすまれた 封印ぶくろを さがしだす": "I'm searching for the stolen sealed bag.",
   "きけんな 力を 持つ物": "Things that possess power.",
+  "復活した キカイ": "Revived Machine",
   "動きだした 地下のせかい": "The underground world has begun to move.",
   "魔ブタの魔力がとけて\n森が げんきを とりもどす": "The magic pig's magic power melts,\nand the forest regains its vitality.",
   "かまないように ヒヤヒヤ!": "Don't bite me! I'm nervous!",
@@ -257,6 +278,7 @@
   "みんなを 笑わせる 笑がお\nできるかな?": "Can I make everyone laugh?",
   "かなしさを つたえる 泣きがお\nできるかな?": "Can I cry to convey sadness?",
   "たき先から あま〜い かおりが\nただよってくる": "A sweet fragrance drifts from the tip of the flame.",
+  "なぞの力をもつ 伝説のチョウ": "A legendary butterfly possessing mysterious powers.",
   "くらくなって 何も見えない": "I'm getting dark and can't see anything.",
   "ブクブクと おとをたてて しずんでいく\n大きなタル": "Bubububu, making a sound, it sinks.\nA big barrel.",
   "てっぺんまで カケッこ どっちが はやい?": "Which is faster, running to the top or climbing?",
@@ -761,8 +783,8 @@
     },
     {
      "index": 11,
-     "original": "[g050]くの[g051]色が 見られる",
-     "translation": null
+     "original": "遠くの景色が 見られる",
+     "translation": "You can see the distant scenery."
     },
     {
      "index": 12,
@@ -776,8 +798,8 @@
     },
     {
      "index": 14,
-     "original": "あしをケガした小[g057]",
-     "translation": null
+     "original": "あしをケガした小犬",
+     "translation": "A puppy with a leg injury."
     },
     {
      "index": 15,
@@ -786,8 +808,8 @@
     },
     {
      "index": 16,
-     "original": "枯れ葉の羽を持つ\n伝[g05E]のチョウチョ",
-     "translation": null
+     "original": "枯れ葉の羽を持つ\n伝説のチョウチョ",
+     "translation": "A butterfly with wings of withered leaves,\na legendary butterfly."
     },
     {
      "index": 17,
@@ -851,8 +873,8 @@
     },
     {
      "index": 29,
-     "original": "動きが 最[g074]になる\nすばらしい パンツ",
-     "translation": null
+     "original": "動きが 最速になる\nすばらしい パンツ",
+     "translation": "Movement becomes fastest\nWonderful pants"
     },
     {
      "index": 30,
@@ -916,13 +938,13 @@
     },
     {
      "index": 42,
-     "original": "魔ブタを封じる力をもつ\n[g083]色の ふくろ",
-     "translation": null
+     "original": "魔ブタを封じる力をもつ\n紺色の ふくろ",
+     "translation": "A navy blue pouch possessing the power to seal the demon pig."
     },
     {
      "index": 43,
-     "original": "魔ブタを封じる力をもつ\n[g084]色の ふくろ",
-     "translation": null
+     "original": "魔ブタを封じる力をもつ\n紫色の ふくろ",
+     "translation": "A purple pouch possessing the power to seal the demon pig."
     },
     {
      "index": 44,
@@ -936,38 +958,38 @@
     },
     {
      "index": 46,
-     "original": "大きな[g088]の 一部らしい パネル1",
-     "translation": null
+     "original": "大きな絵の 一部らしい パネル1",
+     "translation": "It seems to be part of a large painting, Panel 1."
     },
     {
      "index": 47,
-     "original": "大きな[g088]の 一部らしい パネル2",
-     "translation": null
+     "original": "大きな絵の 一部らしい パネル2",
+     "translation": "It seems to be part of a large painting, Panel 2."
     },
     {
      "index": 48,
-     "original": "大きな[g088]の 一部らしい パネル3",
-     "translation": null
+     "original": "大きな絵の 一部らしい パネル3",
+     "translation": "It seems to be part of a large painting, Panel 3."
     },
     {
      "index": 49,
-     "original": "大きな[g088]の 一部らしい パネル4",
-     "translation": null
+     "original": "大きな絵の 一部らしい パネル4",
+     "translation": "It seems to be part of a large painting, Panel 4."
     },
     {
      "index": 50,
-     "original": "大きな[g088]の 一部らしい パネル5",
-     "translation": null
+     "original": "大きな絵の 一部らしい パネル5",
+     "translation": "It seems to be part of a large painting, Panel 5."
     },
     {
      "index": 51,
-     "original": "パワーぎれも いっきに解[g090]できる\nありがたい アイテム",
-     "translation": null
+     "original": "パワーぎれも いっきに解決できる\nありがたい アイテム",
+     "translation": "Power outages can be solved instantly.\nA truly helpful item."
     },
     {
      "index": 52,
-     "original": "雨[g092]を[g093]んで 雨をふらせる\n[g094][g095]のアイテム",
-     "translation": null
+     "original": "雨雲を呼んで 雨をふらせる\n奇跡のアイテム",
+     "translation": "Calling rain clouds and making it rain.\nA miracle item."
     },
     {
      "index": 53,
@@ -1001,8 +1023,8 @@
     },
     {
      "index": 59,
-     "original": "あぶない物を持っても\n[g09E]気な 手ぶくろ",
-     "translation": null
+     "original": "あぶない物を持っても\n平気な 手ぶくろ",
+     "translation": "Even holding dangerous things,\nthese gloves are fine."
     },
     {
      "index": 60,
@@ -1031,8 +1053,8 @@
     },
     {
      "index": 65,
-     "original": "[g0A4]で ホロ[g0A6]い気分になりそうな\nアルコール",
-     "translation": null
+     "original": "香で ホロ酔い気分になりそうな\nアルコール",
+     "translation": "An alcohol that makes you feel slightly tipsy with its aroma."
     },
     {
      "index": 66,
@@ -1828,8 +1850,8 @@
     },
     {
      "index": 22,
-     "original": "[g05C]くの [g05D]色を見わたす",
-     "translation": null
+     "original": "遠くの 景色を見わたす",
+     "translation": "To see the distant scenery."
     },
     {
      "index": 23,
@@ -1853,8 +1875,8 @@
     },
     {
      "index": 27,
-     "original": "恵みさまを[g066]活させると\n何かがおこる",
-     "translation": null
+     "original": "恵みさまを復活させると\n何かがおこる",
+     "translation": "When you revive Ema-sama,\nsomething happens."
     },
     {
      "index": 28,
@@ -1913,13 +1935,13 @@
     },
     {
      "index": 39,
-     "original": "お花のたねを [g080]にまいて\nきれいな お花[g080]にする",
-     "translation": null
+     "original": "お花のたねを 畑にまいて\nきれいな お花畑にする",
+     "translation": "Sow the flower seeds in the field\nand make a beautiful flower garden."
     },
     {
      "index": 40,
-     "original": "ナミダは [g066]活に かかせないの?",
-     "translation": null
+     "original": "ナミダは 復活に かかせないの?",
+     "translation": "Is Namida essential for revival?"
     },
     {
      "index": 41,
@@ -1998,8 +2020,8 @@
     },
     {
      "index": 56,
-     "original": "[g095]のパーツを すべてあつめると\nアイテムが手に入る",
-     "translation": null
+     "original": "絵のパーツを すべてあつめると\nアイテムが手に入る",
+     "translation": "When you collect all the parts of the picture,\nyou will get an item."
     },
     {
      "index": 57,
@@ -2103,8 +2125,8 @@
     },
     {
      "index": 77,
-     "original": "[g066]活した キカイ",
-     "translation": null
+     "original": "復活した キカイ",
+     "translation": "Revived Machine"
     },
     {
      "index": 78,
@@ -2608,8 +2630,8 @@
     },
     {
      "index": 178,
-     "original": "なぞの力をもつ 伝[g0B1]のチョウ",
-     "translation": null
+     "original": "なぞの力をもつ 伝説のチョウ",
+     "translation": "A legendary butterfly possessing mysterious powers."
     },
     {
      "index": 179,
@@ -2780,8 +2802,8 @@
     },
     {
      "index": 11,
-     "original": "[g050]くの[g051]色が 見られる",
-     "translation": null
+     "original": "遠くの景色が 見られる",
+     "translation": "You can see the distant scenery."
     },
     {
      "index": 12,
@@ -2795,8 +2817,8 @@
     },
     {
      "index": 14,
-     "original": "あしをケガした小[g057]",
-     "translation": null
+     "original": "あしをケガした小犬",
+     "translation": "A puppy with a leg injury."
     },
     {
      "index": 15,
@@ -2805,8 +2827,8 @@
     },
     {
      "index": 16,
-     "original": "枯れ葉の羽を持つ\n伝[g05E]のチョウチョ",
-     "translation": null
+     "original": "枯れ葉の羽を持つ\n伝説のチョウチョ",
+     "translation": "A butterfly with wings of withered leaves,\na legendary butterfly."
     },
     {
      "index": 17,
@@ -2870,8 +2892,8 @@
     },
     {
      "index": 29,
-     "original": "動きが 最[g074]になる\nすばらしい パンツ",
-     "translation": null
+     "original": "動きが 最速になる\nすばらしい パンツ",
+     "translation": "Movement becomes fastest\nWonderful pants"
     },
     {
      "index": 30,
@@ -2935,13 +2957,13 @@
     },
     {
      "index": 42,
-     "original": "魔ブタを封じる力をもつ\n[g083]色の ふくろ",
-     "translation": null
+     "original": "魔ブタを封じる力をもつ\n紺色の ふくろ",
+     "translation": "A navy blue pouch possessing the power to seal the demon pig."
     },
     {
      "index": 43,
-     "original": "魔ブタを封じる力をもつ\n[g084]色の ふくろ",
-     "translation": null
+     "original": "魔ブタを封じる力をもつ\n紫色の ふくろ",
+     "translation": "A purple pouch possessing the power to seal the demon pig."
     },
     {
      "index": 44,
@@ -2955,38 +2977,38 @@
     },
     {
      "index": 46,
-     "original": "大きな[g088]の 一部らしい パネル1",
-     "translation": null
+     "original": "大きな絵の 一部らしい パネル1",
+     "translation": "It seems to be part of a large painting, Panel 1."
     },
     {
      "index": 47,
-     "original": "大きな[g088]の 一部らしい パネル2",
-     "translation": null
+     "original": "大きな絵の 一部らしい パネル2",
+     "translation": "It seems to be part of a large painting, Panel 2."
     },
     {
      "index": 48,
-     "original": "大きな[g088]の 一部らしい パネル3",
-     "translation": null
+     "original": "大きな絵の 一部らしい パネル3",
+     "translation": "It seems to be part of a large painting, Panel 3."
     },
     {
      "index": 49,
-     "original": "大きな[g088]の 一部らしい パネル4",
-     "translation": null
+     "original": "大きな絵の 一部らしい パネル4",
+     "translation": "It seems to be part of a large painting, Panel 4."
     },
     {
      "index": 50,
-     "original": "大きな[g088]の 一部らしい パネル5",
-     "translation": null
+     "original": "大きな絵の 一部らしい パネル5",
+     "translation": "It seems to be part of a large painting, Panel 5."
     },
     {
      "index": 51,
-     "original": "パワーぎれも いっきに解[g090]できる\nありがたい アイテム",
-     "translation": null
+     "original": "パワーぎれも いっきに解決できる\nありがたい アイテム",
+     "translation": "Power outages can be solved instantly.\nA truly helpful item."
     },
     {
      "index": 52,
-     "original": "雨[g092]を[g093]んで 雨をふらせる\n[g094][g095]のアイテム",
-     "translation": null
+     "original": "雨雲を呼んで 雨をふらせる\n奇跡のアイテム",
+     "translation": "Calling rain clouds and making it rain.\nA miracle item."
     },
     {
      "index": 53,
@@ -3020,8 +3042,8 @@
     },
     {
      "index": 59,
-     "original": "あぶない物を持っても\n[g09E]気な 手ぶくろ",
-     "translation": null
+     "original": "あぶない物を持っても\n平気な 手ぶくろ",
+     "translation": "Even holding dangerous things,\nthese gloves are fine."
     },
     {
      "index": 60,
@@ -3050,8 +3072,8 @@
     },
     {
      "index": 65,
-     "original": "[g0A4]で ホロ[g0A6]い気分になりそうな\nアルコール",
-     "translation": null
+     "original": "香で ホロ酔い気分になりそうな\nアルコール",
+     "translation": "An alcohol that makes you feel slightly tipsy with its aroma."
     },
     {
      "index": 66,

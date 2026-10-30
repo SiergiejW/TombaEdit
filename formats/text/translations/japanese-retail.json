@@ -4,10 +4,10 @@
  "build": "Japanese retail",
  "model": "CAT-Translate-7b",
  "builds": {
-  "Japanese retail": 1524
+  "Japanese retail": 1673
  },
  "messages": 7858,
- "translated": 1524,
+ "translated": 1673,
  "entries": {
   "だみーきゅーぶ": "Dummy Cubes",
   "ジィちゃんの形見": "Grandpa's keepsake.",
@@ -24,9 +24,12 @@
   "APボックス": "AP Box",
   "魔王の忘れもの": "The Demon's Forgotten Item",
   "見た事あるやしき": "I've seen it before.",
+  "カシラの大事なもの": "Kashira's important things.",
+  "魔王の探し物": "The Demon King's Search",
   "おいしい?万能魚": "Delicious? All-purpose fish.",
   "ドロップを作ろう!": "Let's make a drop!",
   "魔王がカぜひいた…": "The Demon King had a cold...",
+  "息子よ、どこに…": "My son, where are you...",
   "サンタの好きなもの…": "Santa's favorite things...",
   "小さなブタ…マゴブタ?": "A small pig... Magobuta?",
   "かみつき草の花": "The flowers of the biting grass.",
@@ -145,6 +148,7 @@
   "いかん、いかん\n\n今はカメさんに たすけてもらったが\n次からそうはいかん\n\nそこのトビラの先は\n泳げないと行けんのだから・・・\n\n悪いことはいわん、\n今はやめた方がいい・・・\n\nいつか 泳げるようになってから行くんだナ\n\nおっ そうだ!\nおまえ ハラへってないかィ?\n\nこれ もってけよ!": "No, no.\n\nI got help from the turtle this time,\nbut I can't do that again next time.\n\nBeyond that door,\nyou can't go unless you can swim...\n\nDon't say bad things,\nit's better to stop now...\n\nI'll go when I can swim someday.\n\nOh, right!\nAre you hungry?\n\nTake this!",
   "じゃあなボウズ 気ィつけて行けや": "See ya, loser. Be careful.",
   "おおっ! おまえ およげるんかィ\n・・・でも、ここには カギが かかっててな、\nいまのところ 向こう側にはいけないんだ・・・": "Wow! You can swim, huh?\n...But there's a lock here, so I can't get to the other side right now...",
+  "ん〜っ・・・見たところ 文明の国にいる\n鉄人の作ったカギみたいだけどナ・・・": "Hmm... from what I can see, it's in a civilized country.\nIt looks like a key made by an iron man, but na...",
   "な〜んだ 持ってたんかィ・・・\nでも、気ィつけて行けよ・・・\n\nおれは、キノコの森近くの浜道で ふねにのってるから\n気が向いたら のぞいてくれや\n\nおっ そうだ! ハラへってないかィ? \nこれ、もってけよ": "Oh, you had it...\nBut be careful when you go...\n\nI'm on a boat near the beach road near the mushroom forest,\nso if you feel like it, take a peek.\n\nOh, right! Are you hungry?\nTake this.",
   "ダートモトクロスレース\nレッツ チャレンジ!!": "Dirt Motocross Race\nLet's challenge!!",
   "木の枝にぶらさがると 大回転ができる!\n方向キー◀か→ を押しつづけると 回転する\n逆回転したいときは 逆の方向キーを押す": "When hanging from a tree branch, you can do a big spin!\nPress and hold the direction key ◀ or → to spin.\nTo reverse the rotation, press the opposite direction key.",
@@ -170,6 +174,7 @@
   "・・・おおっ、かえってきたか": "...Oh, you've returned.",
   "よく やったのぉ・・・・・・\n\nこれで この大陸も もとの静けさを\nとりもどすじゃろう・・・・・・": "Well done…\n\nWith this, this continent will regain its original tranquility…",
   "ふん! \nまぁ、マグレじゃろうけどな・・・": "Hmph!\nWell, it's probably just a fluke...",
+  "ほっ ほっ ほっ・・・\n何を言うとる・・・\n\nいちばん心配しとったクセに・・・\n素直じゃないのぉ・・・": "Ho ho ho...\nWhat are you saying...?\n\nYou were the most worried, weren't you...?\nYou're not being honest, are you...?",
   "なっ! 何を・・・\n別に わしは心配なんか・・・・・・": "What! What are you...\nI'm not worried about anything...",
   "まぁまぁ・・・\n・・・ともかく・・・\n\nこの少年の勇気が \n皆を救ってくれたんじゃ": "Well, well...\n...Anyway...\n\nThis boy's courage\nsaved everyone, didn't it?",
   "・・・そうじゃな・・・・\n・・で?\nおまえさんの目的は はたせたのかな?\n\n・・・・・\n・・・・そうか\n・・・よかったのう": "...That's right...\n...And?\nDid you achieve your goal?\n\n...\n...I see.\n...That's good.",
@@ -207,6 +212,7 @@
   "カギのパーツ3をつかった": "I used key part 3.",
   "カギのパーツ4をつかった": "I used key part 4.",
   "カギのパーツ5をつかった": "I used key part 5.",
+  "雨の素をつかった": "I used the rain element.",
   "大きなカギをつかった": "I used a big key.",
   "小さなカギをつかった": "I used a small key.",
   "右半分の地図をつかった": "I used the map on the right half.",
@@ -252,6 +258,7 @@
   "ブルーな粉をつかった": "I used blue powder.",
   "ヤシの実をつかった": "Using coconut fruit.",
   "フンガの皮をつかった": "I used Hunga's skin.",
+  "除草剤をつかった": "Used herbicides.",
   "フンガの木をつかった": "I used a Hungarian tree.",
   "フンガのニカワをつかった": "I used Hunga's fake hair.",
   "フンガのタイコをつかった": "I used Hunga's taiko.",
@@ -443,20 +450,29 @@
   "ヨ〜イ…ドン!": "Yo~i... Don!",
   "バロンは友だち": "Baron is a friend.",
   "これ、な〜んだ?": "What is this?",
+  "やしきの宝物?": "Yashiki's treasure?",
   "水晶のじゅもん": "Crystal Spell",
   "とびっきりの笑がお!": "A burst of laughter!",
   "とびっきりの泣きがお?": "Is there a particularly big cry?",
   "動かない恵みコゾウ": "The Unmoving Blessing Kozo",
+  "怪物?勝てるかな?": "Monster? Can I win?",
   "死神の巣をつぶせ": "Destroy the Death God's Nest",
+  "花をさかせよう!": "Let's make flowers bloom!",
   "森の地下には何がある?": "What is underground in the forest?",
   "動かない鉄の車": "A stationary iron car.",
   "盗賊のトビラ": "The Thief's Door",
+  "丈夫なハリガネ": "Strong wire.",
   "億年老人の願い": "The Wish of the Hundred Million-Year-Old Man",
   "うまった道を行く": "The road is good.",
   " 青の占い師": "Blue Fortune Teller",
   "魔力のみなもと?": "The source of magic power?",
+  " 友達7人 ": "7 friends",
   "8つめの封印ぶくろ?": "The eighth sealed bag?",
-  "雨の素をつかった": "I used the rain element.",
+  "夢?幻?宝物庫を探せ": "Dream? Illusion? Search for the treasure chest.",
+  "不思議なキノコ": "Mysterious mushroom",
+  "リーフスライダー": "Leaf Slider",
+  " 赤+青=?": "Red + blue =?",
+  "ミリオンの塔": "Million Tower",
   "300000APです": "It's 300,000 AP.",
   "バイタリティ1ぞうかをつかった": "I used 1 zouka of vitality.",
   "コイヌ鳥がにげた": "The small dog bird ran away.",
@@ -632,12 +648,16 @@
   "・・・おっ・・・ぬけ穴が見えた\n・・・ありがてぇ・・・これでやっと\nぬけだせるぜ・・・あばよ!": "...Oh...I see a loophole.\n...Thank you...With this, I can finally escape.\nI can finally get out...Goodbye!",
   "わし・・・見はり・・・ん?\n何の見はりか?\n・・・・・それはおしえられない": "I... watch... hmm?\nWhat kind of watch?\n...I can't tell you that.",
   "○●△○○ー○!": "○●△○○ー○!",
+  "ケガを早く治すのに「ナオリ草」があれば\nいいんだけど・・・\n\nあれがあるのは\nたしか大トリの山だったかしら\n\nでも\nあそこは風が強くてキケンだからねェ・・・": "It would be nice if there were \"Naori grass\" to heal injuries quickly...\n\nI think that's on the mountain of the big bird, right?\n\nBut\nthat place is windy and dangerous, so no...",
   "あらっ! ナオリ草じゃないか\n\nあんた 大トリの山まで 取りに行ったのかい!?\nよく 無事だったねぇ\n\nでもこれで バロンのケガも早く治るよ": "Oh! It's Naori grass!\n\nDid you go all the way to the mountain for the big bird!?\nYou were lucky to be safe.\n\nBut this will help Baron's injury heal faster.",
+  "あとは おいしいものでも たべさせて\nゆっくりしとけば 元気になるさ・・・\n\nそうそう おいしいものと言えば「百識の木の実」!\nあたしも むかしたべたことがあるんだけど\nあれは おいしかったねェ\n\nまた たべてみたいよ・・・・・": "After that, let's have something delicious to eat.\nIf we just relax, we'll feel better...\n\nOh, speaking of delicious things, \"Hyakushiki no Kinami\"!\nI once ate it too, and it was really tasty.\n\nI want to eat it again...",
   "まぁ! これは百識の木の実じゃないか\nあたしにくれるのかい?\n\n・・・・えっ!? バロンに?・・・\nそりゃそうだ\n今はバロンを元気にしてやらないとね\n\nはいっ!バロン\nこれをたべて 元気におなり・・・": "Oh! Isn't this the fruit of the Hundred Knowledge Tree?\nAre you giving it to me?\n\n...Eh!? To Baron?...\nThat's right.\nI have to cheer up Baron now.\n\nYes! Baron!\nEat this and get well...",
   "ところで このごろ\nバロンを見てて思うんだけど\n\nこのバロンは\nなんか ふしぎな力をもってるんじゃ\nないかってね\n\nほらっ 耳だってこんなに大きいでしょ\nたとえば\nこれで 空をとんじゃうとか・・・・・\n\nたとえばよー たとえばっ\nでも バロンを見てると\nそんな気にさせられるのよね\n\nまぁ 今は早く元気になること\nそのあとは お楽しみね": "By the way, lately\nI've been thinking about Baron\n\nThis Baron\nseems to have some kind of mysterious power,\ndon't you think?\n\nLook! His ears are so big, right?\nFor example,\nhe could fly through the sky with these...\n\nFor example—for example!\nBut when I look at Baron,\nit makes me feel that way.\n\nWell, for now, I just need to get better quickly.\nAfter that, it's a surprise!",
   "とにかく これで だいじょうぶ\nあとはあたしに まかせておきな\n\nまた ちょくちょく\nかおを見せに来てやってよ\n\nバロンもよろこぶから・・・・・": "Anyway, this should be fine.\nJust leave it to me from now on.\n\nCome show your face again soon, okay?\n\nBaron will be happy too...",
   "そうそう あんた\n始まりの村にある屋敷のウラの\n浜道に行くことあるかい?\n\nあそこに 毎年この時期になると\n決まって波で\n近草が打ち上げられるんだけど\n\nこの近草って言うのが 体に良くってね\n病気にも ならないんだよ\n\nみんな 健康でいてほしいから\n毎年取りに行ってんだけど\n\n今年はどうも 行けそうにないんだよ\nあんた 行くことがあったら\n取って来てくれないかい?": "Hey, you\nDo you ever go to the beach road behind the mansion in the starting village?\n\nEvery year around this time,\nwaves always wash up on the shore there,\nbut...\n\nThis \"near grass\" is good for your health,\nand it doesn't cause illness either.\n\nI want everyone to stay healthy,\nso I go get some every year,\nbut this year I don't think I'll be able to go.\nIf you happen to go,\ncould you bring some back for me?",
+  "ねェ それはそうと\nバロン 少しおおきくなったように\n思わないかい?\n\n成長が早いのか\n気のせいか・・・・・": "Hey, speaking of which,\nBaron, don't you think he's gotten a little bigger?\nIs he growing fast?\nOr is it just my imagination...?",
   "ありがとう\nこれで今年もみんな元気ですごせるよ\n\nところで ごらん、バロン\nこ〜んなに大きくなったわよ\nほんっとに成長 早いわ\n\nあんたが つれて来たときは\nかなり 弱ってたけど\n\nこんなに大きくなっちゃって\nもう だいじょうぶっ!": "Thank you.\nWith this, everyone can spend this year energetically.\n\nBy the way, look, Baron.\nHe's grown so big!\nHe really grows fast.\n\nWhen you brought him here,\nhe was quite weak, but\n\nhe's become so big now.\nHe's completely fine!",
+  "あらっ?!\nバロンはあんたといっしょに行きたい\nみたいだねェ\n\nつれてってやんなよ": "Oh?!\nBaron wants to go with you.\nIt seems like it.\n\nDon't take him.",
   "なんか 背中にのれって言ってるよ\nのってあげな\nバロンも うれしいんだよ\n\nじゃあ またね\nケガでもしたら またおいで\n\nあたしが 治してあげるから\nふたりとも元気でね": "It's saying \"Get on my back\" on my back.\nGet on it.\nBaron is happy too.\n\nWell then, see you later.\nCome again if you get hurt.\n\nI'll heal you.\nBoth of you stay healthy.",
   "でも あんたこれを わざわざ\nもって来てやったのかい?\n\nナオリ草も百識の木の実も見つけるの\nたいへんだったろうに・・・\n\nバロンもよく わかってる みたいだね\nバロンはあんたが来ると\nほんとに うれしそうだよ": "But did you come all the way to bring this?\nIt must have been hard to find both the Naori grass and the hundred-knowledge tree's fruit...\nBaron seems to understand very well.\nBaron really looks happy when you come.",
   "ドワーフの森・・・\nもとに もどった!": "Dwarf Forest...\nI returned to the base!",
@@ -699,12 +719,16 @@
   "どこかで 何かが動く音がした・・・": "Somewhere, I heard the sound of something moving...",
   "フフフ・・・フハハハハハ・・・・・・\n\nこの、トビラの中に\n入れるわけには いかないな・・・\n\nせいぜい そこで、くやしがることだ・・・\n\nハハハ・・・ハァーッハッハッハ・・・・・・": "Huhuhu... huhahahahaha...\n\nInside this door.\nI can't let that happen...\n\nAt best, that's something to be frustrated about...\n\nHahaha... Hahahahahaha...",
   "おおっ! かえってきたか!": "Oh! You've returned!",
+  "大トリの山へ": "To the mountain of the great bird.",
   "ケンカをとめて": "Stop the fight.",
+  "ケガに効く ナオリ草": "Naori grass effective for injuries",
   "おいしい百識の木の巣": "The delicious hundred-knowledge tree nest",
   "バロンの力!?": "Baron's power!?",
   "海草でみんな元気": "Everyone is healthy with seaweed.",
+  "APスロットマシーン": "AP Slot Machine",
   "青の占い師 ": "Blue Fortune Teller",
   "本当の魔ブタ": "The Real Demon Pig",
+  "いよっ!穴ほり名人!": "Yo! Hole Digging Master!",
   "ポテンシャルが たりない": "The potential is insufficient.",
   "風の谷\n\nセーブしますか?\n  はい→× いいえ→×": "Wind Valley\n\nSave?\nYes → × No → ×",
   "     ぎょうむ連絡 トンバ様へ\nもし、大トリの山などでお困りのことがありましたら、\nお気軽にもよりの村人までお申しつけ下さい\n\nできるかぎり、トンバ様の旅の手助けをさせていただきます\nそれでは、良い旅を\n・・・・・・バッカスの村一同\n\nPS・・・ごきたいに そえない場張もありますので\nあらかじめご了承ください": "To Mr. Tomba,\nIf you encounter any difficulties during your journey, such as at the mountain pass,\nplease feel free to contact any of the villagers in the village.\n\nWe will do our best to assist you with your travels.\nHave a safe journey.\n...The entire Bacchus Village\n\nP.S. ...Please note that some places may not be suitable for your taste.\nWe appreciate your understanding in advance.",
@@ -748,19 +772,28 @@
   "あーあ 雨でもふりゃぁ\n消えるかもしれないけど\nどうくつの中じゃぁな・・・": "Ah, even if it rains, it might disappear,\nbut it's not inside the dungeon...",
   "ところで こんなの 見つけたんだけど\nだれのかな?\n\nどっちにしろ オレにはひつようないから\nおまえにやるよ": "By the way, I found this thing—\nwhose is it?\n\nEither way, I don't need it, so I'll give it to you.",
   "なんで おれが\nここに いることができたのか\n・・・ふしぎか?\n\nマグマの洞窟の中で ここだけは\n熱さをしのげるんだわ・・・\n\n・・・そんなことは\nどうでも いいんだわ・・・": "Why am I here?\nHow did I manage to stay...\n...Is it strange?\n\nInside the magma cave,\nthis place alone can withstand the heat...\n\n...That doesn't matter to me at all...",
+  "おれは今 悩んじゃってねェ・・・\nその悩みというのがさ・・・\nだれにも言うなよ!\n\nじつは・・・\nカシラからあずかった大切なものをさぁ\nなくしちまったんだわ・・・\n\n言うなよ! ぜったい!!\nなんか この道でなくしたような気がして\nさがしに来たんだけど・・・\n\n熱いしさぁ〜あぶないしさぁ〜\nさがせないんだわ\nどーしたもんかなぁ・・・": "I'm really troubled right now...\nThat trouble is...\nDon't tell anyone!\n\nActually...\nI lost something important that Kashira gave me...\n\nDon't say it! Absolutely!!\nI feel like I lost it on this road,\nso I came looking for it...\n\nIt's hot, and it's dangerous, and it's dangerous~\nI can't find it.\nWhat should I do...?",
   "みつけることが あったら\nおしえてくれや よろしくな・・・\nハ〜ァ・・・・・・": "If you find it,\nplease let me know, okay?...\nHaa...",
   "ゲッ!\nどどどどどど どこにあったんだ?\nこれっ これなんだわ\n\nありがとう なんとお礼を\n言ったらいいか・・・": "Gee!\nWhere was it?\nThis is it! This is it!\n\nThank you, how should I thank you?\nI don't know...",
   "これで カシラにも\nしかられずにすむわ\n\nよかった よかった・・・\nこれでカシラのところにも\nもどれるわ": "With this, I won't have to be scolded by Kashira.\n\nGood, good...\nWith this, I can return to Kashira's place.",
   "嵐の山の怪 ": "The Monster of the Stormy Mountain",
+  "大トリの山 ": "The Grand Finale Mountain",
   "どこからきたの?": "Where did you come from?",
+  "ラッパでミニミニ": "Mini Mini with a Rapper",
+  "炎よ、しずまれ!": "Fire, be still!",
   " 空の主  ": "Lord of the Sky",
   "フンガのタイコ": "Hungarian Taiko",
   "風がやんだら…": "When the wind dies down...",
+  "大トリの好物": "The favorite of the big bird.",
   "渡れなくなっちゃった…": "I can't cross anymore...",
+  "もとの姿にもどりたい": "I want to return to my original form.",
   " 盗賊の悩み": "The Thief's Dilemma",
   "盗賊のわすれもの": "The Thief's Mistake",
+  "かくされた力その3": "Hidden Power Part 3",
   "おなかペコペコ?": "Are you hungry?",
+  "サンタのパンツ": "Santa's pants",
   "大事な宝箱?": "An important treasure chest?",
+  "マグマのどうくつ": "Magma's Cave",
   "笑ってごらん": "Try laughing.",
   "あやしいトビラ": "Mysterious Door",
   "ライフゲージぞうかをつかった": "I used a life gauge.",
@@ -825,6 +858,7 @@
   "村料はどこだ!?": "Where is the village fee!?",
   "水の下には何がある?": "What is under the water?",
   "人魚の思い出": "Mermaid Memories",
+  "シーフマンション": "Seaf Mansion",
   "バッカスの村\n\nセーブしますか?\n  はい→× いいえ→×": "Bacchus Village\n\nSave?\nYes → × No → ×",
   "よく当たる赤の占い師のいえ\n    今なら無料\nダイナミックキャンペーン中!": "The well-known red fortune teller's house\n    Now free\nDynamic campaign underway!",
   "・・・かんばんの先にはり紙がしてある": "There is a sticker on the signboard.",
@@ -841,6 +875,7 @@
   "はぁーーーっ\n・・・たいしたもんだ、\nまだちっこいのになぁ・・・": "Haaaahhhh...\n...That's quite something,\neven though it's still so tiny...",
   "・・・そうだ、キノコの森の怪物もいなくなったことだし\n・・・ついでと言っちゃあなんだが\nもうひとはたらき、たのまれてくれないか?\n\n実は、キノコの森に死神の実とよばれるものがあってな、\n困ったことにこの実をほっとくと、\n他のしょくぶつがみんなかれちまうんだ・・・": "...That's right, now that the monster in the mushroom forest is gone,\n...I don't mean to say this as an afterthought,\nbut won't you work hard and be requested?\n\nActually, there's something called the Death God Fruit in the mushroom forest,\nand unfortunately, if you leave this fruit alone,\nall the other creatures will perish...",
   "だからあんたに、その死神の実を\n代部つぶしてもらいたいんだ": "That's why I want you to crush that Death God Fruit.",
+  "・・・そうだ、これをもっていきな!\n死神の実の除草剤だ・・・\nこれがないと死神の実はとれないんだ": "...That's right, take this with you!\nIt's a herbicide for the Death God Fruit...\nYou can't harvest the Death God Fruit without this.",
   "俺たちのしらべでは代部で\n5個ぐらいだと思うんだが・・・\nがんばって ぜんぶつぶしてくれよ!": "In our research, I think there are about five in the substitute section...\nPlease do your best and crush them all!",
   "死神の実にはカオみたいな\nもようがついてるから\nまちがえないようにな・・・": "The Death God Fruit has a pattern like Kao, so don't mistake it...",
   "よう! やったな!": "Yo! You did it!",
@@ -872,6 +907,7 @@
   "う〜ん・・・困った・・・": "Hmm... I'm in trouble...",
   "ええっ! そんな所にいたんですか?\nわかりました・・・すぐに ほごします\n\nあ・・・よかったら、また\nけいじばん・・・見といてくださいね": "Eh! Were you in such a place?\nUnderstood... I will protect you right away.\n\nAh... if you like, again\nplease watch Keijiban...",
   "おかげで助かりました": "Thanks to you, I was saved.",
+  "みぃ〜〜たぁ〜〜なぁ〜〜っ!!\n・・・・・・・・・・・\n\n・・・・・・・・・・・・\n・・・・・・・・・\n\nなんじゃ・・・あまり、おどろかんな\n・・・いやいや すまんな・・・\nわるぎはなかったんじゃ・・・\n\n見てのとおり、わしらは\nネズミそっくりじゃろ?\nもちろん人間なんじゃが\n\n・・・この村には魔ブタの魔法が\nかけられておってな・・・村人代表が\n姿をかえられてしまったんじゃ・・・": "Mii~taaa~naaa~tsu!!\n・・・・・・・・・・・\n\n・・・・・・・・・・・\n・・・・・・・・・\n\nWhat... don't be so surprised.\n・・・No, no, sorry...\nThere wasn't any trouble...\n\nAs you can see, we're\njust like mice, aren't we?\nOf course, we're humans,\n\n・・・This village has been enchanted with\nthe magic of the demon pig... The village representative\nhas been transformed...",
   "まぁ、ふだんは おどろかさんように\nこうやってボウシをかぶっておるがな・・・\n\n・・・そうじゃ!\nおまえさん、たびのひとじゃろ?\nひとつ たのまれてくれんか?": "Well, usually I'm like this,\nwearing a bowshi like this...\n\n...That's right!\nYou're a traveler, aren't you?\nWould you do me a favor?",
   "わしはシュミでいろんな物を\n集めとるんじゃが・・・\n\nチーズの実がなかなか\n集まらないんじゃ・・・\n\nもし旅先でチーズの実をみつけたら\n集めておいてくれんか・・・\n\nもちろん、集めてくれたら\nお礼はさせてもらうからの\n\nそうじゃのぉ、10個集まったら\n持ってきておくれ・・・\n\n楽しみに待っとるからの": "I collect various things in Shumi...\n\nBut I can't seem to gather enough cheese nuts...\n\nIf you happen to find some cheese nuts on your travels,\nwould you mind collecting them for me...?\n\nOf course, if you do collect them,\nI'll be sure to thank you properly.\n\nThat's right, once you've gathered ten,\nbring them to me...\n\nI'm looking forward to seeing them.",
   "どうじゃ、チーズの実は\n集まったかの・・・": "How about the cheese?",
@@ -897,6 +933,7 @@
   "あんたを乗せてきた大トリは、\n頂先にある自分の巣の方向へ\nとんでいったよ": "The great bird that carried you flew towards its own nest at the very tip.",
   "いやぁ・・・この体って、\nけっこう ふべんなんだよね・・・": "Well… this body is quite stubborn, you know…",
   "そう言えば・・・\n中央センターのヤツが\n\nシーフマンションの小部屋のカギを\n持ってたなぁ・・・": "Come to think of it...\nThe guy from the Central Center had\n\nthe key to the small room in the Thief Mansion,\ndidn't he...?",
+  "中央こうえんの「けいじばん」は、\nこまめにチェックしといたほうがいいゼ": "You should check the \"keijiban\" of Chuo Park frequently.",
   "ウワサじゃ、シーフマンションの\nどっかに「時の老人」のひとりが\n開じ込められているらしいぞ・・・": "Rumor has it that somewhere in the Seaf Mansion,\none of the \"Old Men of Time\" is trapped...",
   "湖のポンプをなおしてくれたんだって?\n中央センターには ほうこくしたかい?": "Did you fix the pump at the lake?\nDid you report it to the central center?",
   "トンバさん、ごくろーさまです!": "Tonba-san, thank you very much!",
@@ -913,6 +950,7 @@
   "オレたちも、もとのすがたに\nもどれるのかなぁ・・・": "I wonder if we can return to our original form...",
   "・・・よぉ!トンバ・・・\nいつも元気だな・・・\nあんまりムリするなよ": "...Hey! Tongba...\nYou're always so energetic...\nDon't push yourself too hard.",
   "本当に、魔ブタを たおしちまったんだな\n・・・まったく たいしたヤツだよ": "You really took down that demon pig, huh?\n...What a remarkable fellow.",
+  "おかげで もとの姿にもどれたよ!\nほんっとーに・・・ありがとうなっ!": "Thanks to you, I was able to return to my original form!\nReally... thank you so much!",
   "わぁっ!ひさしぶり!?\nみんな すっごく げんきでしょ?\nこれも、トンバのおかげよ": "Wow! It's been so long!\nEveryone's doing so well, aren't they?\nThis is all thanks to Tonba.",
   "占い師のなかまたちには\nもうあったかい?": "To the fortune tellers,\nis it already warm?",
   "たまには、おれたちのことも\nおもいだしてくれよ": "Sometimes, please remember us too.",
@@ -927,9 +965,12 @@
   "・・・えっ? 最後の魔ブタだって?\nよ〜しっ! わかった!\n・・・まかしとけっ!": "...Huh? The last demon pig?\nAlright! Got it!\n...Leave it to me!",
   "よぉ、トンバ! ひさしぶりだな\n・・・どうした??\n・・・アルコールがいるって?\n\nいいぜ、ほかならぬ トンバのたのみだ\nいくらでも もっていきな\n・・・でも、子どもは のんじゃだめだぞ": "Hey, Tongba! It's been a while.\n...What's up??\n...You need alcohol?\n\nSure thing, it's Tongba's request.\nTake as much as you want.\n...But kids aren't allowed to drink.",
   "・・・じゃあな!\nいつでも あそびにきてくれよ": "...See you later!\nCome play anytime.",
+  "まともなキノコ": "Decent mushroom",
   "涙がとまらない": "I can't stop crying.",
   " 赤の占い師": "Red Fortune Teller",
+  "子ネズミどこだ?": "Where is the baby mouse?",
   "集まったら持っといで…": "If you gather, bring it...",
+  "大人の飲み物": "Adult beverage",
   " 湖への道 ": "The Road to the Lake",
   "バッカスの村": "Village of Bacchus",
   "バイタリティが 1へった": "Vitality has dropped to 1.",
@@ -946,6 +987,9 @@
   "お知らせ\nちかいうちに コースレコードを 発表しますので\nもう しばらくおまちください": "Notice\nWe will announce the course record soon, so please wait a little longer.",
   "コースレコード発表!\n1位・・・24秒96\n2位・・・26秒55\n3位・・・28秒01": "Course record announced!\n1st place... 24.96 seconds\n2nd place... 26.55 seconds\n3rd place... 28.01 seconds",
   " 再チャレンジする?\nする→○  しない→×": "Will you try again?\nDo → ○ Don't → ×",
+  "銅色のメダルがほしい": "I want a bronze medal.",
+  "銀色のメダルがほしい": "I want a silver medal.",
+  "金色のメダルがほしい": "I want a gold medal.",
   "なにかを取り付ける穴があいている・・・": "There's a hole for attaching something...",
   "バルブを取り付けた!": "I installed the valve!",
   "・・・スイッチがオフになっている・・・": "...the switch is turned off...",
@@ -965,6 +1009,8 @@
   "やっぱり、ウワサにきく\nナミダのびん ひつようかも\n・・・こまった・・・": "As expected, I hear rumors.\nI might need a bottle of tears...\n...This is troublesome...",
   "はじまりの村に出かけますので、\nしばらく ふねは出せません": "I'm going to the village of beginnings, so I won't be able to ship for a while.",
   "やぁ、またあったね・・・\nふねに のりたいのかい?\n\nそれはかまわないけど、\nボクもいそがしいから\nかたみちだけだよ": "Hey, we met again...\nDo you want to ride on the boat?\n\nThat's fine, but\nI'm busy too, so\njust Kata Michi.",
+  "お涙ちょうだい": "Please give me your tears.",
+  "ナミダのビンちょうだい": "Give me a bottle of tears.",
   "浜辺の近草をつかった": "I used the grass near the beach.",
   "ポテンシャル 水 MAX!!": "Potential Water MAX!!",
   "ジャングル\n\nセーブしますか?\n  はい→× いいえ→×": "Jungle\n\nDo you want to save?\nYes → × No → ×",
@@ -974,6 +1020,8 @@
   "ホンガッガ〜!": "Honga~!",
   "・・・いって〜〜〜\n\n・・・コラコラ、少年!\n・・・らんぼうなヤツだなぁ・・・\n\n・・・いきなりかみつくなんて・・・\n・・・ん?・・・ちょっとまてよ・・・": "...Hey there~~~\n\n...Hey there, boy!\n...What a naughty brat...\n\n...Suddenly biting like that...\n...Hmm? ...Wait a minute...",
   "・・・うん、わかった・・・\n頼んでみるよ・・・": "...Okay, I understand...\nI'll give it a try...",
+  "・・じぃさんは、気にするなってさ・・・ちぇ\n・・・それと・・ひとつ頼みがあるんだ・・・\n\n見ての通り、じぃさんはもうトシなんだ・・・\n自分で養分を吸い上げられなくなっちまって、\nどんどん元気がなくなってるんだけど・・・\n\nひとつだけ、この老木を元気にする方法が\nあるらしいんだ・・・それは・・・": "...Jii-san says not to worry about it... Che.\n...And... I have one request...\n\nAs you can see, Jii-san is already old...\nHe can no longer absorb nutrients on his own,\nand his energy is steadily fading...\n\nThere seems to be only one way to revive this old tree... That is...",
+  "この大陸のあちらこちらに\nポンプ岩ってのがあるんだけど・・・\n\n実は、その中には栄養タップリの水が\nはいってるんだ・・・\n\nたぶん、全部のポンプ岩をふんで\n栄養を地面に戻せば、\n老木も元気になるハズだよ・・・": "There are things called pump rocks scattered all over this continent...\n\nActually, they contain plenty of nutrient-rich water...\n\nProbably, if you step on all the pump rocks and return the nutrients to the ground,\nold trees should regain their vitality...",
   "よぉ、少年!\n全てのポンプ岩をふんでくれたんだな\n・・・大変だったろ?\n\n・・・おかげで老木のじぃさんも\nすっかり元気になったよ・・・": "Hey, boy!\nYou stepped on all the pump rocks, didn't you?\n...That must have been tough, huh?\n\n...Thanks to that, even old man Jii-san\nhas completely recovered his energy...",
   "・・・そうだね\n・・・わかった": "...That's right.\n...Understood.",
   "じぃさんからの伝言だよ・・・\nこの老木は 百識の老木と言われるぐらい\nいろんなことを知ってるんだ・・・\n\nだから、この先 このじぃさんに\n何か聞きたいことがあったら またこいってさ・・・": "It's a message from Grandpa...\nThis old tree is said to be a hundred-knowledge tree,\nit knows so much...\n\nSo, if you have anything you want to ask this Grandpa in the future,\ncome back again...",
@@ -987,6 +1035,7 @@
   "◆◆◆★!\n・・・??△◆ ◆◆◆★!\n\n・・・★◆◆◆◆★!!\n◆◆◆、◆◆◆◆◆★!\n\n・・・◆◆〜◆★!\n◆◆◆★★★★◆◆◆★!": "◆◆◆★!\n...??△◆ ◆◆◆★!\n\n...★◆◆◆◆★!!\n◆◆◆、◆◆◆◆◆★!\n\n...◆◆〜◆★!\n◆◆◆★★★★◆◆◆★!",
   "なんだ・・・おまえ、\nおよげないのか?\n困ったヤツだなぁ・・・": "What... you can't swim?\nWhat a troublesome guy...",
   "まぁ・・・オイラが\n泳ぎをおしえてやってもいいんだけど・・・\n\nおっと、バナナは もういいゼ・・・\n大好きなんだけど \nちょっと たべあきちゃったんだよ・・・\n\nそれより、ノドがかわいたなぁ・・・": "Well... I could teach you how to swim, but...\n\nOh, never mind the banana—it's fine now...\nI love it, but I've already eaten a bit of it...\n\nAnyway, my throat feels dry...",
+  "あ、そうだ・・・オイラさぁ\n文明の国の入口ちかくで\nボウシをひろったんだ・・・\n\nもし、文明の国に行くんなら\n持ち主にわたしてくれないかな?\n\nたぶん 困ってるとおもうんだ・・・": "Oh, right... I...\nI picked up a hat near the entrance of a civilized country...\n\nIf you're going to a civilized country,\nwould you give it to its owner?\n\nI think they're probably in trouble...",
   "・・・いや、だから・・・バナナは\nもういいんだってば・・・おまえ、\n人のはなし 聞いてないな・・・": "...No, that's why... bananas are\nenough already, I said... you,\nyou're not listening to anyone's story...",
   "おおっ!\nそれはまさしく バナナジュース!!\n\nいつも わるいな・・・あとでゆっくり\nいただくよ・・・": "Wow!\nThat's exactly banana juice!!\n\nIt's always bad... I'll enjoy it slowly later...",
   "それじゃ、やくそくどおり\nオイラが泳ぎをおしえてやるよ\n\nじゅんびは いいかい?\nよかったらいつでも\nその川にとびこんでくれよ": "Well then, as promised,\nI'll teach you how to swim.\n\nAre you ready?\nIf you'd like, anytime\nJump into that river.",
@@ -1005,6 +1054,7 @@
   "やぁ!元気かい?\n・・・なんか自信なくしちゃうなぁ": "Hey! How are you?\n...I feel like I'm losing confidence somehow.",
   "ああ、とうさんのべんとう!\nとってもおいしいんだよ\n\n・・・わざわざ とどけてくれたんだ\nでもオイラ、オナカいっぱいだから \nそのべんとうは キミにあげるよ\n\n・・・だまされたと思って食べてごらん、元気がでるから!\n本当にだまされても、おこらないでよ・・・\nこれもあげるからさ\n\nじゃあオイラ 行くね!": "Ah, Dad's bento!\nIt's really delicious!\n\n...He went out of his way to deliver it for me.\nBut I'm already full, so I'll give that bento to you.\n\n...Just eat it as if you were being tricked—it'll give you energy!\nEven if you're genuinely fooled, don't get mad...\nI'll give you this too.\n\nWell, I'm off!",
   "ああ、とうさんの 元気がでるべんとうを 食べたんだね\n気にすることはないさ・・・で、あじはどうだった?\n\nそうか おいしかったか!!\nそれを聞いてオイラまで元気が出てきたよ\n\n・・・さぁオイラはもう行くよ\n・・・またね": "Ah, you ate your father's bento box, which gave him energy, didn't you?\nThere's no need to worry about that... so, how was the fish?\n\nI see, it was delicious!!\nHearing that made me feel energized too.\n\n...Well then, I'm off now.\n...See you later.",
+  "うわあぁぁぁーーーっ!\nこっ こないでっ! おねがいっ!\n・・・・・・・・・んっ?・・・\n\nな、 な〜んだ・・・マサカリ族じゃないのか・・・\nあ〜ビックリした・・・\nごめんな おどろかして・・・\n\nおれはさぁ この先の 文明の国にある\n時計台からきたんだけど・・・": "Uwaaaaaaaahhh!\nDon't come! Please!\n... ... ... ... Huh? ...\n\nWh-what is it... isn't it the Masakari tribe...?\nAh~ I was startled...\nSorry for scaring you...\n\nI came from the clock tower in the civilized country ahead...",
   "この辺でボウシを\n風に飛ばされちゃってさぁ・・・\n\nさっき ヘンテコリンなサルが\n持ってるのを見たんだけど\n\n自分で追いかけたたくても・・・\nマサカリ族がこわくて\n行けないんだ・・・あんたさぁ・・・\n\nもし、シマシマのパンツをはいた\n変なサルを見かけたら\n何とか返してもらってくれないかなぁ・・・": "Around here, my hat got blown away by the wind...\n\nJust now, I saw a strange monkey holding it,\nbut...\n\nEven if I wanted to chase after it myself...\nI'm scared of the Masakari tribe, so I can't go... you know...\n\nIf you happen to see a weird monkey wearing striped pants,\ncould you somehow get it back for me...?",
   "うおぉぉぉーーーっ!!・・・・・・\nだから、急に声をかけるなって・・・\n\nおれは 気が小さいんだから・・・\n\nで、オレのボウシは見つかったかい?": "Wooo\nSo, don't suddenly call out to me...\n\nI'm just a small person...\n\nSo, did you find my hat?",
   "これだよ、これっ!\n・・・ありがとう おかげで助かったよ・・・\n\nもし、よかったら オレたちの時計台に\nよっていくかい?\n\n・・・加工場と鉄の城は\nたぶん入れないだろうけど・・・\n時計台のほうなら いつでも入っていいぜ・・・": "This is it!\n...Thank you, that really helped...\n\nIf you'd like, would you like to visit our clock tower?\n\n...The processing facility and the iron castle are probably off-limits, but...\nYou can always come to the clock tower anytime...",
@@ -1025,18 +1075,28 @@
   "かわった 魚はおらんかのう・・・": "Is there any fish that has changed?",
   "コトバを吸いとろう!工": "Let's Suck on Words!",
   "おいら、悪い子?": "Am I a bad boy?",
+  "マサカリの集落?": "Masakari's village?",
   "サンタを探せ!": "Find Santa!",
+  "バナナジュース": "Banana juice",
+  "マサカリ族のビミツ": "The secret of the Masakari tribe.",
   "族長のたのみごと?": "The chief's request?",
+  "物知りの木は知っている": "a wise man knows what to do",
   "大きな水たまり?": "A large puddle?",
+  "電気うなぎを捕まえろ!": "Catch the electric eel!",
   "水たまりの万年老人": "The eternal old man in the puddle",
   "水に沈んだ村": "The village submerged in water.",
   " からくり村": "Karakuri Village",
   "万年老人の数字玉": "The eternal old man's numbered ball",
   "つかまえてごらん": "Try catching it.",
   "3姉妹のかくれんぼ": "Three Sisters' Hide-and-Seek",
+  "かくされた力その2": "Hidden Power Part 2",
   "黄金の5大アイテム": "The Golden Five Items",
   "3姉妹への手紙": "Letter to the Three Sisters",
+  "ジャングル奥地": "Deep in the jungle.",
+  " ジャングル ": "Jungle",
   "道具が強くなる!?": "The tools get stronger!?",
+  "バクダンの作り方": "How to make Bakudan",
+  "イカダにのろう!": "Let's get on the raft!",
   "よぉ、ビックリしたかい?\nこのボンスギーは、おれが苦労して\nやっとつかまえたんだぜ・・・\n\nおれはキノコの森のことを\nいろいろと 調べてるんだが\nおもしろいことがわかったんだよ・・・\n\nどうだ? 聞きたいかい?\n聞きたいだろ?・・・まぁ、\nそういわずに聞いていけよ・・・": "Hey, were you surprised?\nThis Bonsugi, I finally caught it after a lot of trouble...\n\nI've been researching the mushroom forest,\nbut I found something interesting...\n\nHow about it? Want to hear?\nYou want to hear? Well,\njust listen without saying that...",
   "・・・花のナミダって知ってるかい?\nキノコの森にいるフラワーから\n手に入るんだが・・・\n\nナミダを受けるには\n専用の入れ物がひつようなんだ・・・\n\nおれのしらべでは、むかし\nキノコの森にいた 黄色のボンスギーが\n持ってるってことまでは わかったんだが\n\n・・・ひょっとすると 森代体にかかっている\n魔ブタの魔法がとけると\n手に入るかもしれないなぁ・・・": "...Do you know about Flower's Tears?\nThey can be obtained from Flowers in the Mushroom Forest...\n\nTo receive Tears,\nyou need a special container...\n\nAccording to my research,\nI found out that Yellow Bonsugi, who used to be in the Mushroom Forest,\nhad them.\n\n...Perhaps, if the magic of the Demon Pig that hangs over the forest is broken,\nI might be able to get them...",
   "・・・あぁ、そうだ・・・\nナミダをながす花は\nキノコの森でも 一つしかないんだ・・・\n\nつぼみのヤツがそうなんだけど・・・\n普通のボンスギーが持ってる\nめざめの粉 を使えば目をさますはずだ": "...Ah, that's right...\nThe flower that sheds tears\nis the only one in the mushroom forest...\n\nIt's the budding one, though...\nIf you use the awakening powder\nthat ordinary Bonsugi has,\nit should wake up.",
@@ -1074,6 +1134,7 @@
   "万年老人に会うんだったら\n気をつけなよ・・・\nけっこう 変わり者らしいから・・・": "If you're going to meet the eternal old man,\nbe careful...\nHe seems to be quite an eccentric...",
   "私は 300000APの\nけいけんを持っている方にしか\nお話しできません・・・": "I can only talk to someone who has 300000 AP experience...",
   "・・・あなたの けいけんは\n十分なようですね・・・\nそれでは 見てみましょう・・・": "...Your experience seems sufficient... Let's take a look...",
+  "う〜む・・・紺は 浜辺のトビラ・・・\nオレンジは 湖上のやかた・・・\n黄は 時の番人・・・\n\n・・・何のことか わかりますか?": "Hmm... navy blue is the door on the beach...\nOrange is the mansion on the lake...\nYellow is the guardian of time...\n\n...Do you understand what I'm talking about?",
   "じゃっ! おれはコイツの\nしうんてんでも してくるぜ\n・・・アディオス アミーゴ!": "Hey! I'm going to do this guy's\nshit, too.\n...Adios amigo!",
   "いやぁ・・・\nキミには せわになったからなぁ・・・\nおれでよかったら きょうりょくするぜ!": "Well...\nI've been busy lately, so...\nIf you're okay with me, I'll do my best!",
   "この小屋に 占い師がいるんだけど・・・\nじょうけんがあるらしくて\n何も 占ってくれないんだ・・・": "There's a fortune teller in this little hut...\nApparently they have a joken,\nbut they don't tell fortunes at all...",
@@ -1094,9 +1155,12 @@
   "そこの小屋のイカダしょくにん・・・\n元気に してるかねぇ": "That raft in the shed...\nAre you doing well?",
   "からくり村は 水にしずんだ村さ・・・\n万年老人とか言うじぃさんが いるらしいけど": "Karakuri Village is a village submerged in water...\nI hear there's an old man called the Eternal Elder.",
   "おれも 勇気を出して・・・\n石人のヨメさんでも もらおうかな・・・\nだって カワイイだろ?": "I'll muster up my courage too...\nMaybe I'll get a stone-man wife...\nBecause she's cute, right?",
+  "仲良くしようよ": "Let's get along.",
   " 未完の橋…": "An unfinished bridge...",
   " 鉄のカギ穴": "Iron Keyhole",
+  "イカダを作ろう!": "Let's build a raft!",
   "エサ燃料って何?": "What is feedstock?",
+  "かわいい?魔王ミズノ": "Cute? Demon King Mizuno",
   " 緑の占い師": "Green Fortune Teller",
   "見えないカガミ?": "Invisible mirror?",
   "黒い水の不思議": "The Mystery of Black Water",
@@ -1106,6 +1170,9 @@
   "花の森": "Flower Forest",
   "・・・うわっ おおおおまえ、\nどこからきたんだ?\n\nここは、嵐をよぶ オレさま、\n嵐の魔ブタのすみかなんだぜ\n\nよいこは早くかえってねんねしな\n・・・・・\n・・・ぬあにぃ〜〜\n\n嵐のせいでみんなめいわくしているだと??\n・・・ヘン!\n知ったこっちゃないぜ\n\nオレさまは したいようにするのサ\nどうだい、この風\nさすが オレ!\n\nぬぁに〜〜 黄金のブレスレットだぁ???\n・・・ハン!黄金は、キレイじゃねぇか!\n集めたっていいじゃん?\n\nほうら、この嵐!\nやっぱ オレ! 時代はオレだぜ\n\n・・・\nどーやら、わかってもらえないようだナ\nじゃあ、いくゼ": "...Whoa! Whoa! Hey you,\nWhere did you come from?\n\nThis is where I call the storm,\nThe home of the stormy pig.\n\nGood kids should go home early and sleep.\n...\n...Nuunii~\n\nIs everyone being bothered by the storm??\n...Hmm!\nI don't care!\n\nI'll do whatever I want.\nHow about this wind?\nAs expected, me!\n\nNuuunii~ A golden bracelet???\n...Hmm! Gold is beautiful, isn't it!\nIsn't collecting it okay?\n\nLook, this storm!\nAs expected, me! The era is mine.\n\n...\nIt seems like they don't understand.\nWell then, let's go.",
   "・・・はて\nおかしなガキが おるわい・・・\nなまいきな かおをしておるの\n\nへんてこなガキぢゃわい まったく\n・・・・シーフのすみかぢゃと?\n・・・・知らん知らん!\n\nワシら魔ブタが現れるまえのことなど\n知ったことではないわ\n\nん? なになに・・そーかそーか\nビリビリされたいんじゃな?\nどぉぉぉぉれ、いくぞぃ!!!!": "...hate\nThere's a strange kid...\nHe has a shameless look on his face.\n\nWhat a weird kid, huh? Seriously.\n...Is this the thief's hideout?\n...I don't know, I don't know!\n\nBefore the appearance of the demon pig.\nIt doesn't matter what I know.\n\nHmm? What is it... Oh, I see, I see.\nYou want to be shocked, don't you?\nLet's go!!!!",
+  "・・・う〜わ!!\nまた服が破けたじゃねえか・・・\n\nちょっと 力をこめりゃぁ\nこのザマだ\n\nおぁ? 誰だオマエは?\n・・・なにィ!\nオレをかたづけるだ〜?\n\nハハハハ・・・オレのこの筋肉と\n破けた服を見てから言いな・・・\nそんな細い体で 何ができる?\n\n帰れ、帰れ! オレは新しい服に\n若替えなきゃなんねえんだ・・・\n\n・・・何だ、まだいたのか\n・・・・・・\nしつこいヤツは嫌われるゼ\n\nシャアネエ!\nそのズボンがボロボロになっても\n文句は受け付けねえからな!!": "...Ugh!!\nMy clothes got torn again, didn't they...\n\nJust put a little strength into it,\nand look at this state.\n\nOh? Who are you?\n...What?!\nAre you trying to clean me up?\n\nHahahaha... look at my muscles and\nthe torn clothes before you say that...\nWhat can you do with such a thin body?\n\nGo home, go home! I have to change into new clothes\nto look younger...\n\n...What, you're still here?\n...\nPersistent people are disliked.\n\nShut up!\nEven if those pants get completely torn,\nI won't accept any complaints!!",
+  "チョット!\n気持ちよく ネてたのに\n何なのよアンタ\n\n・・・あ!! レディーの前では\nちゃんと服をきなさいよ・・・\nもぉ〜まったくぅぅぅ\n\n・・・ぬぁ!!\nまた ハナが上を向いてるわ!!\n\n前はうつむいてネたから上に向いたけど・・・\nなんで〜、今日はうつむいて\nネてないのにィィィィ!!\n\nこうなったら、 アタシの すがおを見た\nアンタに八つ当たりしてやるわ\nカクゴしなさい!!!": "Hey!\nI was sleeping comfortably,\nbut what the hell are you doing?\n\n...Ah!! You should wear proper clothes in front of ladies...\nSeriously, what a mess!\n\n...Ngh!!\nAgain, Hana's face is turned upwards!!\n\nBefore, she was lying face down when she slept, so her head turned up...\nBut today, she's lying face down\nand not sleeping at all!!\n\nAt this point, I'll take a look at your face\nand give you a piece of my mind!\nGet dressed properly!!!",
+  "ルルル〜〜なぜ空は青いのか〜〜それは\nカンタンな事〜〜〜ラララ〜〜\n青いという コトバがあるから〜〜〜\n\nサンキュ! サンキュ!!\nみんなの アンコールにこたえて\n今日はスペシャルサービス、二番も歌うよ!!\n\nワン、トゥ、スリー、フォー、ドわぉ!!\nおどろいた・・・ そこのアンタ\nいつからここに来てたんだ?\n\n・・・けっこう前から?キャ〜はずかしい!!\nどうやらワタシのエンジェルボイスが\n聞かれてしまったようだなぁ・・・\n\nしかたがない、このワタシがアンタに\n本をよんであげよう・・・\nえ・・・ちがうって?\n\nフッ、ちょっとオチャメしただけだって・・\nここからは本当の気持ちと 書いて本気だ!!\nかくごしたまえ!": "Lululu~ Why is the sky blue~ It's\na simple thing~ Lalala~\nBecause there's a word called \"blue\"~\n\nThank you! Thank you!!\nResponding to everyone's encore,\ntoday I'll give a special service and sing the second verse too!!\n\nOne, two, three, four, do wa!!\nI was surprised... you over there\nWhen did you come here?\n\n...Quite a while ago? Kyaa~ so embarrassing!!\nIt seems my angel voice\nhas been heard...\n\nWell then, I'll read you a book...\nEh... no, that's wrong?\n\nHmph, I just made a little joke...\nFrom here on out, I'll write my true feelings and be serious!!\nPlease read it!",
   "ブクブク・・・誰?\nうぉーーーーーーーあれに 見えるは!\n黄色の封印ぶくろ!\n\nあの、ボク別に悪いことしてないから\n・・・・・・ほんとぅぅぅぅなんだ\n・・・ウンウン\n\nあ、そうだ・・・キミ泳ぎがうまいなぁ\nけど あまり長〜く 水に入っているとホラ!\nボクみたいに かお色が悪くなるんだ\n\nん〜、やっぱり たたかうしか ないのか\n・・・でもボクにも魔ブタとしてのイジがある\n\n水の中だったら 魚にだって負けやしない・・・\nやれるんだ・・・いくぞ〜!": "Bukubuku... Who?\nWooo\nYellow Sealed Bag!\n\nUm, I didn't do anything wrong.\n...Really?\n...un un\n\nOh, right... you're good at swimming.\nBut if you stay in the water too long, look!\nLike me, your complexion turns bad.\n\nHmm, I guess I have no choice but to fight.\n...But I also have my own \"magical pig\" side.\n\nIf it were in the water, I wouldn't lose to a fish...\nI can do it... Let's go!",
   "・・・・・ふーん、\nどんな相手が来たかと思ぅとったが\n・・・うぅぅん・・・何だかなぁ・・・\n\nこりゃまた・・・少年たぁ、\n何の・・・うぅぅん・・・ジョウダンやら?\n\nこっちゃぁ また、元気のいい大人どもが\n・・・うぅぅぅん・・・\nいっぱい来るのかと 思うとった\n\nでもこっちは 何人来ても\n・・・うぅぅ負けないんだなぁ・・・\n・・・なぜって?\n\nうぅぅん・・・そうさなぁ・・・\nこの場所は・・・うぅぅぅん、教えてやらんッ\n\nたたかえば イヤでも わかることだ・・・\nうぅぅん・・・もったいつけるんだのぉ〜": "...Hmm,\nI wondered what kind of opponent would come,\n...Uuuun... what is it...?\n\nThis again... boys,\nwhat... uuuun... Joudan?\n\nHere again, energetic adults,\n...Uuuun...\nI thought a lot would come.\n\nBut no matter how many people come here,\n...Uuuun I won't lose...\n...Why?\n\nUuuun... that's right...\nThis place... uuuun, I won't tell you.\n\nEven if you fight, you'll understand...\nUuuun... you're being stubborn~",
   "やっと来たね、トンバ!!\nまちくたびれたよ まったく・・・\nボク、7匹の魔ブタをつくった本当の魔ブタなの\n\nおもしろかったでしょ 魔ブタたち・・・\nあれはねぇ、いつかトンバみたいに、\nボクに向かって来る人が楽しめるようにつくったんだ\n\nうん そう、それってボクには\nゲームと同じかんかくなの・・・\n\nたとえば トンバ!\nトンバを主人公にすると、この世界ってのも\nボクにとっては・・・\n\nオモチャ箱から飛び出した \nたくさんのあそびの 一つなんだ・・・\n・・・・・・・・むずかしいかな?\n\nだから、クライマックスは いっぱい楽しもうよ!\n主人公はトンバでも、最後に勝つのはボクだ!\n\nフフフフ・・・ハハハハ・・・\nいつでもいいよ、かかって来て!": "Finally you've arrived, Tonba!!\nI'm completely exhausted...\nI'm the real Demon Pig who created those seven Demon Pigs.\n\nWasn't it funny, those Demon Pigs...?\nThose were made so that someday, just like Tonba,\nsomeone who comes at me would be able to enjoy them.\n\nYeah, that's right, that's how it feels to me—\nit's like playing a game...\n\nFor example, Tonba!\nIf Tonba were the protagonist, this world would also be\nfor me...\n\nLike jumping out of a toy box,\nit's just one of many games...\n...Is it difficult?\n\nSo let's enjoy the climax to the fullest!\nEven if Tonba is the protagonist, I'll be the one who wins in the end!\n\nHehehe... Hahahaha...\nCome at me anytime!",
@@ -1120,6 +1187,7 @@
   "どうですかな?\n・・・・・・おぼえておりますかな\n\n・・・こいつは あなたが\nドワーフの森で助けた小鳥ですじゃ\n\n・・・・・・やっと元気になったとかで\nわたしが あずかっておりましたのじゃ\n\n・・・バロンには 不思識な力がありましてな\n・・・アイテム画面でバロンをつかうと\nめぐみの羽根と 同じこうかが ありますのじゃ\n\n・・・・・・さぁ、バロン・・・いっておいで・・・": "How about it?\n...Do you remember?\n\n...This is the little bird you helped in the Dwarf Forest.\n\n...I was taking care of it because it finally got better.\n\nBaron has an unbelievable power.\nWhen you use Baron on the item screen,\nthere's a similar feather to Megumi's feather.\n\n...Well, Baron... go ahead and say it...",
   "おおっ!\nそうじゃ・・・思い出したっ!\n\n・・・あなたに こいつを\nあずけておきますじゃ・・・": "Oh!\nThat's right... I remembered!\n\n...I'll leave this to you...",
   "こいつは バロンと言いましてな\n\n・・・・・・ドワーフの森で\nケガをしていたので わたしが\nそだてて おりましたのじゃ・・・\n\nきっと 力になるハズじゃから・・・\n友達だと思って大事にしてやって下され\n・・・バロンには 不思識な力がありましてな\n\n・・・アイテム画面でバロンをつかうと\nめぐみの羽根と 同じこうかが ありますのじゃ\n・・・・・・さぁ、バロン・・・いっておいで・・・": "This guy is called Baron.\n\n...In the Dwarf Forest,\nI was raising him because he was injured...\n\nHe'll surely be helpful...\nPlease treat him like a friend and take good care of him...\nBaron has an unbelievable power...\n\n...When you use Baron in the item screen,\nthere's a similar feather to the Blessing Feather...\n...Well then, Baron... go ahead...",
+  "ジャングル ": "Jungle",
   "からくり村 ": "Karakuri Village",
   "石のハグルマがこわれている・・・": "The stone haguruma is broken...",
   "石人の町\n\nセーブしますか?\n  はい→× いいえ→×": "Stone Town\n\nSave?\nYes → × No → ×",
@@ -1127,6 +1195,7 @@
   "・・・えぇっ!\nあんた マサカリ族につかまったのか?\n・・・よく、無事だったなぁ・・・": "...Eh!\nDid you get caught by the Masakari tribe?\n...Well, you were safe...",
   "そういえば・・・\n\nウワサに聞いたんだけど マサカリ族は\nむかしから フンガの大ダイコをつかって\n祭りをするらしいな・・・\n\nとてもいい音がするタイコらしいんだが\n村料がなかなか 手に入らないんだ・・・\n村料さえあれば・・・つくってみたいなぁ\n\n・・・そうだ!\n・・・物知りの木だったら\n何かしってるかもしれないな・・・": "Come to think of it...\n\nI heard a rumor that the Masakari tribe\nhas been holding festivals using Hunga's large Taiko drums\nsince ancient times...\n\nThey say it makes a wonderful sound, but\nthe village fees are quite difficult to obtain...\nIf only I could get the village fees... I'd like to make one!\n\n...That's right!\n...If it's the tree of knowledge,\nit might know something...",
   "キミ、いろんなところを旅してるんだって?\nだったら、へんな点とか線がきざんである\nらくがき岩・・・見たことないかなぁ・・・\n\nおれ、ずーっとまえに木人の加工場で\n見たことがあるんだけど、\nどうも気になってなぁ・・・": "I hear you've been traveling around various places?\nIf so, there are some strange dots and lines on the rock... haven't you seen it before?\n\nI saw it a long time ago at a woodcarver's workshop,\nbut I've been curious about it ever since...",
+  "ウワサじゃ\n代部で6つのらくがき岩があって、\n\nそこに書かれてあるナゾをとけば\nたくさんの お宝が\n手に入るらしいんだけど\n\n・・・なんかむずかしそうだなぁ\n・・・が1・・・ーが5の・・・\n\n20進数とかなんとか・・・\nおれにはとても わかんないよ・・・": "It's just a rumor,\nbut there are six scribbled rocks in the Daibu area,\nand if you solve the riddles written on them,\nyou can apparently obtain many treasures.\n...It seems difficult though...\n...but 1... but 5...\n\nSomething about base 20 and something else...\nI really don't understand it...",
   "キミ、この先の時計台に 何か用かい?": "Do you have something to do at the clock tower ahead?",
   "ざんねんだけど・・・\n今、時計台はこわれてて\n動かないんだ・・・": "It's a shame...\nRight now, the clock tower is broken\nand doesn't work...",
   "・・・そうだ!\nこの少年におねがいして、\n鉄人にたのんでもらおうか?": "...That's it!\nLet's ask this boy to ask the Iron Man to do it?",
@@ -1135,6 +1204,7 @@
   "どうだった?\nおれの作ったジュースはウマかっただろ?\n・・・・・・何だって!?\n\n・・・あの川を泳いだって?・・・・・・\nスゴイなぁ・・・\n\nあの川は、流れが速いことで有名なんだぜ\n・・・・・・・・・・・・そうだ!・・・\n\nあんたの勇気をみこんで ひとつ\nたのみたいことが あるんだ・・・\nじつは・・・見てのとおり・・・": "How was it?\nThe juice I made was delicious, wasn't it?\n...What!?\n\n...You swam across that river?...\nThat's amazing...\n\nThat river is famous for its fast current.\n...That's right!...\n\nI have a request for you, considering your courage.\nActually... as you can see...",
   "・・・この時計台はずっと\n止まったままなんだ・・・\n\nここのハグルマを動かすためには\nキカイを動かすひつようがあるんだけど・・・\nいろいろモンダイがあってな・・・\n\nまぁ、一度 鉄の城にある キカイ室を\n見てきてくれよ・・・\n\n加工場と鉄の城は 自由に通れるように\nしとくからさ・・・": "...This clock tower has been\nstopped forever...\n\nTo move this Haguruma,\nyou need to operate the machinery...\nBut there are various obstacles...\n\nWell, please take a look at the machine room in the Iron Castle once...\n\nI'll make sure the processing plant and Iron Castle are\nfreely accessible...",
   "ほんとうに キカイを動かしちまうなんてな\n・・・おかげで、時計台が生き返ったよ・・・\n\nん? ああ、ハグルマの部屋には\nもういっちゃダメだよ・・・大きなハグルマが\nいっぱい動いてるから\n\nとても あぶないんだ・・・": "Really, moving the machines like that...\n...Thanks to that, the clock tower came back to life...\n\nHmm? Oh, in Haguruma's room,\nyou shouldn't go anymore... because a lot of big Haguruma are moving around.\n\nIt's very dangerous...",
+  "よぉ! あの時のボウズじゃないか・・・\n\nどうだい? この時計台・・・\nなかなか りっぱなもんだろ?\n\nこの時計台と鉄の城、そして加工場の3つを合わせて \n文明の国って言うんだよ\n\n・・・まぁ、文明って言っても キカイは み〜んな \n止まっちまってるけどな・・・・・・\n\n・・・ああ、それはそうと・・・\nキミのおかげで 大事なボウシを なくさずにすんだよ\n\n・・・ほんとうに ありがとうな・・・\n\n・・・なにか お礼が したいんだけど・・・\n・・・そうだ! \n\nおれの じまんのジュースでも飲んでってくれよ\n・・・ウマイんだぜ〜": "Hey! Isn't that the same old fool from back then...?\n\nHow about this clock tower...?\nIt's quite impressive, isn't it?\n\nWhen you combine this clock tower, the iron castle, and the processing plant,\nthey call it a civilized country.\n\n...Well, even if you call it civilization, all the machines are\ncompletely stopped though...\n\n...Oh, by the way...\nThanks to you, I didn't lose my precious hat.\n\n...Really, thank you...\n\n...I want to do something to show my gratitude...\n...That's right!\n\nPlease drink some of my Jiman juice.\n...It's delicious~",
   "・・・とっとっと・・・ しまった!\nかんじんのバナナがねーや・・・\n\nなにね、おれのとくいは バナナジュースなんだ\n\n・・・でもなぁ・・・バナナはジャングルで・・・\nジャングルはマサカリで・・・": "...Totto... Oh no!\nI don't have any bananas...\n\nYou see, my specialty is banana juice.\n\n...But you know... bananas are in the jungle...\nThe jungle is with machetes...",
   "おお ボウズっ!\n時計台の歯車・・・\nおまえが直してくれたんだってな・・・\n\nそれにしても 鉄の歯車とはねぇ・・・\n鉄人にかりができたみたいで\nちょっとシャクだけど・・・\n\nまぁ、あれなら\nこわれたりしないだろーな・・・ウン\n\n・・・あぁ そうだ!\nおまえさんにジュースをごちそうしてやる\nやくそくだったな・・・\n\n・・・と、 しまった・・・\nかんじんのバナナがねーや\n\n・・・なにね、おれのとくいは\nバナナジュースなんだ・・・\nでもなぁ・・・\n\nバナナはジャングルで・・・\nジャングルはマサカリで・・・": "Oh no, a dud!\nThe clock tower's gears...\nI heard you fixed them for me...\n\nStill, iron gears, huh...\nLooks like I got a new Iron Man on my hands\nIt's a bit awkward though...\n\nWell, with that one,\nit shouldn't break, right? Uh-huh.\n\n...Ah, right!\nI'll treat you to some juice\nThat was annoying...\n\n...And, oh no...\nI don't have any bananas at all\n\n...What's my specialty?\nBanana juice...\nBut you know...\n\nBananas grow in the jungle...\nAnd the jungle is full of machetes...",
   "こまったな・・・・・・": "This is troublesome...",
@@ -1210,6 +1280,7 @@
   "・・・おれたち・・・どうして\nケンカしてたんだろう・・・": "...we... why were we fighting...?",
   "・・・きっと あのカベのせいじゃないかな・・・\nむかしは おれたち もっとなかよしだったよ・・・": "...I guess it's probably because of that wall...\nBack then, we were much closer friends...",
   "・・・・・・う〜〜〜ん・・・・・\n\n鉄の城も こうなっちまうと \nどうしようもねぇなぁ・・・": "...Hmm...\n\nEven an iron castle, once it's like this,\nthere's nothing you can do about it...",
+  "・・・・・・う〜〜〜ん・・・・・\n\n鉄の城も こうなっちまうと \nどうしようもねぇなぁ・・・\n\n・・・・・・う〜〜〜ん・・・・・んっ?\n・・・なんだ? 聞いてたのか・・・え?\n\n・・・たしかに このトビラの むこうが\nキカイ室だけど・・・ホラ、見てのとおり\n・・・これじゃ開けるのは とてもムリだよ・・・\n\n・・・長いあいだ ほったらかしに しといたからなぁ\n・・・ついには、中にあるハツデンキまで止まっちまって\nこのありさまだよ・・・\n\nまったく、文明の国の名がなくぜ・・・": "...Uuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuu",
   "・・・こんなに さびついてたらなぁ・・・\n押しても 引いてもビクともしねぇや": "...I wish it wasn't so rusty...\nNo matter how much I push or pull, it won't budge at all.",
   "スイッチをいれた!": "I turned on the switch!",
   "ガンテツ?\n・・・ああ、あのへんくつの\nガンテツ博土かい?\n\n博土なら 自分の小屋に帰ったぜ\n・・・ほら、あの\nリフトから行ける 真ん中の小屋さ": "Gantetsu?\n...Ah, that awkward\nGantetsu Hakudo?\n\nIf it's Hakudo, I went back to my own cabin.\n...Look, that\nCabin in the middle you can reach from the lift.",
@@ -1218,9 +1289,13 @@
   "・・・まさか、お前さんみたいな少年が\n時計台を直してしまうとはな・・・\nいや、いままで失礼な\n\nことをいって すまなかったな・・・\nそれと・・・": "...I never thought a boy like you would fix the clock tower...\nNo, I'm sorry for being rude until now...\nAnd...",
   "お前さんが せっかく直してくれた\n時計台だが・・・\n\nあれを本当に動かすには\nこの先の鉄の城にあるハツデンキを\n動かさないと ダメなんだ・・・\n\nしかし・・・ひとつ、\nもんだいがあってな・・・\n\nまぁ、まずは 鉄の城へ行って\n自分の目でたしかめてみることだな・・・": "The clock tower you painstakingly fixed...\n\nTo really get it running,\nyou have to operate the power switch in the iron castle ahead...\n\nBut... there's one problem...\n\nWell, first things first—go to the iron castle\nand verify it with your own eyes...",
   "よぉ・・・開かないトビラは 見てきたかい?\n・・・あれは 古いトビラでな・・・\n\nバクダンでも 使って フッ飛ばさないと\nとても中には 入れないだろうな・・・": "Hey... have you seen the door that won't open?\n...That's an old door...\n\nYou'd have to use a bomb to blow it away,\notherwise you wouldn't be able to get inside at all...",
+  "バクダンの作り方?\n・・・はあっ!はあっ!はっ!\n・・・おいおい、本気にしたのか?\n\n素直なヤツだな・・・\nまぁ、たしかに いままでに\nそこまでしたヤツはいないからな・・・\n\n・・・よし! 一発やってみるか!\nそのかわり・・・いくつか\nそろえてもらいたいモノがあるんだ・・・": "How to make a Bakudan?\n...Hah! Hah! Hah!\n...Hey, did you really take this seriously?\n\nYou're such an honest guy...\nWell, to be fair, no one's ever gone that far before...\n\n...Alright! Let's give it a shot!\nIn exchange... I have a few things I'd like you to gather for me...",
   "バクダンを作るためには まず、\nこの小屋の そうちを動かすために\n少しの電気がひつようだ・・・\n\nこれは、ジャングルにいる\n電気ウナギがあれば 十分だろう・・・\n\nそれと、バクダンのもとになる\n黒い水・・・この二つがそろったら\nここに持ってきてくれ・・・たのんだぞ!": "To make a Bakudan, first,\nit seems like a little electricity is needed\nto move the furnace in this hut...\n\nThis would be enough if there were an electric eel in the jungle...\n\nAnd, the black water that will become the basis of the Bakudan...\nonce those two are ready,\nbring them here... I'm counting on you!",
+  "ちょっとまった!\n電気ウナギを素手でつかまえる気か?\n\n・・・まったく あわてものだな・・・\nほら、これを持っていきな・・・": "Wait a minute!\nAre you trying to catch an electric eel with your bare hands?\n\n...What a scatterbrain you are...\nHere, take this with you...",
   "ん!\n二つとも そろったようだな・・・\nでは、村料は あずかろう・・・": "Hmm!\nIt seems both have arrived...\nThen, the village fee will be Azura...",
+  "・・・よぉしっ! これでバクダンの素を\n作ることができるぞ!\n・・・そうだ!\n\nついでといっちゃあ何だが・・・\nわしがバクダンの素を作っている間に\nヤシの実を取ってきてくれないか?\n\nたしかジャングルの木のどれかに\nついていたハズなんだ・・・\n\nそのヤシのカラにバクダンの素をつめれば\nめでたく完成だ!": "...Alright! With this, I can make the ingredients for a bomb!\n...That's right!\n\nIt's a bit of a bother to ask, but...\nwhile I'm making the ingredients for the bomb,\ncould you go get some coconuts?\n\nI think they were attached to one of the trees in the jungle...\n\nIf you stuff the bomb ingredients into the coconut shell,\nit will be completed happily!",
   "おおっ!\nやっときたか・・・じゃあ、\nヤシの実をあずかろうか・・・": "Oh!\nFinally, you've arrived... then,\nshall I take a coconut?",
+  "このバクダンの素を\nヤシのカラにつめてと\n・・・よし、完成だ!!": "I stuffed the base of this Bakudan into the palm of my hand...\n...Alright, it's finished!!",
   "ん?\n何だ まだバクダンがほしいのか?\n\nヤシの実さえあれば\nいくつでも作ってやるぞ・・・": "Hmm?\nWhat? You still want a bomb?\n\nAs long as you have coconuts,\nI'll make as many as you want...",
   "うーん・・・やっぱりダメか\n・・・キミってスゴイな・・・": "Hmm... I guess it's no good after all.\n...You're amazing...",
   "上に行きたいのかい?・・・\nだったら この小屋に入りなよ": "Do you want to go up?...\nThen go into this hut.",
@@ -1238,12 +1313,14 @@
   "石人の時計台が鉄のハグルマで\nなおったんだって?・・・\n\nえっ? 動かない?・・・\nそうか・・・": "I heard the stone clock tower was fixed with an iron haguruma?...\n\nHuh? It doesn't work?...\nI see...",
   "鉄の城のトビラ?・・・\n\nアハハハ・・・\nそんなの\nこわせるハズないでしょ・・・": "The door of the iron castle?...\n\nAhahahaha...\nThat's not something you can break, right...?",
   "おまえさん・・・\n泳ぎは とくいですかな?・・・\n\nわしは\nおもいっきりカナヅチですじゃ・・・": "You...\nAre you good at swimming?...\n\nI am\ncompletely hopeless at it...",
+  "おいらも\nほんとうは むねをはって・・・\n\nここは文明の国です!って\n言いたいんだ": "I also\nactually, I'm putting on my chest...\n\nThis is a civilized country! That's what I want to say.",
   "キ、キミ・・・\nハツデンキまで直しちゃったの?・・・\nす、すごすぎるよ・・・": "Ki, Kimi...\nDid you fix the heart-shaped light bulb too?...\nSu, it's amazing...",
   "木と石と鉄かぁ・・・\nやっぱ バランスが 大事だよな": "Wood, stone, and iron...\nAfter all, balance is important, right?",
   "万年のじぃさんに\n会いに行くんだって・・・\nところで イカダは持ってるのかい?": "I'm going to meet Grandpa Manen...\nBy the way, do you have a raft?",
   "ふーん・・・あんたスゴイんだ・・・\nバカにして悪かったね\nあやまるから また あそびにおいで": "Hmm... you're amazing...\nI'm sorry I made fun of you.\nI apologize, so please come play again.",
   "さびたトビラをこわせ!": "Break the rusty door!",
   "文明のキカイ": "Civilization's Machine",
+  "文明の国\n\nセーブしますか?\n  はい→× いいえ→×": "Civilized Country\n\nSave?\nYes → × No → ×",
   "まっすぐ 鉄の城\nみぎ   時計台\nひだり  加工場": "Straight Iron Castle\nRight Clock Tower\nLeft Processing Plant",
   "・・・ひろいなぁ・・・\n前の石人の町の4倍いじょう\nあるんだって・・・": "...It's so vast...\nIt's more than four times the size of the previous stone town, apparently...",
   "国の中を の〜んびり おさんぽ・・・\n・・・いいねぇ・・・": "Taking a leisurely stroll through the country...\n...How nice...",
@@ -1255,6 +1332,7 @@
   "・・・こ・・・この・・・鉄の冷たい\nかんしょくが 何とも・・・": "...this...this...the cold iron.\nThe shock is indescribable...",
   "木づくりってのも あったかみがあって\nなかなかイイもんだなぁ・・・": "There's something warm about woodworking,\nand it's pretty nice...",
   "時計台も みんなで お色直ししたんだぜ・・・\n一度、見てってくれよ": "We even got the clock tower all dressed up...\nYou should take a look sometime.",
+  "木・石・鉄・・・それぞれの素村をいかすことが\n大事だよな・・・\nま、ようは つかいようってことだ": "Wood, stone, iron... it's important to make use of each raw material village, right?\nWell, basically, it's about how you use them.",
   "魔ブタがカベをつくっただけで\nみんなの気持ちがバラバラになっちまうなんて\n・・・コワイよな": "Just because a demon pig built a wall,\nit makes everyone's feelings scatter...\nThat's scary.",
   "ほかにも 魔ブタに魔法をかけられた所って\nあるんだろ?・・・": "There must be other places where magic was cast on the demon pig, right?...",
   "んっ? \nジュースのみたいのか?\n\n・・・ちがう? \n最後の魔ブタをこらしめる!? \nよし!おれもいくぞ!": "Hmm?\nDo you want some juice?\n\n...No?\nFinally, I'll punish that devil pig!?\nAlright! I'm coming too!",
@@ -1287,13 +1365,19 @@
   "もう、森のおくを\n見はる必要もないじゃろう・・・\n自由に通ってくだされ・・・": "You don't need to look at the forest anymore...\nPlease feel free to pass through...",
   "すぴ〜すかかか・・・んがんごっ\n・・・すぴょぴょぴょ・・・": "Supi~ sukaka ka ka... ngan go.\n...Supyo pyo pyo pyo...",
   "よぉ・・・\nお前のくるのをまってたんだ・・・\n\nどうだい?\nオレと ひとしょうぶ しないか?\n\nじつは、この先の高見ヤグラのてっぺんに\nある宝をかくしておいたんだ\nそこでだ、\n\n高見ヤグラの下からスタートして、\nオレより早く宝にたどりついたら\nその宝はお前にやるよ・・・\n\nどうだい、おもしろそうだろう?\nじゃ・・・いくゼ!": "Hey...\nI've been waiting for you to come...\n\nHow about it?\nWanna play a little game with me?\n\nActually, I've hidden a treasure at the top of the Takami Yagura tower ahead.\nSo here's the deal:\n\nStart from the bottom of the Takami Yagura,\nand if you reach the treasure faster than me,\nI'll give you that treasure...\n\nHow about it? Sounds interesting, right?\nAlright then... let's go!",
+  "うわ〜 空に飛んでるトリまで \nヤキトリに見えるぅぅぅぅ・・・ \n\nほぁ・・・何か用か?\n\n悪いなぁ、オイラ ハラペコで、\n今は何でも食べ物に見えるから\n近づかない方がいいよ・・・\n\nあ〜あ、オイラに 腹持ちのいい食べ物を\n分けてくれるような\nしんせつな人はいないもんかなぁ・・・": "Wow—even the birds flying in the sky look like yakitori to me…\n\nHuh… what do you need?\n\nSorry about that, I'm starving right now,\nand everything looks like food to me,\nso you'd better not get too close…\n\nAh~ I wish there was someone kind enough to share\nsome filling food with me…",
   "おおお! しんせつな人は\nいがいと近くに いるんだなあ!!\n\nおっとっと 食べる前にまずお礼を言わなきゃ、\n助けてくれてありがとう!\n\nオイラはタロウ・・・\nそうだ、これあげるよ・・・\nほら、チーズの実": "Wow! Kind people are surprisingly close by!!\n\nWhoa, whoa, I need to say thank you before I eat,\nthank you for helping me!\n\nI'm Taro...\nOh, here, take this...\nHere, a piece of cheese.",
   "何かこまった事があれば、\nいつでも た・す・け・て\n・・・くれよ!!": "If you have any trouble,\nplease help me anytime...\n...please!!",
+  "旅の人!\n\nここに来る途中\nヤンと言う子供に会いませんでした?\n\nじつは わたしの息子なんです・・・\nこれがまた バカ息子で・・・\n\nかくれんぼで一度かくれると\n見つかるまで 帰ってこないんですよ\n\nいまごろ ハラをすかせてるだろうなぁ・・・\n旅の人、ヤンを見つけて\nこれを届けてやってくれませんか": "Traveler!\n\nOn your way here,\ndidn't you meet a child named Yang?\n\nActually, he's my son...\nAnd what a foolish son he is...\n\nOnce he hides in hide-and-seek,\nhe won't come back until he's found.\n\nI wonder if he's getting hungry by now...\nTraveler, could you find Yang and\ndeliver this to him?",
+  "かならず 息子に届けてくださいよ!!\n途中でつまみ食いしないように・・・たのみましたよ": "Please be sure to deliver it to my son!!\nDon't snack on it along the way... I'm counting on you.",
+  "あなたの事は 息子のヤンから聞いてます\nトンバさんでしょ・・・\n\nあなたが旅の途中、かくれていた\nヤンを 見つけてくれたおかげで\n今は村に戻っているんですよ\n\nもしも 見つけていなかったら・・・\nたぶん\nヤンは一人でかくれんぼを続けていたでしょう・・・\n\nありがとうございました・・・": "I've heard about you from my son Yan.\nYou're Tongba, right...?\n\nBecause you found Yan while he was hiding during his journey,\nhe's now back in the village.\n\nIf you hadn't found him...\nprobably,\nYan would have continued playing hide-and-seek alone...\n\nThank you very much...",
   "またヤンが かくれんぼを始めたら、\nはやめに 見つけてやってくださいね・・・": "If Yang starts playing hide-and-seek again, please find him quickly...",
+  "そのべんとうは・・・\nとうさんに会ったんだね\nわざわざ 届けてくれてありがとう\n\nでもこれは きみにあげるよ\nオイラは おなかへってないからさ\n\nよかったら、これもあげるよ\nつまらない物だけど・・・それじゃバ〜イ!": "That bento...\nYou met your father, didn't you?\nThank you for taking the trouble to deliver it.\n\nBut I'll give this one to you.\nI'm not hungry anyway.\n\nIf you like, I'll give you this too.\nIt's nothing special, but... See ya!",
   "え・・・な、なんだって!!\nオイラのべんとうを 食べちゃったのか?\n\nオイオイ ジョウダンだよ・・・\n気にしなくても いいって!\n\nとうさんの べんとうは おいしいからなぁ\nじゃあオイラ行くよ・・・バイバイ!": "Eh... what?!\nDid you eat my bento?\n\nHey hey, it's Joudan...\nDon't worry about it!\n\nDad's bento is delicious though~\nWell then, I'm off... Bye-bye!",
   "へぇ・・・\nここを 見つけるなんて たいしたものね・・・\nここは かくれ里って言うの": "Hmm...\nFinding this place is quite something, isn't it...\nThis is called Hidden Village.",
   "ここの れんちゅうは \nかくれるのが だいすきでのぅ・・・\n\nそうじゃ、ヤンには もう会いましたかな?": "I really like hiding here...\n\nSo, have you met Yang yet?",
   "ここのチョウヅカには 金の・・・\n何とかって言うめずらしいものを\n守ってるらしいわよ": "It seems this Chouzukka protects something rare called gold...",
+  "やぁ!キミが来るのを待ってたんだ\n\n・・・はじめて出会ったのをいれて\n・・・5回かくれれたんだけど\n\n全部見つかっちゃったね・・・でも、\nたのしかったよ!\n\nそれじゃあ、とっておきの情報だ\n・・・この大陸のどこかに\n\nミリオンの塔と呼ばれるところが\nあるらしいんだ・・・\n\nえっ?どこにあるかって?・・・\nそれは自分でさがさなきゃ!\n\nでもね・・・デタラメにさがしても\nぜったい見つからないんだ・・・\n\nある じょうけん がそろわないとね・・・\nそれと、これはオイラからのプレゼントだ!\n\nきっとやくにたつと おもうよ!": "Hey! I was waiting for you to come.\n\n...Including the first time we met,\n...I was hidden five times,\n\nbut they all found me... But,\nit was fun!\n\nWell then, here's some special information\n...somewhere on this continent\n\nthere seems to be a place called the Million Tower...\n\nHuh? Where is it?...\nYou have to find it yourself!\n\nBut... even if you search randomly,\nyou'll never find it...\n\nYou need to gather certain conditions...\nAnd this is a present from me!\n\nI'm sure it will be useful!",
   "また、あそぼうな!": "Let's play again!",
   "風になりたい": "I want to become the wind.",
   "つかわなくてよい": "You don't have to use it.",
@@ -1309,11 +1393,14 @@
   "100年の宝箱を\nあけられる カギ": "The key to unlocking a 100-year treasure chest.",
   "一度行った場所へ いつでも 行ける\nきちょうな はね": "You can always go to places you've been to once.\nA dull feather.",
   "かみつき草にさいた\nめずらしい花": "I planted it in the grass.\nA rare flower.",
+  "わらい、なきを回復してくれるキノコ": "A mushroom that restores laughter and tears.",
   "もれない バケツ\n水をためるには もってこい": "A bucket that won't leak.\nPerfect for storing water.",
+  "遠くの景色を見ることができる": "You can see the distant scenery.",
   "とてもきれいな 小ビン\nなにも はいっていないようだ": "A very beautiful small bottle.\nIt doesn't seem to have anything in it.",
   "フラワーのナミダが つまった小ビン": "A small bottle filled with flower tears.",
   "大きなミミには ふしぎな力\n一度行った所なら ひとっとび": "Big ears have a mysterious power.\nOnce you've been somewhere, you can jump there in an instant.",
   "ホカホカ できたての\nやきいも": "Hot and freshly baked yakiimo.",
+  "枯れ葉の羽を持つ\n伝説のチョウチョ": "A butterfly with wings of withered leaves,\na legendary butterfly.",
   "ヤミを てらす\nタイマツ": "Illuminating darkness\nThai mat",
   "水がたっぷり\nはいったバケツ": "A bucket filled with plenty of water.",
   "なにも うつさないカガミ": "A mirror that doesn't reflect anything.",
@@ -1322,8 +1409,10 @@
   "イシで できた おもい\nブーメラン れんしゃできる": "A thought made of stone.\nI can shoot a boomerang.",
   "コウテツで できた 強力な\nブーメラン 3れんしゃできる": "A powerful boomerang made of kouetsu can be used three times.",
   "ガンガン ぶっとばせ!\n動きがさらに はやくなるパンツ": "Go all out!\nPants that make your movements even faster.",
+  "せかいを 見わたす\nべんりな 地図": "A convenient map that covers the world.",
   "めずらしいつぼだが われている\nさいきんわれたようだ": "It's a rare pot, but it's broken.\nIt seems to have been broken recently.",
   "さいしょからもっているブキ\nてきをけちらす": "The weapon I had from the beginning.\nTo scatter enemies.",
+  "動きが 最速になる\nすばらしい パンツ": "Movement becomes fastest\nWonderful pants",
   "動きが はやくなる\nべんりな パンツ": "Movement becomes faster.\nConvenient pants.",
   "バイタリティが すこし\nかいふくする": "Vitality will slightly recover.",
   "バイタリティ すべてかいふく\nおなかいっぱい!": "Vitality All Recovery\nFull!",
@@ -1339,25 +1428,53 @@
   "ドワーフの森に魔法をかけた\n青の魔ブタを封じる力をもつ": "I cast magic on the Dwarf Forest.\nIt has the power to seal the blue demon pig.",
   "ジャングルに魔法をかけた\nコンの魔ブタを封じる力をもつ": "I cast magic on the jungle.\nIt has the power to seal Con's demon pig.",
   "シーフマンションに魔法をかけた\nピンクの魔ブタを封じる力をもつ": "I cast magic on the Seif Mansion.\nIt has the power to seal pink demon pigs.",
+  "万年の宝箱を\nあけられる カギ": "The key that can open the treasure chest of eternity.",
   "億年の宝箱を\nあけられる カギ": "The key that can open the billion-year treasure chest.",
   "カギの一部が見える\nどこかにはめるようだが?": "I can see part of the key.\nIt seems like it should be fitted somewhere?",
+  "パワーぎれも いっきに解決できる\nありがたい アイテム": "Power outages can be solved instantly.\nA truly helpful item.",
+  "雨雲を呼んで 雨をふらせる\n奇跡のアイテム": "Calling rain clouds and making it rain.\nA miracle item.",
   "大きなカギ穴を持つ トビラをひらく\n大きなカギ": "Opening a door with a large keyhole.\nA large key.",
   "小さなカギ穴を持つ トビラをひらく\n小さなカギ": "Opening a door with a small keyhole.\nA small key.",
   "たくさん 集めると いい物がもらえる\nうれしい アイテム": "Collecting many will earn you good items.\nHappy items.",
   "魔王にしかつかえない\n魔法のカガミ": "Only usable by the Demon King.\nMagic Mirror.",
+  "世界をえがいた 大きな 地図の半分": "Half of a large map depicting the world",
+  "あぶない物を持っても\n平気な 手ぶくろ": "Even holding dangerous things,\nthese gloves are fine.",
   "大きな 物でも ふきとばす\nたのもしい アイテム": "Even large objects can be blown away.\nA powerful item.",
   "じょうぶな どうぐが つくれそうな\n鉄のかたまり": "A lump of iron that seems like it could make a strong tool.",
   "がんじょうに つくられたハグルマ": "A Haguruma built in Ganjō.",
   "どんな 花が さくのか\n楽しみな タネ": "What kind of flowers will bloom?\nA fun seed.",
   "モレ知らずの べんりな バルブ": "A convenient valve that doesn't leak.",
+  "かおりだけで 酔ってしまいそうな\nアルコール": "An alcohol that makes you feel drunk just from its scent.",
   "どこかにさくという めずらしい花\n大トリのこうぶつ": "A rare flower called \"saku\" somewhere.\nThe grand finale animal.",
+  "万年老人から たのまれた\n1とかかれた 玉": "I was asked by a man who has lived for ten thousand years.\nA ball with \"1\" written on it.",
+  "万年老人から たのまれた\n2とかかれた 玉": "I was asked by a very old man.\nA ball with \"2\" written on it.",
+  "万年老人から たのまれた\n3とかかれた 玉": "I was asked by a man who has lived for ten thousand years.\nA ball with the number 3 written on it.",
+  "万年老人から たのまれた\n4とかかれた 玉": "I was asked by a very old man.\nA ball with 4 written on it.",
+  "万年老人から たのまれた\n5とかかれた 玉": "I was asked by a very old man.\nA ball with \"5\" written on it.",
+  "万年老人から たのまれた\n6とかかれた 玉": "I was asked by a man who has lived for ten thousand years.\nA ball with the number 6 written on it.",
+  "万年老人から たのまれた\n7とかかれた 玉": "I was asked by an old man for a ball with the number 7 on it.",
+  "万年老人から たのまれた\n8とかかれた 玉": "I was asked by an old man for 8 years.\nA ball with 8 written on it.",
+  "万年老人から たのまれた\n9とかかれた 玉": "I was asked by a very old man.\nA ball with 9 written on it.",
+  "万年老人から たのまれた\n10とかかれた 玉": "I was asked by a very old man.\nA ball with 10 written on it.",
   "・・・???": "...???",
+  "レースで3位になるともらえる\nふつうのメダル": "A normal medal awarded for finishing third in a race.",
+  "レースで2位になるともらえる\nちょっとジマンのメダル": "You get a little Jiman medal when you finish second in a race.",
   "レースでゆうしょうするともらえる\nすばらしいメダル": "A wonderful medal awarded for winning a race.",
+  "三姉妹あての\nふしぎな内容の手紙": "A letter with mysterious contents addressed to the three sisters.",
   "イカダをつくるには、\nもってこいの 木村": "To build a raft,\nKimura is perfect.",
+  "流れに沿って流れる乗り物\n海は無理だが、川ならOK!": "A vehicle that flows with the flow.\nThe sea is impossible, but a river is OK!",
+  "黄金の5大アイテムの一つ\nカレハチョウが運んでくれた": "One of the five golden items.\nThe butterfly carried it.",
+  "どこかにあるという、黄金のフルーツ": "The golden fruit that is said to be somewhere.",
+  "ことさらにゴージャスな、金色に咲いた花": "A particularly gorgeous, golden flower.",
   "たべればきっと つよくなれる": "If you eat it, you will surely become stronger.",
   "土をほるために とてもむいている どうぐ": "A tool that is very suitable for tilling the soil.",
+  "アイテム画面でそうびし、火の能力を開花する\nこうげきボタンで 能力を発揮する\n\n一度つかうと、メーターがたまるまで\nつぎのこうげきは できない・・・": "In the item screen, soobi, bloom the fire ability.\nUse the attack button to unleash the ability.\n\nOnce used, until the meter fills up,\nthe next attack cannot be performed…",
+  "アイテム画面でそうびし、水の能力を開花する\nこうげきボタンで 能力を発揮する\n\n一度つかうと、メーターがたまるまで\nつぎのこうげきは できない・・・": "In the item screen, it blooms its water ability.\nUse the attack button to unleash its power.\n\nOnce used, you can't attack again until the meter fills up...",
+  "アイテム画面でそうびし、風の能力を開花する\n空中で ジャンプボタンを押し 能力を発揮する\n\n空高く まいあがれるが ぼうぎょ力が低い\nいどう中 通常こうげきが可能": "In the item screen, soobi, blooms the ability of wind.\nIn the air, press the jump button to unleash the ability.\n\nCan soar high in the sky, but has low defense power.\nCan perform normal attacks while moving.",
   "能力開花の やくにたつ?": "Is it useful for ability blossoming?",
+  "調合する時の、基本の粉": "Basic powder for blending.",
   "真っ黒なみつ 調合すると\nあまくなるかも?": "When mixed with pitch-black honey,\nit might become sweet?",
+  "怪鳥コッカのとがったツメ 調合できる": "The pointed claws of the monster bird Kokka can be combined.",
   "とってもイタイ ブタムシのトゲ\n調合できる": "It hurts so much, the spines of a pig bug.\nI can mix them.",
   "ハリゲーターのキバは きちょうひん": "The alligator's fangs are kichōhin.",
   "きけんな草に さいた めずらしい花": "A rare flower planted in a beautiful meadow.",
@@ -1365,28 +1482,42 @@
   "黒い水はふしぎな水 きけんぶつ": "Black water is a mysterious water, a dangerous thing.",
   "たべてみると わかるハズ": "You'll understand when you try it.",
   "5大アイテムのひとつ": "One of the five major items.",
+  "ほとんど 反則!\n禁断のあじわいがするらしい": "Almost a foul!\nApparently, it has a forbidden flavor.",
   "こころも からだも ブルーなかんじ": "Both my heart and body feel blue.",
   "ヤシの実を空っぽにして なにかをつめると\nエキサイティング": "When you empty a coconut and stuff something inside, it's exciting.",
+  "タイコの原料 気持ちの良い音を\n鳴らしてくれる": "Taiko's raw materials produce a pleasant sound.",
+  "ついに手に入れた! これこそ\nジィちゃんの形見の腕輪!": "Finally got it! This is\nGrandpa's keepsake bracelet!",
+  "タイコの原料 かたくて いい音がでる": "The ingredients of Taiko are hard and make good sounds.",
+  "タイコの原料 木と皮を はりつけることができる": "Taiko's raw materials: wood and skin can be glued together.",
   "いつでも どこでも 1000年老人のもとへ\n帰ることが!": "You can always return to the 1000-year-old man!",
   "マサカリ族にとって かけがえのない タイコ": "For the Masakari tribe, an irreplaceable taiko.",
+  "どこかにいるらしい 万能魚\nエサもふつうじゃない": "Apparently there's a versatile fish somewhere.\nIts food isn't ordinary either.",
   "なにのカギか、 まったくわからない": "I have no idea what the key is.",
   "いくらかじってもなくならない\n笑いも泣きも じゆうじざい": "No matter how much you chew, it doesn't disappear.\nLaughter and tears are free.",
   "太古からいる きゅうきょくの魚\nたべると人を超える?": "An ancient fish, from ancient times.\nDoes eating it make you surpass humans?",
+  "顔面フラワーから こぼれおちた ナミダ": "Tears spilled from the facial flower.",
   "小さくても いい音がひびく タイコ": "Even small, it resonates with a good sound, Taiko.",
+  "ひとふり かけると つぼみも花ひらく\nめずらしい粉": "A sprinkle can make even a bud blossom.\nA rare powder.",
   "バナナのおいしさが たっぷりの\nあま〜いジュース": "A sweet juice packed with the deliciousness of bananas.",
   "とぎすまされた りっぱなヤリ": "A sharpened, splendid spear.",
   "きれいに たたまれたパンツ\nだれかが こまっているかも": "Beautifully folded pants\nSomeone might be in trouble",
+  "魔王が忘れた きれいな水晶": "The beautiful crystal that the Demon King forgot.",
   "カシラからの あずかり物を\nなくしちゃった!!": "I lost the thing entrusted to me by Kashira!!",
   "うっかり わすれた\n大事な あずかり物": "I carelessly forgot\nthe important entrusted item",
+  "盗賊のカシラの 大事な 宝石": "The important jewel of the thief Kashira.",
   "いくらかじってもなくならない\nいつでも笑い泣きを なくせる": "No matter how much you chew, it won't disappear.\nYou can always laugh and cry.",
   "この世には、もえる石もあるらしい": "It seems there are also burning stones in this world.",
   "ゆうがな 貝の首飾り \nトンバには にあいそうもない?": "Yuugana shell necklace.\nIs it unlikely to meet in Tongba?",
   "さきがヘンテコにまがった、\nあやしいハリガネ": "The front bent strangely,\na suspicious wire.",
+  "かたい金属でつくられた、ハリガネ": "Harigane, made of hard metal.",
+  "いつでも どこでも\n万年老人にあえる": "You can always meet an old man anywhere.",
   "いつでも どこからでも \n地下の億年老人のところへ!": "Anytime, anywhere,\nto the place of the hundred-million-year-old man underground!",
   "カゼをひいたら、はやめにクスリをのもう": "If you catch a cold, take medicine promptly.",
   "ヤンのための、とくせい弁当": "A special lunch box for Yang.",
   "さびてきたない、よくわからないカギ": "It's rusty, dirty, and I don't really understand the key.",
+  "高山にさくという、やくそう\nケガを早く治す": "It's called \"Takayama Saku,\" a miracle.\nIt heals injuries quickly.",
   "いちどたべると、一生わすれない\nとっても おいしい木の実": "Once you eat it, you'll never forget it—it's an incredibly delicious nut.",
+  "これをたべると、みんな元気で暮らせる": "If you eat this, everyone will live healthy and energetic lives.",
   "サンタにもらった だれかのボウシ": "Someone's bowls I got from Santa.",
   "コマブタにとられた うでわを\nもとめて たびだつ": "I'm going to retrieve the arm taken by the pig.",
   "ものしりな100年老人に\n会いに行く": "I'm going to meet a knowledgeable 100-year-old.",
@@ -1410,10 +1541,12 @@
   "魔王がわすれていった\n3つの 水晶・・・": "The Demon King has forgotten.\nThree crystals...",
   "ドワーフたちのケンカを やめさせる": "Stop the dwarves from fighting.",
   "おおどろぼうが だっそうしようと\nしたらしいが・・・?": "It seems like a big thief tried to do something…?",
+  "遠くの 景色を見わたす": "To see the distant scenery.",
   "ケガをしたバロンを\nたすける": "Help Baron who was injured.",
   "かくれていた とまっている\nエレベーター": "I was hiding, I was standing.\nElevator.",
   "うわさの宝を\n手に入れる": "To obtain the rumored treasure.",
   "長老は、大トリの山へ\n行けといった・・・": "The elder told me to go to the mountain of the great bird...",
+  "めぐみさまを復活させると\n何かがおこる": "When Megumi-sama is revived,\nsomething happens.",
   "まえに 見たような やしき・・・\nどこでだろう?": "I've seen this kind of amusement park before...\nWhere was it?",
   "かくされた封印ぶくろを\n手に入れる": "Obtain the hidden sealed bag.",
   "魔ブタを 封印ぶくろに封じてしまう": "Sealing the Demon Pig in a Sealing Bag",
@@ -1424,9 +1557,12 @@
   "行く手を ふさぐ マサカリ族に\nどいてもらう": "I'll have the Masakari tribe, who block my path, move aside.",
   "キノコの森に すむという\n怪物と たたかう": "To fight the monster that lives in the mushroom forest.",
   "しょくぶつを からせてしまう\n実を みんな つぶす": "It makes the living things suffer.\nIt crushes all the fruits.",
+  "お花のたねを 畑にまいて\nきれいな お花畑にする": "Sow the flower seeds in the field\nand make a beautiful flower garden.",
+  "ナミダは 復活に かかせないの?": "Is Namida essential for revival?",
   "笑いのトビラは 笑っている人にしか\nひらかない": "The door to laughter is only open to those who are laughing.",
   "泣きのトビラは 泣いている人にしか\nひらかない": "The door of tears opens only to those who are crying.",
   "泣きやみたくても やめられない": "Even when I want to stop crying, I can't.",
+  "よく当る 赤い占い師に会う": "Meet a red fortune teller who often gets it right.",
   "APが おおいほど\nいいアイテムが 手に入る": "The more AP you have, the better items you get.",
   "まいごになった 子ネズミを\nさがしだす": "I start looking for the lost baby mouse.",
   "コレクターが ほしがる物をあつめると\nとてもいい アイテムがもらえる": "If you collect things that collectors want,\nyou'll get very good items.",
@@ -1438,6 +1574,7 @@
   "ネズミに かえられた\n人たちを もどしてあげる": "I'll return the people who were turned into mice.",
   "魔ブタを 封印ぶくろに 封じる": "Seal the Demon Pig in a Sealing Bag.",
   "トビラにあう 大きなカギを 手に入れる": "Obtain the large key that matches the door.",
+  "絵のパーツを すべてあつめると\nアイテムが手に入る": "When you collect all the parts of the picture,\nyou will get an item.",
   "封印をといて 1000年老人の\nはなしをきく": "Break the seal and listen to the story of a thousand-year-old man.",
   "かくされた力が めざめる": "The hidden power awakens.",
   "族長が なくしたヤリを さがす": "The chief searches for the lost spear.",
@@ -1453,12 +1590,17 @@
   "きけんな 電気うなぎを つかまえる": "Catching a kikenna electric eel.",
   "ぬすまれた 封印ぶくろを さがしだす": "I'm searching for the stolen sealed bag.",
   "きけんな 力を 持つ物": "Things that possess power.",
+  "復活した キカイ": "Revived Machine",
   "サンタにボウシをとられた\n石人がこまっている": "Santa took my bow.",
   "動きだした 地下のせかい": "The underground world has begun to move.",
   "魔ブタを 封印ぶくろに封じる": "Seal the Demon Pig in a Sealing Bag.",
+  "盗賊のカシラも モノわすれ?": "Is the thief Kashira also forgetful?",
   "おなかを すかせたタロウに\nたべものを あげる": "I'll give food to Taro, who is hungry.",
   "鉄のクルマは \nどうやって動かすのだろう?": "How do iron cars move?",
   "どうぶつのケガなら すぐになおるらしい": "It seems that animal injuries heal quickly.",
+  "一度食べると 忘れられない 木の実が\nどこかに あるらしい・・・": "Once you eat it, you'll never forget it—there's a nut somewhere...",
+  "ずっと元気で暮らせる 海草が\n流れつく ところは?": "Where is the place where seaweed flows, where you can live happily forever?",
+  "緑の占い師の 話しをきく": "Listen to the green fortune teller's story.",
   "あらたな 力が めをさます": "A new power awakens.",
   "かるくて うきあがってしまう": "It's light and it makes me feel buoyant.",
   "はりあわないで なかよくしてよ": "Don't be rude, please be friendly.",
@@ -1474,6 +1616,7 @@
   "かけっこなら まけないゾ!": "I won't lose in a race!",
   "何でも 見通す メガネ": "Glasses that see through everything.",
   "人魚のおもいでを さがせ": "Find the mermaid's memories.",
+  "この犬には、何か とくべつな\n力が あるらしい・・・": "This dog seems to have some special power...",
   "魔王が とっても こまっている?": "Is the Demon King really in trouble?",
   "パクリとかじれば もとどおり": "If you bite into it, it's back to normal.",
   "どうぐも 強くなれる!?": "Can you become stronger!?",
@@ -1491,6 +1634,8 @@
   "さいごの 力を よびさます": "Summon the final power.",
   "かくごを きめて サァ わたろう!": "Let's go!",
   "カゼをひいたら 早めの・・・": "If you catch a cold, take care of yourself early...",
+  "3位のきろくを こえた めいよのメダル": "The medal of Meiyo, surpassing the record of third place.",
+  "2位のきろくを こえた めいよのメダル": "The medal of Meiyo, surpassing the second place record.",
   "トップを こえた すばらしいメダル": "A wonderful medal that surpassed the top.",
   "おもさが 分ける? すすむ道": "Does the weight divide? The path to go.",
   "くもの中には えらい人!?": "Is there a great person among the spiders!?",
@@ -1498,7 +1643,9 @@
   "魔力がきえて 3つのまちが ひとつになる": "When the magic power disappears, three towns will become one.",
   "億年老人のねがいは 魔ブタを封印すること": "The wish of the billion-year-old man is to seal the demon pig.",
   "サァ! 道なき 道を いこう": "Let's go down a road without a road!",
+  "じぶんを しりたいときは 占い師!": "When you want to know yourself, a fortune teller!",
   "何か のりものが あれば・・・": "If there was some kind of vehicle...",
+  "かくれんぼがすきな 息子よ\nハラは へっていないか?": "My son who loves hide-and-seek,\nIsn't your stomach empty?",
   "見えそうで 見えない 水のそこ": "It seems to be seen, but it is not seen, the water's depths.",
   "魔力は どこから うまれるの?": "Where does magic power come from?",
   "ひとりは ダメなら みんなで やろう!": "If one person can't do it, let's all do it together!",
@@ -1519,6 +1666,7 @@
   "みんなを 笑わせる 笑がお\nできるかな?": "Can I make everyone laugh?",
   "かなしさを つたえる 泣きがお\nできるかな?": "Can I cry to convey sadness?",
   "たき火から あま〜い かおりが\nただよってくる": "A sweet fragrance drifts from the bonfire.",
+  "なぞの力をもつ 伝説のチョウ": "A legendary butterfly possessing mysterious powers.",
   "くらくなって 何も見えない": "I'm getting dark and can't see anything.",
   "ブクブクと おとをたてて しずんでいく\n大きなタル": "Bubububu, making a sound, it sinks.\nA big barrel.",
   "てっぺんまで カケッこ どっちが はやい?": "Which is faster, running to the top or climbing?",
@@ -1531,6 +1679,7 @@
   "ちょっと あぶない すべり台": "A little dangerous slide.",
   "2つをあわせると 見たことない物が あらわれる": "When you combine the two, something you've never seen before appears.",
   "なにかをなくして こまってる": "I lost something and I'm in trouble.",
+  "またもや 忘れて こまってる・・・": "Again, I've forgotten and am in trouble...",
   "だれにも言えない\nたいへんな 悩みごと・・・": "I can't tell anyone...\nA terrible worry...",
   "またも みうしなった\n大事な あずかり物": "It became a cow again.\nAn important entrusted item."
  },
@@ -1627,18 +1776,18 @@
     },
     {
      "index": 17,
-     "original": "ボンプ[g05A]の[g05B]ゾ",
+     "original": "ボンプ[g05A]のナゾ",
      "translation": null
     },
     {
      "index": 18,
-     "original": "カ[g05D]ラの大事なもの",
-     "translation": null
+     "original": "カシラの大事なもの",
+     "translation": "Kashira's important things."
     },
     {
      "index": 19,
-     "original": "魔王の探し[g060]",
-     "translation": null
+     "original": "魔王の探し物",
+     "translation": "The Demon King's Search"
     },
     {
      "index": 20,
@@ -1657,8 +1806,8 @@
     },
     {
      "index": 23,
-     "original": "息子[g06D]、どこに…",
-     "translation": null
+     "original": "息子よ、どこに…",
+     "translation": "My son, where are you..."
     },
     {
      "index": 24,
@@ -2474,8 +2623,8 @@
     },
     {
      "index": 157,
-     "original": "ん〜っ・・・見たところ [g0D3]明の国にいる\n鉄人の作ったカギみたいだけどナ・・・",
-     "translation": null
+     "original": "ん〜っ・・・見たところ 文明の国にいる\n鉄人の作ったカギみたいだけどナ・・・",
+     "translation": "Hmm... from what I can see, it's in a civilized country.\nIt looks like a key made by an iron man, but na..."
     },
     {
      "index": 158,
@@ -3316,8 +3465,8 @@
     },
     {
      "index": 157,
-     "original": "ん〜っ・・・見たところ [g0D3]明の国にいる\n鉄人の作ったカギみたいだけどナ・・・",
-     "translation": null
+     "original": "ん〜っ・・・見たところ 文明の国にいる\n鉄人の作ったカギみたいだけどナ・・・",
+     "translation": "Hmm... from what I can see, it's in a civilized country.\nIt looks like a key made by an iron man, but na..."
     },
     {
      "index": 158,
@@ -4158,8 +4307,8 @@
     },
     {
      "index": 157,
-     "original": "ん〜っ・・・見たところ [g0D3]明の国にいる\n鉄人の作ったカギみたいだけどナ・・・",
-     "translation": null
+     "original": "ん〜っ・・・見たところ 文明の国にいる\n鉄人の作ったカギみたいだけどナ・・・",
+     "translation": "Hmm... from what I can see, it's in a civilized country.\nIt looks like a key made by an iron man, but na..."
     },
     {
      "index": 158,
@@ -4720,8 +4869,8 @@
     },
     {
      "index": 101,
-     "original": "ほっ ほっ ほっ・・・\n何を言うとる・・・\n\nいちばん心配しとったクセに・・・\n[g0D4]直じゃないのぉ・・・",
-     "translation": null
+     "original": "ほっ ほっ ほっ・・・\n何を言うとる・・・\n\nいちばん心配しとったクセに・・・\n素直じゃないのぉ・・・",
+     "translation": "Ho ho ho...\nWhat are you saying...?\n\nYou were the most worried, weren't you...?\nYou're not being honest, are you...?"
     },
     {
      "index": 102,
@@ -5577,8 +5726,8 @@
     },
     {
      "index": 157,
-     "original": "ん〜っ・・・見たところ [g0D3]明の国にいる\n鉄人の作ったカギみたいだけどナ・・・",
-     "translation": null
+     "original": "ん〜っ・・・見たところ 文明の国にいる\n鉄人の作ったカギみたいだけどナ・・・",
+     "translation": "Hmm... from what I can see, it's in a civilized country.\nIt looks like a key made by an iron man, but na..."
     },
     {
      "index": 158,
@@ -6419,8 +6568,8 @@
     },
     {
      "index": 157,
-     "original": "ん〜っ・・・見たところ [g0D3]明の国にいる\n鉄人の作ったカギみたいだけどナ・・・",
-     "translation": null
+     "original": "ん〜っ・・・見たところ 文明の国にいる\n鉄人の作ったカギみたいだけどナ・・・",
+     "translation": "Hmm... from what I can see, it's in a civilized country.\nIt looks like a key made by an iron man, but na..."
     },
     {
      "index": 158,
@@ -6736,8 +6885,8 @@
     },
     {
      "index": 52,
-     "original": "雨の[g069]をつかった",
-     "translation": null
+     "original": "雨の素をつかった",
+     "translation": "I used the rain element."
     },
     {
      "index": 53,
@@ -7081,8 +7230,8 @@
     },
     {
      "index": 121,
-     "original": "除草[g09C]をつかった",
-     "translation": null
+     "original": "除草剤をつかった",
+     "translation": "Used herbicides."
     },
     {
      "index": 122,
@@ -8263,8 +8412,8 @@
     },
     {
      "index": 23,
-     "original": "やしきの宝[g062]?",
-     "translation": null
+     "original": "やしきの宝物?",
+     "translation": "Yashiki's treasure?"
     },
     {
      "index": 24,
@@ -8288,8 +8437,8 @@
     },
     {
      "index": 28,
-     "original": "怪[g062]?勝てるかな?",
-     "translation": null
+     "original": "怪物?勝てるかな?",
+     "translation": "Monster? Can I win?"
     },
     {
      "index": 29,
@@ -8298,12 +8447,12 @@
     },
     {
      "index": 30,
-     "original": "花をさかせ[g076]う!",
-     "translation": null
+     "original": "花をさかせよう!",
+     "translation": "Let's make flowers bloom!"
     },
     {
      "index": 31,
-     "original": "ボンプ[g079]の[g07A]ゾ",
+     "original": "ボンプ[g079]のナゾ",
      "translation": null
     },
     {
@@ -8328,8 +8477,8 @@
     },
     {
      "index": 36,
-     "original": "丈夫なハ[g087]ガネ",
-     "translation": null
+     "original": "丈夫なハリガネ",
+     "translation": "Strong wire."
     },
     {
      "index": 37,
@@ -8348,8 +8497,8 @@
     },
     {
      "index": 40,
-     "original": "息子[g076]、どこに…",
-     "translation": null
+     "original": "息子よ、どこに…",
+     "translation": "My son, where are you..."
     },
     {
      "index": 41,
@@ -8358,8 +8507,8 @@
     },
     {
      "index": 42,
-     "original": " 友[g096]7人 ",
-     "translation": null
+     "original": " 友達7人 ",
+     "translation": "7 friends"
     },
     {
      "index": 43,
@@ -8368,28 +8517,28 @@
     },
     {
      "index": 44,
-     "original": "夢?幻?宝[g062]庫を探せ",
-     "translation": null
+     "original": "夢?幻?宝物庫を探せ",
+     "translation": "Dream? Illusion? Search for the treasure chest."
     },
     {
      "index": 45,
-     "original": "不思議なキ[g0A2]コ",
-     "translation": null
+     "original": "不思議なキノコ",
+     "translation": "Mysterious mushroom"
     },
     {
      "index": 46,
-     "original": "[g087]ーフスライ[g0A3]ー",
-     "translation": null
+     "original": "リーフスライダー",
+     "translation": "Leaf Slider"
     },
     {
      "index": 47,
-     "original": " 赤[g0A5]青[g0A6]?",
-     "translation": null
+     "original": " 赤+青=?",
+     "translation": "Red + blue =?"
     },
     {
      "index": 48,
-     "original": "ミ[g087]オンの塔",
-     "translation": null
+     "original": "ミリオンの塔",
+     "translation": "Million Tower"
     }
    ]
   },
@@ -9005,8 +9154,8 @@
     },
     {
      "index": 121,
-     "original": "除草[g09E]をつかった",
-     "translation": null
+     "original": "除草剤をつかった",
+     "translation": "Used herbicides."
     },
     {
      "index": 122,
@@ -10305,8 +10454,8 @@
     },
     {
      "index": 381,
-     "original": "ケガを早く治すのに「ナオリ草」があれば\nいいんだけど・・・\n\nあれがあるのは\nたしか大トリの山だったかしら\n\nでも\nあそこは風が強くてキケンだからね[g147]・・・",
-     "translation": null
+     "original": "ケガを早く治すのに「ナオリ草」があれば\nいいんだけど・・・\n\nあれがあるのは\nたしか大トリの山だったかしら\n\nでも\nあそこは風が強くてキケンだからねェ・・・",
+     "translation": "It would be nice if there were \"Naori grass\" to heal injuries quickly...\n\nI think that's on the mountain of the big bird, right?\n\nBut\nthat place is windy and dangerous, so no..."
     },
     {
      "index": 382,
@@ -10315,8 +10464,8 @@
     },
     {
      "index": 383,
-     "original": "あとは おいしいものでも たべさせて\nゆっくりしとけば 元気になるさ・・・\n\nそうそう おいしいものと言えば「百識の木の実」!\nあたしも むかしたべたことがあるんだけど\nあれは おいしかったね[g147]\n\nまた たべてみたいよ・・・・・",
-     "translation": null
+     "original": "あとは おいしいものでも たべさせて\nゆっくりしとけば 元気になるさ・・・\n\nそうそう おいしいものと言えば「百識の木の実」!\nあたしも むかしたべたことがあるんだけど\nあれは おいしかったねェ\n\nまた たべてみたいよ・・・・・",
+     "translation": "After that, let's have something delicious to eat.\nIf we just relax, we'll feel better...\n\nOh, speaking of delicious things, \"Hyakushiki no Kinami\"!\nI once ate it too, and it was really tasty.\n\nI want to eat it again..."
     },
     {
      "index": 384,
@@ -10340,8 +10489,8 @@
     },
     {
      "index": 388,
-     "original": "ね[g147] それはそうと\nバロン 少しおおきくなったように\n思わないかい?\n\n成長が早いのか\n気のせいか・・・・・",
-     "translation": null
+     "original": "ねェ それはそうと\nバロン 少しおおきくなったように\n思わないかい?\n\n成長が早いのか\n気のせいか・・・・・",
+     "translation": "Hey, speaking of which,\nBaron, don't you think he's gotten a little bigger?\nIs he growing fast?\nOr is it just my imagination...?"
     },
     {
      "index": 389,
@@ -10350,8 +10499,8 @@
     },
     {
      "index": 390,
-     "original": "あらっ?!\nバロンはあんたといっしょに行きたい\nみたいだね[g147]\n\nつれてってやんなよ",
-     "translation": null
+     "original": "あらっ?!\nバロンはあんたといっしょに行きたい\nみたいだねェ\n\nつれてってやんなよ",
+     "translation": "Oh?!\nBaron wants to go with you.\nIt seems like it.\n\nDon't take him."
     },
     {
      "index": 391,
@@ -10727,8 +10876,8 @@
     },
     {
      "index": 12,
-     "original": "大ト[g039]の山へ",
-     "translation": null
+     "original": "大トリの山へ",
+     "translation": "To the mountain of the great bird."
     },
     {
      "index": 13,
@@ -10762,8 +10911,8 @@
     },
     {
      "index": 19,
-     "original": "ケガに効く [g051]オ[g039]草",
-     "translation": null
+     "original": "ケガに効く ナオリ草",
+     "translation": "Naori grass effective for injuries"
     },
     {
      "index": 20,
@@ -10782,18 +10931,18 @@
     },
     {
      "index": 23,
-     "original": "やしきの宝[g061]?",
-     "translation": null
+     "original": "やしきの宝物?",
+     "translation": "Yashiki's treasure?"
     },
     {
      "index": 24,
-     "original": "花をさかせ[g064]う!",
-     "translation": null
+     "original": "花をさかせよう!",
+     "translation": "Let's make flowers bloom!"
     },
     {
      "index": 25,
-     "original": "APスロットマ[g069]ーン",
-     "translation": null
+     "original": "APスロットマシーン",
+     "translation": "AP Slot Machine"
     },
     {
      "index": 26,
@@ -10817,8 +10966,8 @@
     },
     {
      "index": 30,
-     "original": "丈夫なハ[g039]ガネ",
-     "translation": null
+     "original": "丈夫なハリガネ",
+     "translation": "Strong wire."
     },
     {
      "index": 31,
@@ -10837,13 +10986,13 @@
     },
     {
      "index": 34,
-     "original": " 友[g082]7人 ",
-     "translation": null
+     "original": " 友達7人 ",
+     "translation": "7 friends"
     },
     {
      "index": 35,
-     "original": "夢?幻?宝[g061]庫を探せ",
-     "translation": null
+     "original": "夢?幻?宝物庫を探せ",
+     "translation": "Dream? Illusion? Search for the treasure chest."
     },
     {
      "index": 36,
@@ -10857,8 +11006,8 @@
     },
     {
      "index": 38,
-     "original": "い[g064]っ!穴ほり名人!",
-     "translation": null
+     "original": "いよっ!穴ほり名人!",
+     "translation": "Yo! Hole Digging Master!"
     }
    ]
   },
@@ -11129,8 +11278,8 @@
     },
     {
      "index": 52,
-     "original": "雨の[g069]をつかった",
-     "translation": null
+     "original": "雨の素をつかった",
+     "translation": "I used the rain element."
     },
     {
      "index": 53,
@@ -11474,8 +11623,8 @@
     },
     {
      "index": 121,
-     "original": "除草[g09C]をつかった",
-     "translation": null
+     "original": "除草剤をつかった",
+     "translation": "Used herbicides."
     },
     {
      "index": 122,
@@ -11984,8 +12133,8 @@
     },
     {
      "index": 223,
-     "original": "おれは今 悩んじゃってね[g128]・・・\nその悩みというのがさ・・・\nだれにも言うなよ!\n\nじつは・・・\nカシラからあずかった大切なものをさぁ\nなくしちまったんだわ・・・\n\n言うなよ! ぜったい!!\nなんか この道でなくしたような気がして\nさがしに来たんだけど・・・\n\n熱いしさぁ〜あぶないしさぁ〜\nさがせないんだわ\nどーしたもんかなぁ・・・",
-     "translation": null
+     "original": "おれは今 悩んじゃってねェ・・・\nその悩みというのがさ・・・\nだれにも言うなよ!\n\nじつは・・・\nカシラからあずかった大切なものをさぁ\nなくしちまったんだわ・・・\n\n言うなよ! ぜったい!!\nなんか この道でなくしたような気がして\nさがしに来たんだけど・・・\n\n熱いしさぁ〜あぶないしさぁ〜\nさがせないんだわ\nどーしたもんかなぁ・・・",
+     "translation": "I'm really troubled right now...\nThat trouble is...\nDon't tell anyone!\n\nActually...\nI lost something important that Kashira gave me...\n\nDon't say it! Absolutely!!\nI feel like I lost it on this road,\nso I came looking for it...\n\nIt's hot, and it's dangerous, and it's dangerous~\nI can't find it.\nWhat should I do...?"
     },
     {
      "index": 224,
@@ -12026,8 +12175,8 @@
     },
     {
      "index": 3,
-     "original": "大ト[g016]の山へ",
-     "translation": null
+     "original": "大トリの山へ",
+     "translation": "To the mountain of the great bird."
     },
     {
      "index": 4,
@@ -12036,8 +12185,8 @@
     },
     {
      "index": 5,
-     "original": "大ト[g016]の山 ",
-     "translation": null
+     "original": "大トリの山 ",
+     "translation": "The Grand Finale Mountain"
     },
     {
      "index": 6,
@@ -12046,18 +12195,18 @@
     },
     {
      "index": 7,
-     "original": "ラッパでミ[g025]ミ[g025]",
-     "translation": null
+     "original": "ラッパでミニミニ",
+     "translation": "Mini Mini with a Rapper"
     },
     {
      "index": 8,
-     "original": "い[g027]っ!穴ほり名人!",
-     "translation": null
+     "original": "いよっ!穴ほり名人!",
+     "translation": "Yo! Hole Digging Master!"
     },
     {
      "index": 9,
-     "original": "炎[g027]、し[g031]まれ!",
-     "translation": null
+     "original": "炎よ、しずまれ!",
+     "translation": "Fire, be still!"
     },
     {
      "index": 10,
@@ -12076,8 +12225,8 @@
     },
     {
      "index": 13,
-     "original": "大ト[g016]の好[g040]",
-     "translation": null
+     "original": "大トリの好物",
+     "translation": "The favorite of the big bird."
     },
     {
      "index": 14,
@@ -12086,12 +12235,12 @@
     },
     {
      "index": 15,
-     "original": "もとの[g047]にもどりたい",
-     "translation": null
+     "original": "もとの姿にもどりたい",
+     "translation": "I want to return to my original form."
     },
     {
      "index": 16,
-     "original": "ボンプ[g04B]の[g04C]ゾ",
+     "original": "ボンプ[g04B]のナゾ",
      "translation": null
     },
     {
@@ -12106,8 +12255,8 @@
     },
     {
      "index": 19,
-     "original": "かくされた力[g055]の3",
-     "translation": null
+     "original": "かくされた力その3",
+     "translation": "Hidden Power Part 3"
     },
     {
      "index": 20,
@@ -12116,13 +12265,13 @@
     },
     {
      "index": 21,
-     "original": "息子[g027]、どこに…",
-     "translation": null
+     "original": "息子よ、どこに…",
+     "translation": "My son, where are you..."
     },
     {
      "index": 22,
-     "original": "サンタのパン[g05C]",
-     "translation": null
+     "original": "サンタのパンツ",
+     "translation": "Santa's pants"
     },
     {
      "index": 23,
@@ -12131,8 +12280,8 @@
     },
     {
      "index": 24,
-     "original": "マ[g061]マのどうくつ",
-     "translation": null
+     "original": "マグマのどうくつ",
+     "translation": "Magma's Cave"
     },
     {
      "index": 25,
@@ -12758,8 +12907,8 @@
     },
     {
      "index": 121,
-     "original": "除草[g09C]をつかった",
-     "translation": null
+     "original": "除草剤をつかった",
+     "translation": "Used herbicides."
     },
     {
      "index": 122,
@@ -13390,23 +13539,23 @@
     },
     {
      "index": 16,
-     "original": "息子[g053]、どこに…",
-     "translation": null
+     "original": "息子よ、どこに…",
+     "translation": "My son, where are you..."
     },
     {
      "index": 17,
-     "original": "カ[g056]ラの大事なもの",
-     "translation": null
+     "original": "カシラの大事なもの",
+     "translation": "Kashira's important things."
     },
     {
      "index": 18,
-     "original": "丈夫なハ[g05B]ガネ",
-     "translation": null
+     "original": "丈夫なハリガネ",
+     "translation": "Strong wire."
     },
     {
      "index": 19,
-     "original": "[g056]ーフマン[g056]ョン",
-     "translation": null
+     "original": "シーフマンション",
+     "translation": "Seaf Mansion"
     }
    ]
   },
@@ -14022,8 +14171,8 @@
     },
     {
      "index": 121,
-     "original": "除草[g09C]をつかった",
-     "translation": null
+     "original": "除草剤をつかった",
+     "translation": "Used herbicides."
     },
     {
      "index": 122,
@@ -14377,8 +14526,8 @@
     },
     {
      "index": 192,
-     "original": "・・・そうだ、これをもっていきな!\n死神の実の除草[g09C]だ・・・\nこれがないと死神の実はとれないんだ",
-     "translation": null
+     "original": "・・・そうだ、これをもっていきな!\n死神の実の除草剤だ・・・\nこれがないと死神の実はとれないんだ",
+     "translation": "...That's right, take this with you!\nIt's a herbicide for the Death God Fruit...\nYou can't harvest the Death God Fruit without this."
     },
     {
      "index": 193,
@@ -14537,8 +14686,8 @@
     },
     {
      "index": 224,
-     "original": "みぃ〜〜たぁ〜〜なぁ〜〜っ!!\n・・・・・・・・・・・\n\n・・・・・・・・・・・・\n・・・・・・・・・\n\nなんじゃ・・・あまり、おどろかんな\n・・・いやいや すまんな・・・\nわるぎはなかったんじゃ・・・\n\n見てのとおり、わしらは\nネズミそっくりじゃろ?\nもちろん人間なんじゃが\n\n・・・この村には魔ブタの魔法が\nかけられておってな・・・村人代表が\n[g11E]をかえられてしまったんじゃ・・・",
-     "translation": null
+     "original": "みぃ〜〜たぁ〜〜なぁ〜〜っ!!\n・・・・・・・・・・・\n\n・・・・・・・・・・・・\n・・・・・・・・・\n\nなんじゃ・・・あまり、おどろかんな\n・・・いやいや すまんな・・・\nわるぎはなかったんじゃ・・・\n\n見てのとおり、わしらは\nネズミそっくりじゃろ?\nもちろん人間なんじゃが\n\n・・・この村には魔ブタの魔法が\nかけられておってな・・・村人代表が\n姿をかえられてしまったんじゃ・・・",
+     "translation": "Mii~taaa~naaa~tsu!!\n・・・・・・・・・・・\n\n・・・・・・・・・・・\n・・・・・・・・・\n\nWhat... don't be so surprised.\n・・・No, no, sorry...\nThere wasn't any trouble...\n\nAs you can see, we're\njust like mice, aren't we?\nOf course, we're humans,\n\n・・・This village has been enchanted with\nthe magic of the demon pig... The village representative\nhas been transformed..."
     },
     {
      "index": 225,
@@ -14667,8 +14816,8 @@
     },
     {
      "index": 250,
-     "original": "中央こうえんの「けいじばん」は、\nこまめにチ[g135]ックしといたほうがいいゼ",
-     "translation": null
+     "original": "中央こうえんの「けいじばん」は、\nこまめにチェックしといたほうがいいゼ",
+     "translation": "You should check the \"keijiban\" of Chuo Park frequently."
     },
     {
      "index": 251,
@@ -14752,8 +14901,8 @@
     },
     {
      "index": 267,
-     "original": "おかげで もとの[g11E]にもどれたよ!\nほんっとーに・・・ありがとうなっ!",
-     "translation": null
+     "original": "おかげで もとの姿にもどれたよ!\nほんっとーに・・・ありがとうなっ!",
+     "translation": "Thanks to you, I was able to return to my original form!\nReally... thank you so much!"
     },
     {
      "index": 268,
@@ -14864,8 +15013,8 @@
     },
     {
      "index": 3,
-     "original": "まともなキ[g01A]コ",
-     "translation": null
+     "original": "まともなキノコ",
+     "translation": "Decent mushroom"
     },
     {
      "index": 4,
@@ -14874,8 +15023,8 @@
     },
     {
      "index": 5,
-     "original": "大ト[g025]の好[g027]",
-     "translation": null
+     "original": "大トリの好物",
+     "translation": "The favorite of the big bird."
     },
     {
      "index": 6,
@@ -14889,13 +15038,13 @@
     },
     {
      "index": 8,
-     "original": "APスロットマ[g033]ーン",
-     "translation": null
+     "original": "APスロットマシーン",
+     "translation": "AP Slot Machine"
     },
     {
      "index": 9,
-     "original": "子ネ[g037]ミどこだ?",
-     "translation": null
+     "original": "子ネズミどこだ?",
+     "translation": "Where is the baby mouse?"
     },
     {
      "index": 10,
@@ -14909,8 +15058,8 @@
     },
     {
      "index": 12,
-     "original": "大人の飲み[g027]",
-     "translation": null
+     "original": "大人の飲み物",
+     "translation": "Adult beverage"
     },
     {
      "index": 13,
@@ -14919,8 +15068,8 @@
     },
     {
      "index": 14,
-     "original": "もとの[g04B]にもどりたい",
-     "translation": null
+     "original": "もとの姿にもどりたい",
+     "translation": "I want to return to my original form."
     },
     {
      "index": 15,
@@ -15541,8 +15690,8 @@
     },
     {
      "index": 121,
-     "original": "除草[g09C]をつかった",
-     "translation": null
+     "original": "除草剤をつかった",
+     "translation": "Used herbicides."
     },
     {
      "index": 122,
@@ -15898,18 +16047,18 @@
     },
     {
      "index": 2,
-     "original": "銅色の[g010][g011]ルがほしい",
-     "translation": null
+     "original": "銅色のメダルがほしい",
+     "translation": "I want a bronze medal."
     },
     {
      "index": 3,
-     "original": "銀色の[g010][g011]ルがほしい",
-     "translation": null
+     "original": "銀色のメダルがほしい",
+     "translation": "I want a silver medal."
     },
     {
      "index": 4,
-     "original": "金色の[g010][g011]ルがほしい",
-     "translation": null
+     "original": "金色のメダルがほしい",
+     "translation": "I want a gold medal."
     },
     {
      "index": 5,
@@ -16185,8 +16334,8 @@
     },
     {
      "index": 52,
-     "original": "雨の[g069]をつかった",
-     "translation": null
+     "original": "雨の素をつかった",
+     "translation": "I used the rain element."
     },
     {
      "index": 53,
@@ -16530,8 +16679,8 @@
     },
     {
      "index": 121,
-     "original": "除草[g09C]をつかった",
-     "translation": null
+     "original": "除草剤をつかった",
+     "translation": "Used herbicides."
     },
     {
      "index": 122,
@@ -17712,8 +17861,8 @@
     },
     {
      "index": 23,
-     "original": "やしきの宝[g062]?",
-     "translation": null
+     "original": "やしきの宝物?",
+     "translation": "Yashiki's treasure?"
     },
     {
      "index": 24,
@@ -17737,8 +17886,8 @@
     },
     {
      "index": 28,
-     "original": "怪[g062]?勝てるかな?",
-     "translation": null
+     "original": "怪物?勝てるかな?",
+     "translation": "Monster? Can I win?"
     },
     {
      "index": 29,
@@ -17747,12 +17896,12 @@
     },
     {
      "index": 30,
-     "original": "花をさかせ[g076]う!",
-     "translation": null
+     "original": "花をさかせよう!",
+     "translation": "Let's make flowers bloom!"
     },
     {
      "index": 31,
-     "original": "ボンプ[g079]の[g07A]ゾ",
+     "original": "ボンプ[g079]のナゾ",
      "translation": null
     },
     {
@@ -17777,8 +17926,8 @@
     },
     {
      "index": 36,
-     "original": "丈夫なハ[g087]ガネ",
-     "translation": null
+     "original": "丈夫なハリガネ",
+     "translation": "Strong wire."
     },
     {
      "index": 37,
@@ -17797,8 +17946,8 @@
     },
     {
      "index": 40,
-     "original": "息子[g076]、どこに…",
-     "translation": null
+     "original": "息子よ、どこに…",
+     "translation": "My son, where are you..."
     },
     {
      "index": 41,
@@ -17807,8 +17956,8 @@
     },
     {
      "index": 42,
-     "original": " 友[g096]7人 ",
-     "translation": null
+     "original": " 友達7人 ",
+     "translation": "7 friends"
     },
     {
      "index": 43,
@@ -17817,28 +17966,28 @@
     },
     {
      "index": 44,
-     "original": "夢?幻?宝[g062]庫を探せ",
-     "translation": null
+     "original": "夢?幻?宝物庫を探せ",
+     "translation": "Dream? Illusion? Search for the treasure chest."
     },
     {
      "index": 45,
-     "original": "不思議なキ[g0A2]コ",
-     "translation": null
+     "original": "不思議なキノコ",
+     "translation": "Mysterious mushroom"
     },
     {
      "index": 46,
-     "original": "[g087]ーフスライ[g0A3]ー",
-     "translation": null
+     "original": "リーフスライダー",
+     "translation": "Leaf Slider"
     },
     {
      "index": 47,
-     "original": " 赤[g0A5]青[g0A6]?",
-     "translation": null
+     "original": " 赤+青=?",
+     "translation": "Red + blue =?"
     },
     {
      "index": 48,
-     "original": "ミ[g087]オンの塔",
-     "translation": null
+     "original": "ミリオンの塔",
+     "translation": "Million Tower"
     }
    ]
   },
@@ -18454,8 +18603,8 @@
     },
     {
      "index": 121,
-     "original": "除草[g09C]をつかった",
-     "translation": null
+     "original": "除草剤をつかった",
+     "translation": "Used herbicides."
     },
     {
      "index": 122,
@@ -19078,8 +19227,8 @@
     },
     {
      "index": 52,
-     "original": "雨の[g069]をつかった",
-     "translation": null
+     "original": "雨の素をつかった",
+     "translation": "I used the rain element."
     },
     {
      "index": 53,
@@ -19423,8 +19572,8 @@
     },
     {
      "index": 121,
-     "original": "除草[g09C]をつかった",
-     "translation": null
+     "original": "除草剤をつかった",
+     "translation": "Used herbicides."
     },
     {
      "index": 122,
@@ -19815,23 +19964,23 @@
     },
     {
      "index": 3,
-     "original": "やしきの宝[g016]?",
-     "translation": null
+     "original": "やしきの宝物?",
+     "translation": "Yashiki's treasure?"
     },
     {
      "index": 4,
-     "original": "不思議なキ[g01D]コ",
-     "translation": null
+     "original": "不思議なキノコ",
+     "translation": "Mysterious mushroom"
     },
     {
      "index": 5,
-     "original": " 赤[g020]青[g022]?",
-     "translation": null
+     "original": " 赤+青=?",
+     "translation": "Red + blue =?"
     },
     {
      "index": 6,
-     "original": "まともなキ[g01D]コ",
-     "translation": null
+     "original": "まともなキノコ",
+     "translation": "Decent mushroom"
     },
     {
      "index": 7,
@@ -19850,8 +19999,8 @@
     },
     {
      "index": 10,
-     "original": "怪[g016]?勝てるかな?",
-     "translation": null
+     "original": "怪物?勝てるかな?",
+     "translation": "Monster? Can I win?"
     },
     {
      "index": 11,
@@ -19860,18 +20009,18 @@
     },
     {
      "index": 12,
-     "original": "お涙ち[g03E]うだい",
-     "translation": null
+     "original": "お涙ちょうだい",
+     "translation": "Please give me your tears."
     },
     {
      "index": 13,
-     "original": "ボンプ[g044]の[g045]ゾ",
+     "original": "ボンプ[g044]のナゾ",
      "translation": null
     },
     {
      "index": 14,
-     "original": "[g045]ミ[g048]のビンち[g03E]うだい",
-     "translation": null
+     "original": "ナミダのビンちょうだい",
+     "translation": "Give me a bottle of tears."
     }
    ]
   },
@@ -20487,8 +20636,8 @@
     },
     {
      "index": 121,
-     "original": "除草[g09C]をつかった",
-     "translation": null
+     "original": "除草剤をつかった",
+     "translation": "Used herbicides."
     },
     {
      "index": 122,
@@ -20797,13 +20946,13 @@
     },
     {
      "index": 183,
-     "original": "・・じぃさんは、気にするなってさ・・・ちぇ\n・・・それと・・ひとつ頼みがあるんだ・・・\n\n見ての通り、じぃさんはもうトシなんだ・・・\n自分で[g0D9]分を吸い上げられなくなっちまって、\nどんどん元気がなくなってるんだけど・・・\n\nひとつだけ、この老木を元気にする方法が\nあるらしいんだ・・・それは・・・",
-     "translation": null
+     "original": "・・じぃさんは、気にするなってさ・・・ちぇ\n・・・それと・・ひとつ頼みがあるんだ・・・\n\n見ての通り、じぃさんはもうトシなんだ・・・\n自分で養分を吸い上げられなくなっちまって、\nどんどん元気がなくなってるんだけど・・・\n\nひとつだけ、この老木を元気にする方法が\nあるらしいんだ・・・それは・・・",
+     "translation": "...Jii-san says not to worry about it... Che.\n...And... I have one request...\n\nAs you can see, Jii-san is already old...\nHe can no longer absorb nutrients on his own,\nand his energy is steadily fading...\n\nThere seems to be only one way to revive this old tree... That is..."
     },
     {
      "index": 184,
-     "original": "この大陸のあちらこちらに\nポンプ岩ってのがあるんだけど・・・\n\n実は、その中には栄[g0D9]タップリの水が\nはいってるんだ・・・\n\nたぶん、全部のポンプ岩をふんで\n栄[g0D9]を地面に戻せば、\n老木も元気になるハズだよ・・・",
-     "translation": null
+     "original": "この大陸のあちらこちらに\nポンプ岩ってのがあるんだけど・・・\n\n実は、その中には栄養タップリの水が\nはいってるんだ・・・\n\nたぶん、全部のポンプ岩をふんで\n栄養を地面に戻せば、\n老木も元気になるハズだよ・・・",
+     "translation": "There are things called pump rocks scattered all over this continent...\n\nActually, they contain plenty of nutrient-rich water...\n\nProbably, if you step on all the pump rocks and return the nutrients to the ground,\nold trees should regain their vitality..."
     },
     {
      "index": 185,
@@ -20872,8 +21021,8 @@
     },
     {
      "index": 198,
-     "original": "あ、そうだ・・・オイラさぁ\n[g0F7]明の国の入口ちかくで\nボウシをひろったんだ・・・\n\nもし、[g0F7]明の国に行くんなら\n持ち主にわたしてくれないかな?\n\nたぶん 困ってるとおもうんだ・・・",
-     "translation": null
+     "original": "あ、そうだ・・・オイラさぁ\n文明の国の入口ちかくで\nボウシをひろったんだ・・・\n\nもし、文明の国に行くんなら\n持ち主にわたしてくれないかな?\n\nたぶん 困ってるとおもうんだ・・・",
+     "translation": "Oh, right... I...\nI picked up a hat near the entrance of a civilized country...\n\nIf you're going to a civilized country,\nwould you give it to its owner?\n\nI think they're probably in trouble..."
     },
     {
      "index": 199,
@@ -20987,8 +21136,8 @@
     },
     {
      "index": 221,
-     "original": "うわあぁぁぁーーーっ!\nこっ こないでっ! おねがいっ!\n・・・・・・・・・んっ?・・・\n\nな、 な〜んだ・・・マサカリ族じゃないのか・・・\nあ〜ビックリした・・・\nごめんな おどろかして・・・\n\nおれはさぁ この先の [g0F7]明の国にある\n時計台からきたんだけど・・・",
-     "translation": null
+     "original": "うわあぁぁぁーーーっ!\nこっ こないでっ! おねがいっ!\n・・・・・・・・・んっ?・・・\n\nな、 な〜んだ・・・マサカリ族じゃないのか・・・\nあ〜ビックリした・・・\nごめんな おどろかして・・・\n\nおれはさぁ この先の 文明の国にある\n時計台からきたんだけど・・・",
+     "translation": "Uwaaaaaaaahhh!\nDon't come! Please!\n... ... ... ... Huh? ...\n\nWh-what is it... isn't it the Masakari tribe...?\nAh~ I was startled...\nSorry for scaring you...\n\nI came from the clock tower in the civilized country ahead..."
     },
     {
      "index": 222,
@@ -21114,13 +21263,13 @@
     },
     {
      "index": 5,
-     "original": "ボンプ[g027]の[g029]ゾ",
+     "original": "ボンプ[g027]のナゾ",
      "translation": null
     },
     {
      "index": 6,
-     "original": "マサカ[g02E]の集落?",
-     "translation": null
+     "original": "マサカリの集落?",
+     "translation": "Masakari's village?"
     },
     {
      "index": 7,
@@ -21129,13 +21278,13 @@
     },
     {
      "index": 8,
-     "original": "バ[g029][g029]ジ[g035]ース",
-     "translation": null
+     "original": "バナナジュース",
+     "translation": "Banana juice"
     },
     {
      "index": 9,
-     "original": "マサカ[g02E]族のビミ[g03A]",
-     "translation": null
+     "original": "マサカリ族のビミツ",
+     "translation": "The secret of the Masakari tribe."
     },
     {
      "index": 10,
@@ -21144,8 +21293,8 @@
     },
     {
      "index": 11,
-     "original": "[g03E]知りの木は知っている",
-     "translation": null
+     "original": "物知りの木は知っている",
+     "translation": "a wise man knows what to do"
     },
     {
      "index": 12,
@@ -21154,8 +21303,8 @@
     },
     {
      "index": 13,
-     "original": "電気うな[g04B]を捕まえろ!",
-     "translation": null
+     "original": "電気うなぎを捕まえろ!",
+     "translation": "Catch the electric eel!"
     },
     {
      "index": 14,
@@ -21204,8 +21353,8 @@
     },
     {
      "index": 23,
-     "original": "かくされた力[g06C]の2",
-     "translation": null
+     "original": "かくされた力その2",
+     "translation": "Hidden Power Part 2"
     },
     {
      "index": 24,
@@ -21229,23 +21378,23 @@
     },
     {
      "index": 28,
-     "original": "カ[g07D]ラの大事なもの",
-     "translation": null
+     "original": "カシラの大事なもの",
+     "translation": "Kashira's important things."
     },
     {
      "index": 29,
-     "original": "息子[g080]、どこに…",
-     "translation": null
+     "original": "息子よ、どこに…",
+     "translation": "My son, where are you..."
     },
     {
      "index": 30,
-     "original": "ジ[g083]ン[g084]ル奥地",
-     "translation": null
+     "original": "ジャングル奥地",
+     "translation": "Deep in the jungle."
     },
     {
      "index": 31,
-     "original": " ジ[g083]ン[g084]ル ",
-     "translation": null
+     "original": " ジャングル ",
+     "translation": "Jungle"
     },
     {
      "index": 32,
@@ -21259,13 +21408,13 @@
     },
     {
      "index": 34,
-     "original": "バク[g093]ンの作り方",
-     "translation": null
+     "original": "バクダンの作り方",
+     "translation": "How to make Bakudan"
     },
     {
      "index": 35,
-     "original": "イカ[g093]にのろう!",
-     "translation": null
+     "original": "イカダにのろう!",
+     "translation": "Let's get on the raft!"
     }
    ]
   },
@@ -21881,8 +22030,8 @@
     },
     {
      "index": 121,
-     "original": "除草[g09C]をつかった",
-     "translation": null
+     "original": "除草剤をつかった",
+     "translation": "Used herbicides."
     },
     {
      "index": 122,
@@ -22421,8 +22570,8 @@
     },
     {
      "index": 229,
-     "original": "う〜む・・・[g12B]は 浜辺のトビラ・・・\nオレンジは 湖上のやかた・・・\n黄は 時の番人・・・\n\n・・・何のことか わかりますか?",
-     "translation": null
+     "original": "う〜む・・・紺は 浜辺のトビラ・・・\nオレンジは 湖上のやかた・・・\n黄は 時の番人・・・\n\n・・・何のことか わかりますか?",
+     "translation": "Hmm... navy blue is the door on the beach...\nOrange is the mansion on the lake...\nYellow is the guardian of time...\n\n...Do you understand what I'm talking about?"
     },
     {
      "index": 230,
@@ -22543,13 +22692,13 @@
     },
     {
      "index": 2,
-     "original": "仲良くし[g011]う[g011]",
-     "translation": null
+     "original": "仲良くしようよ",
+     "translation": "Let's get along."
     },
     {
      "index": 3,
-     "original": "[g013]ミ[g015]のビンち[g01A]うだい",
-     "translation": null
+     "original": "ナミダのビンちょうだい",
+     "translation": "Give me a bottle of tears."
     },
     {
      "index": 4,
@@ -22568,8 +22717,8 @@
     },
     {
      "index": 7,
-     "original": "イカ[g015]を作ろう!",
-     "translation": null
+     "original": "イカダを作ろう!",
+     "translation": "Let's build a raft!"
     },
     {
      "index": 8,
@@ -22583,8 +22732,8 @@
     },
     {
      "index": 10,
-     "original": "かわいい?魔王ミ[g041][g042]",
-     "translation": null
+     "original": "かわいい?魔王ミズノ",
+     "translation": "Cute? Demon King Mizuno"
     },
     {
      "index": 11,
@@ -22653,8 +22802,8 @@
     },
     {
      "index": 24,
-     "original": "やしきの宝[g069]?",
-     "translation": null
+     "original": "やしきの宝物?",
+     "translation": "Yashiki's treasure?"
     },
     {
      "index": 25,
@@ -22678,8 +22827,8 @@
     },
     {
      "index": 29,
-     "original": "怪[g069]?勝てるかな?",
-     "translation": null
+     "original": "怪物?勝てるかな?",
+     "translation": "Monster? Can I win?"
     },
     {
      "index": 30,
@@ -22693,8 +22842,8 @@
     },
     {
      "index": 32,
-     "original": "バク[g015]ンの作り方",
-     "translation": null
+     "original": "バクダンの作り方",
+     "translation": "How to make Bakudan"
     }
    ]
   },
@@ -23310,8 +23459,8 @@
     },
     {
      "index": 121,
-     "original": "除草[g09C]をつかった",
-     "translation": null
+     "original": "除草剤をつかった",
+     "translation": "Used herbicides."
     },
     {
      "index": 122,
@@ -23942,23 +24091,23 @@
     },
     {
      "index": 16,
-     "original": "息子[g053]、どこに…",
-     "translation": null
+     "original": "息子よ、どこに…",
+     "translation": "My son, where are you..."
     },
     {
      "index": 17,
-     "original": "カ[g056]ラの大事なもの",
-     "translation": null
+     "original": "カシラの大事なもの",
+     "translation": "Kashira's important things."
     },
     {
      "index": 18,
-     "original": "丈夫なハ[g05B]ガネ",
-     "translation": null
+     "original": "丈夫なハリガネ",
+     "translation": "Strong wire."
     },
     {
      "index": 19,
-     "original": "[g056]ーフマン[g056]ョン",
-     "translation": null
+     "original": "シーフマンション",
+     "translation": "Seaf Mansion"
     }
    ]
   },
@@ -24574,8 +24723,8 @@
     },
     {
      "index": 121,
-     "original": "除草[g09C]をつかった",
-     "translation": null
+     "original": "除草剤をつかった",
+     "translation": "Used herbicides."
     },
     {
      "index": 122,
@@ -25021,8 +25170,8 @@
     },
     {
      "index": 24,
-     "original": "やしきの宝[g063]?",
-     "translation": null
+     "original": "やしきの宝物?",
+     "translation": "Yashiki's treasure?"
     },
     {
      "index": 25,
@@ -25046,8 +25195,8 @@
     },
     {
      "index": 29,
-     "original": "怪[g063]?勝てるかな?",
-     "translation": null
+     "original": "怪物?勝てるかな?",
+     "translation": "Monster? Can I win?"
     },
     {
      "index": 30,
@@ -25061,8 +25210,8 @@
     },
     {
      "index": 32,
-     "original": "ミ[g079]オンの塔",
-     "translation": null
+     "original": "ミリオンの塔",
+     "translation": "Million Tower"
     }
    ]
   },
@@ -25578,8 +25727,8 @@
     },
     {
      "index": 101,
-     "original": "ほっ ほっ ほっ・・・\n何を言うとる・・・\n\nいちばん心配しとったクセに・・・\n[g0D4]直じゃないのぉ・・・",
-     "translation": null
+     "original": "ほっ ほっ ほっ・・・\n何を言うとる・・・\n\nいちばん心配しとったクセに・・・\n素直じゃないのぉ・・・",
+     "translation": "Ho ho ho...\nWhat are you saying...?\n\nYou were the most worried, weren't you...?\nYou're not being honest, are you...?"
     },
     {
      "index": 102,
@@ -26255,8 +26404,8 @@
     },
     {
      "index": 121,
-     "original": "除草[g09C]をつかった",
-     "translation": null
+     "original": "除草剤をつかった",
+     "translation": "Used herbicides."
     },
     {
      "index": 122,
@@ -26585,18 +26734,18 @@
     },
     {
      "index": 187,
-     "original": "・・・う〜わ!!\nまた[g0DE]が破けたじゃねえか・・・\n\nちょっと 力をこめりゃぁ\nこのザマだ\n\nおぁ? 誰だオマエは?\n・・・なにィ!\nオレをかたづけるだ〜?\n\nハハハハ・・・オレのこの筋肉と\n破けた[g0DE]を見てから言いな・・・\nそんな細い体で 何ができる?\n\n帰れ、帰れ! オレは新しい[g0DE]に\n若替えなきゃなんねえんだ・・・\n\n・・・何だ、まだいたのか\n・・・・・・\nしつこいヤツは嫌われるゼ\n\nシャアネエ!\nそのズボンがボロボロになっても\n文句は受け付けねえからな!!",
-     "translation": null
+     "original": "・・・う〜わ!!\nまた服が破けたじゃねえか・・・\n\nちょっと 力をこめりゃぁ\nこのザマだ\n\nおぁ? 誰だオマエは?\n・・・なにィ!\nオレをかたづけるだ〜?\n\nハハハハ・・・オレのこの筋肉と\n破けた服を見てから言いな・・・\nそんな細い体で 何ができる?\n\n帰れ、帰れ! オレは新しい服に\n若替えなきゃなんねえんだ・・・\n\n・・・何だ、まだいたのか\n・・・・・・\nしつこいヤツは嫌われるゼ\n\nシャアネエ!\nそのズボンがボロボロになっても\n文句は受け付けねえからな!!",
+     "translation": "...Ugh!!\nMy clothes got torn again, didn't they...\n\nJust put a little strength into it,\nand look at this state.\n\nOh? Who are you?\n...What?!\nAre you trying to clean me up?\n\nHahahaha... look at my muscles and\nthe torn clothes before you say that...\nWhat can you do with such a thin body?\n\nGo home, go home! I have to change into new clothes\nto look younger...\n\n...What, you're still here?\n...\nPersistent people are disliked.\n\nShut up!\nEven if those pants get completely torn,\nI won't accept any complaints!!"
     },
     {
      "index": 188,
-     "original": "チョット!\n気持ちよく ネてたのに\n何なのよアンタ\n\n・・・あ!! レディーの前では\nちゃんと[g0DE]をきなさいよ・・・\nもぉ〜まったくぅぅぅ\n\n・・・ぬぁ!!\nまた ハナが上を向いてるわ!!\n\n前はうつむいてネたから上に向いたけど・・・\nなんで〜、今日はうつむいて\nネてないのにィィィィ!!\n\nこうなったら、 アタシの すがおを見た\nアンタに八つ当たりしてやるわ\nカクゴしなさい!!!",
-     "translation": null
+     "original": "チョット!\n気持ちよく ネてたのに\n何なのよアンタ\n\n・・・あ!! レディーの前では\nちゃんと服をきなさいよ・・・\nもぉ〜まったくぅぅぅ\n\n・・・ぬぁ!!\nまた ハナが上を向いてるわ!!\n\n前はうつむいてネたから上に向いたけど・・・\nなんで〜、今日はうつむいて\nネてないのにィィィィ!!\n\nこうなったら、 アタシの すがおを見た\nアンタに八つ当たりしてやるわ\nカクゴしなさい!!!",
+     "translation": "Hey!\nI was sleeping comfortably,\nbut what the hell are you doing?\n\n...Ah!! You should wear proper clothes in front of ladies...\nSeriously, what a mess!\n\n...Ngh!!\nAgain, Hana's face is turned upwards!!\n\nBefore, she was lying face down when she slept, so her head turned up...\nBut today, she's lying face down\nand not sleeping at all!!\n\nAt this point, I'll take a look at your face\nand give you a piece of my mind!\nGet dressed properly!!!"
     },
     {
      "index": 189,
-     "original": "ルルル〜〜なぜ空は青いのか〜〜それは\nカンタンな事〜〜〜ラララ〜〜\n青いという コトバがあるから〜〜〜\n\nサンキュ! サンキュ!!\nみんなの アンコールにこたえて\n今日はスペシャルサービス、二番も歌うよ!!\n\nワン、トゥ、スリー、フォー、ドわぉ!!\nおどろいた・・・ そこのアンタ\nいつからここに来てたんだ?\n\n・・・けっこう前から?キャ〜はずかしい!!\nどうやらワタシのエンジ[g102]ルボイスが\n聞かれてしまったようだなぁ・・・\n\nしかたがない、このワタシがアンタに\n本をよんであげよう・・・\nえ・・・ちがうって?\n\nフッ、ちょっとオチャメしただけだって・・\nここからは本当の気持ちと 書いて本気だ!!\nかくごしたまえ!",
-     "translation": null
+     "original": "ルルル〜〜なぜ空は青いのか〜〜それは\nカンタンな事〜〜〜ラララ〜〜\n青いという コトバがあるから〜〜〜\n\nサンキュ! サンキュ!!\nみんなの アンコールにこたえて\n今日はスペシャルサービス、二番も歌うよ!!\n\nワン、トゥ、スリー、フォー、ドわぉ!!\nおどろいた・・・ そこのアンタ\nいつからここに来てたんだ?\n\n・・・けっこう前から?キャ〜はずかしい!!\nどうやらワタシのエンジェルボイスが\n聞かれてしまったようだなぁ・・・\n\nしかたがない、このワタシがアンタに\n本をよんであげよう・・・\nえ・・・ちがうって?\n\nフッ、ちょっとオチャメしただけだって・・\nここからは本当の気持ちと 書いて本気だ!!\nかくごしたまえ!",
+     "translation": "Lululu~ Why is the sky blue~ It's\na simple thing~ Lalala~\nBecause there's a word called \"blue\"~\n\nThank you! Thank you!!\nResponding to everyone's encore,\ntoday I'll give a special service and sing the second verse too!!\n\nOne, two, three, four, do wa!!\nI was surprised... you over there\nWhen did you come here?\n\n...Quite a while ago? Kyaa~ so embarrassing!!\nIt seems my angel voice\nhas been heard...\n\nWell then, I'll read you a book...\nEh... no, that's wrong?\n\nHmph, I just made a little joke...\nFrom here on out, I'll write my true feelings and be serious!!\nPlease read it!"
     },
     {
      "index": 190,
@@ -26797,8 +26946,8 @@
     },
     {
      "index": 24,
-     "original": "やしきの宝[g063]?",
-     "translation": null
+     "original": "やしきの宝物?",
+     "translation": "Yashiki's treasure?"
     },
     {
      "index": 25,
@@ -26822,8 +26971,8 @@
     },
     {
      "index": 29,
-     "original": "怪[g063]?勝てるかな?",
-     "translation": null
+     "original": "怪物?勝てるかな?",
+     "translation": "Monster? Can I win?"
     },
     {
      "index": 30,
@@ -26832,13 +26981,13 @@
     },
     {
      "index": 31,
-     "original": "大ト[g076]の山 ",
-     "translation": null
+     "original": "大トリの山 ",
+     "translation": "The Grand Finale Mountain"
     },
     {
      "index": 32,
-     "original": "マ[g079]マのどうくつ",
-     "translation": null
+     "original": "マグマのどうくつ",
+     "translation": "Magma's Cave"
     },
     {
      "index": 33,
@@ -26847,13 +26996,13 @@
     },
     {
      "index": 34,
-     "original": "[g07E]ーフマン[g07E]ョン",
-     "translation": null
+     "original": "シーフマンション",
+     "translation": "Seaf Mansion"
     },
     {
      "index": 35,
-     "original": "ジ[g080]ン[g079]ル ",
-     "translation": null
+     "original": "ジャングル ",
+     "translation": "Jungle"
     },
     {
      "index": 36,
@@ -27209,53 +27358,53 @@
     },
     {
      "index": 67,
-     "original": "[g077]字玉1をつかった",
-     "translation": null
+     "original": "数字玉1をつかった",
+     "translation": "I used a numbered ball 1."
     },
     {
      "index": 68,
-     "original": "[g077]字玉2をつかった",
-     "translation": null
+     "original": "数字玉2をつかった",
+     "translation": "I used a numbered ball 2."
     },
     {
      "index": 69,
-     "original": "[g077]字玉3をつかった",
-     "translation": null
+     "original": "数字玉3をつかった",
+     "translation": "I used a numbered ball 3."
     },
     {
      "index": 70,
-     "original": "[g077]字玉4をつかった",
-     "translation": null
+     "original": "数字玉4をつかった",
+     "translation": "I used a numbered ball 4."
     },
     {
      "index": 71,
-     "original": "[g077]字玉5をつかった",
-     "translation": null
+     "original": "数字玉5をつかった",
+     "translation": "I used a numbered ball 5."
     },
     {
      "index": 72,
-     "original": "[g077]字玉6をつかった",
-     "translation": null
+     "original": "数字玉6をつかった",
+     "translation": "I used a numbered ball 6."
     },
     {
      "index": 73,
-     "original": "[g077]字玉7をつかった",
-     "translation": null
+     "original": "数字玉7をつかった",
+     "translation": "I used a numbered ball 7."
     },
     {
      "index": 74,
-     "original": "[g077]字玉8をつかった",
-     "translation": null
+     "original": "数字玉8をつかった",
+     "translation": "I used a numbered ball 8."
     },
     {
      "index": 75,
-     "original": "[g077]字玉9をつかった",
-     "translation": null
+     "original": "数字玉9をつかった",
+     "translation": "I used a numbered ball 9."
     },
     {
      "index": 76,
-     "original": "[g077]字玉10をつかった",
-     "translation": null
+     "original": "数字玉10をつかった",
+     "translation": "I used a numbered ball 10."
     },
     {
      "index": 77,
@@ -27479,8 +27628,8 @@
     },
     {
      "index": 121,
-     "original": "除草[g09C]をつかった",
-     "translation": null
+     "original": "除草剤をつかった",
+     "translation": "Used herbicides."
     },
     {
      "index": 122,
@@ -27819,8 +27968,8 @@
     },
     {
      "index": 189,
-     "original": "ウワサじゃ\n代部で6つのらくがき岩があって、\n\nそこに書かれてあるナゾをとけば\nたくさんの お宝が\n手に入るらしいんだけど\n\n・・・なんかむずかしそうだなぁ\n・・・が1・・・ーが5の・・・\n\n20進[g077]とかなんとか・・・\nおれにはとても わかんないよ・・・",
-     "translation": null
+     "original": "ウワサじゃ\n代部で6つのらくがき岩があって、\n\nそこに書かれてあるナゾをとけば\nたくさんの お宝が\n手に入るらしいんだけど\n\n・・・なんかむずかしそうだなぁ\n・・・が1・・・ーが5の・・・\n\n20進数とかなんとか・・・\nおれにはとても わかんないよ・・・",
+     "translation": "It's just a rumor,\nbut there are six scribbled rocks in the Daibu area,\nand if you solve the riddles written on them,\nyou can apparently obtain many treasures.\n...It seems difficult though...\n...but 1... but 5...\n\nSomething about base 20 and something else...\nI really don't understand it..."
     },
     {
      "index": 190,
@@ -27864,8 +28013,8 @@
     },
     {
      "index": 198,
-     "original": "よぉ! あの時のボウズじゃないか・・・\n\nどうだい? この時計台・・・\nなかなか りっぱなもんだろ?\n\nこの時計台と鉄の城、そして加工場の3つを合わせて \n[g105]明の国って言うんだよ\n\n・・・まぁ、[g105]明って言っても キカイは み〜んな \n止まっちまってるけどな・・・・・・\n\n・・・ああ、それはそうと・・・\nキミのおかげで 大事なボウシを なくさずにすんだよ\n\n・・・ほんとうに ありがとうな・・・\n\n・・・なにか お礼が したいんだけど・・・\n・・・そうだ! \n\nおれの じまんのジュースでも飲んでってくれよ\n・・・ウマイんだぜ〜",
-     "translation": null
+     "original": "よぉ! あの時のボウズじゃないか・・・\n\nどうだい? この時計台・・・\nなかなか りっぱなもんだろ?\n\nこの時計台と鉄の城、そして加工場の3つを合わせて \n文明の国って言うんだよ\n\n・・・まぁ、文明って言っても キカイは み〜んな \n止まっちまってるけどな・・・・・・\n\n・・・ああ、それはそうと・・・\nキミのおかげで 大事なボウシを なくさずにすんだよ\n\n・・・ほんとうに ありがとうな・・・\n\n・・・なにか お礼が したいんだけど・・・\n・・・そうだ! \n\nおれの じまんのジュースでも飲んでってくれよ\n・・・ウマイんだぜ〜",
+     "translation": "Hey! Isn't that the same old fool from back then...?\n\nHow about this clock tower...?\nIt's quite impressive, isn't it?\n\nWhen you combine this clock tower, the iron castle, and the processing plant,\nthey call it a civilized country.\n\n...Well, even if you call it civilization, all the machines are\ncompletely stopped though...\n\n...Oh, by the way...\nThanks to you, I didn't lose my precious hat.\n\n...Really, thank you...\n\n...I want to do something to show my gratitude...\n...That's right!\n\nPlease drink some of my Jiman juice.\n...It's delicious~"
     },
     {
      "index": 199,
@@ -28021,13 +28170,13 @@
     },
     {
      "index": 2,
-     "original": "仲良くし[g011]う[g011]",
-     "translation": null
+     "original": "仲良くしようよ",
+     "translation": "Let's get along."
     },
     {
      "index": 3,
-     "original": "[g013]知りの木は知っている",
-     "translation": null
+     "original": "物知りの木は知っている",
+     "translation": "a wise man knows what to do"
     },
     {
      "index": 4,
@@ -28061,8 +28210,8 @@
     },
     {
      "index": 10,
-     "original": "かわいい?魔王ミ[g040][g041]",
-     "translation": null
+     "original": "かわいい?魔王ミズノ",
+     "translation": "Cute? Demon King Mizuno"
     }
    ]
   },
@@ -28333,8 +28482,8 @@
     },
     {
      "index": 52,
-     "original": "雨の[g069]をつかった",
-     "translation": null
+     "original": "雨の素をつかった",
+     "translation": "I used the rain element."
     },
     {
      "index": 53,
@@ -28678,8 +28827,8 @@
     },
     {
      "index": 121,
-     "original": "除草[g09C]をつかった",
-     "translation": null
+     "original": "除草剤をつかった",
+     "translation": "Used herbicides."
     },
     {
      "index": 122,
@@ -29248,8 +29397,8 @@
     },
     {
      "index": 235,
-     "original": "・・・・・・う〜〜〜ん・・・・・\n\n鉄の城も こうなっちまうと \nどうしようもねぇなぁ・・・\n\n・・・・・・う〜〜〜ん・・・・・んっ?\n・・・なんだ? 聞いてたのか・・・え?\n\n・・・たしかに このトビラの むこうが\nキカイ室だけど・・・ホラ、見てのとおり\n・・・これじゃ開けるのは とてもムリだよ・・・\n\n・・・長いあいだ ほったらかしに しといたからなぁ\n・・・ついには、中にあるハツデンキまで止まっちまって\nこのありさまだよ・・・\n\nまったく、[g11B]明の国の名がなくぜ・・・",
-     "translation": null
+     "original": "・・・・・・う〜〜〜ん・・・・・\n\n鉄の城も こうなっちまうと \nどうしようもねぇなぁ・・・\n\n・・・・・・う〜〜〜ん・・・・・んっ?\n・・・なんだ? 聞いてたのか・・・え?\n\n・・・たしかに このトビラの むこうが\nキカイ室だけど・・・ホラ、見てのとおり\n・・・これじゃ開けるのは とてもムリだよ・・・\n\n・・・長いあいだ ほったらかしに しといたからなぁ\n・・・ついには、中にあるハツデンキまで止まっちまって\nこのありさまだよ・・・\n\nまったく、文明の国の名がなくぜ・・・",
+     "translation": "...Uuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuu"
     },
     {
      "index": 236,
@@ -29293,8 +29442,8 @@
     },
     {
      "index": 244,
-     "original": "バクダンの作り方?\n・・・はあっ!はあっ!はっ!\n・・・おいおい、本気にしたのか?\n\n[g069]直なヤツだな・・・\nまぁ、たしかに いままでに\nそこまでしたヤツはいないからな・・・\n\n・・・よし! 一発やってみるか!\nそのかわり・・・いくつか\nそろえてもらいたいモノがあるんだ・・・",
-     "translation": null
+     "original": "バクダンの作り方?\n・・・はあっ!はあっ!はっ!\n・・・おいおい、本気にしたのか?\n\n素直なヤツだな・・・\nまぁ、たしかに いままでに\nそこまでしたヤツはいないからな・・・\n\n・・・よし! 一発やってみるか!\nそのかわり・・・いくつか\nそろえてもらいたいモノがあるんだ・・・",
+     "translation": "How to make a Bakudan?\n...Hah! Hah! Hah!\n...Hey, did you really take this seriously?\n\nYou're such an honest guy...\nWell, to be fair, no one's ever gone that far before...\n\n...Alright! Let's give it a shot!\nIn exchange... I have a few things I'd like you to gather for me..."
     },
     {
      "index": 245,
@@ -29303,8 +29452,8 @@
     },
     {
      "index": 246,
-     "original": "ちょっとまった!\n電気ウナギを[g069]手でつかまえる気か?\n\n・・・まったく あわてものだな・・・\nほら、これを持っていきな・・・",
-     "translation": null
+     "original": "ちょっとまった!\n電気ウナギを素手でつかまえる気か?\n\n・・・まったく あわてものだな・・・\nほら、これを持っていきな・・・",
+     "translation": "Wait a minute!\nAre you trying to catch an electric eel with your bare hands?\n\n...What a scatterbrain you are...\nHere, take this with you..."
     },
     {
      "index": 247,
@@ -29313,8 +29462,8 @@
     },
     {
      "index": 248,
-     "original": "・・・よぉしっ! これでバクダンの[g069]を\n作ることができるぞ!\n・・・そうだ!\n\nついでといっちゃあ何だが・・・\nわしがバクダンの[g069]を作っている間に\nヤシの実を取ってきてくれないか?\n\nたしかジャングルの木のどれかに\nついていたハズなんだ・・・\n\nそのヤシのカラにバクダンの[g069]をつめれば\nめでたく完成だ!",
-     "translation": null
+     "original": "・・・よぉしっ! これでバクダンの素を\n作ることができるぞ!\n・・・そうだ!\n\nついでといっちゃあ何だが・・・\nわしがバクダンの素を作っている間に\nヤシの実を取ってきてくれないか?\n\nたしかジャングルの木のどれかに\nついていたハズなんだ・・・\n\nそのヤシのカラにバクダンの素をつめれば\nめでたく完成だ!",
+     "translation": "...Alright! With this, I can make the ingredients for a bomb!\n...That's right!\n\nIt's a bit of a bother to ask, but...\nwhile I'm making the ingredients for the bomb,\ncould you go get some coconuts?\n\nI think they were attached to one of the trees in the jungle...\n\nIf you stuff the bomb ingredients into the coconut shell,\nit will be completed happily!"
     },
     {
      "index": 249,
@@ -29323,8 +29472,8 @@
     },
     {
      "index": 250,
-     "original": "このバクダンの[g069]を\nヤシのカラにつめてと\n・・・よし、完成だ!!",
-     "translation": null
+     "original": "このバクダンの素を\nヤシのカラにつめてと\n・・・よし、完成だ!!",
+     "translation": "I stuffed the base of this Bakudan into the palm of my hand...\n...Alright, it's finished!!"
     },
     {
      "index": 251,
@@ -29413,8 +29562,8 @@
     },
     {
      "index": 268,
-     "original": "おいらも\nほんとうは むねをはって・・・\n\nここは[g11B]明の国です!って\n言いたいんだ",
-     "translation": null
+     "original": "おいらも\nほんとうは むねをはって・・・\n\nここは文明の国です!って\n言いたいんだ",
+     "translation": "I also\nactually, I'm putting on my chest...\n\nThis is a civilized country! That's what I want to say."
     },
     {
      "index": 269,
@@ -29480,13 +29629,13 @@
     },
     {
      "index": 7,
-     "original": "バク[g032]ンの作り方",
-     "translation": null
+     "original": "バクダンの作り方",
+     "translation": "How to make Bakudan"
     },
     {
      "index": 8,
-     "original": "電気うな[g03A]を捕まえろ!",
-     "translation": null
+     "original": "電気うなぎを捕まえろ!",
+     "translation": "Catch the electric eel!"
     },
     {
      "index": 9,
@@ -29495,8 +29644,8 @@
     },
     {
      "index": 10,
-     "original": "イカ[g032]にのろう!",
-     "translation": null
+     "original": "イカダにのろう!",
+     "translation": "Let's get on the raft!"
     },
     {
      "index": 11,
@@ -29772,8 +29921,8 @@
     },
     {
      "index": 52,
-     "original": "雨の[g069]をつかった",
-     "translation": null
+     "original": "雨の素をつかった",
+     "translation": "I used the rain element."
     },
     {
      "index": 53,
@@ -29847,53 +29996,53 @@
     },
     {
      "index": 67,
-     "original": "[g077]字玉1をつかった",
-     "translation": null
+     "original": "数字玉1をつかった",
+     "translation": "I used a numbered ball 1."
     },
     {
      "index": 68,
-     "original": "[g077]字玉2をつかった",
-     "translation": null
+     "original": "数字玉2をつかった",
+     "translation": "I used a numbered ball 2."
     },
     {
      "index": 69,
-     "original": "[g077]字玉3をつかった",
-     "translation": null
+     "original": "数字玉3をつかった",
+     "translation": "I used a numbered ball 3."
     },
     {
      "index": 70,
-     "original": "[g077]字玉4をつかった",
-     "translation": null
+     "original": "数字玉4をつかった",
+     "translation": "I used a numbered ball 4."
     },
     {
      "index": 71,
-     "original": "[g077]字玉5をつかった",
-     "translation": null
+     "original": "数字玉5をつかった",
+     "translation": "I used a numbered ball 5."
     },
     {
      "index": 72,
-     "original": "[g077]字玉6をつかった",
-     "translation": null
+     "original": "数字玉6をつかった",
+     "translation": "I used a numbered ball 6."
     },
     {
      "index": 73,
-     "original": "[g077]字玉7をつかった",
-     "translation": null
+     "original": "数字玉7をつかった",
+     "translation": "I used a numbered ball 7."
     },
     {
      "index": 74,
-     "original": "[g077]字玉8をつかった",
-     "translation": null
+     "original": "数字玉8をつかった",
+     "translation": "I used a numbered ball 8."
     },
     {
      "index": 75,
-     "original": "[g077]字玉9をつかった",
-     "translation": null
+     "original": "数字玉9をつかった",
+     "translation": "I used a numbered ball 9."
     },
     {
      "index": 76,
-     "original": "[g077]字玉10をつかった",
-     "translation": null
+     "original": "数字玉10をつかった",
+     "translation": "I used a numbered ball 10."
     },
     {
      "index": 77,
@@ -30117,8 +30266,8 @@
     },
     {
      "index": 121,
-     "original": "除草[g09C]をつかった",
-     "translation": null
+     "original": "除草剤をつかった",
+     "translation": "Used herbicides."
     },
     {
      "index": 122,
@@ -30462,8 +30611,8 @@
     },
     {
      "index": 190,
-     "original": "[g0C3]明の国\n\nセーブしますか?\n  はい→× いいえ→×",
-     "translation": null
+     "original": "文明の国\n\nセーブしますか?\n  はい→× いいえ→×",
+     "translation": "Civilized Country\n\nSave?\nYes → × No → ×"
     },
     {
      "index": 191,
@@ -30522,8 +30671,8 @@
     },
     {
      "index": 202,
-     "original": "木・石・鉄・・・それぞれの[g069]村をいかすことが\n大事だよな・・・\nま、ようは つかいようってことだ",
-     "translation": null
+     "original": "木・石・鉄・・・それぞれの素村をいかすことが\n大事だよな・・・\nま、ようは つかいようってことだ",
+     "translation": "Wood, stone, iron... it's important to make use of each raw material village, right?\nWell, basically, it's about how you use them."
     },
     {
      "index": 203,
@@ -30679,13 +30828,13 @@
     },
     {
      "index": 2,
-     "original": "仲良くし[g011]う[g011]",
-     "translation": null
+     "original": "仲良くしようよ",
+     "translation": "Let's get along."
     },
     {
      "index": 3,
-     "original": "[g013]ミ[g015]のビンち[g01A]うだい",
-     "translation": null
+     "original": "ナミダのビンちょうだい",
+     "translation": "Give me a bottle of tears."
     },
     {
      "index": 4,
@@ -30704,8 +30853,8 @@
     },
     {
      "index": 7,
-     "original": "イカ[g015]を作ろう!",
-     "translation": null
+     "original": "イカダを作ろう!",
+     "translation": "Let's build a raft!"
     },
     {
      "index": 8,
@@ -30719,8 +30868,8 @@
     },
     {
      "index": 10,
-     "original": "かわいい?魔王ミ[g041][g042]",
-     "translation": null
+     "original": "かわいい?魔王ミズノ",
+     "translation": "Cute? Demon King Mizuno"
     },
     {
      "index": 11,
@@ -30784,8 +30933,8 @@
     },
     {
      "index": 23,
-     "original": "やしきの宝[g066]?",
-     "translation": null
+     "original": "やしきの宝物?",
+     "translation": "Yashiki's treasure?"
     },
     {
      "index": 24,
@@ -30809,8 +30958,8 @@
     },
     {
      "index": 28,
-     "original": "怪[g066]?勝てるかな?",
-     "translation": null
+     "original": "怪物?勝てるかな?",
+     "translation": "Monster? Can I win?"
     },
     {
      "index": 29,
@@ -30819,8 +30968,8 @@
     },
     {
      "index": 30,
-     "original": "[g066]知りの木は知っている",
-     "translation": null
+     "original": "物知りの木は知っている",
+     "translation": "a wise man knows what to do"
     },
     {
      "index": 31,
@@ -30864,13 +31013,13 @@
     },
     {
      "index": 39,
-     "original": "バク[g015]ンの作り方",
-     "translation": null
+     "original": "バクダンの作り方",
+     "translation": "How to make Bakudan"
     },
     {
      "index": 40,
-     "original": "電気うな[g092]を捕まえろ!",
-     "translation": null
+     "original": "電気うなぎを捕まえろ!",
+     "translation": "Catch the electric eel!"
     },
     {
      "index": 41,
@@ -30889,8 +31038,8 @@
     },
     {
      "index": 44,
-     "original": "魔王の探し[g066]",
-     "translation": null
+     "original": "魔王の探し物",
+     "translation": "The Demon King's Search"
     },
     {
      "index": 45,
@@ -31531,8 +31680,8 @@
     },
     {
      "index": 121,
-     "original": "除草[g09E]をつかった",
-     "translation": null
+     "original": "除草剤をつかった",
+     "translation": "Used herbicides."
     },
     {
      "index": 122,
@@ -32831,8 +32980,8 @@
     },
     {
      "index": 381,
-     "original": "ケガを早く治すのに「ナオリ草」があれば\nいいんだけど・・・\n\nあれがあるのは\nたしか大トリの山だったかしら\n\nでも\nあそこは風が強くてキケンだからね[g147]・・・",
-     "translation": null
+     "original": "ケガを早く治すのに「ナオリ草」があれば\nいいんだけど・・・\n\nあれがあるのは\nたしか大トリの山だったかしら\n\nでも\nあそこは風が強くてキケンだからねェ・・・",
+     "translation": "It would be nice if there were \"Naori grass\" to heal injuries quickly...\n\nI think that's on the mountain of the big bird, right?\n\nBut\nthat place is windy and dangerous, so no..."
     },
     {
      "index": 382,
@@ -32841,8 +32990,8 @@
     },
     {
      "index": 383,
-     "original": "あとは おいしいものでも たべさせて\nゆっくりしとけば 元気になるさ・・・\n\nそうそう おいしいものと言えば「百識の木の実」!\nあたしも むかしたべたことがあるんだけど\nあれは おいしかったね[g147]\n\nまた たべてみたいよ・・・・・",
-     "translation": null
+     "original": "あとは おいしいものでも たべさせて\nゆっくりしとけば 元気になるさ・・・\n\nそうそう おいしいものと言えば「百識の木の実」!\nあたしも むかしたべたことがあるんだけど\nあれは おいしかったねェ\n\nまた たべてみたいよ・・・・・",
+     "translation": "After that, let's have something delicious to eat.\nIf we just relax, we'll feel better...\n\nOh, speaking of delicious things, \"Hyakushiki no Kinami\"!\nI once ate it too, and it was really tasty.\n\nI want to eat it again..."
     },
     {
      "index": 384,
@@ -32866,8 +33015,8 @@
     },
     {
      "index": 388,
-     "original": "ね[g147] それはそうと\nバロン 少しおおきくなったように\n思わないかい?\n\n成長が早いのか\n気のせいか・・・・・",
-     "translation": null
+     "original": "ねェ それはそうと\nバロン 少しおおきくなったように\n思わないかい?\n\n成長が早いのか\n気のせいか・・・・・",
+     "translation": "Hey, speaking of which,\nBaron, don't you think he's gotten a little bigger?\nIs he growing fast?\nOr is it just my imagination...?"
     },
     {
      "index": 389,
@@ -32876,8 +33025,8 @@
     },
     {
      "index": 390,
-     "original": "あらっ?!\nバロンはあんたといっしょに行きたい\nみたいだね[g147]\n\nつれてってやんなよ",
-     "translation": null
+     "original": "あらっ?!\nバロンはあんたといっしょに行きたい\nみたいだねェ\n\nつれてってやんなよ",
+     "translation": "Oh?!\nBaron wants to go with you.\nIt seems like it.\n\nDon't take him."
     },
     {
      "index": 391,
@@ -33253,8 +33402,8 @@
     },
     {
      "index": 12,
-     "original": "大ト[g039]の山へ",
-     "translation": null
+     "original": "大トリの山へ",
+     "translation": "To the mountain of the great bird."
     },
     {
      "index": 13,
@@ -33288,8 +33437,8 @@
     },
     {
      "index": 19,
-     "original": "ケガに効く [g051]オ[g039]草",
-     "translation": null
+     "original": "ケガに効く ナオリ草",
+     "translation": "Naori grass effective for injuries"
     },
     {
      "index": 20,
@@ -33308,18 +33457,18 @@
     },
     {
      "index": 23,
-     "original": "やしきの宝[g061]?",
-     "translation": null
+     "original": "やしきの宝物?",
+     "translation": "Yashiki's treasure?"
     },
     {
      "index": 24,
-     "original": "花をさかせ[g064]う!",
-     "translation": null
+     "original": "花をさかせよう!",
+     "translation": "Let's make flowers bloom!"
     },
     {
      "index": 25,
-     "original": "APスロットマ[g069]ーン",
-     "translation": null
+     "original": "APスロットマシーン",
+     "translation": "AP Slot Machine"
     },
     {
      "index": 26,
@@ -33343,8 +33492,8 @@
     },
     {
      "index": 30,
-     "original": "丈夫なハ[g039]ガネ",
-     "translation": null
+     "original": "丈夫なハリガネ",
+     "translation": "Strong wire."
     },
     {
      "index": 31,
@@ -33363,13 +33512,13 @@
     },
     {
      "index": 34,
-     "original": " 友[g082]7人 ",
-     "translation": null
+     "original": " 友達7人 ",
+     "translation": "7 friends"
     },
     {
      "index": 35,
-     "original": "夢?幻?宝[g061]庫を探せ",
-     "translation": null
+     "original": "夢?幻?宝物庫を探せ",
+     "translation": "Dream? Illusion? Search for the treasure chest."
     },
     {
      "index": 36,
@@ -33383,8 +33532,8 @@
     },
     {
      "index": 38,
-     "original": "い[g064]っ!穴ほり名人!",
-     "translation": null
+     "original": "いよっ!穴ほり名人!",
+     "translation": "Yo! Hole Digging Master!"
     }
    ]
   },
@@ -34000,8 +34149,8 @@
     },
     {
      "index": 121,
-     "original": "除草[g09E]をつかった",
-     "translation": null
+     "original": "除草剤をつかった",
+     "translation": "Used herbicides."
     },
     {
      "index": 122,
@@ -35300,8 +35449,8 @@
     },
     {
      "index": 381,
-     "original": "ケガを早く治すのに「ナオリ草」があれば\nいいんだけど・・・\n\nあれがあるのは\nたしか大トリの山だったかしら\n\nでも\nあそこは風が強くてキケンだからね[g147]・・・",
-     "translation": null
+     "original": "ケガを早く治すのに「ナオリ草」があれば\nいいんだけど・・・\n\nあれがあるのは\nたしか大トリの山だったかしら\n\nでも\nあそこは風が強くてキケンだからねェ・・・",
+     "translation": "It would be nice if there were \"Naori grass\" to heal injuries quickly...\n\nI think that's on the mountain of the big bird, right?\n\nBut\nthat place is windy and dangerous, so no..."
     },
     {
      "index": 382,
@@ -35310,8 +35459,8 @@
     },
     {
      "index": 383,
-     "original": "あとは おいしいものでも たべさせて\nゆっくりしとけば 元気になるさ・・・\n\nそうそう おいしいものと言えば「百識の木の実」!\nあたしも むかしたべたことがあるんだけど\nあれは おいしかったね[g147]\n\nまた たべてみたいよ・・・・・",
-     "translation": null
+     "original": "あとは おいしいものでも たべさせて\nゆっくりしとけば 元気になるさ・・・\n\nそうそう おいしいものと言えば「百識の木の実」!\nあたしも むかしたべたことがあるんだけど\nあれは おいしかったねェ\n\nまた たべてみたいよ・・・・・",
+     "translation": "After that, let's have something delicious to eat.\nIf we just relax, we'll feel better...\n\nOh, speaking of delicious things, \"Hyakushiki no Kinami\"!\nI once ate it too, and it was really tasty.\n\nI want to eat it again..."
     },
     {
      "index": 384,
@@ -35335,8 +35484,8 @@
     },
     {
      "index": 388,
-     "original": "ね[g147] それはそうと\nバロン 少しおおきくなったように\n思わないかい?\n\n成長が早いのか\n気のせいか・・・・・",
-     "translation": null
+     "original": "ねェ それはそうと\nバロン 少しおおきくなったように\n思わないかい?\n\n成長が早いのか\n気のせいか・・・・・",
+     "translation": "Hey, speaking of which,\nBaron, don't you think he's gotten a little bigger?\nIs he growing fast?\nOr is it just my imagination...?"
     },
     {
      "index": 389,
@@ -35345,8 +35494,8 @@
     },
     {
      "index": 390,
-     "original": "あらっ?!\nバロンはあんたといっしょに行きたい\nみたいだね[g147]\n\nつれてってやんなよ",
-     "translation": null
+     "original": "あらっ?!\nバロンはあんたといっしょに行きたい\nみたいだねェ\n\nつれてってやんなよ",
+     "translation": "Oh?!\nBaron wants to go with you.\nIt seems like it.\n\nDon't take him."
     },
     {
      "index": 391,
@@ -35722,8 +35871,8 @@
     },
     {
      "index": 12,
-     "original": "大ト[g039]の山へ",
-     "translation": null
+     "original": "大トリの山へ",
+     "translation": "To the mountain of the great bird."
     },
     {
      "index": 13,
@@ -35757,8 +35906,8 @@
     },
     {
      "index": 19,
-     "original": "ケガに効く [g051]オ[g039]草",
-     "translation": null
+     "original": "ケガに効く ナオリ草",
+     "translation": "Naori grass effective for injuries"
     },
     {
      "index": 20,
@@ -35777,18 +35926,18 @@
     },
     {
      "index": 23,
-     "original": "やしきの宝[g061]?",
-     "translation": null
+     "original": "やしきの宝物?",
+     "translation": "Yashiki's treasure?"
     },
     {
      "index": 24,
-     "original": "花をさかせ[g064]う!",
-     "translation": null
+     "original": "花をさかせよう!",
+     "translation": "Let's make flowers bloom!"
     },
     {
      "index": 25,
-     "original": "APスロットマ[g069]ーン",
-     "translation": null
+     "original": "APスロットマシーン",
+     "translation": "AP Slot Machine"
     },
     {
      "index": 26,
@@ -35812,8 +35961,8 @@
     },
     {
      "index": 30,
-     "original": "丈夫なハ[g039]ガネ",
-     "translation": null
+     "original": "丈夫なハリガネ",
+     "translation": "Strong wire."
     },
     {
      "index": 31,
@@ -35832,13 +35981,13 @@
     },
     {
      "index": 34,
-     "original": " 友[g082]7人 ",
-     "translation": null
+     "original": " 友達7人 ",
+     "translation": "7 friends"
     },
     {
      "index": 35,
-     "original": "夢?幻?宝[g061]庫を探せ",
-     "translation": null
+     "original": "夢?幻?宝物庫を探せ",
+     "translation": "Dream? Illusion? Search for the treasure chest."
     },
     {
      "index": 36,
@@ -35852,8 +36001,8 @@
     },
     {
      "index": 38,
-     "original": "い[g064]っ!穴ほり名人!",
-     "translation": null
+     "original": "いよっ!穴ほり名人!",
+     "translation": "Yo! Hole Digging Master!"
     }
    ]
   },
@@ -36124,8 +36273,8 @@
     },
     {
      "index": 52,
-     "original": "雨の[g069]をつかった",
-     "translation": null
+     "original": "雨の素をつかった",
+     "translation": "I used the rain element."
     },
     {
      "index": 53,
@@ -36469,8 +36618,8 @@
     },
     {
      "index": 121,
-     "original": "除草[g09E]をつかった",
-     "translation": null
+     "original": "除草剤をつかった",
+     "translation": "Used herbicides."
     },
     {
      "index": 122,
@@ -37764,8 +37913,8 @@
     },
     {
      "index": 380,
-     "original": "ケガを早く治すのに「ナオリ草」があれば\nいいんだけど・・・\n\nあれがあるのは\nたしか大トリの山だったかしら\n\nでも\nあそこは風が強くてキケンだからね[g148]・・・",
-     "translation": null
+     "original": "ケガを早く治すのに「ナオリ草」があれば\nいいんだけど・・・\n\nあれがあるのは\nたしか大トリの山だったかしら\n\nでも\nあそこは風が強くてキケンだからねェ・・・",
+     "translation": "It would be nice if there were \"Naori grass\" to heal injuries quickly...\n\nI think that's on the mountain of the big bird, right?\n\nBut\nthat place is windy and dangerous, so no..."
     },
     {
      "index": 381,
@@ -37774,8 +37923,8 @@
     },
     {
      "index": 382,
-     "original": "あとは おいしいものでも たべさせて\nゆっくりしとけば 元気になるさ・・・\n\nそうそう おいしいものと言えば「百識の木の実」!\nあたしも むかしたべたことがあるんだけど\nあれは おいしかったね[g148]\n\nまた たべてみたいよ・・・・・",
-     "translation": null
+     "original": "あとは おいしいものでも たべさせて\nゆっくりしとけば 元気になるさ・・・\n\nそうそう おいしいものと言えば「百識の木の実」!\nあたしも むかしたべたことがあるんだけど\nあれは おいしかったねェ\n\nまた たべてみたいよ・・・・・",
+     "translation": "After that, let's have something delicious to eat.\nIf we just relax, we'll feel better...\n\nOh, speaking of delicious things, \"Hyakushiki no Kinami\"!\nI once ate it too, and it was really tasty.\n\nI want to eat it again..."
     },
     {
      "index": 383,
@@ -37799,8 +37948,8 @@
     },
     {
      "index": 387,
-     "original": "ね[g148] それはそうと\nバロン 少しおおきくなったように\n思わないかい?\n\n成長が早いのか\n気のせいか・・・・・",
-     "translation": null
+     "original": "ねェ それはそうと\nバロン 少しおおきくなったように\n思わないかい?\n\n成長が早いのか\n気のせいか・・・・・",
+     "translation": "Hey, speaking of which,\nBaron, don't you think he's gotten a little bigger?\nIs he growing fast?\nOr is it just my imagination...?"
     },
     {
      "index": 388,
@@ -37809,8 +37958,8 @@
     },
     {
      "index": 389,
-     "original": "あらっ?!\nバロンはあんたといっしょに行きたい\nみたいだね[g148]\n\nつれてってやんなよ",
-     "translation": null
+     "original": "あらっ?!\nバロンはあんたといっしょに行きたい\nみたいだねェ\n\nつれてってやんなよ",
+     "translation": "Oh?!\nBaron wants to go with you.\nIt seems like it.\n\nDon't take him."
     },
     {
      "index": 390,
@@ -37874,8 +38023,8 @@
     },
     {
      "index": 402,
-     "original": "うわ〜 空に飛んでるトリまで \nヤキトリに見えるぅぅぅぅ・・・ \n\nほぁ・・・何か用か?\n\n悪いなぁ、オイラ ハラペコで、\n今は何でも食べ物に見えるから\n近づかない方がいいよ・・・\n\nあ〜あ、オイラに [g15D]持ちのいい食べ物を\n分けてくれるような\nしんせつな人はいないもんかなぁ・・・",
-     "translation": null
+     "original": "うわ〜 空に飛んでるトリまで \nヤキトリに見えるぅぅぅぅ・・・ \n\nほぁ・・・何か用か?\n\n悪いなぁ、オイラ ハラペコで、\n今は何でも食べ物に見えるから\n近づかない方がいいよ・・・\n\nあ〜あ、オイラに 腹持ちのいい食べ物を\n分けてくれるような\nしんせつな人はいないもんかなぁ・・・",
+     "translation": "Wow—even the birds flying in the sky look like yakitori to me…\n\nHuh… what do you need?\n\nSorry about that, I'm starving right now,\nand everything looks like food to me,\nso you'd better not get too close…\n\nAh~ I wish there was someone kind enough to share\nsome filling food with me…"
     },
     {
      "index": 403,
@@ -37889,18 +38038,18 @@
     },
     {
      "index": 405,
-     "original": "旅の人!\n\nここに来る[g160]中\nヤンと言う子[g161]に会いませんでした?\n\nじつは わたしの[g162]子なんです・・・\nこれがまた バカ[g162]子で・・・\n\nかくれんぼで一度かくれると\n見つかるまで [g163]ってこないんですよ\n\nいまごろ ハラをすかせてるだろうなぁ・・・\n旅の人、ヤンを見つけて\nこれを[g164]けてやってくれませんか",
-     "translation": null
+     "original": "旅の人!\n\nここに来る途中\nヤンと言う子供に会いませんでした?\n\nじつは わたしの息子なんです・・・\nこれがまた バカ息子で・・・\n\nかくれんぼで一度かくれると\n見つかるまで 帰ってこないんですよ\n\nいまごろ ハラをすかせてるだろうなぁ・・・\n旅の人、ヤンを見つけて\nこれを届けてやってくれませんか",
+     "translation": "Traveler!\n\nOn your way here,\ndidn't you meet a child named Yang?\n\nActually, he's my son...\nAnd what a foolish son he is...\n\nOnce he hides in hide-and-seek,\nhe won't come back until he's found.\n\nI wonder if he's getting hungry by now...\nTraveler, could you find Yang and\ndeliver this to him?"
     },
     {
      "index": 406,
-     "original": "かならず [g162]子に[g164]けてくださいよ!!\n[g160]中でつまみ食いしないように・・・たのみましたよ",
-     "translation": null
+     "original": "かならず 息子に届けてくださいよ!!\n途中でつまみ食いしないように・・・たのみましたよ",
+     "translation": "Please be sure to deliver it to my son!!\nDon't snack on it along the way... I'm counting on you."
     },
     {
      "index": 407,
-     "original": "あなたの事は [g162]子のヤンから聞いてます\nトンバさんでしょ・・・\n\nあなたが旅の[g160]中、かくれていた\nヤンを 見つけてくれたおかげで\n今は村に戻っているんですよ\n\nもしも 見つけていなかったら・・・\nたぶん\nヤンは一人でかくれんぼを[g165]けていたでしょう・・・\n\nありがとうございました・・・",
-     "translation": null
+     "original": "あなたの事は 息子のヤンから聞いてます\nトンバさんでしょ・・・\n\nあなたが旅の途中、かくれていた\nヤンを 見つけてくれたおかげで\n今は村に戻っているんですよ\n\nもしも 見つけていなかったら・・・\nたぶん\nヤンは一人でかくれんぼを続けていたでしょう・・・\n\nありがとうございました・・・",
+     "translation": "I've heard about you from my son Yan.\nYou're Tongba, right...?\n\nBecause you found Yan while he was hiding during his journey,\nhe's now back in the village.\n\nIf you hadn't found him...\nprobably,\nYan would have continued playing hide-and-seek alone...\n\nThank you very much..."
     },
     {
      "index": 408,
@@ -37909,8 +38058,8 @@
     },
     {
      "index": 409,
-     "original": "そのべんとうは・・・\nとうさんに会ったんだね\nわざわざ [g164]けてくれてありがとう\n\nでもこれは きみにあげるよ\nオイラは おなかへってないからさ\n\nよかったら、これもあげるよ\nつまらない物だけど・・・それじゃバ〜イ!",
-     "translation": null
+     "original": "そのべんとうは・・・\nとうさんに会ったんだね\nわざわざ 届けてくれてありがとう\n\nでもこれは きみにあげるよ\nオイラは おなかへってないからさ\n\nよかったら、これもあげるよ\nつまらない物だけど・・・それじゃバ〜イ!",
+     "translation": "That bento...\nYou met your father, didn't you?\nThank you for taking the trouble to deliver it.\n\nBut I'll give this one to you.\nI'm not hungry anyway.\n\nIf you like, I'll give you this too.\nIt's nothing special, but... See ya!"
     },
     {
      "index": 410,
@@ -37934,8 +38083,8 @@
     },
     {
      "index": 414,
-     "original": "やぁ!キミが来るのを待ってたんだ\n\n・・・はじめて出会ったのをいれて\n・・・5回かくれれたんだけど\n\n全部見つかっちゃったね・・・でも、\nたのしかったよ!\n\nそれじゃあ、とっておきの[g16A][g16B]だ\n・・・この大陸のどこかに\n\nミリオンの塔と呼ばれるところが\nあるらしいんだ・・・\n\nえっ?どこにあるかって?・・・\nそれは自分でさがさなきゃ!\n\nでもね・・・デタラメにさがしても\nぜったい見つからないんだ・・・\n\nある じょうけん がそろわないとね・・・\nそれと、これはオイラからのプレゼントだ!\n\nきっとやくにたつと おもうよ!",
-     "translation": null
+     "original": "やぁ!キミが来るのを待ってたんだ\n\n・・・はじめて出会ったのをいれて\n・・・5回かくれれたんだけど\n\n全部見つかっちゃったね・・・でも、\nたのしかったよ!\n\nそれじゃあ、とっておきの情報だ\n・・・この大陸のどこかに\n\nミリオンの塔と呼ばれるところが\nあるらしいんだ・・・\n\nえっ?どこにあるかって?・・・\nそれは自分でさがさなきゃ!\n\nでもね・・・デタラメにさがしても\nぜったい見つからないんだ・・・\n\nある じょうけん がそろわないとね・・・\nそれと、これはオイラからのプレゼントだ!\n\nきっとやくにたつと おもうよ!",
+     "translation": "Hey! I was waiting for you to come.\n\n...Including the first time we met,\n...I was hidden five times,\n\nbut they all found me... But,\nit was fun!\n\nWell then, here's some special information\n...somewhere on this continent\n\nthere seems to be a place called the Million Tower...\n\nHuh? Where is it?...\nYou have to find it yourself!\n\nBut... even if you search randomly,\nyou'll never find it...\n\nYou need to gather certain conditions...\nAnd this is a present from me!\n\nI'm sure it will be useful!"
     },
     {
      "index": 415,
@@ -38021,8 +38170,8 @@
     },
     {
      "index": 12,
-     "original": "大ト[g039]の山へ",
-     "translation": null
+     "original": "大トリの山へ",
+     "translation": "To the mountain of the great bird."
     },
     {
      "index": 13,
@@ -38056,8 +38205,8 @@
     },
     {
      "index": 19,
-     "original": "ケガに効く [g051]オ[g039]草",
-     "translation": null
+     "original": "ケガに効く ナオリ草",
+     "translation": "Naori grass effective for injuries"
     },
     {
      "index": 20,
@@ -38076,18 +38225,18 @@
     },
     {
      "index": 23,
-     "original": "やしきの宝[g061]?",
-     "translation": null
+     "original": "やしきの宝物?",
+     "translation": "Yashiki's treasure?"
     },
     {
      "index": 24,
-     "original": "花をさかせ[g064]う!",
-     "translation": null
+     "original": "花をさかせよう!",
+     "translation": "Let's make flowers bloom!"
     },
     {
      "index": 25,
-     "original": "APスロットマ[g069]ーン",
-     "translation": null
+     "original": "APスロットマシーン",
+     "translation": "AP Slot Machine"
     },
     {
      "index": 26,
@@ -38106,8 +38255,8 @@
     },
     {
      "index": 29,
-     "original": "息子[g064]、どこに…",
-     "translation": null
+     "original": "息子よ、どこに…",
+     "translation": "My son, where are you..."
     }
    ]
   },
@@ -38183,8 +38332,8 @@
     },
     {
      "index": 13,
-     "original": "わらい、なきを回[g052]してくれるキノコ",
-     "translation": null
+     "original": "わらい、なきを回復してくれるキノコ",
+     "translation": "A mushroom that restores laughter and tears."
     },
     {
      "index": 14,
@@ -38193,8 +38342,8 @@
     },
     {
      "index": 15,
-     "original": "[g057]くの[g058]色を見ることができる",
-     "translation": null
+     "original": "遠くの景色を見ることができる",
+     "translation": "You can see the distant scenery."
     },
     {
      "index": 16,
@@ -38218,8 +38367,8 @@
     },
     {
      "index": 20,
-     "original": "枯れ葉の羽を持つ\n伝[g066]のチョウチョ",
-     "translation": null
+     "original": "枯れ葉の羽を持つ\n伝説のチョウチョ",
+     "translation": "A butterfly with wings of withered leaves,\na legendary butterfly."
     },
     {
      "index": 21,
@@ -38263,8 +38412,8 @@
     },
     {
      "index": 29,
-     "original": "せかいを 見わたす\nべんりな 地[g07B]",
-     "translation": null
+     "original": "せかいを 見わたす\nべんりな 地図",
+     "translation": "A convenient map that covers the world."
     },
     {
      "index": 30,
@@ -38278,8 +38427,8 @@
     },
     {
      "index": 32,
-     "original": "動きが 最[g07E]になる\nすばらしい パンツ",
-     "translation": null
+     "original": "動きが 最速になる\nすばらしい パンツ",
+     "translation": "Movement becomes fastest\nWonderful pants"
     },
     {
      "index": 33,
@@ -38358,8 +38507,8 @@
     },
     {
      "index": 48,
-     "original": "[g094]年の宝箱を\nあけられる カギ",
-     "translation": null
+     "original": "万年の宝箱を\nあけられる カギ",
+     "translation": "The key that can open the treasure chest of eternity."
     },
     {
      "index": 49,
@@ -38393,13 +38542,13 @@
     },
     {
      "index": 55,
-     "original": "パワーぎれも いっきに解[g099]できる\nありがたい アイテム",
-     "translation": null
+     "original": "パワーぎれも いっきに解決できる\nありがたい アイテム",
+     "translation": "Power outages can be solved instantly.\nA truly helpful item."
     },
     {
      "index": 56,
-     "original": "雨[g09B]を[g09C]んで 雨をふらせる\n[g09D][g09E]のアイテム",
-     "translation": null
+     "original": "雨雲を呼んで 雨をふらせる\n奇跡のアイテム",
+     "translation": "Calling rain clouds and making it rain.\nA miracle item."
     },
     {
      "index": 57,
@@ -38423,18 +38572,18 @@
     },
     {
      "index": 61,
-     "original": "世界をえがいた 大きな 地[g07B]の半分",
-     "translation": null
+     "original": "世界をえがいた 大きな 地図の半分",
+     "translation": "Half of a large map depicting the world"
     },
     {
      "index": 62,
-     "original": "世界をえがいた 大きな 地[g07B]の半分",
-     "translation": null
+     "original": "世界をえがいた 大きな 地図の半分",
+     "translation": "Half of a large map depicting the world"
     },
     {
      "index": 63,
-     "original": "あぶない物を持っても\n[g0A7]気な 手ぶくろ",
-     "translation": null
+     "original": "あぶない物を持っても\n平気な 手ぶくろ",
+     "translation": "Even holding dangerous things,\nthese gloves are fine."
     },
     {
      "index": 64,
@@ -38463,8 +38612,8 @@
     },
     {
      "index": 69,
-     "original": "かおりだけで [g0AF]ってしまいそうな\nアルコール",
-     "translation": null
+     "original": "かおりだけで 酔ってしまいそうな\nアルコール",
+     "translation": "An alcohol that makes you feel drunk just from its scent."
     },
     {
      "index": 70,
@@ -38473,53 +38622,53 @@
     },
     {
      "index": 71,
-     "original": "[g094]年老人から たのまれた\n1とかかれた 玉",
-     "translation": null
+     "original": "万年老人から たのまれた\n1とかかれた 玉",
+     "translation": "I was asked by a man who has lived for ten thousand years.\nA ball with \"1\" written on it."
     },
     {
      "index": 72,
-     "original": "[g094]年老人から たのまれた\n2とかかれた 玉",
-     "translation": null
+     "original": "万年老人から たのまれた\n2とかかれた 玉",
+     "translation": "I was asked by a very old man.\nA ball with \"2\" written on it."
     },
     {
      "index": 73,
-     "original": "[g094]年老人から たのまれた\n3とかかれた 玉",
-     "translation": null
+     "original": "万年老人から たのまれた\n3とかかれた 玉",
+     "translation": "I was asked by a man who has lived for ten thousand years.\nA ball with the number 3 written on it."
     },
     {
      "index": 74,
-     "original": "[g094]年老人から たのまれた\n4とかかれた 玉",
-     "translation": null
+     "original": "万年老人から たのまれた\n4とかかれた 玉",
+     "translation": "I was asked by a very old man.\nA ball with 4 written on it."
     },
     {
      "index": 75,
-     "original": "[g094]年老人から たのまれた\n5とかかれた 玉",
-     "translation": null
+     "original": "万年老人から たのまれた\n5とかかれた 玉",
+     "translation": "I was asked by a very old man.\nA ball with \"5\" written on it."
     },
     {
      "index": 76,
-     "original": "[g094]年老人から たのまれた\n6とかかれた 玉",
-     "translation": null
+     "original": "万年老人から たのまれた\n6とかかれた 玉",
+     "translation": "I was asked by a man who has lived for ten thousand years.\nA ball with the number 6 written on it."
     },
     {
      "index": 77,
-     "original": "[g094]年老人から たのまれた\n7とかかれた 玉",
-     "translation": null
+     "original": "万年老人から たのまれた\n7とかかれた 玉",
+     "translation": "I was asked by an old man for a ball with the number 7 on it."
     },
     {
      "index": 78,
-     "original": "[g094]年老人から たのまれた\n8とかかれた 玉",
-     "translation": null
+     "original": "万年老人から たのまれた\n8とかかれた 玉",
+     "translation": "I was asked by an old man for 8 years.\nA ball with 8 written on it."
     },
     {
      "index": 79,
-     "original": "[g094]年老人から たのまれた\n9とかかれた 玉",
-     "translation": null
+     "original": "万年老人から たのまれた\n9とかかれた 玉",
+     "translation": "I was asked by a very old man.\nA ball with 9 written on it."
     },
     {
      "index": 80,
-     "original": "[g094]年老人から たのまれた\n10とかかれた 玉",
-     "translation": null
+     "original": "万年老人から たのまれた\n10とかかれた 玉",
+     "translation": "I was asked by a very old man.\nA ball with 10 written on it."
     },
     {
      "index": 81,
@@ -38573,13 +38722,13 @@
     },
     {
      "index": 91,
-     "original": "レースで3[g0B9]になるともらえる\nふつうのメダル",
-     "translation": null
+     "original": "レースで3位になるともらえる\nふつうのメダル",
+     "translation": "A normal medal awarded for finishing third in a race."
     },
     {
      "index": 92,
-     "original": "レースで2[g0B9]になるともらえる\nちょっとジマンのメダル",
-     "translation": null
+     "original": "レースで2位になるともらえる\nちょっとジマンのメダル",
+     "translation": "You get a little Jiman medal when you finish second in a race."
     },
     {
      "index": 93,
@@ -38588,8 +38737,8 @@
     },
     {
      "index": 94,
-     "original": "[g0BB][g0BC][g0BD]あての\nふしぎな[g0BE][g0BF]の手[g0C0]",
-     "translation": null
+     "original": "三姉妹あての\nふしぎな内容の手紙",
+     "translation": "A letter with mysterious contents addressed to the three sisters."
     },
     {
      "index": 95,
@@ -38598,23 +38747,23 @@
     },
     {
      "index": 96,
-     "original": "流れに[g0C3]って流れる乗り物\n[g0C5]は無[g0C7]だが、川なら[g0C9][g0CA]!",
-     "translation": null
+     "original": "流れに沿って流れる乗り物\n海は無理だが、川ならOK!",
+     "translation": "A vehicle that flows with the flow.\nThe sea is impossible, but a river is OK!"
     },
     {
      "index": 97,
-     "original": "黄[g0CB]の5大アイテムの一つ\nカレハチョウが[g0CC]んでくれた",
-     "translation": null
+     "original": "黄金の5大アイテムの一つ\nカレハチョウが運んでくれた",
+     "translation": "One of the five golden items.\nThe butterfly carried it."
     },
     {
      "index": 98,
-     "original": "どこかにあるという、黄[g0CB]のフルーツ",
-     "translation": null
+     "original": "どこかにあるという、黄金のフルーツ",
+     "translation": "The golden fruit that is said to be somewhere."
     },
     {
      "index": 99,
-     "original": "ことさらにゴージャスな、[g0CB]色に[g0CD]いた花",
-     "translation": null
+     "original": "ことさらにゴージャスな、金色に咲いた花",
+     "translation": "A particularly gorgeous, golden flower."
     },
     {
      "index": 100,
@@ -38628,18 +38777,18 @@
     },
     {
      "index": 102,
-     "original": "アイテム画[g0D1]でそうびし、火の能力を開花する\nこうげきボタンで 能力を発[g0D6]する\n\n一度つかうと、メーターがたまるまで\nつぎのこうげきは できない・・・",
-     "translation": null
+     "original": "アイテム画面でそうびし、火の能力を開花する\nこうげきボタンで 能力を発揮する\n\n一度つかうと、メーターがたまるまで\nつぎのこうげきは できない・・・",
+     "translation": "In the item screen, soobi, bloom the fire ability.\nUse the attack button to unleash the ability.\n\nOnce used, until the meter fills up,\nthe next attack cannot be performed…"
     },
     {
      "index": 103,
-     "original": "アイテム画[g0D1]でそうびし、水の能力を開花する\nこうげきボタンで 能力を発[g0D6]する\n\n一度つかうと、メーターがたまるまで\nつぎのこうげきは できない・・・",
-     "translation": null
+     "original": "アイテム画面でそうびし、水の能力を開花する\nこうげきボタンで 能力を発揮する\n\n一度つかうと、メーターがたまるまで\nつぎのこうげきは できない・・・",
+     "translation": "In the item screen, it blooms its water ability.\nUse the attack button to unleash its power.\n\nOnce used, you can't attack again until the meter fills up..."
     },
     {
      "index": 104,
-     "original": "アイテム画[g0D1]でそうびし、風の能力を開花する\n空中で ジャンプボタンを押し 能力を発[g0D6]する\n\n空高く まいあがれるが ぼうぎょ力が[g0DC]い\nいどう中 通[g0DE]こうげきが[g0DF]能",
-     "translation": null
+     "original": "アイテム画面でそうびし、風の能力を開花する\n空中で ジャンプボタンを押し 能力を発揮する\n\n空高く まいあがれるが ぼうぎょ力が低い\nいどう中 通常こうげきが可能",
+     "translation": "In the item screen, soobi, blooms the ability of wind.\nIn the air, press the jump button to unleash the ability.\n\nCan soar high in the sky, but has low defense power.\nCan perform normal attacks while moving."
     },
     {
      "index": 105,
@@ -38648,8 +38797,8 @@
     },
     {
      "index": 106,
-     "original": "調合する時の、[g0E3]本の[g0E5]",
-     "translation": null
+     "original": "調合する時の、基本の粉",
+     "translation": "Basic powder for blending."
     },
     {
      "index": 107,
@@ -38658,8 +38807,8 @@
     },
     {
      "index": 108,
-     "original": "怪[g0E9]コッカのとがったツメ 調合できる",
-     "translation": null
+     "original": "怪鳥コッカのとがったツメ 調合できる",
+     "translation": "The pointed claws of the monster bird Kokka can be combined."
     },
     {
      "index": 109,
@@ -38718,8 +38867,8 @@
     },
     {
      "index": 120,
-     "original": "ほとんど [g0EA][g0EB]!\n禁断のあじわいがするらしい",
-     "translation": null
+     "original": "ほとんど 反則!\n禁断のあじわいがするらしい",
+     "translation": "Almost a foul!\nApparently, it has a forbidden flavor."
     },
     {
      "index": 121,
@@ -38733,28 +38882,28 @@
     },
     {
      "index": 123,
-     "original": "タイコの[g0EF]料 気持ちの[g0F1]い音を\n[g0F3]らしてくれる",
-     "translation": null
+     "original": "タイコの原料 気持ちの良い音を\n鳴らしてくれる",
+     "translation": "Taiko's raw materials produce a pleasant sound."
     },
     {
      "index": 124,
-     "original": "ついに手に入れた! これこそ\nジィちゃんの形見の[g0F6][g0F7]!",
-     "translation": null
+     "original": "ついに手に入れた! これこそ\nジィちゃんの形見の腕輪!",
+     "translation": "Finally got it! This is\nGrandpa's keepsake bracelet!"
     },
     {
      "index": 125,
-     "original": "[g0F8][g0F9]の実を[g0FA]すためには\nこれなしでは不[g0DF]能",
+     "original": "死神の実を[g0FA]すためには\nこれなしでは不可能",
      "translation": null
     },
     {
      "index": 126,
-     "original": "タイコの[g0EF]料 かたくて いい音がでる",
-     "translation": null
+     "original": "タイコの原料 かたくて いい音がでる",
+     "translation": "The ingredients of Taiko are hard and make good sounds."
     },
     {
      "index": 127,
-     "original": "タイコの[g0EF]料 木と皮を はりつけることができる",
-     "translation": null
+     "original": "タイコの原料 木と皮を はりつけることができる",
+     "translation": "Taiko's raw materials: wood and skin can be glued together."
     },
     {
      "index": 128,
@@ -38768,8 +38917,8 @@
     },
     {
      "index": 130,
-     "original": "どこかにいるらしい [g094]能魚\nエサもふつうじゃない",
-     "translation": null
+     "original": "どこかにいるらしい 万能魚\nエサもふつうじゃない",
+     "translation": "Apparently there's a versatile fish somewhere.\nIts food isn't ordinary either."
     },
     {
      "index": 131,
@@ -38818,8 +38967,8 @@
     },
     {
      "index": 140,
-     "original": "[g106][g0D1]フラワーから こぼれおちた ナミダ",
-     "translation": null
+     "original": "顔面フラワーから こぼれおちた ナミダ",
+     "translation": "Tears spilled from the facial flower."
     },
     {
      "index": 141,
@@ -38828,8 +38977,8 @@
     },
     {
      "index": 142,
-     "original": "ひとふり かけると つぼみも花ひらく\nめずらしい[g0E5]",
-     "translation": null
+     "original": "ひとふり かけると つぼみも花ひらく\nめずらしい粉",
+     "translation": "A sprinkle can make even a bud blossom.\nA rare powder."
     },
     {
      "index": 143,
@@ -38848,8 +38997,8 @@
     },
     {
      "index": 146,
-     "original": "魔王が[g109]れた きれいな水晶",
-     "translation": null
+     "original": "魔王が忘れた きれいな水晶",
+     "translation": "The beautiful crystal that the Demon King forgot."
     },
     {
      "index": 147,
@@ -38863,8 +39012,8 @@
     },
     {
      "index": 149,
-     "original": "盗[g10D]のカシラの 大事な 宝石",
-     "translation": null
+     "original": "盗賊のカシラの 大事な 宝石",
+     "translation": "The important jewel of the thief Kashira."
     },
     {
      "index": 150,
@@ -38888,13 +39037,13 @@
     },
     {
      "index": 154,
-     "original": "かたい[g0CB][g112]でつくられた、ハリガネ",
-     "translation": null
+     "original": "かたい金属でつくられた、ハリガネ",
+     "translation": "Harigane, made of hard metal."
     },
     {
      "index": 155,
-     "original": "いつでも どこでも\n[g094]年老人にあえる",
-     "translation": null
+     "original": "いつでも どこでも\n万年老人にあえる",
+     "translation": "You can always meet an old man anywhere."
     },
     {
      "index": 156,
@@ -38918,8 +39067,8 @@
     },
     {
      "index": 160,
-     "original": "高山にさくという、やくそう\nケガを早く[g119]す",
-     "translation": null
+     "original": "高山にさくという、やくそう\nケガを早く治す",
+     "translation": "It's called \"Takayama Saku,\" a miracle.\nIt heals injuries quickly."
     },
     {
      "index": 161,
@@ -38928,8 +39077,8 @@
     },
     {
      "index": 162,
-     "original": "これをたべると、みんな[g11B]気で[g11C]らせる",
-     "translation": null
+     "original": "これをたべると、みんな元気で暮らせる",
+     "translation": "If you eat this, everyone will live healthy and energetic lives."
     },
     {
      "index": 163,
@@ -39260,8 +39409,8 @@
     },
     {
      "index": 22,
-     "original": "[g05A]くの [g05B]色を見わたす",
-     "translation": null
+     "original": "遠くの 景色を見わたす",
+     "translation": "To see the distant scenery."
     },
     {
      "index": 23,
@@ -39285,8 +39434,8 @@
     },
     {
      "index": 27,
-     "original": "めぐみさまを[g067][g068]させると\n何かがおこる",
-     "translation": null
+     "original": "めぐみさまを復活させると\n何かがおこる",
+     "translation": "When Megumi-sama is revived,\nsomething happens."
     },
     {
      "index": 28,
@@ -39345,13 +39494,13 @@
     },
     {
      "index": 39,
-     "original": "お花のたねを [g07C]にまいて\nきれいな お花[g07C]にする",
-     "translation": null
+     "original": "お花のたねを 畑にまいて\nきれいな お花畑にする",
+     "translation": "Sow the flower seeds in the field\nand make a beautiful flower garden."
     },
     {
      "index": 40,
-     "original": "ナミダは [g067][g068]に かかせないの?",
-     "translation": null
+     "original": "ナミダは 復活に かかせないの?",
+     "translation": "Is Namida essential for revival?"
     },
     {
      "index": 41,
@@ -39370,8 +39519,8 @@
     },
     {
      "index": 44,
-     "original": "よく当る 赤い[g085]い師に会う",
-     "translation": null
+     "original": "よく当る 赤い占い師に会う",
+     "translation": "Meet a red fortune teller who often gets it right."
     },
     {
      "index": 45,
@@ -39430,8 +39579,8 @@
     },
     {
      "index": 56,
-     "original": "[g092]のパーツを すべてあつめると\nアイテムが手に入る",
-     "translation": null
+     "original": "絵のパーツを すべてあつめると\nアイテムが手に入る",
+     "translation": "When you collect all the parts of the picture,\nyou will get an item."
     },
     {
      "index": 57,
@@ -39535,8 +39684,8 @@
     },
     {
      "index": 77,
-     "original": "[g067][g068]した キカイ",
-     "translation": null
+     "original": "復活した キカイ",
+     "translation": "Revived Machine"
     },
     {
      "index": 78,
@@ -39555,8 +39704,8 @@
     },
     {
      "index": 81,
-     "original": "盗[g0A2]のカシラも モノわすれ?",
-     "translation": null
+     "original": "盗賊のカシラも モノわすれ?",
+     "translation": "Is the thief Kashira also forgetful?"
     },
     {
      "index": 82,
@@ -39585,18 +39734,18 @@
     },
     {
      "index": 87,
-     "original": "一度食べると [g0A8]れられない 木の実が\nどこかに あるらしい・・・",
-     "translation": null
+     "original": "一度食べると 忘れられない 木の実が\nどこかに あるらしい・・・",
+     "translation": "Once you eat it, you'll never forget it—there's a nut somewhere..."
     },
     {
      "index": 88,
-     "original": "ずっと[g0A9]気で[g0AA]らせる [g0AB]草が\n流れつく ところは?",
-     "translation": null
+     "original": "ずっと元気で暮らせる 海草が\n流れつく ところは?",
+     "translation": "Where is the place where seaweed flows, where you can live happily forever?"
     },
     {
      "index": 89,
-     "original": "緑の[g085]い師の 話しをきく",
-     "translation": null
+     "original": "緑の占い師の 話しをきく",
+     "translation": "Listen to the green fortune teller's story."
     },
     {
      "index": 90,
@@ -39715,8 +39864,8 @@
     },
     {
      "index": 113,
-     "original": "この[g0B4]には、何か とくべつな\n力が あるらしい・・・",
-     "translation": null
+     "original": "この犬には、何か とくべつな\n力が あるらしい・・・",
+     "translation": "This dog seems to have some special power..."
     },
     {
      "index": 114,
@@ -39815,13 +39964,13 @@
     },
     {
      "index": 133,
-     "original": "3[g0BD]のきろくを こえた めいよのメダル",
-     "translation": null
+     "original": "3位のきろくを こえた めいよのメダル",
+     "translation": "The medal of Meiyo, surpassing the record of third place."
     },
     {
      "index": 134,
-     "original": "2[g0BD]のきろくを こえた めいよのメダル",
-     "translation": null
+     "original": "2位のきろくを こえた めいよのメダル",
+     "translation": "The medal of Meiyo, surpassing the second place record."
     },
     {
      "index": 135,
@@ -39880,8 +40029,8 @@
     },
     {
      "index": 146,
-     "original": "じぶんを しりたいときは [g085]い師!",
-     "translation": null
+     "original": "じぶんを しりたいときは 占い師!",
+     "translation": "When you want to know yourself, a fortune teller!"
     },
     {
      "index": 147,
@@ -39905,8 +40054,8 @@
     },
     {
      "index": 151,
-     "original": "かくれんぼがすきな [g0C3]子よ\nハラは へっていないか?",
-     "translation": null
+     "original": "かくれんぼがすきな 息子よ\nハラは へっていないか?",
+     "translation": "My son who loves hide-and-seek,\nIsn't your stomach empty?"
     },
     {
      "index": 152,
@@ -40040,8 +40189,8 @@
     },
     {
      "index": 178,
-     "original": "なぞの力をもつ 伝[g0D0]のチョウ",
-     "translation": null
+     "original": "なぞの力をもつ 伝説のチョウ",
+     "translation": "A legendary butterfly possessing mysterious powers."
     },
     {
      "index": 179,
@@ -40105,8 +40254,8 @@
     },
     {
      "index": 191,
-     "original": "またもや [g0A8]れて こまってる・・・",
-     "translation": null
+     "original": "またもや 忘れて こまってる・・・",
+     "translation": "Again, I've forgotten and am in trouble..."
     },
     {
      "index": 192,
@@ -40222,8 +40371,8 @@
     },
     {
      "index": 13,
-     "original": "わらい、なきを回[g052]してくれるキノコ",
-     "translation": null
+     "original": "わらい、なきを回復してくれるキノコ",
+     "translation": "A mushroom that restores laughter and tears."
     },
     {
      "index": 14,
@@ -40232,8 +40381,8 @@
     },
     {
      "index": 15,
-     "original": "[g057]くの[g058]色を見ることができる",
-     "translation": null
+     "original": "遠くの景色を見ることができる",
+     "translation": "You can see the distant scenery."
     },
     {
      "index": 16,
@@ -40257,8 +40406,8 @@
     },
     {
      "index": 20,
-     "original": "枯れ葉の羽を持つ\n伝[g066]のチョウチョ",
-     "translation": null
+     "original": "枯れ葉の羽を持つ\n伝説のチョウチョ",
+     "translation": "A butterfly with wings of withered leaves,\na legendary butterfly."
     },
     {
      "index": 21,
@@ -40302,8 +40451,8 @@
     },
     {
      "index": 29,
-     "original": "せかいを 見わたす\nべんりな 地[g07B]",
-     "translation": null
+     "original": "せかいを 見わたす\nべんりな 地図",
+     "translation": "A convenient map that covers the world."
     },
     {
      "index": 30,
@@ -40317,8 +40466,8 @@
     },
     {
      "index": 32,
-     "original": "動きが 最[g07E]になる\nすばらしい パンツ",
-     "translation": null
+     "original": "動きが 最速になる\nすばらしい パンツ",
+     "translation": "Movement becomes fastest\nWonderful pants"
     },
     {
      "index": 33,
@@ -40397,8 +40546,8 @@
     },
     {
      "index": 48,
-     "original": "[g094]年の宝箱を\nあけられる カギ",
-     "translation": null
+     "original": "万年の宝箱を\nあけられる カギ",
+     "translation": "The key that can open the treasure chest of eternity."
     },
     {
      "index": 49,
@@ -40432,13 +40581,13 @@
     },
     {
      "index": 55,
-     "original": "パワーぎれも いっきに解[g099]できる\nありがたい アイテム",
-     "translation": null
+     "original": "パワーぎれも いっきに解決できる\nありがたい アイテム",
+     "translation": "Power outages can be solved instantly.\nA truly helpful item."
     },
     {
      "index": 56,
-     "original": "雨[g09B]を[g09C]んで 雨をふらせる\n[g09D][g09E]のアイテム",
-     "translation": null
+     "original": "雨雲を呼んで 雨をふらせる\n奇跡のアイテム",
+     "translation": "Calling rain clouds and making it rain.\nA miracle item."
     },
     {
      "index": 57,
@@ -40462,18 +40611,18 @@
     },
     {
      "index": 61,
-     "original": "世界をえがいた 大きな 地[g07B]の半分",
-     "translation": null
+     "original": "世界をえがいた 大きな 地図の半分",
+     "translation": "Half of a large map depicting the world"
     },
     {
      "index": 62,
-     "original": "世界をえがいた 大きな 地[g07B]の半分",
-     "translation": null
+     "original": "世界をえがいた 大きな 地図の半分",
+     "translation": "Half of a large map depicting the world"
     },
     {
      "index": 63,
-     "original": "あぶない物を持っても\n[g0A7]気な 手ぶくろ",
-     "translation": null
+     "original": "あぶない物を持っても\n平気な 手ぶくろ",
+     "translation": "Even holding dangerous things,\nthese gloves are fine."
     },
     {
      "index": 64,
@@ -40502,8 +40651,8 @@
     },
     {
      "index": 69,
-     "original": "かおりだけで [g0AF]ってしまいそうな\nアルコール",
-     "translation": null
+     "original": "かおりだけで 酔ってしまいそうな\nアルコール",
+     "translation": "An alcohol that makes you feel drunk just from its scent."
     },
     {
      "index": 70,
@@ -40512,53 +40661,53 @@
     },
     {
      "index": 71,
-     "original": "[g094]年老人から たのまれた\n1とかかれた 玉",
-     "translation": null
+     "original": "万年老人から たのまれた\n1とかかれた 玉",
+     "translation": "I was asked by a man who has lived for ten thousand years.\nA ball with \"1\" written on it."
     },
     {
      "index": 72,
-     "original": "[g094]年老人から たのまれた\n2とかかれた 玉",
-     "translation": null
+     "original": "万年老人から たのまれた\n2とかかれた 玉",
+     "translation": "I was asked by a very old man.\nA ball with \"2\" written on it."
     },
     {
      "index": 73,
-     "original": "[g094]年老人から たのまれた\n3とかかれた 玉",
-     "translation": null
+     "original": "万年老人から たのまれた\n3とかかれた 玉",
+     "translation": "I was asked by a man who has lived for ten thousand years.\nA ball with the number 3 written on it."
     },
     {
      "index": 74,
-     "original": "[g094]年老人から たのまれた\n4とかかれた 玉",
-     "translation": null
+     "original": "万年老人から たのまれた\n4とかかれた 玉",
+     "translation": "I was asked by a very old man.\nA ball with 4 written on it."
     },
     {
      "index": 75,
-     "original": "[g094]年老人から たのまれた\n5とかかれた 玉",
-     "translation": null
+     "original": "万年老人から たのまれた\n5とかかれた 玉",
+     "translation": "I was asked by a very old man.\nA ball with \"5\" written on it."
     },
     {
      "index": 76,
-     "original": "[g094]年老人から たのまれた\n6とかかれた 玉",
-     "translation": null
+     "original": "万年老人から たのまれた\n6とかかれた 玉",
+     "translation": "I was asked by a man who has lived for ten thousand years.\nA ball with the number 6 written on it."
     },
     {
      "index": 77,
-     "original": "[g094]年老人から たのまれた\n7とかかれた 玉",
-     "translation": null
+     "original": "万年老人から たのまれた\n7とかかれた 玉",
+     "translation": "I was asked by an old man for a ball with the number 7 on it."
     },
     {
      "index": 78,
-     "original": "[g094]年老人から たのまれた\n8とかかれた 玉",
-     "translation": null
+     "original": "万年老人から たのまれた\n8とかかれた 玉",
+     "translation": "I was asked by an old man for 8 years.\nA ball with 8 written on it."
     },
     {
      "index": 79,
-     "original": "[g094]年老人から たのまれた\n9とかかれた 玉",
-     "translation": null
+     "original": "万年老人から たのまれた\n9とかかれた 玉",
+     "translation": "I was asked by a very old man.\nA ball with 9 written on it."
     },
     {
      "index": 80,
-     "original": "[g094]年老人から たのまれた\n10とかかれた 玉",
-     "translation": null
+     "original": "万年老人から たのまれた\n10とかかれた 玉",
+     "translation": "I was asked by a very old man.\nA ball with 10 written on it."
     },
     {
      "index": 81,
@@ -40612,13 +40761,13 @@
     },
     {
      "index": 91,
-     "original": "レースで3[g0B9]になるともらえる\nふつうのメダル",
-     "translation": null
+     "original": "レースで3位になるともらえる\nふつうのメダル",
+     "translation": "A normal medal awarded for finishing third in a race."
     },
     {
      "index": 92,
-     "original": "レースで2[g0B9]になるともらえる\nちょっとジマンのメダル",
-     "translation": null
+     "original": "レースで2位になるともらえる\nちょっとジマンのメダル",
+     "translation": "You get a little Jiman medal when you finish second in a race."
     },
     {
      "index": 93,
@@ -40627,8 +40776,8 @@
     },
     {
      "index": 94,
-     "original": "[g0BB][g0BC][g0BD]あての\nふしぎな[g0BE][g0BF]の手[g0C0]",
-     "translation": null
+     "original": "三姉妹あての\nふしぎな内容の手紙",
+     "translation": "A letter with mysterious contents addressed to the three sisters."
     },
     {
      "index": 95,
@@ -40637,23 +40786,23 @@
     },
     {
      "index": 96,
-     "original": "流れに[g0C3]って流れる乗り物\n[g0C5]は無[g0C7]だが、川なら[g0C9][g0CA]!",
-     "translation": null
+     "original": "流れに沿って流れる乗り物\n海は無理だが、川ならOK!",
+     "translation": "A vehicle that flows with the flow.\nThe sea is impossible, but a river is OK!"
     },
     {
      "index": 97,
-     "original": "黄[g0CB]の5大アイテムの一つ\nカレハチョウが[g0CC]んでくれた",
-     "translation": null
+     "original": "黄金の5大アイテムの一つ\nカレハチョウが運んでくれた",
+     "translation": "One of the five golden items.\nThe butterfly carried it."
     },
     {
      "index": 98,
-     "original": "どこかにあるという、黄[g0CB]のフルーツ",
-     "translation": null
+     "original": "どこかにあるという、黄金のフルーツ",
+     "translation": "The golden fruit that is said to be somewhere."
     },
     {
      "index": 99,
-     "original": "ことさらにゴージャスな、[g0CB]色に[g0CD]いた花",
-     "translation": null
+     "original": "ことさらにゴージャスな、金色に咲いた花",
+     "translation": "A particularly gorgeous, golden flower."
     },
     {
      "index": 100,
@@ -40667,18 +40816,18 @@
     },
     {
      "index": 102,
-     "original": "アイテム画[g0D1]でそうびし、火の能力を開花する\nこうげきボタンで 能力を発[g0D6]する\n\n一度つかうと、メーターがたまるまで\nつぎのこうげきは できない・・・",
-     "translation": null
+     "original": "アイテム画面でそうびし、火の能力を開花する\nこうげきボタンで 能力を発揮する\n\n一度つかうと、メーターがたまるまで\nつぎのこうげきは できない・・・",
+     "translation": "In the item screen, soobi, bloom the fire ability.\nUse the attack button to unleash the ability.\n\nOnce used, until the meter fills up,\nthe next attack cannot be performed…"
     },
     {
      "index": 103,
-     "original": "アイテム画[g0D1]でそうびし、水の能力を開花する\nこうげきボタンで 能力を発[g0D6]する\n\n一度つかうと、メーターがたまるまで\nつぎのこうげきは できない・・・",
-     "translation": null
+     "original": "アイテム画面でそうびし、水の能力を開花する\nこうげきボタンで 能力を発揮する\n\n一度つかうと、メーターがたまるまで\nつぎのこうげきは できない・・・",
+     "translation": "In the item screen, it blooms its water ability.\nUse the attack button to unleash its power.\n\nOnce used, you can't attack again until the meter fills up..."
     },
     {
      "index": 104,
-     "original": "アイテム画[g0D1]でそうびし、風の能力を開花する\n空中で ジャンプボタンを押し 能力を発[g0D6]する\n\n空高く まいあがれるが ぼうぎょ力が[g0DC]い\nいどう中 通[g0DE]こうげきが[g0DF]能",
-     "translation": null
+     "original": "アイテム画面でそうびし、風の能力を開花する\n空中で ジャンプボタンを押し 能力を発揮する\n\n空高く まいあがれるが ぼうぎょ力が低い\nいどう中 通常こうげきが可能",
+     "translation": "In the item screen, soobi, blooms the ability of wind.\nIn the air, press the jump button to unleash the ability.\n\nCan soar high in the sky, but has low defense power.\nCan perform normal attacks while moving."
     },
     {
      "index": 105,
@@ -40687,8 +40836,8 @@
     },
     {
      "index": 106,
-     "original": "調合する時の、[g0E3]本の[g0E5]",
-     "translation": null
+     "original": "調合する時の、基本の粉",
+     "translation": "Basic powder for blending."
     },
     {
      "index": 107,
@@ -40697,8 +40846,8 @@
     },
     {
      "index": 108,
-     "original": "怪[g0E9]コッカのとがったツメ 調合できる",
-     "translation": null
+     "original": "怪鳥コッカのとがったツメ 調合できる",
+     "translation": "The pointed claws of the monster bird Kokka can be combined."
     },
     {
      "index": 109,
@@ -40757,8 +40906,8 @@
     },
     {
      "index": 120,
-     "original": "ほとんど [g0EA][g0EB]!\n禁断のあじわいがするらしい",
-     "translation": null
+     "original": "ほとんど 反則!\n禁断のあじわいがするらしい",
+     "translation": "Almost a foul!\nApparently, it has a forbidden flavor."
     },
     {
      "index": 121,
@@ -40772,28 +40921,28 @@
     },
     {
      "index": 123,
-     "original": "タイコの[g0EF]料 気持ちの[g0F1]い音を\n[g0F3]らしてくれる",
-     "translation": null
+     "original": "タイコの原料 気持ちの良い音を\n鳴らしてくれる",
+     "translation": "Taiko's raw materials produce a pleasant sound."
     },
     {
      "index": 124,
-     "original": "ついに手に入れた! これこそ\nジィちゃんの形見の[g0F6][g0F7]!",
-     "translation": null
+     "original": "ついに手に入れた! これこそ\nジィちゃんの形見の腕輪!",
+     "translation": "Finally got it! This is\nGrandpa's keepsake bracelet!"
     },
     {
      "index": 125,
-     "original": "[g0F8][g0F9]の実を[g0FA]すためには\nこれなしでは不[g0DF]能",
+     "original": "死神の実を[g0FA]すためには\nこれなしでは不可能",
      "translation": null
     },
     {
      "index": 126,
-     "original": "タイコの[g0EF]料 かたくて いい音がでる",
-     "translation": null
+     "original": "タイコの原料 かたくて いい音がでる",
+     "translation": "The ingredients of Taiko are hard and make good sounds."
     },
     {
      "index": 127,
-     "original": "タイコの[g0EF]料 木と皮を はりつけることができる",
-     "translation": null
+     "original": "タイコの原料 木と皮を はりつけることができる",
+     "translation": "Taiko's raw materials: wood and skin can be glued together."
     },
     {
      "index": 128,
@@ -40807,8 +40956,8 @@
     },
     {
      "index": 130,
-     "original": "どこかにいるらしい [g094]能魚\nエサもふつうじゃない",
-     "translation": null
+     "original": "どこかにいるらしい 万能魚\nエサもふつうじゃない",
+     "translation": "Apparently there's a versatile fish somewhere.\nIts food isn't ordinary either."
     },
     {
      "index": 131,
@@ -40857,8 +41006,8 @@
     },
     {
      "index": 140,
-     "original": "[g106][g0D1]フラワーから こぼれおちた ナミダ",
-     "translation": null
+     "original": "顔面フラワーから こぼれおちた ナミダ",
+     "translation": "Tears spilled from the facial flower."
     },
     {
      "index": 141,
@@ -40867,8 +41016,8 @@
     },
     {
      "index": 142,
-     "original": "ひとふり かけると つぼみも花ひらく\nめずらしい[g0E5]",
-     "translation": null
+     "original": "ひとふり かけると つぼみも花ひらく\nめずらしい粉",
+     "translation": "A sprinkle can make even a bud blossom.\nA rare powder."
     },
     {
      "index": 143,
@@ -40887,8 +41036,8 @@
     },
     {
      "index": 146,
-     "original": "魔王が[g109]れた きれいな水晶",
-     "translation": null
+     "original": "魔王が忘れた きれいな水晶",
+     "translation": "The beautiful crystal that the Demon King forgot."
     },
     {
      "index": 147,
@@ -40902,8 +41051,8 @@
     },
     {
      "index": 149,
-     "original": "盗[g10D]のカシラの 大事な 宝石",
-     "translation": null
+     "original": "盗賊のカシラの 大事な 宝石",
+     "translation": "The important jewel of the thief Kashira."
     },
     {
      "index": 150,
@@ -40927,13 +41076,13 @@
     },
     {
      "index": 154,
-     "original": "かたい[g0CB][g112]でつくられた、ハリガネ",
-     "translation": null
+     "original": "かたい金属でつくられた、ハリガネ",
+     "translation": "Harigane, made of hard metal."
     },
     {
      "index": 155,
-     "original": "いつでも どこでも\n[g094]年老人にあえる",
-     "translation": null
+     "original": "いつでも どこでも\n万年老人にあえる",
+     "translation": "You can always meet an old man anywhere."
     },
     {
      "index": 156,
@@ -40957,8 +41106,8 @@
     },
     {
      "index": 160,
-     "original": "高山にさくという、やくそう\nケガを早く[g119]す",
-     "translation": null
+     "original": "高山にさくという、やくそう\nケガを早く治す",
+     "translation": "It's called \"Takayama Saku,\" a miracle.\nIt heals injuries quickly."
     },
     {
      "index": 161,
@@ -40967,8 +41116,8 @@
     },
     {
      "index": 162,
-     "original": "これをたべると、みんな[g11B]気で[g11C]らせる",
-     "translation": null
+     "original": "これをたべると、みんな元気で暮らせる",
+     "translation": "If you eat this, everyone will live healthy and energetic lives."
     },
     {
      "index": 163,

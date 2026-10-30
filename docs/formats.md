@@ -114,10 +114,10 @@ the word. Glyph words also have 8000 set, apart from the flags of WFM1.
 The Japanese release draws its text in three bitmap sizes: 12 x 12 for running text, 10 x 10 and the
 20 x 20 of the event titles. Its kana were already known by shape; its kanji are in
 `formats/text/glyphs_jp.json` (shape key to character), read from the bitmaps and checked against the
-words around them where the reading was in doubt. Of the 1,190 shapes in the 46 distinct banks, 659
-had no character; 626 were given one that way. Afterwards 96.5% of the entries that have text decode completely (6,459 of
-6,690, from 56.8%) and 1.8% of the glyph slots (169 of 9,627) have none: icons drawn in the text, and
-shapes whose reading was not certain. A glyph with no character shows as `[gNNN]`, its number in the bank.
+words around them where the reading was in doubt. The file holds 730 such shapes. Over all 51 banks of the disc, with
+the ones inside overlays, 99.8% of the entries that have text decode completely (7,583 of 7,598) and 0.1% of the
+glyph slots (12 of 10,897) have no character: icons and symbols drawn in the text, and shapes whose reading is
+not certain. A glyph with no character shows as `[gNNN]`, its number in the bank.
 
 A WFM1 glyph word carries more in its top bits. A kana that is voiced is
 two words: the kana with 1000 set, then the mark (dakuten or handakuten)
@@ -129,6 +129,12 @@ Glyphs are recognised by shape: a hash of the size and of which pixels are
 lit, whatever their colour. The 1997 title font is drawn on a solid ground,
 which leaves no unlit pixel to tell its glyphs apart, so those are keyed by
 their exact pixels.
+
+A glyph holds 4-bit palette indices, not colours. The game draws dialogue from the CLUT at VRAM (352, 483) and
+event titles from the one at (352, 500), which the sections load. Pure 9 and the Japanese retail disc keep them
+there (the retail title font uses indices 1 to 8: orange tile, black outline, then four greys and white), so the
+viewer reads both rows from the section's VRAM and paints the glyphs with them. The titles then show as black-edged
+letters on orange tiles, as in the game. Other builds, where the rows are not verified, keep the built-in guesses.
 
 ## The cut villages
 

@@ -9148,6 +9148,111 @@
       "end": "000000",
       "type": "SPR frame",
       "name": "burned lying on back 4"
+    },
+    {
+      "content": "f44b31e02a018ee0",
+      "start": "0",
+      "end": "0",
+      "type": "SPR frame",
+      "name": "standing"
+    },
+    {
+      "content": "08bd5b05bde85620",
+      "start": "0",
+      "end": "0",
+      "type": "SPR frame",
+      "name": "running fast"
+    },
+    {
+      "content": "491fe7c5932c3def",
+      "start": "0",
+      "end": "0",
+      "type": "SPR frame",
+      "name": "running fast"
+    },
+    {
+      "content": "b4291fac89d076df",
+      "start": "0",
+      "end": "0",
+      "type": "SPR frame",
+      "name": "running fast"
+    },
+    {
+      "content": "dcf551bd9c5a55fc",
+      "start": "0",
+      "end": "0",
+      "type": "SPR frame",
+      "name": "running fast"
+    },
+    {
+      "content": "1a3cdfb94100e0e0",
+      "start": "0",
+      "end": "0",
+      "type": "SPR frame",
+      "name": "flying side"
+    },
+    {
+      "content": "6427a2640275e9b4",
+      "start": "0",
+      "end": "0",
+      "type": "SPR frame",
+      "name": "flying side"
+    },
+    {
+      "content": "b94cf0445f19cd22",
+      "start": "0",
+      "end": "0",
+      "type": "SPR frame",
+      "name": "flying side"
+    },
+    {
+      "content": "4830f0c4ade38285",
+      "start": "0",
+      "end": "0",
+      "type": "SPR frame",
+      "name": "flying side"
+    },
+    {
+      "content": "5dbf6c5d7858d513",
+      "start": "0",
+      "end": "0",
+      "type": "SPR frame",
+      "name": "stand front"
+    },
+    {
+      "content": "27cd35a8a1d6b0ea",
+      "start": "0",
+      "end": "0",
+      "type": "SPR frame",
+      "name": "getting up front"
+    },
+    {
+      "content": "e436f81f48635de9",
+      "start": "0",
+      "end": "0",
+      "type": "SPR frame",
+      "name": "running side"
+    },
+    {
+      "content": "2f53647096a7c358",
+      "start": "0",
+      "end": "0",
+      "type": "SPR frame",
+      "name": "running side"
+    },
+    {
+      "content": "e5c0731487f3a950",
+      "start": "0",
+      "end": "0",
+      "type": "SPR frame",
+      "name": "running side"
+    },
+    {
+      "content": "e66fc44840b86b23",
+      "start": "0",
+      "end": "0",
+      "type": "SPR frame",
+      "name": "running side"
     }
   ],
   "builds": {
@@ -9201,6 +9306,14 @@
       "name": "Pure Pure 09",
       "build": "TOMBA.EXE:a4c3624e0dbcab2a",
       "serial": "TOMBA.EXE",
+      "bins": {},
+      "areas": {},
+      "entries": []
+    },
+    "SLPS_011.44:d213622bf4abc768": {
+      "name": "Ore! Tomba (Japan)",
+      "build": "SLPS_011.44:d213622bf4abc768",
+      "serial": "SLPS_011.44",
       "bins": {},
       "areas": {},
       "entries": []

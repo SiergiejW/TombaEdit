@@ -1,16 +1,27 @@
-"""Native text palettes for the verified PrePre/Pure 9 executables."""
+"""Native text palettes for the verified PrePre/Pure 9 executables and the Japanese retail disc."""
 import hashlib
 from PIL import Image
 from psx.graphics import rgba
 
+# The Japanese retail disc draws its text from the same two CLUT rows of VRAM as Pure 9 does (drawMessageGlyphs
+# and spawnEventTitle write the same clut words), loaded from the area's sections.
+RETAIL = 'Japanese retail'
 
-def attach(wfm, project, source, offset):
+
+def native_versions(project):
+    """The WFM versions of the disc whose palette is in the VRAM of the sections, or () when it is none."""
     from game.builds import executable
     from formats.text.usage import PREPRE9_EXES
-    if wfm.version != b'WFM1':
-        return
     found = executable(project)
-    if found is None or hashlib.sha1(found.data).hexdigest() not in PREPRE9_EXES:
+    if found is None:
+        return ()
+    if hashlib.sha1(found.data).hexdigest() in PREPRE9_EXES:
+        return (b'WFM1',)
+    return (b'WFM2', b'WFM3') if found.build.name == RETAIL else ()
+
+
+def attach(wfm, project, source, offset):
+    if wfm.version not in native_versions(project):
         return
     assets = [a for a in project.by_source.get(source, ()) if a.kind == 'WFM' and a.offset == offset]
     if not assets:
