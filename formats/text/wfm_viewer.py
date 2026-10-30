@@ -23,7 +23,7 @@ class DialogueView(QWidget):
         self.bank = export.Bank(name, source, offset, version=wfm.version.decode('ascii', 'replace'), wfm=wfm)
         layout = QVBoxLayout(self)
         bar = QHBoxLayout()
-        tools = QHBoxLayout()       # the filter and the buttons: shown above the two panes
+        tools = QHBoxLayout()       # the filter and the buttons: shown above the picture
         self.search = QLineEdit(); self.search.setPlaceholderText('Search dialogue...')
         self.search.textChanged.connect(self.filter)
         bar.addWidget(self.search)
@@ -63,27 +63,16 @@ class DialogueView(QWidget):
         self.entries.setItemDelegate(TextEntryDelegate(self.entries))
         split.addWidget(self.entries)
         right = QSplitter(Qt.Orientation.Vertical)
-        # The message twice, side by side: as the game draws it, in its own font, and in English with the
-        # fallback letters. The Display menu picks what is shown.
+        # The message as the game draws it, in its own font, with the English under it in the fallback letters,
+        # in one frame that grows taller for a longer text. The Display menu picks what is shown.
         self.rendered = ImageView()
-        self.rendered_translated = ImageView()
-        self.original_title = QLabel('Original')
-        self.translated_title = QLabel('English')
-        self.panes = QSplitter()
-        for title, view in ((self.original_title, self.rendered), (self.translated_title, self.rendered_translated)):
-            holder = QWidget()
-            box = QVBoxLayout(holder)
-            box.setContentsMargins(0, 0, 0, 0)
-            box.addWidget(title)
-            box.addWidget(view, 1)
-            self.panes.addWidget(holder)
         self._display_key = None
         self.script = text_view("")
         top = QWidget()
         top_layout = QVBoxLayout(top)
         top_layout.setContentsMargins(0, 0, 0, 0)
         top_layout.addLayout(tools)
-        top_layout.addWidget(self.panes, 1)
+        top_layout.addWidget(self.rendered, 1)
         right.addWidget(top)
         right.addWidget(self.script)
         right.setSizes([400, 160])
@@ -139,7 +128,7 @@ class DialogueView(QWidget):
         menu = QMenu(button)
         group = QActionGroup(menu)
         self.display_actions = {}
-        for key, label in (('both', 'Original and English, side by side'), ('original', 'Original only'),
+        for key, label in (('both', 'Original with the English under it'), ('original', 'Original only'),
                            ('translated', 'English only')):
             action = QAction(label, menu, checkable=True)
             action.setChecked(session.display == key)
@@ -191,9 +180,7 @@ class DialogueView(QWidget):
         premade = session.premade
         self.premade_info.setText(
             f'{len(premade):,} premade messages ({", ".join(premade.models) or "no model"})' if len(premade) else 'No premade translations')
-        original, translated = session.display != 'translated', session.display != 'original'
-        self.panes.widget(0).setVisible(original)
-        self.panes.widget(1).setVisible(translated)
+        self.refresh_display()
 
     def select(self, index):
         if index < 0:
@@ -242,26 +229,46 @@ class DialogueView(QWidget):
         original = export.plain(self.wfm.dialogues[index])
         session = self.translation.session
         translated = session.translations.get(original)
-        key = index, translated
+        key = index, translated, session.display
         if key == self._display_key:
             return
-        self.rendered.setToolTip('Original text, as the game draws it'
-                                 + ('\n' + self.wfm.palette_source if hasattr(self.wfm, 'palette_source') else ''))
-        self.rendered.set_image(self.wfm.render(index), subject=('original', index))
-        if translated is not None and translated != original:
-            from formats.text.english_preview import render
-            try:
-                image, missing = render(self.wfm, index, translated)
-                tip = ('English translation, in the fallback letters'
-                       + ('\nNo recognised glyph for: ' + ' '.join(sorted(missing)) + ' (shown as ?).' if missing else ''))
-            except (OSError, ValueError, KeyError) as exc:
-                image, tip = self.awaiting_image('English preview unavailable'), str(exc)
-        else:
-            image = self.awaiting_image('No translation yet')
-            tip = 'There is no premade translation of this message; choose a model in the Display menu to translate it.'
-        self.rendered_translated.setToolTip(tip)
-        self.rendered_translated.set_image(image, subject=('translated', index))
+        show_original, show_english = session.display != 'translated', session.display != 'original'
+        tips, pictures = [], []
+        if show_original:
+            tips.append('Original text, as the game draws it'
+                        + ('\n' + self.wfm.palette_source if hasattr(self.wfm, 'palette_source') else ''))
+            pictures.append(self.wfm.render(index))
+        if show_english:
+            if translated is not None and translated != original:
+                from formats.text.english_preview import render
+                try:
+                    image, missing = render(self.wfm, index, translated)
+                    tips.append('English translation, in the fallback letters'
+                                + ('\nNo recognised glyph for: ' + ' '.join(sorted(missing)) + ' (shown as ?).' if missing else ''))
+                except (OSError, ValueError, KeyError) as exc:
+                    image = self.awaiting_image('English preview unavailable')
+                    tips.append(str(exc))
+            else:
+                image = self.awaiting_image('No translation yet')
+                tips.append('There is no premade translation of this message; choose a model in the Display menu to translate it.')
+            pictures.append(image)
+        self.rendered.setToolTip('\n\n'.join(tips))
+        self.rendered.set_image(self.stacked(pictures), subject=(session.display, index))
         self._display_key = key
+
+    @staticmethod
+    def stacked(pictures, gap=10):
+        """The pictures one under the other, left-aligned, in one picture: the frame grows with a longer text."""
+        if len(pictures) == 1:
+            return pictures[0]
+        from PIL import Image
+        image = Image.new('RGBA', (max(p.width for p in pictures),
+                                   sum(p.height for p in pictures) + gap * (len(pictures) - 1)), (0, 0, 0, 0))
+        top = 0
+        for picture in pictures:
+            image.alpha_composite(picture.convert('RGBA'), (0, top))
+            top += picture.height + gap
+        return image
 
     @staticmethod
     def awaiting_image(text):
