@@ -68,27 +68,40 @@ def render(wfm, index, text):
         missing.add(char)
         return glyphs['?']
 
-    # Preserve all translated characters and paragraph breaks, wrapping long words too.
-    lines, line, used = [], [], 0
     import re
-    for token in re.findall(r'\n|[^\S\n]+|[^\s]+', text):
-        if token == '\n':
-            lines.append(line); line, used = [], 0
-            continue
-        images = [glyph(c) for c in token]
-        token_width = sum(im.width for im in images)
-        if line and used + token_width > width and not token.isspace():
-            lines.append(line); line, used = [], 0
-        for image in images:
-            if used + image.width > width and line:
+
+    def flow(part):
+        """The lines of one frame's text. All characters and line breaks are kept, long words wrapped too."""
+        lines, line, used = [], [], 0
+        for token in re.findall(r'\n|[^\S\n]+|[^\s]+', part):
+            if token == '\n':
                 lines.append(line); line, used = [], 0
-            line.append(image); used += image.width
-    lines.append(line)
-    # Translation length can differ from the source; paginate at three lines.
+                continue
+            images = [glyph(c) for c in token]
+            token_width = sum(im.width for im in images)
+            if line and used + token_width > width and not token.isspace():
+                lines.append(line); line, used = [], 0
+            for image in images:
+                if used + image.width > width and line:
+                    lines.append(line); line, used = [], 0
+                line.append(image); used += image.width
+        lines.append(line)
+        return lines
+
+    # One frame for each frame of the original: a blank line in the translation is where the original clears the
+    # box. A frame whose English is longer than the original's grows taller; a translation with more blank
+    # lines than the original has frames keeps the extra text in the last frame.
+    try:
+        heights = [wfm.render(index, page).height for page in range(len(wfm.pages(index)))]
+    except Exception:
+        heights = []
+    parts = [p for p in re.split(r'\n[^\S\n]*\n\s*', text.strip('\n')) if p.strip()] or ['']
+    if heights and len(parts) > len(heights):
+        parts[len(heights) - 1:] = ['\n\n'.join(parts[len(heights) - 1:])]
     panels = []
-    for start in range(0, len(lines), 3):
-        page = lines[start:start + 3]
-        height = max(min(bubble[1], 512) + 8, len(page) * (preferred + 2) + 16)
+    for number, part in enumerate(parts):
+        page = flow(part)
+        height = max(min(bubble[1], 512) + 8, len(page) * (preferred + 2) + 16, heights[number] if number < len(heights) else 0)
         panel = Image.new('RGBA', (width + 16, height), (220, 216, 194, 255))
         draw = ImageDraw.Draw(panel)
         draw.rectangle((0, 0, panel.width - 1, height - 1), outline=(32, 24, 16), width=2)

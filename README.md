@@ -16,11 +16,12 @@ See [the 0.1.0 release notes](docs/release-notes-0.1.0.md) for changes since 0.0
 
 Translations of the Japanese discs come with the program (`formats/text/translations/`), so reading
 the text needs no model and no GPU. They are used by default. The dialogue viewer shows each message
-twice in one frame: the original, drawn as the game draws it in its own font, with the English under
-it, drawn in the fallback letters; a longer text makes the frame taller. A message is matched by its words, so a translation serves every disc that has
+twice, side by side: **Original**, drawn as the game draws it in its own font, and **English**, drawn
+in the fallback letters, with a frame of English for each frame of the original (taller where the
+English is longer). A message is matched by its words, so a translation serves every disc that has
 the same message, and the Information line under the entry list says how many messages of the open disc
 are covered and whether it is a known build. The **Display** menu of the dialogue viewer chooses
-*Original with the English under it*, *Original only* or *English only*, switches the premade
+*Original and English side by side*, *Original only* or *English only*, switches the premade
 translations on and off, and holds the model options below, among them **Never load the translation
 model**, which keeps a remembered model folder from being loaded at all. The choice is remembered.
 
