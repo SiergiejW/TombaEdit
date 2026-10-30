@@ -612,33 +612,48 @@ def _title(text):
     return label
 
 
+PASTEL = dict(pink='#F8BBD0', yellow='#FFF0A0', blue='#B3D9F7', green='#BCEBC6', purple='#D5C3F2')
+
+
+def pastel(button, colour):
+    """A large, bold button in a pastel colour (a name of PASTEL), so that it stands out from the plain controls."""
+    base = PASTEL[colour]
+    red, green, blue = (int(base[i:i + 2], 16) for i in (1, 3, 5))
+    button.setCursor(Qt_PointingHand())
+    button.setMinimumHeight(38)
+    button.setStyleSheet(
+        f'QPushButton {{ background-color: {base}; color: #262626; font-weight: bold; font-size: 10pt;'
+        f' padding: 8px 18px; border: 2px solid rgba(0, 0, 0, 0.28); border-radius: 8px; }}'
+        f'QPushButton:hover {{ background-color: white; border-color: rgba(0, 0, 0, 0.55); }}'
+        f'QPushButton:pressed {{ background-color: {base}; padding-top: 10px; }}'
+        # Unavailable: the same colour, faded, so each button stays easy to find.
+        f'QPushButton:disabled {{ background-color: rgba({red}, {green}, {blue}, 0.4); color: rgba(128, 128, 128, 0.95);'
+        f' border-color: rgba(128, 128, 128, 0.3); }}')
+
+
+def Qt_PointingHand():
+    from PyQt6.QtCore import Qt
+    return Qt.CursorShape.PointingHandCursor
+
+
 def _sheets_panel(sheets):
-    """The sprite sheets of the village load groups: the figures of page 0 and the buildings of the pages after
-    it, with a choice of sprite, page and palette above the picture."""
-    from PyQt6.QtWidgets import QComboBox, QHBoxLayout, QLabel, QVBoxLayout, QWidget
+    """The sprite sheets of the village load groups, side by side: the figures of page 0 on the left and the
+    buildings of the pages after it on the right, each with a choice of palette above its picture."""
+    from PyQt6.QtCore import Qt
+    from PyQt6.QtWidgets import QComboBox, QHBoxLayout, QLabel, QSplitter, QVBoxLayout, QWidget
     from gui.widgets.image_view import ImageView
     panel = QWidget()
     outer = QVBoxLayout(panel)
     outer.setContentsMargins(0, 0, 0, 0)
     outer.addWidget(_title(f'Sprites: the figures and buildings the village overlay can load ({len(sheets)} sets)'))
     bar = QHBoxLayout()
-    sprite, page, palette = QComboBox(), QComboBox(), QComboBox()
+    sprite = QComboBox()
     sprite.addItems([f'Sprite {n} of {len(sheets)} (group {sheet.group})' for n, sheet in enumerate(sheets, 1)])
-    page.addItems(['Figures: page 0, 4-bit', 'Buildings: pages 1 to 6, 8-bit'])
-    palette_count = QLabel()
     bar.addWidget(QLabel('Sprite'))
-    bar.addWidget(sprite)
-    bar.addWidget(QLabel('Page'))
-    bar.addWidget(page)
-    bar.addWidget(QLabel('Palette'))
-    bar.addWidget(palette, 1)
-    bar.addWidget(palette_count)
+    bar.addWidget(sprite, 1)
     outer.addLayout(bar)
-    layout = QHBoxLayout()
-    outer.addLayout(layout, 1)
-    picture = ImageView()
-    picture.zoom.setCurrentIndex(0)     # Fit
-    layout.addWidget(picture, 1)
+    columns = QSplitter(Qt.Orientation.Horizontal)
+    outer.addWidget(columns, 1)
     note = QLabel('Page 0 of each group that loads the village overlay holds 4-bit figures (256 x 256 texels), pages 1 to 6 '
                   '8-bit pictures of buildings (768 x 256): pieces of the village that were put together from data '
                   'the disc does not hold, so they are shown as they are stored. Nothing read from the game says which '
@@ -646,44 +661,53 @@ def _sheets_panel(sheets):
                   'colour the whole page, the named ones first, then the one that makes neighbouring texels most alike, '
                   'so pick another if the colours look wrong.')
     note.setWordWrap(True)
-    note.setMinimumWidth(220)
-    note.setMaximumWidth(320)
-    note.setAlignment(Qt_AlignTop())
-    layout.addWidget(note)
+    outer.addWidget(note)
 
-    def palettes_of(sheet):
-        return sheet.palettes if page.currentIndex() == 0 else sheet.building_palettes
+    def column(title, palettes_of, first_of, make):
+        """One side of the pair: a title, a palette choice and the picture; returns what the sprite choice refreshes."""
+        side = QWidget()
+        inside = QVBoxLayout(side)
+        inside.setContentsMargins(0, 0, 0, 0)
+        inside.addWidget(_title(title))
+        choice = QHBoxLayout()
+        palette, count = QComboBox(), QLabel()
+        choice.addWidget(QLabel('Palette'))
+        choice.addWidget(palette, 1)
+        choice.addWidget(count)
+        inside.addLayout(choice)
+        picture = ImageView()
+        picture.zoom.setCurrentIndex(0)     # Fit
+        inside.addWidget(picture, 1)
+        columns.addWidget(side)
 
-    def fill_palettes():
-        sheet = sheets[sprite.currentIndex()]
-        listed = palettes_of(sheet)
-        palette.blockSignals(True)
-        palette.clear()
-        total = len(listed)
-        first = sheet.best if page.currentIndex() == 0 else 0
-        palette.addItems([f'{n} of {total}: {label}' + (' (default)' if n - 1 == first else '')
-                          for n, (label, _row) in enumerate(listed, 1)])
-        palette.setCurrentIndex(first if total else -1)
-        palette.blockSignals(False)
-        palette_count.setText(f'{total} palettes')
-        draw()
+        def fill():
+            sheet = sheets[sprite.currentIndex()]
+            listed = palettes_of(sheet)
+            first = first_of(sheet)
+            palette.blockSignals(True)
+            palette.clear()
+            palette.addItems([f'{n} of {len(listed)}: {label}' + (' (default)' if n - 1 == first else '')
+                              for n, (label, _row) in enumerate(listed, 1)])
+            palette.setCurrentIndex(first if listed else -1)
+            palette.blockSignals(False)
+            count.setText(f'{len(listed)} palettes')
+            draw()
 
-    def draw():
-        sheet = sheets[sprite.currentIndex()]
-        if not palettes_of(sheet) or palette.currentIndex() < 0:
-            return
-        make = sheet_image if page.currentIndex() == 0 else building_image
-        picture.set_image(make(sheet, palette.currentIndex()), preserve_view=False)
-    sprite.currentIndexChanged.connect(fill_palettes)
-    page.currentIndexChanged.connect(fill_palettes)
-    palette.currentIndexChanged.connect(draw)
-    fill_palettes()
+        def draw():
+            sheet = sheets[sprite.currentIndex()]
+            if palettes_of(sheet) and palette.currentIndex() >= 0:
+                picture.set_image(make(sheet, palette.currentIndex()), preserve_view=False)
+        palette.currentIndexChanged.connect(draw)
+        return fill
+
+    refresh = [column('Figures: page 0, 4-bit', lambda sheet: sheet.palettes, lambda sheet: sheet.best, sheet_image),
+               column('Buildings: pages 1 to 6, 8-bit', lambda sheet: sheet.building_palettes, lambda sheet: 0,
+                      building_image)]
+    columns.setSizes([400, 600])
+    sprite.currentIndexChanged.connect(lambda: [fill() for fill in refresh])
+    for fill in refresh:
+        fill()
     return panel
-
-
-def Qt_AlignTop():
-    from PyQt6.QtCore import Qt
-    return Qt.AlignmentFlag.AlignTop
 
 
 class _BackdropBar:
@@ -700,7 +724,8 @@ def _backdrop_bar(preview, changed):
     settings = QSettings()
     bar = QHBoxLayout()
     holder = _BackdropBar(bar, None)
-    choose, clear = QPushButton('Background picture...'), QPushButton('Clear')
+    choose, clear = QPushButton('Load background picture...'), QPushButton('Clear')
+    pastel(choose, 'purple')
     x, y = QSpinBox(), QSpinBox()
     scale = QDoubleSpinBox()
     opacity = QSpinBox()
@@ -823,14 +848,15 @@ def view(preview, english=None, request=None, changed=None, jump=None):
     open_text = QPushButton('Open text entry')
     open_text.setToolTip('Go to the text bank and show the selected resident\'s message.')
     open_sprite = QPushButton('Open sprite sheet')
-    open_sprite.setToolTip('Go to the load group of the system table that holds the figures.')
+    open_sprite.setToolTip('Open the VRAM of the load group that holds the figures: the sheet is a picture there.')
     open_palette = QPushButton('Open palette file')
     open_palette.setToolTip('Go to the CLUT file that holds the palette of the selected resident\'s figure.')
     open_code = QPushButton('Open overlay code')
     open_code.setToolTip('Go to the INFO2 overlay: the residents, props and houses of the villages and their dialogue routines.')
-    for button in (open_text, open_sprite, open_palette, open_code):
-        jump_bar.addWidget(button)
-    jump_bar.addStretch()
+    for button, colour in ((open_text, 'pink'), (open_sprite, 'yellow'), (open_palette, 'blue'), (open_code, 'green')):
+        pastel(button, colour)
+        jump_bar.addWidget(button, 1)
+    jump_bar.setSpacing(10)
     if jump is not None:
         plan_layout.addLayout(jump_bar)
     else:

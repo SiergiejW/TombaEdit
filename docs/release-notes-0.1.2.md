@@ -4,7 +4,7 @@ Changes since **0.1.1** (commit `f30df88`, 29 October 2026).
 
 ## Premade translations (no model needed)
 
-- Japanese text now comes with English. Each known build has its own file in `formats/text/translations/`: `japanese-retail.json`, `japanese-demo.json`, `sampler-japanese-demo.json`, `sampler-japanese-demo-dengeki-d5.json`, `pure-pure-09-sampler.json`, `sampler-pure-pure-09-sampler.json` and `prepre-vol-8.json`. Together they translate 2,096 different messages with CAT-Translate 7b.
+- Japanese text now comes with English. Each known build has its own file in `formats/text/translations/`: `japanese-retail.json`, `japanese-demo.json`, `sampler-japanese-demo.json`, `sampler-japanese-demo-dengeki-d5.json`, `pure-pure-09-sampler.json`, `sampler-pure-pure-09-sampler.json` and `prepre-vol-8.json`. Together they translate 2,248 different messages with CAT-Translate 7b.
 - Each file lists the build's messages in disc order under `entries` and the same messages bank by bank under `banks` (bank, file, offset, entry index, original, translation), so builds can be compared with any other tool.
 - A disc of a known build reads its own file first, then the other files, so the demos and samplers also find the text they share with the retail disc. The info line says how many messages of the open disc are covered and whether the build is recognised.
 - The dialogue viewer now shows each message twice, side by side: **Original**, drawn in the game's own font, and **English**, drawn with the fallback letters.
@@ -42,6 +42,11 @@ Changes since **0.1.1** (commit `f30df88`, 29 October 2026).
 - Backdrop panoramas no longer show a one-pixel line at the join of repeats (AREA00 sections 01 and 02, AREA10), and are drawn at whole pixels in one wrapped rectangle.
 
 ## Interface
+
+- The resource trees no longer show the SPR and ANIM review columns (they are hidden, the marks are kept). The Label column opens at 30% of the tree's width and cannot be dragged below 15%; the name column takes the rest.
+- The buttons of the Cut village tab (**Open text entry**, **Open sprite sheet**, **Open palette file**, **Open overlay code**) and **Load background picture...** are large and bold, in pink, yellow, blue, green and purple pastels. A button that does not apply to the selection is the same colour, faded.
+- **Open sprite sheet** opens the VRAM tab of the sheet's load group, where the sheet is a picture, not the empty level editor.
+- The sprite panel of the Cut village tab shows the figures and the buildings side by side, each with its own palette choice.
 
 - Every 2D view (pictures, sprite sheets, the VRAM view, collision planes, placement maps and the 2D level view) has **+**, **-** and **Fit** buttons at its top right.
 - **Fit** no longer leaves a scroll bar that changes the fitted size.

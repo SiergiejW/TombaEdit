@@ -37,6 +37,20 @@ class ResourceTree(QTreeWidget):
         bar = self.horizontalScrollBar()
         bar.sliderMoved.connect(self.remember_horizontal)
         bar.actionTriggered.connect(lambda action: self.remember_horizontal(bar.sliderPosition()))
+        self.label_sized = False
+
+    def resizeEvent(self, event):
+        super().resizeEvent(event)
+        # The name column takes what the others leave; the label column gets a third of the width the
+        # first time the tree has one, and never less than 15% of it.
+        total = self.viewport().width()
+        if total < 200:
+            return
+        if not self.label_sized:
+            self.label_sized = True
+            self.setColumnWidth(1, total * 3 // 10)
+        elif self.columnWidth(1) < total * 15 // 100:
+            self.setColumnWidth(1, total * 15 // 100)
 
     def remember_horizontal(self, position):
         self.user_horizontal = position
@@ -974,23 +988,20 @@ class MainWindow(QMainWindow):
     def make_tree(self):
         tree = ResourceTree()
         tree.setHeaderLabels(["Name / resource", "Label", "Bytes", "SPR", "ANIM"])
-        tree.headerItem().setToolTip(3, 'Sprite review. Drag the column edge to expand.')
-        tree.headerItem().setToolTip(4, 'Animation review. Drag the column edge to expand.')
-        tree.header().moveSection(3, 0)
-        tree.header().moveSection(tree.header().visualIndex(4), 1)
+        # The sprite and animation review marks keep their columns, hidden: the tree shows name, label and size.
+        tree.setColumnHidden(3, True)
+        tree.setColumnHidden(4, True)
         tree.header().setMinimumSectionSize(24)
-        for column in (3, 4):
-            tree.header().setSectionResizeMode(column, QHeaderView.ResizeMode.Interactive)
-            tree.setColumnWidth(column, 30)
-            item_font = tree.headerItem().font(column)
-            item_font.setPointSize(7)
-            tree.headerItem().setFont(column, item_font)
+        tree.header().setStretchLastSection(False)
+        tree.header().setSectionResizeMode(0, QHeaderView.ResizeMode.Stretch)
+        tree.header().setSectionResizeMode(1, QHeaderView.ResizeMode.Interactive)
+        tree.header().setSectionResizeMode(2, QHeaderView.ResizeMode.Interactive)
         tree.setTreePosition(0)
         from gui.widgets.text_usage import UsageTreeDelegate
         tree.setTextElideMode(Qt.TextElideMode.ElideRight)
         tree.setItemDelegate(UsageTreeDelegate(tree))
-        tree.setColumnWidth(0, 370)
         tree.setColumnWidth(1, 160)
+        tree.setColumnWidth(2, 70)
         tree.setUniformRowHeights(True)
         tree.setAlternatingRowColors(False)
         tree.setStyleSheet("QTreeWidget::item:selected {background-color: #555555; color: white;} QTreeWidget::item:selected:!active {background-color: #494949; color: white;}")
@@ -1727,7 +1738,8 @@ class MainWindow(QMainWindow):
         self.disc_tree.setCurrentItem(item)
         self.disc_tree.scrollToItem(item)
 
-    def jump_group(self, path, index):
+    def jump_group(self, path, index, tab=None):
+        """Select a load group in the area tree; `tab` names the tab to come up on once the group has loaded."""
         from PyQt6.QtWidgets import QTreeWidgetItemIterator
         self.search.clear()
         iterator = QTreeWidgetItemIterator(self.area_tree)
@@ -1738,8 +1750,16 @@ class MainWindow(QMainWindow):
                 while parent is not None:
                     parent.setExpanded(True)
                     parent = parent.parent()
+                changed = self.area_tree.currentItem() is not item
                 self.area_tree.setCurrentItem(item)
                 self.area_tree.scrollToItem(item)
+                if tab:
+                    # Selecting starts the load, which clears the tab to restore: name it after that.
+                    for i in range(self.tabs.count()):
+                        if not changed and self.tabs.tabText(i) == tab:
+                            self.tabs.setCurrentIndex(i)
+                    if changed:
+                        self.restore_tab = tab
                 return
             iterator += 1
 
@@ -1772,7 +1792,7 @@ class MainWindow(QMainWindow):
             wfm, source, offset, name, index = payload
             self.open_text_entry(export.Bank(name, source, offset, wfm=wfm), index)
         elif kind == 'group':
-            self.jump_group(*payload)
+            self.jump_group(*payload, tab='VRAM')     # the sheet is a picture in the group's VRAM
         elif kind == 'asset':
             self.jump_asset(payload)
         elif kind == 'file':
