@@ -29,6 +29,10 @@ LABEL = 5   # the model list's column of labels
 # Level objects at least this wide or tall are framed tightly, smaller ones
 # from further out.
 CONTEXT_SIZE = 320
+# The light an untextured face is shaded with: toward the viewer, a little above and to the left, with this much
+# of the colour always left. The game sets its light while it runs, so these are an estimate.
+LIGHT_DIRECTION = (-0.35, 0.6, 0.72)
+AMBIENT = 0.4
 from PIL import ImageDraw
 
 class MeshCanvas(CameraEventMixin, QOpenGLWidget):
@@ -44,6 +48,8 @@ class MeshCanvas(CameraEventMixin, QOpenGLWidget):
         self.index = -1
         self.textured = True
         self.colored = True
+        self.lit = True
+        self.lit_cache = {}
         self.wireframe = False
         self.backface_culling = True
         self.transparency = True     # blend what the model data marks semi-transparent
@@ -289,6 +295,23 @@ class MeshCanvas(CameraEventMixin, QOpenGLWidget):
             return
         super().wheelEvent(event)
 
+    def lit_arrays(self, index, mesh, key, arrays):
+        """An untextured batch with its colours lit from the stored normals, or the batch as it is."""
+        normals = getattr(mesh, 'normals', {}).get(key)
+        if not self.lit or not self.colored or normals is None or key[0] >= 0 or len(normals) != len(arrays[0]):
+            return arrays
+        cached = self.lit_cache.get((index, key))
+        if cached is None:
+            direction = np.array(LIGHT_DIRECTION, np.float32)
+            direction /= np.linalg.norm(direction)
+            shade = AMBIENT + (1 - AMBIENT) * np.maximum(normals @ direction, 0)
+            # A face whose normals are all zero has nothing to be lit with (the steam of the gas plants): it keeps
+            # its colour as it is.
+            shade = np.where(np.linalg.norm(normals, axis=1) > 0.5, shade, 1.0)
+            cached = (arrays[0], arrays[1], np.ascontiguousarray(arrays[2] * shade[:, None], dtype=np.float32))
+            self.lit_cache[(index, key)] = cached
+        return cached
+
     def keyPressEvent(self, event):
         if event.key() == Qt.Key.Key_F:
             self.fit({self.selected_model} if self.selected_model is not None else None)
@@ -415,6 +438,7 @@ class MeshCanvas(CameraEventMixin, QOpenGLWidget):
             layered = getattr(mesh, 'blend_layers', None) if self.transparency and self.textured else None
             jobs = []
             for (page, clut, semi), arrays in mesh.batches.items():
+                arrays = self.lit_arrays(i, mesh, (page, clut, semi), arrays)
                 semi = semi and self.transparency
                 split = semi and self.textured and page >= 0 and mesh.image is None
                 layers = ((None,) if not semi else ('solid', 'blend') if split else ('blend',))
@@ -590,19 +614,23 @@ class MeshCanvas(CameraEventMixin, QOpenGLWidget):
         for sprite in self.panorama_cache[1]:
             # Whole pixels, so neighbouring strips meet without seams.
             x, y = panorama_position(sprite, camera, c.camera_angle_h, c.camera_angle_v)
+            # Whole pixels, and the repeats one quad that wraps the picture: copies drawn one by one at fractional
+            # places leave a column of the sky behind them where two edges round differently.
+            x, y = math.floor(x), math.floor(y)
             gl.glBindTexture(gl.GL_TEXTURE_2D, self.image_texture(gl, sprite.image))
+            gl.glTexParameteri(gl.GL_TEXTURE_2D, gl.GL_TEXTURE_WRAP_S, gl.GL_REPEAT)
             gl.glColor3f(1, 1, 1)
             low = (320 - width) / 2
             period = sprite.image.width
             first = x - math.ceil((x + period - low) / period) * period + period
             copies = [first + n * period for n in range(int(width // period) + 2)]
-            gl.glBegin(gl.GL_QUADS)
             for at in copies:
                 for index, px, py, pw, ph in sprite.parts:
                     self.backdrop_rects.setdefault(index, []).append((at + px, y + py, pw, ph))
-                for u, v in ((0, 0), (1, 0), (1, 1), (0, 1)):
-                    gl.glTexCoord2f(u, v)
-                    gl.glVertex2f(at + u * sprite.image.width, y + v * sprite.image.height)
+            gl.glBegin(gl.GL_QUADS)
+            for u, v in ((0, 0), (len(copies), 0), (len(copies), 1), (0, 1)):
+                gl.glTexCoord2f(u, v)
+                gl.glVertex2f(first + u * period, y + v * sprite.image.height)
             gl.glEnd()
         gl.glTexEnvi(gl.GL_TEXTURE_ENV, gl.GL_TEXTURE_ENV_MODE, gl.GL_MODULATE)
         gl.glDisable(gl.GL_TEXTURE_2D)
@@ -763,6 +791,11 @@ class ModelView(QWidget):
         self.texture_action = add_action(QStyle.StandardPixmap.SP_DialogYesButton,
             'Texture Mode', lambda value: self.toggle('textured', value), True)
         self.texture_action.setToolTip('Show CLUT textures. Turn off to inspect WMD vertex colours.')
+        self.lit_action = add_action(QStyle.StandardPixmap.SP_MessageBoxInformation,
+            'Light From Normals', lambda value: self.toggle('lit', value), True)
+        self.lit_action.setToolTip('Shade the untextured faces from the normals the model stores, as the game does with its '
+                                   'light. The game sets that light while it runs, so the direction and the ambient level '
+                                   'here are an estimate. Turn off to see the plain vertex colours.')
         self.culling_action = add_action(QStyle.StandardPixmap.SP_DialogNoButton,
             'Backface Culling', lambda value: self.toggle('backface_culling', value), True)
         self.transparency_action = add_action(QStyle.StandardPixmap.SP_TitleBarShadeButton,
@@ -1038,7 +1071,22 @@ class ModelView(QWidget):
         if announce:
             print(f"selected: model {index:03d} {p['kind']} @ 0x{p['offset']:X} | page 0x{p['page'] & 0xFFFF:04X} "
                   f"CLUT 0x{p['clut']:04X} | UV {texels}")
-        self.details.setPlainText(f"Object {index:03d} | {p['kind']}\nRecord @ 0x{p['offset']:X}\nPage: 0x{p['page']:04X}\nCLUT: 0x{p['clut']:04X}\nGPU command: 0x{p['command']:02X}\n\nUV: {texels}\n\nVertices: {p['vertices']}")
+        shading = ''
+        if p.get('normals') is not None and p['page'] < 0:
+            shading = ('Shading: untextured, lit by the game from its stored normal' + ('s' if len(p['normals']) > 1 else '') +
+                       f" {[tuple(round(c / 4096, 2) for c in n) for n in p['normals']]} (the viewer's light is an estimate).\n")
+        if p.get('raw_colors') is not None and p['page'] >= 0:
+            many = 's' if len(p['raw_colors']) > 1 else ''
+            colours = ' '.join(f'({r},{g},{b})' for r, g, b in p['raw_colors'].tolist())
+            if p['command'] & 1:
+                shading = ('Shading: the raw-texture bit is set, so the texture is drawn as it is. '
+                           f'Stored colour{many} {colours}'
+                           + (': 128 is neutral, so nothing is stored to shade it.' if (p['raw_colors'] == 128).all() else '.'))
+            else:
+                shading = (f'Shading: the texture is multiplied by the stored colour{many} {colours} '
+                           '(128 is neutral, 255 is twice as bright).')
+            shading += '\n'
+        self.details.setPlainText(f"Object {index:03d} | {p['kind']}\nRecord @ 0x{p['offset']:X}\nPage: 0x{p['page']:04X}\nCLUT: 0x{p['clut']:04X}\nGPU command: 0x{p['command']:02X}\n{shading}\nUV: {texels}\n\nVertices: {p['vertices']}")
         image = texture_page(self.canvas.vram, p['page'], p['clut']).copy() if p['page'] >= 0 else Image.new('RGBA', (256, 256), (32, 32, 32, 255))
         order = [0, 1, 3, 2, 0] if len(texels) == 4 else [0, 1, 2, 0]
         ImageDraw.Draw(image).line([texels[i] for i in order], fill='yellow', width=1)

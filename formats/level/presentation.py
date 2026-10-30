@@ -83,6 +83,14 @@ def panorama_layers(backdrops, visible):
             if x + b.image.width > width:
                 picture.alpha_composite(b.image, (x - width, y))
             parts.append((i, x, y, b.image.width, b.image.height))
+        # A picture the repeat is set by (no period of its own) starts and ends on its first and last drawn
+        # column: a frame that begins or ends with a transparent column would leave a one-pixel line of the
+        # sky at every join of the copies.
+        if not period:
+            box = picture.getchannel('A').getbbox()
+            if box and (box[0] > 0 or box[2] < picture.width):
+                picture = picture.crop((box[0], 0, box[2], picture.height))
+                parts = [(i, x - box[0], y, w, h) for i, x, y, w, h in parts]
         # A short sky band ends at the horizon screen's bottom; a tall band
         # is centred, giving both upward and downward look some artwork.
         shift = 240 - height if height <= 240 else (240 - height) / 2

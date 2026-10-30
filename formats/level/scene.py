@@ -148,9 +148,11 @@ def translated(mesh, position):
 def placed_model(mesh, position, visual):
     """Apply the object's initial PSX scale and rotation before placement."""
     from formats.level.presentation import model_vertices
+    rotation = visual.get('rotation', (0, 0, 0))
     placed = rebuild_mesh([dict(p, vertices=model_vertices(p['vertices'], position,
-                        visual.get('scale', (4096, 4096, 4096)),
-                        visual.get('rotation', (0, 0, 0))))
+                        visual.get('scale', (4096, 4096, 4096)), rotation),
+                        **({'unit_normals': model_vertices(p['unit_normals'], (0, 0, 0), (4096, 4096, 4096), rotation)}
+                           if p.get('unit_normals') is not None else {}))
                          for p in mesh.polygons], mesh.offset, mesh.image)
     placed.front_clockwise = getattr(mesh, 'front_clockwise', True)
     return placed

@@ -305,6 +305,23 @@ each object must end exactly at its next pointer. Quads split into triangles
 `0,1,2` and `3,2,1`. The preview converts coordinates to `(x,-y,-z)`. Texture
 modulation treats 128 as neutral; raw texture commands bypass vertex colour.
 
+A raw-texture primitive (bit 0 of the GPU command: 25, 2D, 3D) stores 128, 128, 128 for every colour: there is
+nothing to shade it with, and drawing it modulated would change nothing. In the Japanese retail bank
+`AREA00/D003.GAM` `+0` (WMD 50FF, the Village of All Beginnings) 2,267 of the 3,423 textured primitives are
+raw-texture ones, every colour 128, and the other 1,156 carry greys from 65 to 150. The viewer draws both as the
+console would, and a selected polygon says which it is. Whatever shades the raw ones in the game is not in the
+model. That bank uses the 1997 layout, in which a Gouraud primitive's colours sit among its corner words.
+
+The untextured primitives are the ones that carry normals: a flat one a single normal, a Gouraud one a normal for
+each corner, each three signed 16-bit components of a vector of length 4096. Their colours are base colours (255 is
+full, there is no 128 neutral) that the game lights with those normals, so drawn plain they look flat. Object 17 of
+that bank (Geometry 017) has 273 such vertices, whose normals do not follow the face (they are the smooth normals of
+a rounded shape). The viewer's "Light From Normals" shades them as the base colour times an ambient 0.4 plus 0.6 of
+the normal's dot product with a fixed light toward the viewer, from above and the left. The game's own light is set
+while it runs and is not in the model, so that light is an estimate.
+Some untextured faces have a zero normal at every corner (the gas plants' steam, `WMD 51FF` model 27, all semi-transparent
+commands 31 and 39): nothing lights them, and the viewer leaves their colours as they are.
+
 The 1997 builds lay a textured primitive out as the GPU packet it becomes:
 the RGB/command word, then one word per corner with U and V in its low half,
 then an eight-byte `<hhh>` position per corner. The high half of the first

@@ -26,6 +26,9 @@ class Mesh:
     batches: dict
     polygons: list = field(default_factory=list)
     image: object = None
+    # key: unit normal of each vertex of an untextured batch, in the viewer's axes. The game lights these
+    # primitives with them; what its light is, is set while it runs.
+    normals: dict = field(default_factory=dict)
 
 
 def primitive_size(kind, layout=RETAIL):
@@ -60,7 +63,7 @@ def parse_wmd(data, layout=None):
         raise FormatError("Invalid WMD object offsets")
     meshes = []
     for start, end in zip(pointers, pointers[1:]):
-        pos, batches, polygons = start, {}, []
+        pos, batches, polygons, lit_normals = start, {}, [], {}
         for kind in range(8):
             if pos + 4 > end:
                 raise FormatError("Truncated WMD primitive batch")
@@ -111,7 +114,7 @@ def parse_wmd(data, layout=None):
                     cols = np.repeat(cols, nv, axis=0)
                 order = [0, 1, 2] if nv == 3 else [0, 1, 2, 3, 2, 1]
                 key = (page, clut, bool(cmd & 2))
-                polygon = dict(offset=pos, vertices=vertices, uv=uv, colors=cols,
+                polygon = dict(offset=pos, vertices=vertices, uv=uv, colors=cols, raw_colors=colors[:, :3].copy(),
                                page=page, clut=clut, command=cmd, kind=KINDS[kind])
                 if not textured:
                     normal_at = vp + nv * 8
@@ -122,11 +125,18 @@ def parse_wmd(data, layout=None):
                 target[0].extend(vertices[j] for j in order)
                 target[1].extend(uv[j] for j in order)
                 target[2].extend(cols[j] for j in order)
+                if not textured:
+                    unit = np.array([(nx, -ny, -nz) for nx, ny, nz in polygon['normals']], np.float32) / 4096
+                    if nc == 1:
+                        unit = np.repeat(unit, nv, axis=0)
+                    polygon['unit_normals'] = unit      # one for each corner, in the viewer's axes
+                    lit_normals.setdefault(key, []).extend(unit[j] for j in order)
                 pos += size
         if pos != end:
             raise FormatError(f"Unparsed WMD object bytes at {pos:X}..{end:X}")
         meshes.append(Mesh(start, {key: tuple(np.asarray(a, dtype=np.float32) for a in arrays)
-                                   for key, arrays in batches.items()}, polygons))
+                                   for key, arrays in batches.items()}, polygons,
+                           normals={key: np.asarray(a, dtype=np.float32) for key, a in lit_normals.items()}))
     from formats.models.winding import closed_winding
     for mesh in meshes:
         winding = closed_winding([mesh])

@@ -64,14 +64,20 @@ def topology(mesh):
 
 
 def rebuild_mesh(polygons, offset=0, image=None):
-    batches = {}
+    batches, normals, whole = {}, {}, {}
     for p in polygons:
         order = [0, 1, 2] if len(p['vertices']) == 3 else [0, 1, 2, 3, 2, 1]
-        target = batches.setdefault((p['page'], p['clut'], bool(p['command'] & 2)), [[], [], []])
+        key = (p['page'], p['clut'], bool(p['command'] & 2))
+        target = batches.setdefault(key, [[], [], []])
         for target_array, source in zip(target, (p['vertices'], p['uv'], p['colors'])):
             target_array.extend(source[i] for i in order)
+        # Untextured faces keep the normals the game lights them with, when every face of the batch has them.
+        whole[key] = whole.get(key, True) and p.get('unit_normals') is not None
+        if whole[key]:
+            normals.setdefault(key, []).extend(p['unit_normals'][i] for i in order)
     return Mesh(offset, {k: tuple(np.asarray(a, np.float32) for a in arrays)
-                         for k, arrays in batches.items()}, polygons, image)
+                         for k, arrays in batches.items()}, polygons, image,
+                normals={k: np.asarray(a, np.float32) for k, a in normals.items() if whole[k]})
 
 
 def deform(mesh, morph, weight):
