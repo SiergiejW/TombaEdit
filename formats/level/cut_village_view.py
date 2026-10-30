@@ -16,7 +16,7 @@ from dataclasses import dataclass, field
 import numpy as np
 from PIL import Image, ImageDraw, ImageFont
 
-from formats.level.cut_towns import CUT, VILLAGES, WINDOWS, dialogue_cases, villages
+from formats.level.cut_towns import CUT, EXITS, VILLAGES, WINDOWS, dialogue_cases, villages
 
 SCALE = 2
 MARGIN = 40
@@ -105,6 +105,10 @@ def draw_plan(village, art=None, selected=(), hits=None, backdrop=None):
           + [b[i] for b in boxes for i in (0, 2)])
     ys = ([r.y for r in village.residents] + [p.y for p in village.props] + [h[i] for h in village.houses for i in (1, 3)]
           + [b[i] for b in boxes for i in (1, 3)])
+    exits = EXITS.get(village.set_number, [])
+    for (x0, y0, x1, y1), _where in exits:
+        xs += [v for v in (x0, x1) if v is not None]
+        ys += [v for v in (y0, y1) if v is not None]
     if backdrop is not None:
         xs += [backdrop.x, backdrop.x + backdrop.size[0]]
         ys += [backdrop.y, backdrop.y + backdrop.size[1]]
@@ -132,6 +136,17 @@ def draw_plan(village, art=None, selected=(), hits=None, backdrop=None):
         draw.rectangle([at(x0, y0), at(x1, y1)], outline=(40, 110, 230, 255), width=2)
         draw.text((at(x0, y0)[0] + 4, at(x0, y0)[1] + 3), f'H{n}', fill=(40, 110, 230, 255), font=label)
         hits.append(('house', n - 1, (*at(x0, y0), *at(x1, y1))))
+    for n, ((x0, y0, x1, y1), _where) in enumerate(exits):
+        # An open side of an exit runs out to the edge of the map.
+        x0, y0 = (left if x0 is None else x0), (top if y0 is None else y0)
+        x1, y1 = (left + width / SCALE if x1 is None else x1), (top + height / SCALE if y1 is None else y1)
+        shade = Image.new('RGBA', image.size, (0, 0, 0, 0))
+        ImageDraw.Draw(shade).rectangle([*at(x0, y0), *at(x1, y1)], fill=(240, 130, 20, 50))
+        image.alpha_composite(shade)
+        draw = ImageDraw.Draw(image)
+        draw.rectangle([*at(x0, y0), *at(x1, y1)], outline=(240, 130, 20, 255), width=3)
+        draw.text((at(x0, y0)[0] + 5, at(x0, y0)[1] + 4), f'exit {n + 1}', fill=(200, 90, 0, 255), font=label)
+        hits.append(('exit', n, (*at(x0, y0), *at(x1, y1))))
     for r in village.residents:
         box = patrol_box(village, r)
         if box:
@@ -171,7 +186,7 @@ def draw_plan(village, art=None, selected=(), hits=None, backdrop=None):
         for k, i, (x0, y0, x1, y1) in hits:
             if (k, i) != (kind, index):
                 continue
-            if kind == 'house':
+            if kind in ('house', 'exit'):
                 shade = Image.new('RGBA', image.size, (0, 0, 0, 0))
                 ImageDraw.Draw(shade).rectangle([x0, y0, x1, y1], fill=(0, 190, 255, 45))
                 image.alpha_composite(shade)
@@ -184,7 +199,7 @@ def draw_plan(village, art=None, selected=(), hits=None, backdrop=None):
 
 def hit_test(hits, x, y):
     """The (kind, index) of the element at an image pixel: residents before props before houses, the smallest first."""
-    for kind in ('resident', 'prop', 'house'):
+    for kind in ('resident', 'prop', 'exit', 'house'):
         found = [((x1 - x0) * (y1 - y0), index) for k, index, (x0, y0, x1, y1) in hits
                  if k == kind and x0 <= x <= x1 and y0 <= y <= y1]
         if found:
@@ -208,6 +223,12 @@ def describe(preview, selected):
         q = village.props[index]
         return (f'Prop {index + 1}: subtype {q.subtype}, animation {q.animation}, type {q.kind}, '
                 f'{"outdoors" if not q.room else f"inside house {q.room}"}, at ({q.x}, {q.y}).')
+    if kind == 'exit':
+        (x0, y0, x1, y1), where = EXITS[village.set_number][index]
+        edge = lambda a, b: f'{a} {"beyond" if b is None else b}'
+        return (f'Exit {index + 1}: leads to {where}. The game fires it when Tomba is inside '
+                f'x {x0 if x0 is not None else "any"} to {x1 if x1 is not None else "any"}, '
+                f'y {y0 if y0 is not None else "any"} to {y1 if y1 is not None else "any"}. Nothing leads back here.')
     x0, y0, x1, y1 = village.houses[index]
     inside = [r.index + 1 for r in village.residents if r.room == index + 1]
     return (f'House {index + 1}: from ({x0}, {y0}) to ({x1}, {y1}); residents inside: '
@@ -274,20 +295,21 @@ def available(project, path, index):
 # first palette.
 FIGURES = {
     11: dict(group=61, stand_in=False,
-             palettes=[('AREA11/CLUT02.GAM', 4, 'lumberjack factory worker (hard hat)', (0, 1, 4), 'body'),
-                       ('AREA11/CLUT02.GAM', 36, 'male lumberjack town resident (old man)', (2, 3), 'body'),
-                       ('AREA11/CLUT02.GAM', 68, 'the old man cursed', (), 'body')],
+             palettes=[('AREA11/CLUT02.GAM', 4, 'lumberjack factory worker (hard hat)', (0,), 'body', (1, 4)),
+                       ('AREA11/CLUT02.GAM', 36, 'male lumberjack town resident (old man)', (), 'body', (2, 3)),
+                       ('AREA11/CLUT02.GAM', 68, 'the old man cursed', (), 'body', ())],
              drawings=dict(body=dict(front=(1, 0, 23, 44), back=(74, 0, 93, 44), left=(27, 0, 45, 45)))),
     16: dict(group=76, stand_in=False,
-             palettes=[('AREA16/CLUT07.GAM', 53, 'male Stonetown resident (strongman)', (2,), 'strongman'),
-                       ('AREA16/CLUT07.GAM', 54, 'female Stonetown resident', (0,), 'woman'),
-                       ('AREA16/CLUT07.GAM', 48, 'Stonetown resident', (1, 3), 'woman')],
+             palettes=[('AREA16/CLUT07.GAM', 21, 'female Stonetown resident', (0,), 'woman', (3,)),
+                       ('AREA16/CLUT07.GAM', 37, 'Stonetown boy', (1,), 'boy', ()),
+                       ('AREA16/CLUT07.GAM', 53, 'male Stonetown resident (strongman)', (2,), 'strongman', ())],
              drawings=dict(strongman=dict(front=(75, 202, 125, 256), back=(132, 196, 180, 256), left=(39, 196, 70, 256)),
-                           woman=dict(front=(107, 49, 143, 93), back=(2, 0, 39, 45), left=(153, 0, 177, 46))),
+                           woman=dict(front=(107, 49, 143, 93), back=(2, 0, 39, 45), left=(153, 0, 177, 46)),
+                           boy=dict(front=(81, 147, 111, 183), back=(81, 147, 111, 183), left=(176, 146, 196, 183))),
              erase=[(160, 186, 182, 209)],       # the hat of the drawing beside the back view
              move=[((137, 195, 160, 208), 8, 0)]),   # the back view's head is drawn eight texels left of its body
     17: dict(group=80, stand_in=False,
-             palettes=[('AREA17/CLUT03.GAM', 1, 'Iron Town residents', (0, 1, 2, 3, 4), 'body')],
+             palettes=[('AREA17/CLUT03.GAM', 1, 'Iron Town residents', (0,), 'body', (1, 2, 3, 4))],
              drawings=dict(body=dict(front=(25, 3, 48, 48), back=(145, 2, 166, 48), left=(81, 51, 105, 96)))),
 }
 FACINGS = {0: 'back', 1: 'right', 2: 'left', 3: 'front'}      # a resident's frame field; a guess
@@ -301,6 +323,7 @@ class Look:
     images: dict            # facing: RGBA image, trimmed; 'right' is the mirror of 'left'
     file: str = ''          # the CLUT file the palette is in
     number: int = 0         # and its number there
+    guessed: tuple = ()     # subtypes whose own page is lost: drawn translucent, with this look as the guess
 
 
 @dataclass
@@ -314,17 +337,20 @@ class Art:
         for look in self.looks:
             if subtype in look.subtypes:
                 return look, False
+        for look in self.looks:
+            if subtype in look.guessed:
+                return look, True
         return (self.looks[0], True) if self.stand_in else None
 
 
 def named_palettes(project, area):
-    """[(file, number, who, subtypes, drawing, 16 colours)] of the palettes FIGURES names for an area that the disc has."""
+    """[(file, number, who, subtypes, drawing, guessed, 16 colours)] of the palettes FIGURES names for an area that the disc has."""
     found = []
-    for name, number, who, subtypes, drawing in FIGURES.get(area, {}).get('palettes', ()):
+    for name, number, who, subtypes, drawing, guessed in FIGURES.get(area, {}).get('palettes', ()):
         entry = next((e for e in project.disc.files if e.path.upper() == name and not e.directory), None)
         if entry is not None:
             words = np.frombuffer(project.payload(entry), '<u2')
-            found.append((name, number, who, subtypes, drawing, words[number * 16:number * 16 + 16].copy()))
+            found.append((name, number, who, subtypes, drawing, guessed, words[number * 16:number * 16 + 16].copy()))
     return found
 
 
@@ -342,7 +368,7 @@ def figure_art(project, path, area):
         target = texels[y0 + dy:y1 + dy, x0 + dx:x1 + dx]
         target[piece != 0] = piece[piece != 0]
     looks = []
-    for name, number, who, subtypes, drawing, row in palettes:
+    for name, number, who, subtypes, drawing, guessed, row in palettes:
         images = {}
         for facing, (x0, y0, x1, y1) in named['drawings'][drawing].items():
             picture = Image.fromarray(colours(row)[texels[y0:y1, x0:x1]])
@@ -351,7 +377,7 @@ def figure_art(project, path, area):
                 return None
             images[facing] = picture.crop(box)
         images['right'] = images['left'].transpose(Image.Transpose.FLIP_LEFT_RIGHT)
-        looks.append(Look(f'{who} ({name} palette {number})', subtypes, images, name, number))
+        looks.append(Look(f'{who} ({name} palette {number})', subtypes, images, name, number, guessed))
     return Art(named['group'], looks, named['stand_in'])
 
 
@@ -498,7 +524,7 @@ def figure_sheets(project, path):
             ranked.append((int(np.abs(np.diff(rgb, axis=1)).sum() + np.abs(np.diff(rgb, axis=0)).sum()), label, row))
         ranked.sort(key=lambda r: r[0])
         if FIGURES.get(area_of(path), {}).get('group') == number:
-            for name, at, who, _subtypes, _drawing, row in reversed(named_palettes(project, area_of(path))):
+            for name, at, who, _subtypes, _drawing, _guessed, row in reversed(named_palettes(project, area_of(path))):
                 ranked.insert(0, (0, f'{who} (named in the research notes): {name} palette {at}', row))
         if ranked:
             sheet = Sheet(number, words, [(label, row) for _score, label, row in ranked], 0)
@@ -550,16 +576,18 @@ def preview(project, path, index):
         notes.insert(0, f'{village.name} (AREA{area:02d} section 0) is never loaded: its load list is empty and no exit leads into it.')
     art = figure_art(project, path, area)
     if art is not None:
-        solid = [sum(1 for r in village.residents if r.subtype in look.subtypes) for look in art.looks]
-        stood = sum(1 for r in village.residents if art.look_for(r.subtype) == (art.looks[0], True))
-        notes.append('Figures are from the sheet of group %d: %s. Which subtype has which palette, and which way each facing looks, are guesses.'
+        solid = [sum(1 for r in village.residents if art.look_for(r.subtype) == (look, False)) for look in art.looks]
+        guessed = [sum(1 for r in village.residents if art.look_for(r.subtype) == (look, True)) for look in art.looks]
+        marks = len(village.residents) - sum(solid) - sum(guessed)
+        notes.append('Figures are from the sheet of group %d, drawn solid where the page of the subtype survives: %s. '
+                     'Which way each facing looks is a guess.'
                      % (art.group, '; '.join(f'{n} as the {look.label}' for n, look in zip(solid, art.looks) if n)))
-        if stood:
-            notes.append(f'{stood} residents are translucent stand-ins: their own drawing or palette is not known. '
-                         f'The {len(village.residents) - sum(solid) - stood} others are marks.' if len(village.residents) - sum(solid) - stood
-                         else f'{stood} residents are translucent stand-ins: their own drawing or palette is not known.')
-        elif len(village.residents) - sum(solid):
-            notes.append(f'The other {len(village.residents) - sum(solid)} residents stay marks: their drawing is not known.')
+        if sum(guessed):
+            notes.append('Translucent figures are residents whose own page is lost (the village\'s actor table says so); the '
+                         'research guessed the drawing and palette: %s.'
+                         % '; '.join(f'{n} as the {look.label}' for n, look in zip(guessed, art.looks) if n))
+        if marks:
+            notes.append(f'The other {marks} residents stay marks: their drawing is not known.')
     # Ranking the palettes takes seconds: once for each table a session.
     sheets = project.__dict__.setdefault('cut_village_sheets', {})
     if path not in sheets:

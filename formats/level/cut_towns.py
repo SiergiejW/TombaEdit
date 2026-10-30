@@ -28,7 +28,21 @@ VILLAGES = {
     0x10: (18, 'Civilization Town', 10, (417, 544), 0, None),
     0x11: (19, 'Factory approach', 10, (0, 452), 14, (-28, 342)),
 }
-CUT = (0x0D, 0x0E, 0x0F)        # the villages no section loads
+CUT = (0x0D, 0x0E, 0x0F, 0x10)  # the villages no section loads (0x10, AREA18's, was never finished: it has no routines)
+
+# The exits of each village, from the rectangles in the section's step routine (topdownSectionStepC, D, E; the
+# Tombi-Decomp notes give them for the PAL disc, where the overlay is the same bytes): world rectangle
+# (left, top, right, bottom) with None where the rectangle is open to the edge of the map, and where it leads.
+# No exit of any area leads into these sections.
+EXITS = {
+    0x0D: [((556, 361, None, 460), 'Civilization Town (AREA18 section 1), spawn 1'),
+           ((199, None, 263, 78), 'the Factory (AREA11 section 1), spawn 0')],
+    0x0E: [((None, 520, -117, 529), 'Civilization Town (AREA18 section 1), spawn 3'),
+           ((107, 319, 114, 320), 'the dried wishing well (AREA11 section 2), spawn 0'),
+           ((148, None, None, 73), 'the rest of Stonetown (AREA16 section 1, also cut), spawn 0')],
+    0x0F: [((167, 571, 279, None), 'Civilization Town (AREA18 section 1), spawn 2'),
+           ((176, None, 271, 79), 'the Iron Castle (AREA17 section 1), spawn 0')],
+}
 BEHAVIOURS = {0: 'stands still', 1: 'patrols up and down', 2: 'patrols left and right',
               3: 'patrols a diagonal', 4: 'patrols a diagonal'}
 

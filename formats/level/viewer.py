@@ -74,6 +74,9 @@ class LevelView(ModelView):
         # The triangle count's column carries the object class here.
         self.objects.horizontalHeaderItem(2).setText('Class')
         self.objects.setColumnWidth(2, 150)
+        # The class comes before the object it is the class of.
+        header = self.objects.horizontalHeader()
+        header.swapSections(header.visualIndex(1), header.visualIndex(2))
         for column in (3, 4):
             self.objects.setColumnHidden(column, True)
         self.objects.setMinimumWidth(200)

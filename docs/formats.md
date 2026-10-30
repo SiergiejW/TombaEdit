@@ -195,6 +195,28 @@ shaded, and a resident's walking box is outlined) and a line under the plan says
 a resident also selects its row of the table, a click on empty space deselects, and selecting rows of
 the table outlines those residents on the plan.
 
+What the Tombi-Decomp research (afsenovilla/Tombi-Decomp, `docs/CIVILIZATION.md`, written from the PAL disc whose
+overlay is the same bytes) adds, as the tab uses it:
+
+- The houses read from the overlay equal the repository's trigger rectangles for all three villages.
+- The exits (the rectangles of `topdownSectionStepC`, `D` and `E`, with `None` for the open sides): the Wood People's
+  village leaves to Civilization Town (AREA18 section 1, spawn 1) on the east, x over 555 with y 361 to 460, and to the
+  Factory (AREA11 section 1) at the top, x 199 to 263, y under 79. Stonetown leaves to Civilization Town (section 1,
+  spawn 3) on the west, y 520 to 529, to the dried wishing well (AREA11 section 2) at x 107 to 114, y 319 to 320, and to
+  AREA16 section 1 (also cut) at the top right. Iron Town leaves to Civilization Town (section 1, spawn 2) at the bottom,
+  y over 570 with x 167 to 279, and to the Iron Castle (AREA17 section 1) at the top, x 176 to 271, y under 80. No exit of
+  any area leads into these sections. The plan draws them in orange and they can be selected like a house.
+- The actor tables of the three villages name a page for each subtype. Only the subtype whose page survives is drawn
+  solid: subtype 0 in the Wood People's village and Iron Town, subtypes 0, 1 and 2 in Stonetown (the woman, the boy
+  and the strongman, `AREA16/CLUT07` rows 21, 37 and 53). The other subtypes use pages that are not on any disc, so
+  the plan draws them translucent, as the figure the research guessed.
+- `AREA11/CLUT02` row 4 is the factory worker, row 36 the old man and row 68 the old man cursed; `AREA17/CLUT03` row 1
+  is every Iron Town resident. The scenery palettes of the building pages are on no disc.
+- AREA18 section 0 (the "reunited town") has the same top-down data, ten residents with no routines and no props. Its
+  section is empty, nothing leads into it and its routines were never written, so the tab shows its plan too.
+- World position (x, y) is background pixel (x + 128, y - 40), and the cell map of the working top-down sections is 8 bits
+  to a cell, 8 pixels to a cell side. The three cut villages have neither a picture nor a cell map on any disc.
+
 The tab is the first one of its section and opens selected. The section is blue in the disc tree and
 ends in "(unused area)". Opening the tab queues every line of the village for translation, and
 selecting a row moves that row's lines to the front of the queue, so the English column fills in
