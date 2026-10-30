@@ -1,14 +1,19 @@
 """Offline translations kept with the program, so that nobody needs a translation model to read a known disc.
 
-Each file of formats/text/translations/ is a JSON object
+The folder formats/text/translations/ holds a file for each build, <build>.json, a JSON object
 
-    {"format": 1, "language": "ja", "model": "CAT-Translate-7b",
-     "builds": {"Japanese retail": 4021, ...},      # discs whose text it covers, and how many messages of each
-     "entries": {"<the Japanese message as the viewer shows it>": "<English>", ...}}
+    {"format": 1, "language": "ja", "model": "CAT-Translate-7b", "build": "Japanese retail",
+     "builds": {"Japanese retail": 1524},           # how many different messages it translates
+     "messages": 7176, "translated": 1524,
+     "entries": {"<the Japanese message as the viewer shows it>": "<English>", ...},   # in the order of the disc
+     "banks": [{"bank": "WFM D0FF", "file": "AREA00/A003.GAM", "offset": "0x...",
+                "messages": [{"index": 0, "original": "...", "translation": "..."}, ...]}, ...]}
 
-made by tools/make_translations.py. A message is found by its text, not by where it is, so a translation serves every
-disc that has the same words; `builds` only says which discs the file was made from. A message whose text changed
-(a glyph read differently since) simply has no premade translation until the file is made again.
+made by tools/make_translations.py: `entries` is what the program reads, `banks` the same messages bank by bank for
+any other tool. A disc of a known build reads the file of its build first. A message is found by its text, not by
+where it is, so a translation also serves a disc of another build that has the same words (the Japanese demo and the
+samplers share most of theirs). A message whose text changed (a glyph read differently since) has no premade
+translation until the files are made again.
 """
 import json
 import os
@@ -20,11 +25,16 @@ FORMAT = 1
 
 
 class Premade:
-    def __init__(self, entries=None, files=()):
+    def __init__(self, entries=None, files=(), by_build=None):
         self.entries = entries or {}
         self.files = list(files)        # [(file name, model, {build: count})]
+        self.by_build = by_build or {}  # build name -> its own entries
 
-    def get(self, text, default=None):
+    def get(self, text, build='', default=None):
+        """The translation of a message: the file of `build` first, then the files of the other builds."""
+        own = self.by_build.get(build)
+        if own is not None and text in own:
+            return own[text]
         return self.entries.get(text, default)
 
     def __len__(self):
@@ -60,7 +70,7 @@ def load(folder=None):
     key = (str(folder), tuple((path.name, path.stat().st_mtime_ns) for path in files))
     if _loaded.get('key') == key:
         return _loaded['value']
-    entries, sources = {}, []
+    entries, sources, by_build = {}, [], {}
     for path in files:
         try:
             data = json.loads(path.read_text(encoding='utf8'))
@@ -68,17 +78,21 @@ def load(folder=None):
             continue
         if not isinstance(data, dict) or data.get('format') != FORMAT or not isinstance(data.get('entries'), dict):
             continue
-        entries.update({k: v for k, v in data['entries'].items() if isinstance(k, str) and isinstance(v, str)})
+        own = {k: v for k, v in data['entries'].items() if isinstance(k, str) and isinstance(v, str)}
+        entries.update(own)
         builds = data.get('builds') if isinstance(data.get('builds'), dict) else {}
+        build = data.get('build')
+        if isinstance(build, str):
+            by_build.setdefault(build, {}).update(own)
         sources.append((path.name, str(data.get('model', '')), builds))
     _loaded.clear()
-    _loaded.update(key=key, value=Premade(entries, sources))
+    _loaded.update(key=key, value=Premade(entries, sources, by_build))
     return _loaded['value']
 
 
 def save(path, entries, model, builds, language='ja'):
-    """Write a translation file, replacing the one there; the entries are sorted so that a new run changes only
-    the lines it changes."""
+    """Write a plain translation file, replacing the one there; the entries are sorted so that a new run changes
+    only the lines it changes. (tools/make_translations.py writes the richer file of a build itself.)"""
     path = Path(path)
     path.parent.mkdir(parents=True, exist_ok=True)
     data = dict(format=FORMAT, language=language, model=model, builds=dict(sorted(builds.items())),

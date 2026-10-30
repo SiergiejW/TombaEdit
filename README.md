@@ -23,8 +23,9 @@ are covered and whether it is a known build. The **Display** menu of the dialogu
 *Original and English side by side*, *Original only* or *English only*, switches the premade
 translations on and off, and holds the model options below. The choice is remembered.
 
-The files were made from the Japanese retail disc, the Japanese demo, the Taikenban Vol. 2 sampler and
-PrePre Vol. 8 and 9 with CAT-Translate 7b, by `tools/make_translations.py`. To add a disc or to translate
+The files were made from the Japanese retail disc, the Japanese demo (also as the standalone and Taikenban
+discs), the Taikenban Vol. 2, Hyper PlayStation Re-mix 12 and Dengeki D5 samplers, PrePre Vol. 8 and
+Vol. 9 and Pure Pure 09 with CAT-Translate 7b, by `tools/make_translations.py`. To add a disc or to translate
 the messages whose glyphs have been read since, run it again; it only translates what has no translation
 yet and can be stopped and started again:
 
@@ -32,8 +33,14 @@ yet and can be stopped and started again:
 python tools/make_translations.py "rom/Ore! Tomba (Japan).cue" "rom/PrePre Vol. 8 (Japan).cue"
 ```
 
-It runs the model from `rom/translator` (CUDA PyTorch and bitsandbytes in `rom/translator/runtime`, if
-present) and writes `formats/text/translations/ja-CAT-Translate-7b.json`.
+It skips any disc that cannot be read and runs the model from `rom/translator` (CUDA PyTorch and bitsandbytes in
+`rom/translator/runtime`, if present). What the model says is kept in a local cache
+(`rom/translator/translation-cache-ja.json`), and each build gets a file of its own,
+`formats/text/translations/<build>.json` (for example `japanese-retail.json`, `japanese-demo.json`,
+`prepre-vol-8.json`): its messages in the order of the disc with their English under `entries`, and the same
+messages bank by bank under `banks` (bank, file, offset, entry index, original, translation), so that two builds can
+be compared with any tool. A disc reads the file of its own build first and the other files after it.
+`--files-only` rewrites the files from the cache without translating.
 
 ### Translating with your own model
 

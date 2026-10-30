@@ -69,3 +69,15 @@ For emulator verification, use a digital controller for the PrePre 9 sampler men
 Other ROM builds still have partial selector coverage; their unchecked entries are not treated as used or possibly unused. The Japanese retail disc (`SLPS_011.44`, `Ore! Tomba (Japan)`) has 51 text banks and 7,858 entries, including the item and event description banks in `DSPSUB`/`DSPSUB3` and a second pair in `AREA19/D208.GAM` that no load table names. The 46 banks of the load tables are audited by `python -m formats.text.jp_retail_study "rom/Ore! Tomba (Japan).cue" --write-index`: every message-window call and the helpers that pass a message on (argument values over all paths of each function), the signposts each area places, the scripts' talk actions, the item and event notice tables and the info actors. The audit is complete for the area dialogue banks of 22 banks and leaves open AREA02 and AREA19 (script talk selectors with unbounded operands) and AREA12 (its event table lies outside the loaded overlay); 547 entries are possibly unused and 517 stay unchecked, mostly the event-title banks and those open areas. The DSPSUB menus open only text slots 2 and 3, so the item and event description banks and `D208.GAM` are not covered. A contributor's list of Japan-only text, compared with the PAL release, is a different question: of its 148 entries in the area banks, the audit finds 81 possibly unused and 57 reached, with 10 in AREA02 unchecked. The reached ones are AREA00's tutorial signs (by signposts), the lines of AREA16 and AREA18 that a generic NPC routine opens, and the residents' lines of the three cut Civilization villages: their dialogue routines in the INFO2 overlay open 34 of those entries, but the villages' sections are never loaded and no exit leads into them, so the evidence says so. The folder named SLPS-01144_1998-02-03_Tombi NTSC Preview Version contains an English preview. Tomba-AR's modified font remains outside Japanese/English decoding coverage.
 
 The detailed local report is work/text-audit/summary.html; machine-readable records are in studied.json. The reproducible Pure 9 audit implementation is formats/text/prepre9_study.py.
+
+## Unused events
+
+The list of event hints in DSPSUB (`DSPSUB @124C8` on the Japanese retail disc: 200 entries, the entry of an event
+being its own number) is checked against `formats/text/unused_events.json`, the 24 events that the event research
+found nothing starts or completes: 22 never started or started only in cut content (the cut villages), and two that
+start in retail and end in cut content or the other way round. Their entries are marked **Unused event** in the same
+purple as possibly unused text, listed under the "Possibly unused" filter and counted in the tree, and the tooltip
+gives the event's English and Japanese title, what triggers it, what starts and completes it and the research's note.
+The research searched every executable and overlay of the PAL and Japanese releases for `setEventStarted`,
+`awardEventProgress` and the event flags; it is a search, not proof, and the list is data to correct as it is
+corrected. Source: https://claude.ai/artifact/LKgNAn4dYnArqoQtcupY48

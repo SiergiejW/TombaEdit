@@ -48,7 +48,7 @@ class Translations(Mapping):
     def __getitem__(self, text):
         session = self.session
         if session.use_premade:
-            found = session.premade.get(text)
+            found = session.premade.get(text, session.build_name)
             if found is not None:
                 return found
         return self.model()[text]
@@ -104,9 +104,11 @@ class TranslationSession(QObject):
         """The name of this disc's build when it is a known one, else ''."""
         if self.project is None:
             return ''
-        from game.builds import executable
-        found = executable(self.project)
-        return found.build.name if found is not None else ''
+        if not hasattr(self, '_build_name'):
+            from game.builds import executable
+            found = executable(self.project)
+            self._build_name = found.build.name if found is not None else ''
+        return self._build_name
 
     def premade_status(self):
         """One line about the translations that come with the program, for this disc."""
@@ -117,7 +119,7 @@ class TranslationSession(QObject):
             try:
                 if translatable(text):
                     total += 1
-                    covered += text in self.premade
+                    covered += self.premade.get(text, self.build_name) is not None
             except TranslationError:
                 pass
         model = ', '.join(self.premade.models) or 'a model'
@@ -280,7 +282,7 @@ class TranslationSession(QObject):
 
     def lookup(self, text):
         if self.use_premade:
-            found = self.premade.get(text)
+            found = self.premade.get(text, self.build_name)
             if found is not None:
                 return found
         if not self.enabled:

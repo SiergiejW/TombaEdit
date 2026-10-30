@@ -11,6 +11,77 @@ from functools import lru_cache
 
 
 @lru_cache(maxsize=1)
+def unused_events():
+    """{event number: what the research found} for the events nothing starts or completes (unused_events.json)."""
+    try:
+        data = json.loads(Path(__file__).with_name('unused_events.json').read_text(encoding='utf8'))
+        return {item['event']: item for item in data['events']}
+    except (OSError, ValueError, KeyError):
+        return {}
+
+
+def is_event_bank(source, wfm):
+    """The list of event hints in DSPSUB: a line for each of the 200 events, the line the event's own number."""
+    name = str(source).upper().replace(chr(92), '/').rsplit('/', 1)[-1]
+    return name in ('DSPSUB.BIN', 'DSPSUB3.BIN') and len(wfm.dialogues) == 200
+
+
+def event_evidence(item):
+    lines = [f'Event {item["event"]} (0x{item["hex"]}): {item["title_en"]}' + (f' / {item["title_jp"]}' if item.get('title_jp') else '')
+             + f' - {item["status"]}.',
+             f'Triggered by: {item["triggered_by"]}.', f'Started by: {item["started_by"]}.']
+    if item.get('completed_by'):
+        lines.append(f'Completed by: {item["completed_by"]}.')
+    if item.get('notes'):
+        lines.append(item['notes'])
+    lines.append('From the event research (see unused_events.json): a search found no retail code that starts it '
+                 'and ends it, which is not proof that nothing else does.')
+    return lines
+
+
+def mark_events(wfm, source):
+    """Mark the hint of each event the research found unused, in the bank of event hints."""
+    if not is_event_bank(source, wfm):
+        return
+    events = unused_events()
+    for number, item in events.items():
+        if number < len(wfm.dialogues):
+            dialogue = wfm.dialogues[number]
+            earlier = entry(dialogue)
+            evidence = event_evidence(item)
+            if earlier and earlier.get('event') is None and earlier['status'] != 'unknown':
+                evidence += ['Text usage study of this entry: ' + earlier['status'] + '.'] + list(earlier.get('evidence', []))
+            dialogue.usage = dict(status='not_found', method='event-research', event=number, evidence=evidence)
+    note = f'{len(events)} of the events in this list are unused (event research).'
+    wfm.usage_summary = (getattr(wfm, 'usage_summary', '') + ' ' + note).strip()
+
+
+def event_banks(project):
+    """[(file, offset)] of the lists of event hints on a disc: banks inside DSPSUB, which no load table names."""
+    if '_event_banks' not in project.__dict__:
+        from formats.text.wfm import Wfm, MAGICS
+        found = []
+        for entry in project.disc.files:
+            if entry.directory or entry.path.upper().replace(chr(92), '/').rsplit('/', 1)[-1] not in ('DSPSUB.BIN', 'DSPSUB3.BIN'):
+                continue
+            try:
+                data = bytes(project.payload(entry))
+            except Exception:
+                continue
+            for magic in MAGICS:
+                start = data.find(magic)
+                while start >= 0:
+                    try:
+                        if is_event_bank(entry.path, Wfm(data[start:])):
+                            found.append((entry.path, start))
+                    except Exception:
+                        pass
+                    start = data.find(magic, start + 1)
+        project._event_banks = found
+    return project._event_banks
+
+
+@lru_cache(maxsize=1)
 def _study_index():
     try:
         data = json.loads(Path(__file__).with_name('native_text_usage.json').read_text(encoding='utf8'))
@@ -90,8 +161,17 @@ def project_counts(project):
         from formats.text.export import collect
         return counts(collect(project))
     profile = _study_for(project)
-    if profile is None:
-        return {}, {}
+    banks, files = {}, {}
+    if profile is not None:
+        banks, files = _study_counts(project, profile)
+    if unused_events():
+        for source, offset in event_banks(project):
+            banks[source, offset] = len(unused_events())
+            files.setdefault(source, len(unused_events()))
+    return banks, files
+
+
+def _study_counts(project, profile):
     banks, files = {}, {}
     for key, data in profile['banks'].items():
         source, offset = key.rsplit('@', 1)
@@ -125,7 +205,12 @@ def supported(project):
 
 
 def attach(wfm, project, source, offset):
-    """Build-specific display evidence; never infer use from successful decoding."""
+    """Build-specific display evidence; never infer use from successful decoding. Then the unused events."""
+    _attach_text(wfm, project, source, offset)
+    mark_events(wfm, source)
+
+
+def _attach_text(wfm, project, source, offset):
     if wfm.version == b'PP8' or any(entry(d) for d in wfm.dialogues):
         return
     try:
@@ -217,6 +302,8 @@ def entry(dialogue):
 
 def label(dialogue):
     result = entry(dialogue)
+    if result and result.get('event') is not None:
+        return 'Unused event'
     if result and result['status'] == 'referenced' and result.get('observations'):
         return 'Observed in-game'
     return LABELS.get(result['status'], '') if result else ''
