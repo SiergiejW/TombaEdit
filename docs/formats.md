@@ -114,10 +114,10 @@ the word. Glyph words also have 8000 set, apart from the flags of WFM1.
 The Japanese release draws its text in three bitmap sizes: 12 x 12 for running text, 10 x 10 and the
 20 x 20 of the event titles. Its kana were already known by shape; its kanji are in
 `formats/text/glyphs_jp.json` (shape key to character), read from the bitmaps and checked against the
-words around them where the reading was in doubt. The file holds 730 such shapes. Over all 51 banks of the disc, with
-the ones inside overlays, 99.8% of the entries that have text decode completely (7,583 of 7,598) and 0.1% of the
-glyph slots (12 of 10,897) have no character: icons and symbols drawn in the text, and shapes whose reading is
-not certain. A glyph with no character shows as `[gNNN]`, its number in the bank.
+words around them where the reading was in doubt. The file holds 732 such shapes. Over all 51 banks of the disc, with
+the ones inside overlays, every entry that has text decodes completely (7,598) and every glyph slot (10,897) has a
+character. A glyph with no character shows as `[gNNN]`, its number in the bank; the few left are on other discs
+(PrePre Vol. 8's tile-cut "Thank You" and "Bye-Bye", and symbol lines of the Dengeki disc).
 
 A WFM1 glyph word carries more in its top bits. A kana that is voiced is
 two words: the kana with 1000 set, then the mark (dakuten or handakuten)

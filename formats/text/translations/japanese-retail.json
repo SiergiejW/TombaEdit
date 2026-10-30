@@ -4,10 +4,10 @@
  "build": "Japanese retail",
  "model": "CAT-Translate-7b",
  "builds": {
-  "Japanese retail": 1673
+  "Japanese retail": 1678
  },
  "messages": 7858,
- "translated": 1673,
+ "translated": 1678,
  "entries": {
   "だみーきゅーぶ": "Dummy Cubes",
   "ジィちゃんの形見": "Grandpa's keepsake.",
@@ -24,6 +24,7 @@
   "APボックス": "AP Box",
   "魔王の忘れもの": "The Demon's Forgotten Item",
   "見た事あるやしき": "I've seen it before.",
+  "ボンプ岩のナゾ": "The Mystery of Bomp Rock",
   "カシラの大事なもの": "Kashira's important things.",
   "魔王の探し物": "The Demon King's Search",
   "おいしい?万能魚": "Delicious? All-purpose fish.",
@@ -458,6 +459,7 @@
   "怪物?勝てるかな?": "Monster? Can I win?",
   "死神の巣をつぶせ": "Destroy the Death God's Nest",
   "花をさかせよう!": "Let's make flowers bloom!",
+  "解読?らくがき岩": "Deciphering? Rakugaki Rock",
   "森の地下には何がある?": "What is underground in the forest?",
   "動かない鉄の車": "A stationary iron car.",
   "盗賊のトビラ": "The Thief's Door",
@@ -990,6 +992,7 @@
   "銅色のメダルがほしい": "I want a bronze medal.",
   "銀色のメダルがほしい": "I want a silver medal.",
   "金色のメダルがほしい": "I want a gold medal.",
+  " 人魚の歌岩": "Mermaid's Song Rock",
   "なにかを取り付ける穴があいている・・・": "There's a hole for attaching something...",
   "バルブを取り付けた!": "I installed the valve!",
   "・・・スイッチがオフになっている・・・": "...the switch is turned off...",
@@ -1156,6 +1159,7 @@
   "からくり村は 水にしずんだ村さ・・・\n万年老人とか言うじぃさんが いるらしいけど": "Karakuri Village is a village submerged in water...\nI hear there's an old man called the Eternal Elder.",
   "おれも 勇気を出して・・・\n石人のヨメさんでも もらおうかな・・・\nだって カワイイだろ?": "I'll muster up my courage too...\nMaybe I'll get a stone-man wife...\nBecause she's cute, right?",
   "仲良くしようよ": "Let's get along.",
+  "木人の村の大岩": "The Great Rock of the Village of Kijin",
   " 未完の橋…": "An unfinished bridge...",
   " 鉄のカギ穴": "Iron Keyhole",
   "イカダを作ろう!": "Let's build a raft!",
@@ -1487,6 +1491,7 @@
   "ヤシの実を空っぽにして なにかをつめると\nエキサイティング": "When you empty a coconut and stuff something inside, it's exciting.",
   "タイコの原料 気持ちの良い音を\n鳴らしてくれる": "Taiko's raw materials produce a pleasant sound.",
   "ついに手に入れた! これこそ\nジィちゃんの形見の腕輪!": "Finally got it! This is\nGrandpa's keepsake bracelet!",
+  "死神の実を渡すためには\nこれなしでは不可能": "To give the Death God's Fruit,\nit is impossible without this.",
   "タイコの原料 かたくて いい音がでる": "The ingredients of Taiko are hard and make good sounds.",
   "タイコの原料 木と皮を はりつけることができる": "Taiko's raw materials: wood and skin can be glued together.",
   "いつでも どこでも 1000年老人のもとへ\n帰ることが!": "You can always return to the 1000-year-old man!",
@@ -1776,8 +1781,8 @@
     },
     {
      "index": 17,
-     "original": "ボンプ[g05A]のナゾ",
-     "translation": null
+     "original": "ボンプ岩のナゾ",
+     "translation": "The Mystery of Bomp Rock"
     },
     {
      "index": 18,
@@ -8452,13 +8457,13 @@
     },
     {
      "index": 31,
-     "original": "ボンプ[g079]のナゾ",
-     "translation": null
+     "original": "ボンプ岩のナゾ",
+     "translation": "The Mystery of Bomp Rock"
     },
     {
      "index": 32,
-     "original": "解読?らくがき[g079]",
-     "translation": null
+     "original": "解読?らくがき岩",
+     "translation": "Deciphering? Rakugaki Rock"
     },
     {
      "index": 33,
@@ -12240,8 +12245,8 @@
     },
     {
      "index": 16,
-     "original": "ボンプ[g04B]のナゾ",
-     "translation": null
+     "original": "ボンプ岩のナゾ",
+     "translation": "The Mystery of Bomp Rock"
     },
     {
      "index": 17,
@@ -16062,8 +16067,8 @@
     },
     {
      "index": 5,
-     "original": " 人魚の歌[g01C]",
-     "translation": null
+     "original": " 人魚の歌岩",
+     "translation": "Mermaid's Song Rock"
     }
    ]
   },
@@ -17901,13 +17906,13 @@
     },
     {
      "index": 31,
-     "original": "ボンプ[g079]のナゾ",
-     "translation": null
+     "original": "ボンプ岩のナゾ",
+     "translation": "The Mystery of Bomp Rock"
     },
     {
      "index": 32,
-     "original": "解読?らくがき[g079]",
-     "translation": null
+     "original": "解読?らくがき岩",
+     "translation": "Deciphering? Rakugaki Rock"
     },
     {
      "index": 33,
@@ -20014,8 +20019,8 @@
     },
     {
      "index": 13,
-     "original": "ボンプ[g044]のナゾ",
-     "translation": null
+     "original": "ボンプ岩のナゾ",
+     "translation": "The Mystery of Bomp Rock"
     },
     {
      "index": 14,
@@ -21263,8 +21268,8 @@
     },
     {
      "index": 5,
-     "original": "ボンプ[g027]のナゾ",
-     "translation": null
+     "original": "ボンプ岩のナゾ",
+     "translation": "The Mystery of Bomp Rock"
     },
     {
      "index": 6,
@@ -22702,8 +22707,8 @@
     },
     {
      "index": 4,
-     "original": "木人の村の大[g020]",
-     "translation": null
+     "original": "木人の村の大岩",
+     "translation": "The Great Rock of the Village of Kijin"
     },
     {
      "index": 5,
@@ -28190,8 +28195,8 @@
     },
     {
      "index": 6,
-     "original": "解読?らくがき[g02B]",
-     "translation": null
+     "original": "解読?らくがき岩",
+     "translation": "Deciphering? Rakugaki Rock"
     },
     {
      "index": 7,
@@ -30838,8 +30843,8 @@
     },
     {
      "index": 4,
-     "original": "木人の村の大[g020]",
-     "translation": null
+     "original": "木人の村の大岩",
+     "translation": "The Great Rock of the Village of Kijin"
     },
     {
      "index": 5,
@@ -30983,8 +30988,8 @@
     },
     {
      "index": 33,
-     "original": "解読?らくがき[g020]",
-     "translation": null
+     "original": "解読?らくがき岩",
+     "translation": "Deciphering? Rakugaki Rock"
     },
     {
      "index": 34,
@@ -38892,8 +38897,8 @@
     },
     {
      "index": 125,
-     "original": "死神の実を[g0FA]すためには\nこれなしでは不可能",
-     "translation": null
+     "original": "死神の実を渡すためには\nこれなしでは不可能",
+     "translation": "To give the Death God's Fruit,\nit is impossible without this."
     },
     {
      "index": 126,
@@ -40931,8 +40936,8 @@
     },
     {
      "index": 125,
-     "original": "死神の実を[g0FA]すためには\nこれなしでは不可能",
-     "translation": null
+     "original": "死神の実を渡すためには\nこれなしでは不可能",
+     "translation": "To give the Death God's Fruit,\nit is impossible without this."
     },
     {
      "index": 126,

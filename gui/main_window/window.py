@@ -41,16 +41,17 @@ class ResourceTree(QTreeWidget):
 
     def resizeEvent(self, event):
         super().resizeEvent(event)
-        # The name column takes what the others leave; the label column gets a third of the width the
-        # first time the tree has one, and never less than 15% of it.
+        # The label column is the last one and takes what the name column leaves; the name column's edge can be
+        # dragged. The label starts as a fifth of the width, and a new size of the window never leaves it
+        # less than 15%.
         total = self.viewport().width()
         if total < 200:
             return
         if not self.label_sized:
             self.label_sized = True
-            self.setColumnWidth(1, total * 3 // 10)
-        elif self.columnWidth(1) < total * 15 // 100:
-            self.setColumnWidth(1, total * 15 // 100)
+            self.setColumnWidth(0, total - total // 5)
+        elif total - self.columnWidth(0) < total * 15 // 100:
+            self.setColumnWidth(0, total - total * 15 // 100)
 
     def remember_horizontal(self, position):
         self.user_horizontal = position
@@ -988,14 +989,13 @@ class MainWindow(QMainWindow):
     def make_tree(self):
         tree = ResourceTree()
         tree.setHeaderLabels(["Name / resource", "Label", "Bytes", "SPR", "ANIM"])
-        # The sprite and animation review marks keep their columns, hidden: the tree shows name, label and size.
-        tree.setColumnHidden(3, True)
-        tree.setColumnHidden(4, True)
+        # The size and the sprite and animation review marks keep their columns, hidden: the tree shows name and label.
+        for column in (2, 3, 4):
+            tree.setColumnHidden(column, True)
         tree.header().setMinimumSectionSize(24)
-        tree.header().setStretchLastSection(False)
-        tree.header().setSectionResizeMode(0, QHeaderView.ResizeMode.Stretch)
+        tree.header().setStretchLastSection(True)     # the label column, the last one shown
+        tree.header().setSectionResizeMode(0, QHeaderView.ResizeMode.Interactive)
         tree.header().setSectionResizeMode(1, QHeaderView.ResizeMode.Interactive)
-        tree.header().setSectionResizeMode(2, QHeaderView.ResizeMode.Interactive)
         tree.setTreePosition(0)
         from gui.widgets.text_usage import UsageTreeDelegate
         tree.setTextElideMode(Qt.TextElideMode.ElideRight)

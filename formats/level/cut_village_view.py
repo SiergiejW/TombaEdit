@@ -579,7 +579,7 @@ def preview(project, path, index):
         solid = [sum(1 for r in village.residents if art.look_for(r.subtype) == (look, False)) for look in art.looks]
         guessed = [sum(1 for r in village.residents if art.look_for(r.subtype) == (look, True)) for look in art.looks]
         marks = len(village.residents) - sum(solid) - sum(guessed)
-        notes.append('Figures are from the sheet of group %d, drawn solid where the page of the subtype survives: %s. '
+        notes.append('NPCs are from the sheet of group %d, drawn solid where the page of the subtype survives: %s. '
                      'Which way each facing looks is a guess.'
                      % (art.group, '; '.join(f'{n} as the {look.label}' for n, look in zip(solid, art.looks) if n)))
         if sum(guessed):
@@ -700,7 +700,7 @@ def _sheets_panel(sheets):
         palette.currentIndexChanged.connect(draw)
         return fill
 
-    refresh = [column('Figures: page 0, 4-bit', lambda sheet: sheet.palettes, lambda sheet: sheet.best, sheet_image),
+    refresh = [column('NPCs: page 0, 4-bit', lambda sheet: sheet.palettes, lambda sheet: sheet.best, sheet_image),
                column('Buildings: pages 1 to 6, 8-bit', lambda sheet: sheet.building_palettes, lambda sheet: 0,
                       building_image)]
     columns.setSizes([400, 600])
