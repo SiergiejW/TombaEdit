@@ -1,0 +1,75 @@
+"""Regression checks against a user-supplied JP retail CUE; no ROM is bundled.
+
+Run: python tools/validate_cut_villages.py "rom/Ore! Tomba (Japan).cue" [--ui]
+"""
+from pathlib import Path
+import argparse
+import sys
+
+sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
+from formats.archive.ldar import Project
+from formats.level.cut_towns import dialogue_routines, WINDOWS
+from formats.level.cut_village_view import _overlay, preview
+from formats.level.cut_research import animations, supported, REPORT
+from game.builds import executable
+
+
+def main():
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument('cue')
+    parser.add_argument('--ui', action='store_true')
+    args = parser.parse_args()
+    project = Project(args.cue)
+    assert supported(project), 'Supply the audited SLPS_011.44 retail build'
+    exe = executable(project)
+    overlay = bytes(_overlay(project))
+    readers = dialogue_routines(overlay, exe.build.overlay, exe.word, WINDOWS[exe.build.name])
+    assert {n: (address, len(cases)) for n, (address, cases) in readers.items()} == {
+        13: (0x800F3000, 11), 14: (0x800F41FC, 16), 15: (0x800F5488, 16)}
+    assert readers[13][1][3] == [(4, 0)]  # fortune-teller hut, not Baccus dialogue
+    assert readers[15][1][3] == [(3, 0), (3, 2), (3, 3), (3, 5), (3, 8), (3, 11)]
+    changed = bytearray(overlay)
+    changed[-1] ^= 1
+    assert dialogue_routines(changed, exe.build.overlay, exe.word, WINDOWS[exe.build.name]) == {}
+    previews = {area: preview(project, f'SYS/LDAR{area:02d}.BIN', 1) for area in (11, 16, 17, 18)}
+    stone = previews[16]
+    assert [len(r.messages) for r in stone.rows] == [1, 1, 1, 4, 4, 3, 2, 3, 2, 0, 0, 0, 1]
+    # The house-1 strongman has exactly his four phase lines.
+    assert [entry for entry, _ in stone.rows[3].messages] == [210, 214, 217, 221]
+    assert not previews[11].rows[-1].messages  # dlg11 is outside Wood's actual switch
+    scripts = animations(project)
+    assert len(scripts) == 24
+    assert sorted({s[0] for _, _, steps in scripts for s in steps}) == list(range(148, 203))
+    assert scripts[0] == (0, 0x80014B6C, [(169, 14, 0, 0, 14), (170, 14, 0, 0, 0x800E)])
+    report = REPORT.read_text(encoding='utf8')
+    assert '73 bounded blocks' in report and '0x801047F4' in report
+    if args.ui:
+        from PyQt6.QtWidgets import QApplication, QLineEdit, QListWidget, QTextBrowser, QPushButton, QTabWidget
+        from formats.level.cut_research import view
+        from formats.level.cut_village_view import view as village_view
+        app = QApplication.instance() or QApplication([])
+        jumps = []
+        widget = view(project, lambda *v: jumps.append(v))
+        widget.resize(1200, 800)
+        widget.show()
+        app.processEvents()
+        assert widget.findChild(QTabWidget).count() == 3
+        search = widget.findChild(QLineEdit)
+        search.setText('0x801047F4')
+        search.returnPressed.emit()
+        assert widget.findChild(QTextBrowser).textCursor().selectedText() == '0x801047F4'
+        for button in widget.findChildren(QPushButton):
+            if button.text() == 'Open Iron Town plan':
+                button.click()
+        assert jumps == [('village', ('SYS/LDAR17.BIN', 1))]
+        for p in previews.values():
+            plan = village_view(p)
+            assert any('Research' in b.text() for b in plan.findChildren(QPushButton))
+            plan.close()
+        widget.close()
+    print('Passed: native dialogue bindings, phase-specific Stone text, modified-overlay rejection, '
+          'all 24 animations, report availability' + (', UI search/navigation and four previews.' if args.ui else '.'))
+
+
+if __name__ == '__main__':
+    main()

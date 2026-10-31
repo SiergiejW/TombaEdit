@@ -149,9 +149,11 @@ subtype; a first word of 255 ends the list), houses are lists of rectangles endi
 per village that has houses. The three lists agree: every prop in house n stands inside rectangle n.
 
 A village's dialogue routine reads the resident's case from the actor (offset `BA`), switches on it
-through a jump table and opens a message in each case. The Japanese routines are at `800F0A04`
-(23 cases), `800F3000` (11) and `800F5488` (16) in the overlay loaded at `800E9AF8`; their
-jump tables are found by size. A case can open several messages, one for each stage of the story.
+through a jump table and opens a message in each case. The Japanese routines are at `800F3000`
+(Wood, 11 cases), `800F41FC` (Stone, 16) and `800F5488` (Iron, 16) in the overlay loaded at `800E9AF8`.
+The mappings follow the native actor/talk dispatch and require the audited INFO2 hash; case counts
+cannot distinguish Stone and Iron. Stone's resident-specific table supplies its story-phase lines.
+A case can open several messages, one for each stage of the story.
 `formats/text/mips_args.py` follows the code from a case to the window calls. Some cases open
 nothing, and some stages name lines the Japanese text does not hold; the viewer says so.
 
@@ -159,6 +161,17 @@ The window shows this as a "Cut village" tab on those three empty sections: a pl
 boxes, props and numbered residents, and a table of what each one says. The background picture, the
 collision map and the tables that say which drawing each subtype is were not kept on the disc, so the
 plan is marks, not art.
+
+Opening the audited Japanese retail disc also adds a "Cut-village research" tab and a persistent
+menu action. Each of the four village plans has a "Research & recovered data" button. This browser
+ships the complete [research report](cut-villages-jp-research.md), with a section outline, text/address
+search, pinned source links, and buttons to open the village plans and relevant ROM files. Its live
+animation table follows Iron subtype 4's INFO2-to-MAIN pointer chain and decodes all 24 scripts from
+the opened disc, including frame numbers and update ticks. A changed INFO2 disables that live view.
+Iron Town's plan marks the six lift boarding stops (L1–L6) and four internal passage triggers (P8–P11);
+the mechanisms table gives coordinates, behavior and JP code addresses. Quest blockers, unfinished
+scenes, JP load/music wiring and negative searches remain labelled research evidence rather than
+being presented as restored gameplay. The report is included in the frozen application's data files.
 
 The figures themselves are on the disc. Each group of the system load table that brings the
 village overlay (INFO2) also brings texture pages; the first of them, at VRAM x 64, is a sheet of

@@ -182,6 +182,15 @@ def draw_plan(village, art=None, selected=(), hits=None, backdrop=None):
                   fill=(255, 255, 255, 255), font=small)
         half = figure.width / 2 if found is not None else 10
         hits.append(('resident', r.index, (px - max(half, 10), py - 34 - lift, px + max(half, 10), py + 3)))
+    if village.area == 17:
+        from formats.level.cut_research import STOPS, PASSAGES
+        for n, (x, y) in enumerate(STOPS, 1):
+            px, py = at(x, y)
+            draw.ellipse((px-7, py-7, px+7, py+7), outline=(0, 130, 160, 255), width=3)
+            draw.text((px+8, py-8), f'L{n}', font=small, fill=(0, 100, 130, 255))
+        for n, (x0, y0, x1, y1) in zip((8, 9, 10, 11), PASSAGES):
+            draw.rectangle((*at(x0, y0), *at(x1, y1)), outline=(150, 75, 0, 255), width=3)
+            draw.text(at(x1+3, y0), f'P{n}', font=small, fill=(130, 65, 0, 255))
     for kind, index in chosen:
         for k, i, (x0, y0, x1, y1) in hits:
             if (k, i) != (kind, index):
@@ -560,7 +569,8 @@ def preview(project, path, index):
         row = Row(r.index + 1, r.subtype, 'outdoors' if not r.room else f'inside house {r.room}' if r.room != 255 else 'special',
                   r.behaviour_name, r.dialogue)
         if cases is not None and bank is not None:
-            pairs = cases.get(r.dialogue)
+            from formats.level.cut_towns import resident_dialogue_pairs
+            pairs = resident_dialogue_pairs(data, found.build.overlay, village.set_number, r, cases)
             if pairs is None:
                 row.note = 'no message: the routine has no such case'
             elif not pairs:
@@ -600,6 +610,12 @@ def preview(project, path, index):
         places['group'] = (system_table(path), art.group)
     if (overlay := _overlay_asset(project)) is not None:
         places['overlay'] = overlay
+    from formats.level.cut_research import supported
+    if supported(project):
+        places['research_project'] = project
+    if area == 17:
+        notes.append('Cyan L1–L6 mark the six lift boarding stops; brown P8–P11 mark internal passage triggers. '
+                     'Research & recovered data explains these code-derived markers and incomplete quest scenes.')
     return Preview(village.name, area, draw_plan(village, art), rows, notes, sheets[path], places, village, art)
 
 
@@ -829,6 +845,15 @@ def view(preview, english=None, request=None, changed=None, jump=None):
     note = QLabel(' '.join(preview.notes))
     note.setWordWrap(True)
     layout.addWidget(note)
+    from formats.level.cut_research import show_dialog
+    from PyQt6.QtWidgets import QPushButton
+    if supported_preview := preview.places.get('research_project'):
+        research = QPushButton('Research & recovered data…')
+        research.setToolTip('Full searchable evidence, original animation scripts, lifts, quest gaps and source addresses.')
+        def open_research():
+            widget.research_dialog = show_dialog(supported_preview, widget, jump, preview.area)
+        research.clicked.connect(open_research)
+        layout.addWidget(research)
     split = QSplitter(Qt.Orientation.Horizontal)
     picture = ImageView()
     picture.zoom.setCurrentIndex(0)     # Fit: the plan is larger than its pane at 200%

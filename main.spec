@@ -29,6 +29,7 @@ default_files = [(str(ROOT / name), 'defaults')
 # The licence of the interpreter carried in psx/mips.
 notices = [(str(ROOT / 'psx' / 'mips' / 'LICENSE'), 'psx/mips')]
 notices.append((str(Path(_soundfile_data.__file__).parent / 'COPYING'), '_soundfile_data'))
+notices.append((str(ROOT / 'docs' / 'cut-villages-jp-research.md'), 'docs'))
 app_icon = ROOT / 'icons' / 'tomba' / ('tomba1.png' if sys.platform == 'darwin' else 'tomba1.ico')
 
 # SentencePiece and Qt crash when imported into the same process on Windows.

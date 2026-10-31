@@ -1,0 +1,188 @@
+"""Retail evidence browser; live data is gated by the audited JP fingerprints."""
+import hashlib
+from pathlib import Path
+import struct
+
+REPORT = Path(__file__).resolve().parents[2] / 'docs' / 'cut-villages-jp-research.md'
+JP_EXE = '07d577698ad31ec1a69b9d7b80a7c3f90b650888'
+STOPS = ((55, 375), (231, 367), (390, 375), (111, 159), (230, 151), (334, 159))
+PASSAGES = ((100, 420, 128, 428), (110, 348, 128, 354),
+            (295, 406, 312, 410), (280, 268, 296, 272))
+
+
+def supported(project):
+    from game.builds import executable
+    exe = executable(project)
+    return exe is not None and hashlib.sha1(exe.data).hexdigest() == JP_EXE
+
+
+def animations(project):
+    """Decode the original pointer chain, not a transcribed frame list."""
+    from game.builds import executable
+    from formats.level.cut_village_view import _overlay
+    from formats.level.cut_towns import JP_INFO2_SHA1
+    if not supported(project):
+        raise ValueError('The executable differs from the audited Japanese retail build.')
+    exe = executable(project)
+    overlay = bytes(_overlay(project))
+    if hashlib.sha1(overlay).hexdigest() != JP_INFO2_SHA1:
+        raise ValueError('INFO2 differs from the audited overlay; live findings are unavailable.')
+    base = exe.build.overlay
+
+    def read(address, count):
+        if base <= address and address + count <= base + len(overlay):
+            return overlay[address-base:address-base+count]
+        if exe.holds(address, count):
+            offset = address-exe.base+0x800
+            return exe.data[offset:offset+count]
+        raise ValueError(f'Animation pointer outside resident data: {address:08X}')
+
+    table = struct.unpack('<I', read(0x801000D8+8, 4))[0]
+    rows = []
+    for index in range(24):
+        address = struct.unpack('<I', read(table+index*4, 4))[0]
+        cursor, steps, seen = address, [], set()
+        while cursor not in seen and len(steps) < 256:
+            seen.add(cursor)
+            frame, box, argument, control = struct.unpack('<HHhH', read(cursor, 8))
+            steps.append((frame, control & 0x3FFF, box, argument, control))
+            if control & 0xC000 == 0x8000:
+                break
+            cursor = struct.unpack('<I', read(cursor+8, 4))[0] if control & 0x4000 else cursor+8
+        else:
+            raise ValueError('Animation sequence has no bounded terminal step.')
+        rows.append((index, address, steps))
+    return rows
+
+
+def view(project, jump=None, area=None):
+    from PyQt6.QtCore import Qt
+    from PyQt6.QtGui import QTextCursor, QTextDocument
+    from PyQt6.QtWidgets import (QWidget, QVBoxLayout, QHBoxLayout, QLabel, QLineEdit,
+                                QPushButton, QSplitter, QListWidget, QTextBrowser,
+                                QTabWidget, QTableWidget, QTableWidgetItem)
+    widget = QWidget()
+    layout = QVBoxLayout(widget)
+    note = QLabel('JP retail research • 31 October 2026 • Source revision 4220d8e\n'
+                  'Recovered code/data, incomplete scenes and reconstruction leads are distinguished in the report. '
+                  'The report records the original editor discrepancy; this editor now uses corrected dialogue bindings.')
+    note.setWordWrap(True)
+    layout.addWidget(note)
+    tabs = QTabWidget()
+    layout.addWidget(tabs, 1)
+    article = QWidget()
+    body = QVBoxLayout(article)
+    bar = QHBoxLayout()
+    search = QLineEdit()
+    search.setPlaceholderText('Find in the complete research report (addresses, functions, items…)')
+    bar.addWidget(search)
+    previous, next_button = QPushButton('Previous'), QPushButton('Next')
+    bar.addWidget(previous)
+    bar.addWidget(next_button)
+    body.addLayout(bar)
+    split = QSplitter()
+    outline, text = QListWidget(), QTextBrowser()
+    text.setOpenExternalLinks(True)
+    try:
+        report = REPORT.read_text(encoding='utf8')
+    except OSError as exc:
+        report = f'Research report unavailable: {exc}'
+    text.setMarkdown(report)
+    headings = [line.lstrip('#').strip() for line in report.splitlines() if line.startswith('## ')]
+    outline.addItems(headings)
+    split.addWidget(outline)
+    split.addWidget(text)
+    split.setStretchFactor(1, 1)
+    split.setSizes([250, 850])
+    body.addWidget(split, 1)
+    status = QLabel()
+    status.setMaximumHeight(24)
+    body.addWidget(status)
+
+    def find(backward=False):
+        flags = QTextDocument.FindFlag.FindBackward if backward else QTextDocument.FindFlag(0)
+        if not search.text():
+            status.clear()
+            return
+        if not text.find(search.text(), flags):
+            text.moveCursor(QTextCursor.MoveOperation.End if backward else QTextCursor.MoveOperation.Start)
+            found = text.find(search.text(), flags)
+            status.setText('Wrapped search' if found else 'No match')
+        else:
+            status.clear()
+
+    def section(index):
+        if index >= 0:
+            text.moveCursor(QTextCursor.MoveOperation.Start)
+            text.find(headings[index])
+
+    outline.currentRowChanged.connect(section)
+    search.returnPressed.connect(find)
+    next_button.clicked.connect(lambda: find(False))
+    previous.clicked.connect(lambda: find(True))
+    tabs.addTab(article, 'Research and sources')
+
+    def table(headers, rows):
+        result = QTableWidget(len(rows), len(headers))
+        result.setHorizontalHeaderLabels(headers)
+        result.setEditTriggers(QTableWidget.EditTrigger.NoEditTriggers)
+        for i, row in enumerate(rows):
+            for j, value in enumerate(row):
+                result.setItem(i, j, QTableWidgetItem(str(value)))
+        result.resizeColumnsToContents()
+        return result
+
+    try:
+        decoded = animations(project)
+        rows = [(i, f'{address:08X}', ', '.join(str(s[0]) for s in steps),
+                 ', '.join(str(s[1]) for s in steps), 'Hold final frame (8000)')
+                for i, address, steps in decoded]
+        tabs.addTab(table(['Script', 'JP address', 'Frames', 'Update ticks', 'End control'], rows),
+                    'Recovered animations · live ROM')
+    except ValueError as exc:
+        warning = QLabel(str(exc))
+        warning.setWordWrap(True)
+        tabs.addTab(warning, 'Live data unavailable')
+    rows = [(f'{"Lower" if i < 3 else "Upper"} lift, stop {i % 3 + 1}',
+             f'{x}..{x+2}, {y}..{y+2}', 'Board / ride / walk off', '801018CC / 800FE0EC')
+            for i, (x, y) in enumerate(STOPS)]
+    rows += [(f'Passage scene {n}', f'{a}..{c}, {b}..{d}', motion, address)
+             for n, (a, b, c, d), motion, address in zip((8, 9, 10, 11), PASSAGES,
+                 ('Up 84 px', 'Down 84 px', 'Up 145 px, sideways', 'Down 145 px, sideways'),
+                 ('800FE22C', '800FE3D8', '800FE504', '800FE668'))]
+    tabs.addTab(table(['Iron Town mechanism', 'World trigger x, y (inclusive)', 'Behavior', 'JP source address'], rows),
+                'Lifts and passages · audited JP')
+    if jump:
+        towns = QHBoxLayout()
+        for number, name in ((11, 'Lumberjack Town'), (16, 'Stonetown'), (17, 'Iron Town'), (18, 'Reunited town')):
+            button = QPushButton(f'Open {name} plan')
+            button.clicked.connect(lambda checked=False, n=number: jump('village', (f'SYS/LDAR{n:02d}.BIN', 1)))
+            towns.addWidget(button)
+        layout.addLayout(towns)
+        links = QHBoxLayout()
+        for label, path in (('INFO2 code', 'SYSTEM/INFO2.BIN'), ('Inventory conditions', 'SYSTEM/DSPSUB.BIN'),
+                            ('Main executable', 'SLPS_011.44'), ('Orphan X19', 'SYSTEM/X19.BIN')):
+            button = QPushButton(label)
+            button.clicked.connect(lambda checked=False, p=path: jump('file', p))
+            links.addWidget(button)
+        layout.addLayout(links)
+    if area:
+        terms = {11: 'Lumberjack Town has a conditional', 16: 'Confirmed correction:',
+                 17: "Iron Town's iron-lump", 18: 'Native JP loading'}
+        wanted = terms.get(area, '')
+        index = next((i for i, h in enumerate(headings) if wanted in h), -1)
+        if index >= 0:
+            outline.setCurrentRow(index)
+    return widget
+
+
+def show_dialog(project, parent=None, jump=None, area=None):
+    from PyQt6.QtWidgets import QDialog, QVBoxLayout
+    from PyQt6.QtCore import Qt
+    dialog = QDialog(parent)
+    dialog.setAttribute(Qt.WidgetAttribute.WA_DeleteOnClose)
+    dialog.setWindowTitle('Cut-village research · Japanese retail')
+    dialog.resize(1200, 800)
+    QVBoxLayout(dialog).addWidget(view(project, jump, area))
+    dialog.show()
+    return dialog

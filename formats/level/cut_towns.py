@@ -194,9 +194,13 @@ def villages(overlay, base):
 
 
 # A village's dialogue routine reads the resident's case from the actor (offset 0xBA), switches on it
-# through a jump table and opens a message from each case. The size of the table tells the routines apart.
+# through a jump table and opens a message from each case. Dispatch bindings identify the routines;
+# switch sizes are checked as additional validation.
 CASE_FIELD = 0xBA
-HANDLER_CASES = {0x0D: 23, 0x0E: 11, 0x0F: 16}
+# Hash-scoped JP mapping verified through layer-2/area/actor/talk dispatch.
+# Stone and Iron both have 16 cases, so case count cannot identify a village.
+JP_INFO2_SHA1 = '15ea8894a028cdabdda577b32ddfd281e023f51b'
+JP_DIALOGUE = {0x0D: (0x800F3000, 11), 0x0E: (0x800F41FC, 16), 0x0F: (0x800F5488, 16)}
 # The routines that open a message window, by build: showMessageBox, its timed form, the direct form
 # the dialogue routines call, and the window itself.
 WINDOWS = {'Japanese retail': {0x8002E3B4, 0x8002E3EC, 0x8002E42C, 0x8002E454, 0x8002E480}}
@@ -217,7 +221,10 @@ def dialogue_routines(overlay, base, read_word, window):
             return struct.unpack_from('<I', data, offset)[0]
         return read_word(address)
     starts = prologues(words) + [len(words)]
-    by_size = {size: number for number, size in HANDLER_CASES.items()}
+    import hashlib
+    if base != 0x800E9AF8 or hashlib.sha1(data).hexdigest() != JP_INFO2_SHA1:
+        return {}  # A changed/unmapped overlay needs a fresh dispatch audit.
+    by_address = {address: (number, count) for number, (address, count) in JP_DIALOGUE.items()}
     # What each routine of the overlay opens itself, and which routines it calls: a case often hands
     # its message to a helper.
     own, calls = {}, {}
@@ -232,8 +239,8 @@ def dialogue_routines(overlay, base, read_word, window):
     def reachable(roots, depth=3):
         seen, frontier = set(), set(roots)
         for _ in range(depth):
-            frontier = {t for r in frontier if r not in seen for t in calls.get(r, ())} - seen
             seen |= frontier
+            frontier = {t for r in frontier for t in calls.get(r, ())} - seen
         return seen
     found = {}
     for k in range(len(starts) - 1):
@@ -241,8 +248,12 @@ def dialogue_routines(overlay, base, read_word, window):
         if not any(w >> 26 == 37 and w & 0xFFFF == CASE_FIELD for w in words[first:min(end, first + 24)]):
             continue
         function = Function(words, base, first, end, read)
+        binding = by_address.get(function.address(first))
+        if binding is None:
+            continue
+        number, count = binding
         tables = function.switches()
-        if not tables or len(tables[0][1]) not in by_size:
+        if not tables or len(tables[0][1]) != count:
             continue
         cases = {}
         for case, target in enumerate(tables[0][1]):
@@ -252,10 +263,23 @@ def dialogue_routines(overlay, base, read_word, window):
             for helper in reachable(function.called):
                 pairs |= own.get(helper, set())
             cases[case] = sorted(pairs)
-        found[by_size[len(tables[0][1])]] = (function.address(first), cases)
+        found[number] = (function.address(first), cases)
     return found
 
 
 def dialogue_cases(overlay, base, read_word, window):
     """{set number: {case: [(group, line), ...]}}; see dialogue_routines."""
     return {number: cases for number, (_address, cases) in dialogue_routines(overlay, base, read_word, window).items()}
+
+
+def resident_dialogue_pairs(overlay, base, number, resident, cases):
+    """Resolve Stone's indexed story-phase rows using this resident's gate field.
+
+    `cases` must come from the fingerprint-validated dialogue reader above.
+    A computed table lookup is not a flag-only/no-message case.
+    """
+    if (number == 0x0E and base == 0x800E9AF8
+            and resident.dialogue in (*range(8), 13, 14) and 0 <= resident.gate < 16):
+        start = 0x80100068 - base + resident.gate * 4
+        return sorted({(3, line) for line in overlay[start:start + 4] if line != 255})
+    return cases.get(resident.dialogue)

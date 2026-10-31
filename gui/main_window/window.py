@@ -1228,6 +1228,15 @@ class MainWindow(QMainWindow):
             summary += "\nDiagnostics\n" + "\n".join(project.warnings)
         summary += "\nSelect a file or expand an area/section to open its resources."
         self.tabs.addTab(text_view(summary), "Disc overview")
+        from formats.level.cut_research import supported as research_supported
+        if not hasattr(self, 'cut_research_action'):
+            self.cut_research_action = self.menuBar().addAction('Cut-village research')
+            self.cut_research_action.triggered.connect(self.open_cut_research)
+        self.cut_research_action.setEnabled(research_supported(project))
+        if research_supported(project):
+            from formats.level.cut_research import view as research_view
+            self.tabs.addTab(research_view(project, lambda kind, payload:
+                self.cut_village_jump(kind, payload) if self.project is project else None), 'Cut-village research')
         self.refresh_labels()
         self.refresh_review_status()
         if self.labels.entries:
@@ -1785,6 +1794,12 @@ class MainWindow(QMainWindow):
             lambda bank, index: self.open_text_entry(bank, index) if self.project is project else None)
         popup.show()
 
+    def open_cut_research(self):
+        from formats.level.cut_research import show_dialog
+        project = self.project
+        self.cut_research_dialog = show_dialog(project, self, lambda kind, payload:
+            self.cut_village_jump(kind, payload) if self.project is project else None)
+
     def cut_village_jump(self, kind, payload):
         """The buttons of the Cut village tab: go to the text entry, load group, overlay or file they name."""
         if kind == 'text':
@@ -1793,6 +1808,8 @@ class MainWindow(QMainWindow):
             self.open_text_entry(export.Bank(name, source, offset, wfm=wfm), index)
         elif kind == 'group':
             self.jump_group(*payload, tab='VRAM')     # the sheet is a picture in the group's VRAM
+        elif kind == 'village':
+            self.jump_group(*payload, tab='Cut village')
         elif kind == 'asset':
             self.jump_asset(payload)
         elif kind == 'file':
