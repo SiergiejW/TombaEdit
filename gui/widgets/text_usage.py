@@ -8,6 +8,7 @@ COUNT_ROLE = Qt.ItemDataRole.UserRole + 50
 UNUSED_ROLE = Qt.ItemDataRole.UserRole + 51
 UNCHECKED_ROLE = Qt.ItemDataRole.UserRole + 52
 USAGE_TOOLTIP_ROLE = Qt.ItemDataRole.UserRole + 53
+CUT_DIALOGUE_ROLE = Qt.ItemDataRole.UserRole + 54
 
 
 def purple(palette, selected=False):
@@ -23,8 +24,9 @@ def blue(palette):
 class TextEntryDelegate(QStyledItemDelegate):
     def initStyleOption(self, option, index):
         super().initStyleOption(option, index)
-        if index.data(UNUSED_ROLE):
-            color = purple(option.palette, bool(option.state & QStyle.StateFlag.State_Selected))
+        if index.data(CUT_DIALOGUE_ROLE) or index.data(UNUSED_ROLE):
+            color = (blue(option.palette) if index.data(CUT_DIALOGUE_ROLE) else
+                     purple(option.palette, bool(option.state & QStyle.StateFlag.State_Selected)))
             option.palette.setColor(QPalette.ColorRole.Text, color)
             option.palette.setColor(QPalette.ColorRole.HighlightedText, color)
 

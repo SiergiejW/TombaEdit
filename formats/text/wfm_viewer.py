@@ -10,7 +10,7 @@ from gui.widgets.columns import adjustable
 from formats.text import wfm as wfm_module
 from formats.text import export
 from formats.text import usage
-from gui.widgets.text_usage import TextEntryDelegate, UNUSED_ROLE, purple
+from gui.widgets.text_usage import TextEntryDelegate, UNUSED_ROLE, CUT_DIALOGUE_ROLE, purple, blue
 from PyQt6.QtGui import QBrush
 
 
@@ -268,8 +268,11 @@ class DialogueView(QWidget):
                           if flagged.get('status') == 'not_found' else '')
                 if usage.confirmed_cut_village(dialogue):
                     marker = '[Confirmed unused · cut village] '
-                item.setData(UNUSED_ROLE, bool(marker))
-                item.setData(Qt.ItemDataRole.ForegroundRole, QBrush(purple(self.entries.palette())) if marker else None)
+                cut = usage.confirmed_cut_village(dialogue)
+                item.setData(CUT_DIALOGUE_ROLE, cut)
+                item.setData(UNUSED_ROLE, bool(marker) and not cut)
+                color = blue(self.entries.palette()) if cut else purple(self.entries.palette()) if marker else None
+                item.setData(Qt.ItemDataRole.ForegroundRole, QBrush(color) if color else None)
                 item.setText(f'{getattr(dialogue, "name", f"{i:03d}")} | {marker}{preview}')
                 item.setToolTip(usage.explanation(dialogue) + '\n\n' + original)
         self.filter(self.search.text())
