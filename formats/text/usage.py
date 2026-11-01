@@ -300,8 +300,14 @@ def entry(dialogue):
     return getattr(dialogue, 'usage', None)
 
 
+def confirmed_cut_village(dialogue):
+    return (entry(dialogue) or {}).get('availability') == 'confirmed_unused_cut_village'
+
+
 def label(dialogue):
     result = entry(dialogue)
+    if confirmed_cut_village(dialogue):
+        return 'Confirmed unused — cut-village dialogue'
     if result and result.get('event') is not None:
         return 'Unused event'
     if result and result['status'] == 'referenced' and result.get('observations'):
@@ -313,7 +319,10 @@ def explanation(dialogue):
     result = entry(dialogue)
     if not result:
         return 'In-game text usage has not been traced for this build.'
-    return label(dialogue) + '\n' + '\n'.join(result['evidence'])
+    contexts = [f'AREA{c["area"]:02d} section {c["section"]}: {c["town"]}; NPCs '
+                + ', '.join(map(str, c['residents'])) + f'; routine {c["routine"]}; ({c["group"]},{c["line"]}).\n'
+                + c['evidence'] for c in result.get('cut_villages', ())]
+    return label(dialogue) + '\n' + '\n'.join(contexts + result['evidence'])
 
 
 def counts(banks):

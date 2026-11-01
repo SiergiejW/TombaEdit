@@ -31,7 +31,7 @@ from formats.text.mips_args import Value, analyse, region_words
 from game.builds import executable
 
 SHA1 = '07d577698ad31ec1a69b9d7b80a7c3f90b650888'
-REVISION = 'jp-retail-selector-audit-v1'
+REVISION = 'jp-retail-selector-audit-v2-cut-villages'
 # The message-window routine (800 2E480) and the wrappers that call it.
 WINDOW = {0x8002E3B4, 0x8002E3EC, 0x8002E42C, 0x8002E454, 0x8002E480}
 INFO_ROUTINE = 0x8002EDB0
@@ -135,15 +135,21 @@ class Audit:
         """{address: (area, village name, {case: pairs})} of the dialogue routines of the cut villages
         in the INFO2 overlay. Their calls belong to the village's own area: the overlay is loaded for
         others, but those never run these routines."""
-        from formats.level.cut_towns import VILLAGES, dialogue_routines
+        from formats.level.cut_towns import VILLAGES, dialogue_routines, villages, resident_dialogue_pairs
         found = {}
         for region in self.regions.values():
             if 'INFO2' not in region['source'].upper():
                 continue
             routines = dialogue_routines(region['data'], region['base'],
                                          lambda a: self.found.word(a) if self.found.holds(a, 4) else None, WINDOW)
+            towns = villages(region['data'], region['base'])
             for number, (address, cases) in routines.items():
                 area, name = VILLAGES[number][:2]
+                if number == 0x0E:
+                    cases = {case: list(pairs) for case, pairs in cases.items()}
+                    for resident in towns[number].residents:
+                        pairs = resident_dialogue_pairs(region['data'], region['base'], number, resident, cases)
+                        cases[resident.dialogue] = sorted(set(cases.get(resident.dialogue, ())) | set(pairs or ()))
                 found[address] = (area, name, cases)
         return found
 
@@ -328,6 +334,13 @@ def study(project, record):
         wfm = Wfm(project.asset_data(assets[0]))
         text, complete = audit.statuses(assets, wfm)
         bank['text'] = text
+        from formats.text.cut_village_usage import entries as cut_village_entries, AVAILABILITY
+        for index, contexts in cut_village_entries(project, assets, wfm).items():
+            item = bank['text'].setdefault(str(index), dict(status='referenced', evidence=[]))
+            item['status'] = 'referenced'
+            item['availability'] = AVAILABILITY
+            item['cut_villages'] = contexts
+            item['method'] = REVISION
         bank['coverage_complete'] = complete
         bank['computed_calls'] = 0
         bank['coverage'] = ('Static selector audit of the message-window calls, signposts, scripts, item and event notice tables '

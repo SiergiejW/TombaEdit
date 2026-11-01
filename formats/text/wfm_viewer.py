@@ -14,10 +14,29 @@ from gui.widgets.text_usage import TextEntryDelegate, UNUSED_ROLE, purple
 from PyQt6.QtGui import QBrush
 
 
+def english_bank(project, source, offset):
+    """Use known bank/build language, without guessing from decoded glyphs."""
+    from formats.text.titles import language_of
+    if language_of(source) == 0:
+        return True
+    if project is None:
+        return False
+    from formats.archive.ldar import table_name
+    from game.builds import executable
+    assets = [a for a in project.by_source.get(source, ()) if a.kind == 'WFM' and a.offset == offset]
+    tongues = {table_name(a.ldar)[0] for a in assets}
+    if tongues and tongues != {None}:
+        return tongues == {0}
+    found = executable(project)
+    return found is not None and (found.build.name.startswith('US ') or
+        found.build.name == 'European' or found.build.name.startswith('European (English'))
+
+
 class DialogueView(QWidget):
     def __init__(self, wfm, name='dialogue', source='', offset=0, translation_session=None):
         super().__init__()
         self.wfm = wfm
+        self.is_english = english_bank(getattr(translation_session, 'project', None), source, offset)
         if translation_session is not None and translation_session.project is not None:
             usage.attach(wfm, translation_session.project, source, offset)
         self.bank = export.Bank(name, source, offset, version=wfm.version.decode('ascii', 'replace'), wfm=wfm)
@@ -29,6 +48,7 @@ class DialogueView(QWidget):
         bar.addWidget(self.search)
         self.usage_filter = QComboBox()
         for label, status in [('All entries', ''), ('Possibly unused', 'not_found'),
+                              ('Confirmed unused — cut-village dialogue', 'confirmed_unused_cut_village'),
                               ('Display references', 'referenced'), ('Dynamic selection', 'dynamic'),
                               ('Usage not checked', 'unknown')]:
             self.usage_filter.addItem(label, status)
@@ -52,6 +72,7 @@ class DialogueView(QWidget):
         translated_menu.addAction('This WFM bank...', lambda: self.export_translations(False))
         self.export_all_translations = translated_menu.addAction('All WFM banks...', lambda: self.export_translations(True))
         translated.setMenu(translated_menu)
+        translated.setVisible(not self.is_english)
         tools.addWidget(translated)
         layout.addLayout(bar)
         self.summary = QLabel()
@@ -68,10 +89,11 @@ class DialogueView(QWidget):
         # The Display menu picks what is shown.
         self.rendered = ImageView()
         self.rendered_translated = ImageView()
-        self.original_title = QLabel('Original')
+        self.original_title = QLabel('English (original)' if self.is_english else 'Original')
         self.translated_title = QLabel('English')
         self.panes = QSplitter()
         for title, view in ((self.original_title, self.rendered), (self.translated_title, self.rendered_translated)):
+            view.zoom.setCurrentIndex(0)  # Fit initially; later entry changes keep the chosen mode.
             holder = QWidget()
             box = QVBoxLayout(holder)
             box.setContentsMargins(0, 0, 0, 0)
@@ -101,7 +123,8 @@ class DialogueView(QWidget):
         self.relist()
         if wfm.dialogues:
             self.entries.setCurrentRow(0)
-        self.translation.session.discover()
+        if not self.is_english:
+            self.translation.session.discover()
 
     def relist(self):
         """Fill the list of entries from the characters as they are known now."""
@@ -113,10 +136,12 @@ class DialogueView(QWidget):
             preview = export.plain(d).replace('\n', ' ')
             self.entries.addItem(f'{getattr(d, "name", f"{i:03d}")} | {preview}')
         self.entries.blockSignals(False)
-        self.translation.session.register(self.bank)
+        if not self.is_english:
+            self.translation.session.register(self.bank)
         self.refresh_translations()
         known = sum(c is not None for c in wfm.characters)
         candidates = sum((usage.entry(d) or {}).get('status') == 'not_found' for d in wfm.dialogues)
+        confirmed_cut = sum(usage.confirmed_cut_village(d) for d in wfm.dialogues)
         audited = any(usage.entry(d) for d in wfm.dialogues)
         unchecked = sum((usage.entry(d) or {}).get('status', 'unknown') == 'unknown' for d in wfm.dialogues)
         recovered = len(getattr(wfm, 'recovered_glyphs', {}))
@@ -126,6 +151,8 @@ class DialogueView(QWidget):
                                 + (f'; {unchecked} unchecked' if unchecked else '') if audited else 'In-game usage not checked'))
         if getattr(wfm, 'usage_checked', False):
             self.summary.setText(self.summary.text() + ' | Usage checked (static selectors)')
+        if confirmed_cut:
+            self.summary.setText(self.summary.text() + f' | {confirmed_cut} confirmed unused cut-village entries')
         self.summary.setToolTip(getattr(wfm, 'usage_summary', 'Native display analysis is not available for this build.'))
         if row >= 0:
             self.entries.setCurrentRow(row)
@@ -178,6 +205,12 @@ class DialogueView(QWidget):
         session.changed.connect(self.sync_display_menu)
 
     def sync_display_menu(self):
+        if self.is_english:
+            self.panes.widget(0).show()
+            self.panes.widget(1).hide()
+            self.translation.hide()
+            self.display_button.hide()
+            return
         session = self.translation.session
         for key, action in self.display_actions.items():
             action.blockSignals(True)
@@ -201,19 +234,23 @@ class DialogueView(QWidget):
             return
         try:
             self.refresh_display()
-            self.script.setPlainText(self.wfm.dialogues[index].script())
             dialogue = self.wfm.dialogues[index]
-            self.translation.set_text(export.plain(dialogue), dialogue.warning)
+            context = usage.explanation(dialogue) + '\n\nScript:\n' if usage.confirmed_cut_village(dialogue) else ''
+            self.script.setPlainText(context + dialogue.script())
+            if not self.is_english:
+                self.translation.set_text(export.plain(dialogue), dialogue.warning)
         except ValueError as exc:
             self.script.setPlainText(str(exc))
             self.translation.set_text('')
 
     def filter(self, text):
         for i, dialogue in enumerate(self.wfm.dialogues):
-            translated = self.translation.session.lookup(export.plain(dialogue)) or ''
+            translated = '' if self.is_english else self.translation.session.lookup(export.plain(dialogue)) or ''
             wanted = self.usage_filter.currentData()
             status = (usage.entry(dialogue) or {}).get('status', 'unknown')
-            self.entries.item(i).setHidden((bool(wanted) and status != wanted)
+            mismatch = (not usage.confirmed_cut_village(dialogue) if wanted == 'confirmed_unused_cut_village'
+                        else bool(wanted) and status != wanted)
+            self.entries.item(i).setHidden(mismatch
                 or text.casefold() not in (dialogue.script() + '\n' + translated).casefold())
 
     def refresh_translations(self):
@@ -222,13 +259,15 @@ class DialogueView(QWidget):
         self.export_all_originals.setEnabled(session.project is None or session.discovered)
         for i, dialogue in enumerate(self.wfm.dialogues):
             original = export.plain(dialogue)
-            preview = self.translation.session.lookup(original)
+            preview = None if self.is_english else self.translation.session.lookup(original)
             preview = (preview if preview is not None else original).replace('\n', ' ')
             item = self.entries.item(i)
             if item is not None:
                 flagged = usage.entry(dialogue) or {}
                 marker = (('[Unused event] ' if flagged.get('event') is not None else '[Possibly unused] ')
                           if flagged.get('status') == 'not_found' else '')
+                if usage.confirmed_cut_village(dialogue):
+                    marker = '[Confirmed unused · cut village] '
                 item.setData(UNUSED_ROLE, bool(marker))
                 item.setData(Qt.ItemDataRole.ForegroundRole, QBrush(purple(self.entries.palette())) if marker else None)
                 item.setText(f'{getattr(dialogue, "name", f"{i:03d}")} | {marker}{preview}')
@@ -249,6 +288,9 @@ class DialogueView(QWidget):
         self.rendered.setToolTip('Original text, as the game draws it'
                                  + ('\n' + self.wfm.palette_source if hasattr(self.wfm, 'palette_source') else ''))
         self.rendered.set_image(self.wfm.render(index), subject=('original', index))
+        if self.is_english:
+            self._display_key = key
+            return
         if translated is not None and translated != original:
             from formats.text.english_preview import render
             try:
