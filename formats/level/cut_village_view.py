@@ -191,6 +191,8 @@ def draw_plan(village, art=None, selected=(), hits=None, backdrop=None, graphics
             image.alpha_composite(figure,(round(gx-figure.width/2),round(gy-figure.height)))
             hits.append(('prop', p.index, (gx-figure.width/2,gy-figure.height,gx+figure.width/2,gy)))
         draw.rectangle([px - 4, py - 4, px + 4, py + 4], fill=(240, 190, 30, 255), outline=(120, 90, 0, 255))
+        draw.text((px + 6, py - 7), f'Prop P{p.index + 1}', font=small,
+                  fill=(120, 75, 0, 255), stroke_width=1, stroke_fill=(255, 255, 255, 255))
         hits.append(('prop', p.index, (px - 5, py - 5, px + 5, py + 5)))
     for r in village.residents:
         px, py = at(r.x, r.y)
@@ -310,7 +312,7 @@ def describe(preview, selected):
                 + ' ' + resident_evidence(preview,index))
     if kind == 'prop':
         q = village.props[index]
-        return (f'Prop {index + 1}: subtype {q.subtype}, animation {q.animation}, type {q.kind}, '
+        return (f'Prop P{index + 1}: subtype {q.subtype}, animation {q.animation}, type {q.kind}, '
                 f'{"outdoors" if not q.room else f"inside house {q.room}"}, at ({q.x}, {q.y}).'
                 + (f' Manual graphics: {preview.graphics[kind,index].label}.' if (kind,index) in preview.graphics else ''))
     if kind == 'exit':
@@ -560,6 +562,21 @@ GREY = ('texel value as grey: the colours are not recovered', np.array([(v >> 3)
 def rank_windows(windows, texels, keep=24):
     """The windows that colour nearly every texel in use, those that make neighbouring texels most alike first.
     Judged on the pairs of neighbouring texels, so a thousand candidates cost little."""
+    # Identical windows have identical scores. Reject holes and duplicates before
+    # the expensive neighbour-colour comparison, rather than after scoring.
+    use = np.bincount(texels[texels != 0].astype(np.int64), minlength=256)
+    total = max(1, use.sum())
+    unique, seen_windows = [], set()
+    for label, row in windows:
+        key = row.tobytes()
+        if key in seen_windows:
+            continue
+        seen_windows.add(key)
+        if use[row == 0].sum() / total < 0.01:
+            unique.append((label, row))
+    windows = unique
+    if not windows:
+        return []
     drawn = texels != 0
     pairs = {}
     for a, b, both in ((texels[:, :-1], texels[:, 1:], drawn[:, :-1] & drawn[:, 1:]),
@@ -572,15 +589,13 @@ def rank_windows(windows, texels, keep=24):
     if not len(kinds):
         return []
     first, second = kinds // 256, kinds % 256
-    use = np.bincount(texels[drawn].astype(np.int64), minlength=256)
     table = np.stack([w for _label, w in windows]).astype(np.int32)
     colour = np.stack([table & 31, (table >> 5) & 31, (table >> 10) & 31], -1)
-    holes = np.array([use[row == 0].sum() for row in table]) / max(1, use.sum())
     score = np.empty(len(table))
     for start in range(0, len(table), 512):
         part = colour[start:start + 512]
         score[start:start + 512] = (np.abs(part[:, first, :] - part[:, second, :]).sum(-1) * weights).sum(1) / weights.sum()
-    order = [i for i in np.argsort(score) if holes[i] < 0.01]
+    order = np.argsort(score)
     seen, out = set(), []
     for i in order:
         if table[i].tobytes() in seen:
@@ -1096,7 +1111,7 @@ def view(preview, english=None, request=None, changed=None, jump=None, session=N
     props_table.setSelectionBehavior(QAbstractItemView.SelectionBehavior.SelectRows)
     for row, prop in enumerate(preview.village.props):
         graphic = preview.graphics.get(('prop',row))
-        for col,value in enumerate((row+1, f'{prop.subtype} / {prop.animation}',prop.room,prop.x,prop.y,
+        for col,value in enumerate((f'P{row+1}', f'{prop.subtype} / {prop.animation}',prop.room,prop.x,prop.y,
                                     graphic.label if graphic else 'Unassigned (yellow mark)')):
             item=QTableWidgetItem(str(value));item.setToolTip(str(value));props_table.setItem(row,col,item)
     props_table.resizeColumnsToContents()
@@ -1258,14 +1273,10 @@ def view(preview, english=None, request=None, changed=None, jump=None, session=N
     if mechanism_rows:
         entry_tabs.addTab(mechanism_table, 'Mechanisms · L/P map labels')
     if preview.sheets:
-        # Under the residents, so the plan keeps the whole height of the tab.
-        right = QSplitter(Qt.Orientation.Vertical)
-        right.addWidget(entry_tabs)
-        right.addWidget(_sheets_panel(preview.sheets, preview.art.group if preview.art is not None else {18:86}.get(preview.area)))
-        right.setSizes([380, 340])
-        split.addWidget(right)
-    else:
-        split.addWidget(entry_tabs)
+        entry_tabs.addTab(
+            _sheets_panel(preview.sheets, preview.art.group if preview.art is not None else {18:86}.get(preview.area)),
+            'Buildings & sprites')
+    split.addWidget(entry_tabs)
     split.setSizes([480, 900])
     layout.addWidget(split, 1)
     legend = QLabel('Red: resident outdoors. Purple: resident inside a house. Blue: house. '
