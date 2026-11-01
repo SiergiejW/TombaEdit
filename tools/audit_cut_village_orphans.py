@@ -119,7 +119,7 @@ def audit(cue):
         if number == 0x0E:
             selected |= {11, 12}  # explicit SceneryUpdate state 2 / 3 assignments
         if number == 0x0F:
-            selected |= {13, 14}  # progress-dependent P16 animation
+            selected |= {13, 14, 15}  # P16 = 13 + phase; passage 8 writes phases 1 and 2
         unselected = sorted(set(range(len(scripts))) - selected)
         result['scenery'].append(dict(area=town.area, definitions=defs, props=props,
             alternate_props=[asdict(prop) for prop in town.alternate_props],
