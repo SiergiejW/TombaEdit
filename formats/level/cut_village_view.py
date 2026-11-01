@@ -66,6 +66,7 @@ class Preview:
     places: dict = field(default_factory=dict)      # where a button can take the user: 'bank', 'group', 'overlay'
     village: object = None                          # what the plan is drawn from, to draw it again with a selection
     art: object = None
+    graphics: dict = field(default_factory=dict)    # user choices, separate from original definitions
 
 
 @dataclass
@@ -113,19 +114,26 @@ class Backdrop:
         return self.image.width * self.scale / 100, self.image.height * self.scale / 100
 
 
-def draw_plan(village, art=None, selected=(), hits=None, backdrop=None):
+def draw_plan(village, art=None, selected=(), hits=None, backdrop=None, graphics=None):
     """The plan of a village as an image: houses, patrol boxes, props and numbered residents.
     Residents `art` has a figure for are drawn as it; a stand-in is translucent. `selected` is a list of
     (kind, index), kind being 'resident', 'prop' or 'house' (index from 0), drawn highlighted. When `hits`
     is a list, (kind, index, (left, top, right, bottom)) is added to it for each element, in image pixels.
     A `backdrop` is drawn under everything and makes the plan big enough to show all of it."""
     chosen = set(selected)
+    graphics = graphics or {}
     hits = [] if hits is None else hits
     boxes = [b for b in (patrol_box(village, r) for r in village.residents) if b]
     xs = ([r.x for r in village.residents] + [p.x for p in village.props] + [h[i] for h in village.houses for i in (0, 2)]
           + [b[i] for b in boxes for i in (0, 2)])
     ys = ([r.y for r in village.residents] + [p.y for p in village.props] + [h[i] for h in village.houses for i in (1, 3)]
           + [b[i] for b in boxes for i in (1, 3)])
+    for (kind, index), graphic in graphics.items():
+        entry = (village.residents if kind == 'resident' else village.props)[index]
+        x = entry.x + graphic.spec.get('dx', 0)
+        y = entry.y + graphic.spec.get('dy', 0)
+        xs += [x-graphic.image.width/2, x+graphic.image.width/2]
+        ys += [y-graphic.image.height, y]
     exits = EXITS.get(village.set_number, [])
     for (x0, y0, x1, y1), _where in exits:
         xs += [v for v in (x0, x1) if v is not None]
@@ -176,6 +184,12 @@ def draw_plan(village, art=None, selected=(), hits=None, backdrop=None):
                            width=2 if not picked else 4)
     for p in village.props:
         px, py = at(p.x, p.y)
+        graphic = graphics.get(('prop', p.index))
+        if graphic:
+            figure = graphic.image.resize((graphic.image.width*SCALE, graphic.image.height*SCALE), Image.Resampling.NEAREST)
+            gx,gy = at(p.x+graphic.spec.get('dx',0),p.y+graphic.spec.get('dy',0))
+            image.alpha_composite(figure,(round(gx-figure.width/2),round(gy-figure.height)))
+            hits.append(('prop', p.index, (gx-figure.width/2,gy-figure.height,gx+figure.width/2,gy)))
         draw.rectangle([px - 4, py - 4, px + 4, py + 4], fill=(240, 190, 30, 255), outline=(120, 90, 0, 255))
         hits.append(('prop', p.index, (px - 5, py - 5, px + 5, py + 5)))
     for r in village.residents:
@@ -183,9 +197,14 @@ def draw_plan(village, art=None, selected=(), hits=None, backdrop=None):
         colour = (150, 40, 190, 255) if r.room else (210, 30, 30, 255)
         lift = 0
         found = art.look_for(r.subtype) if art is not None else None
-        if found is not None:
-            look, stand_in = found
-            figure = look.images[FACINGS.get(r.frame, 'front')]
+        graphic = graphics.get(('resident', r.index))
+        if found is not None or graphic:
+            if graphic:
+                figure,stand_in = graphic.image,False
+                px,py = at(r.x+graphic.spec.get('dx',0),r.y+graphic.spec.get('dy',0))
+            else:
+                look, stand_in = found
+                figure = look.images[FACINGS.get(r.frame, 'front')]
             figure = figure.resize((figure.width * SCALE, figure.height * SCALE), Image.Resampling.NEAREST)
             if stand_in:
                 figure = figure.copy()
@@ -201,7 +220,7 @@ def draw_plan(village, art=None, selected=(), hits=None, backdrop=None):
         box = draw.textbbox((0, 0), text, font=small)
         draw.text((px - (box[2] - box[0]) / 2 - box[0], py - 24 - lift - (box[3] - box[1]) / 2 - box[1]), text,
                   fill=(255, 255, 255, 255), font=small)
-        half = figure.width / 2 if found is not None else 10
+        half = figure.width / 2 if found is not None or graphic else 10
         hits.append(('resident', r.index, (px - max(half, 10), py - 34 - lift, px + max(half, 10), py + 3)))
     if village.area == 17:
         from formats.level.cut_research import STOPS, PASSAGES
@@ -259,11 +278,13 @@ def describe(preview, selected):
     if kind == 'resident':
         r, row = village.residents[index], preview.rows[index]
         return (f'Resident {row.number}: {row.where}, {row.behaviour}, subtype {r.subtype}, case {row.case}, '
-                f'facing {r.frame}, at ({r.x}, {r.y}).')
+                f'facing {r.frame}, at ({r.x}, {r.y}).'
+                + (f' Manual graphics: {preview.graphics[kind,index].label}.' if (kind,index) in preview.graphics else ''))
     if kind == 'prop':
         q = village.props[index]
         return (f'Prop {index + 1}: subtype {q.subtype}, animation {q.animation}, type {q.kind}, '
-                f'{"outdoors" if not q.room else f"inside house {q.room}"}, at ({q.x}, {q.y}).')
+                f'{"outdoors" if not q.room else f"inside house {q.room}"}, at ({q.x}, {q.y}).'
+                + (f' Manual graphics: {preview.graphics[kind,index].label}.' if (kind,index) in preview.graphics else ''))
     if kind == 'exit':
         (x0, y0, x1, y1), where = EXITS[village.set_number][index]
         edge = lambda a, b: f'{a} {"beyond" if b is None else b}'
@@ -648,7 +669,15 @@ def preview(project, path, index):
     if area == 17:
         notes.append('Cyan L1–L6 mark the six lift boarding stops; brown P8–P11 mark internal passage triggers. '
                      'Research & recovered data explains these code-derived markers and incomplete quest scenes.')
-    return Preview(village.name, area, draw_plan(village, art), rows, notes, sheets[path], places, village, art)
+    import hashlib
+    places['graphics_key'] = hashlib.sha256(found.data + bytes(data)).hexdigest() + f'/{area}'
+    places['graphics_project'] = project
+    result = Preview(village.name, area, draw_plan(village, art), rows, notes, sheets[path], places, village, art)
+    from formats.level.cut_graphics import Assignments
+    result.graphics = Assignments(result).load()
+    if result.graphics:
+        result.image = draw_plan(village, art, graphics=result.graphics)
+    return result
 
 
 def _title(text):
@@ -901,6 +930,13 @@ def view(preview, english=None, request=None, changed=None, jump=None, session=N
     info.setWordWrap(True)
     plan_layout.addWidget(info)
     from PyQt6.QtWidgets import QHBoxLayout, QMenu, QPushButton
+    graphic_bar = QHBoxLayout()
+    assign_graphic = QPushButton('Assign graphics…')
+    reset_graphic = QPushButton('Reset manual graphics')
+    graphic_bar.addWidget(assign_graphic)
+    graphic_bar.addWidget(reset_graphic)
+    plan_layout.addLayout(graphic_bar)
+    assign_graphic.setToolTip('Select one prop or resident, then choose its sprite group, CLUT and crop. Saved for this disc build and village.')
     jump_bar = QHBoxLayout()
     open_text = QPushButton('Open text entry')
     open_text.setToolTip('Go to the text bank and show the selected resident\'s message.')
@@ -921,7 +957,7 @@ def view(preview, english=None, request=None, changed=None, jump=None, session=N
             button.hide()
     split.addWidget(plan)
     if backdrop_bar.backdrop is not None:
-        picture.set_image(draw_plan(preview.village, preview.art, backdrop=backdrop_bar.backdrop))
+        picture.set_image(draw_plan(preview.village, preview.art, backdrop=backdrop_bar.backdrop, graphics=preview.graphics))
     headers = ['#', 'Where', 'Behaviour', 'Drawing', 'Case', 'Says (Japanese)'] + (['English'] if english else [])
     table = QTableWidget(len(preview.rows), len(headers))
     table.setHorizontalHeaderLabels(headers)
@@ -962,12 +998,15 @@ def view(preview, english=None, request=None, changed=None, jump=None, session=N
 
     for r, row in enumerate(preview.rows):
         says = ' / '.join(text if entry is None else f'#{entry}: {text}' for entry, text in row.messages) or row.note
-        cells = [str(row.number), row.where, row.behaviour, str(row.subtype), str(row.case), says]
+        graphic = preview.graphics.get(('resident', r))
+        cells = [str(row.number), row.where, row.behaviour, str(row.subtype) + (' · manual' if graphic else ''), str(row.case), says]
         if english:
             cells.append(translated(row))
         for c, text in enumerate(cells):
             item = QTableWidgetItem(text)
             item.setToolTip(text)
+            if c == 3 and graphic:
+                item.setToolTip(graphic.label)
             table.setItem(r, c, item)
     table.resizeColumnsToContents()
     if english:
@@ -1009,6 +1048,16 @@ def view(preview, english=None, request=None, changed=None, jump=None, session=N
     mechanism_table.setColumnWidth(3, 360)
     from PyQt6.QtWidgets import QTabWidget
     entry_tabs = QTabWidget()
+    props_table = QTableWidget(len(preview.village.props), 6)
+    props_table.setHorizontalHeaderLabels(['Prop', 'Subtype / animation', 'Room', 'World X', 'World Y', 'Graphics'])
+    props_table.setEditTriggers(QAbstractItemView.EditTrigger.NoEditTriggers)
+    props_table.setSelectionBehavior(QAbstractItemView.SelectionBehavior.SelectRows)
+    for row, prop in enumerate(preview.village.props):
+        graphic = preview.graphics.get(('prop',row))
+        for col,value in enumerate((row+1, f'{prop.subtype} / {prop.animation}',prop.room,prop.x,prop.y,
+                                    graphic.label if graphic else 'Unassigned (yellow mark)')):
+            item=QTableWidgetItem(str(value));item.setToolTip(str(value));props_table.setItem(row,col,item)
+    props_table.resizeColumnsToContents()
     places = preview.places
 
     def chosen_rows(selected):
@@ -1028,6 +1077,9 @@ def view(preview, english=None, request=None, changed=None, jump=None, session=N
         open_sprite.setEnabled('group' in places)
         open_palette.setEnabled(bool(chosen_looks(selected)))
         open_code.setEnabled('overlay' in places)
+        target = selected[0] if len(selected)==1 and selected[0][0] in ('resident','prop') else None
+        assign_graphic.setEnabled(target is not None and bool(preview.sheets))
+        reset_graphic.setEnabled(target in preview.graphics if target else False)
 
     def go_text():
         entries = message_entries(state['selected'])
@@ -1052,13 +1104,13 @@ def view(preview, english=None, request=None, changed=None, jump=None, session=N
     open_code.clicked.connect(lambda: jump('asset', places['overlay']))
     update_jumps([])
     if preview.village is not None:
-        draw_plan(preview.village, preview.art, hits=state['hits'], backdrop=backdrop_bar.backdrop)
+        draw_plan(preview.village, preview.art, hits=state['hits'], backdrop=backdrop_bar.backdrop, graphics=preview.graphics)
 
         def redraw(selected=None):
             if selected is not None:
                 state['selected'] = selected
             state['hits'][:] = []
-            image = draw_plan(preview.village, preview.art, state['selected'], state['hits'], backdrop_bar.backdrop)
+            image = draw_plan(preview.village, preview.art, state['selected'], state['hits'], backdrop_bar.backdrop, preview.graphics)
             picture.set_image(image, preserve_view=True)
         redraw_hook.append(redraw)
 
@@ -1075,6 +1127,7 @@ def view(preview, english=None, request=None, changed=None, jump=None, session=N
             rows = sorted({i.row() for i in table.selectedIndexes()})
             state['syncing'] = True
             mechanism_table.clearSelection()
+            props_table.clearSelection()
             state['syncing'] = False
             show([('resident', r) for r in rows])
 
@@ -1084,10 +1137,44 @@ def view(preview, english=None, request=None, changed=None, jump=None, session=N
             rows = sorted({i.row() for i in mechanism_table.selectedIndexes()})
             state['syncing'] = True
             table.clearSelection()
+            props_table.clearSelection()
             state['syncing'] = False
             show([mechanism_rows[r][:2] for r in rows])
 
         mechanism_table.itemSelectionChanged.connect(mechanism_changed)
+
+        def props_changed():
+            if state['syncing']:return
+            rows=sorted({i.row() for i in props_table.selectedIndexes()})
+            state['syncing']=True
+            table.clearSelection();mechanism_table.clearSelection()
+            state['syncing']=False
+            show([('prop',r) for r in rows])
+        props_table.itemSelectionChanged.connect(props_changed)
+
+        def refresh_graphics():
+            from formats.level.cut_graphics import Assignments
+            Assignments(preview).save(preview.graphics)
+            for row in range(len(preview.rows)):
+                item=table.item(row,3);graphic=preview.graphics.get(('resident',row))
+                item.setText(f'{preview.rows[row].subtype}' + (' · manual' if graphic else ''))
+                item.setToolTip(graphic.label if graphic else str(preview.rows[row].subtype))
+            for row in range(len(preview.village.props)):
+                graphic=preview.graphics.get(('prop',row));item=props_table.item(row,5)
+                item.setText(graphic.label if graphic else 'Unassigned (yellow mark)');item.setToolTip(item.text())
+            redraw()
+            info.setText(describe(preview,state['selected']))
+            update_jumps(state['selected'])
+
+        def assign():
+            from formats.level.cut_graphics import chooser
+            target=state['selected'][0]
+            dialog=chooser(preview,preview.graphics.get(target),widget,kind=target[0])
+            if dialog.exec() and dialog.selection['choice'] is not None:
+                preview.graphics[target]=dialog.selection['choice'];refresh_graphics()
+        def reset():
+            preview.graphics.pop(state['selected'][0],None);refresh_graphics()
+        assign_graphic.clicked.connect(assign);reset_graphic.clicked.connect(reset)
 
         def plan_clicked(x, y):
             found = hit_test(state['hits'], x, y)
@@ -1095,15 +1182,19 @@ def view(preview, english=None, request=None, changed=None, jump=None, session=N
             try:
                 table.clearSelection()
                 mechanism_table.clearSelection()
+                props_table.clearSelection()
                 if found is not None and found[0] == 'resident':
                     entry_tabs.setCurrentIndex(0)
                     table.selectRow(found[1])
                     table.scrollToItem(table.item(found[1], 0))
                 elif found is not None and found[0] in ('lift', 'passage'):
                     row = next(i for i, value in enumerate(mechanism_rows) if value[:2] == found)
-                    entry_tabs.setCurrentIndex(1)
+                    entry_tabs.setCurrentWidget(mechanism_table)
                     mechanism_table.selectRow(row)
                     mechanism_table.scrollToItem(mechanism_table.item(row, 0))
+                elif found is not None and found[0] == 'prop':
+                    entry_tabs.setCurrentWidget(props_table)
+                    props_table.selectRow(found[1]);props_table.scrollToItem(props_table.item(found[1],0))
             finally:
                 state['syncing'] = False
             show([found] if found is not None else [])
@@ -1120,6 +1211,8 @@ def view(preview, english=None, request=None, changed=None, jump=None, session=N
     if english:
         inside.addWidget(translation_status)
     entry_tabs.addTab(residents, 'Residents')
+    if preview.village.props:
+        entry_tabs.addTab(props_table, 'Props')
     if mechanism_rows:
         entry_tabs.addTab(mechanism_table, 'Mechanisms · L/P map labels')
     if preview.sheets:

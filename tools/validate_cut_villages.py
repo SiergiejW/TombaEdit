@@ -87,10 +87,46 @@ def main():
         assert any('L1 — Lower lift' in label.text() for label in plan.findChildren(QLabel))
         mechanism_table.selectRow(6)
         assert any('P8 — Internal passage' in label.text() for label in plan.findChildren(QLabel))
+        from formats.level.cut_graphics import chooser, Assignments, render
+        from PyQt6.QtCore import QSettings
+        from tempfile import TemporaryDirectory
+        picker = chooser(iron, kind='prop')
+        graphic = picker.selection['choice']
+        assert graphic is not None and graphic.spec['group'] == 80 and graphic.spec['mode'] == 'building'
+        with TemporaryDirectory() as folder:
+            store = Assignments(iron, QSettings(str(Path(folder)/'graphics.ini'), QSettings.Format.IniFormat))
+            store.save({('prop', 0):graphic, ('resident', 0):graphic})
+            saved = store.load()
+            assert set(saved) == {('prop',0),('resident',0)}
+            assert saved['prop',0].image.tobytes() == graphic.image.tobytes()
+            before = draw_plan(iron.village,iron.art)
+            after = draw_plan(iron.village,iron.art,graphics=saved)
+            assert before.size != after.size or before.tobytes() != after.tobytes()
+            altered = dict(graphic.spec, sheet_hash='changed')
+            try:
+                render(altered,iron.sheets,project)
+                raise AssertionError('Changed sheet must not reuse a saved crop')
+            except ValueError:
+                pass
+            store.save({})
+            assert store.load() == {}
+        from unittest.mock import patch
+        props = next(t for t in plan.findChildren(QTableWidget) if t.horizontalHeaderItem(0).text() == 'Prop')
+        props.selectRow(0)
+        class Accepted:
+            selection = {'choice':graphic}
+            def exec(self):return 1
+        with patch('formats.level.cut_graphics.chooser',return_value=Accepted()), patch.object(Assignments,'save') as save:
+            next(b for b in plan.findChildren(QPushButton) if b.text()=='Assign graphics…').click()
+            assert ('prop',0) in iron.graphics and save.called
+            assert 'Group 80' in props.item(0,5).text()
+            next(b for b in plan.findChildren(QPushButton) if b.text()=='Reset manual graphics').click()
+            assert ('prop',0) not in iron.graphics
+        picker.close()
         plan.close()
         widget.close()
     print('Passed: native dialogue bindings, phase-specific Stone text, modified-overlay rejection, '
-          'all 24 animations, report availability' + (', UI search/navigation and four previews.' if args.ui else '.'))
+          'all 24 animations, report availability' + (', UI navigation, manual graphics persistence/apply/reset and four previews.' if args.ui else '.'))
 
 
 if __name__ == '__main__':

@@ -174,6 +174,17 @@ marker selects its entry; selecting an entry highlights its trigger and shows a 
 The research mechanisms table also gives JP code addresses. Dialogue translation lookup keeps the
 original line breaks as part of the bundled translation key; changing them to spaces hides existing English.
 The resident table reports English coverage and explains unavailable/disabled translation settings.
+Props have their own selectable entries. Select one prop or resident and choose **Assign graphics…**
+to pick its sprite group, a 4-bit figure or 8-bit building part, and a suggested palette or a specific
+ROM CLUT file/word offset. Detected connected pieces are listed with crop coordinates; they are
+suggestions, not recovered SPR definitions. A custom rectangle can be entered or chosen by clicking
+two corners on the sheet. The picker previews the crop and supports index-zero transparency,
+mirroring, scale and placement offsets. Apply saves this individual entry's static crop separately
+from ROM data, scoped by executable/INFO2 fingerprints and village. Reopening restores it; source
+pixel and palette hashes prevent silently reusing changed data. **Reset manual graphics** restores
+the entry's default figure or yellow prop mark. Manual choices are labelled in the entries and
+selection description, and appear in plan PNG exports. They do not patch the ROM or establish an
+original sprite binding.
 Quest blockers, unfinished
 scenes, JP load/music wiring and negative searches remain labelled research evidence rather than
 being presented as restored gameplay. The report is included in the frozen application's data files.

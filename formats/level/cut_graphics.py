@@ -128,7 +128,7 @@ class Assignments:
         self.settings.sync()
 
 
-def chooser(preview, current=None, parent=None):
+def chooser(preview, current=None, parent=None, kind='resident'):
     """A modal crop picker. Only Apply persists anything; Cancel is a preview."""
     from PyQt6.QtWidgets import (QDialog,QVBoxLayout,QHBoxLayout,QComboBox,QLabel,QSpinBox,
                                 QCheckBox,QDialogButtonBox,QSplitter,QWidget)
@@ -146,6 +146,9 @@ def chooser(preview, current=None, parent=None):
     group.addItems([f'Group {s.group}' for s in preview.sheets])
     mode.addItem('NPC figures · 4-bit', 'npc')
     mode.addItem('Building parts · 8-bit', 'building')
+    preferred = preview.art.group if preview.art is not None else {11:61,16:76,17:80,18:86}.get(preview.area)
+    group.setCurrentIndex(next((i for i,s in enumerate(preview.sheets) if s.group==preferred),0))
+    mode.setCurrentIndex(1 if kind=='prop' else 0)
     clut.addItem('Suggested palettes', '')
     project = preview.places.get('graphics_project')
     if project:
@@ -159,9 +162,12 @@ def chooser(preview, current=None, parent=None):
         for item in widgets:bar.addWidget(item,1)
         layout.addLayout(bar)
     bar=QHBoxLayout()
-    for name, low, high, value in (('X',0,767,0),('Y',0,255,0),('Width',1,768,32),('Height',1,256,32),
+    for position, (name, low, high, value) in enumerate((('X',0,767,0),('Y',0,255,0),('Width',1,768,32),('Height',1,256,32),
                                   ('Offset X',-2000,2000,0),('Offset Y',-2000,2000,0),('Scale %',10,400,100),
-                                  ('CLUT word',0,8191,0)):
+                                  ('CLUT word',0,8191,0))):
+        if position == 4:
+            layout.addLayout(bar)
+            bar = QHBoxLayout()
         control=QSpinBox();control.setRange(low,high);control.setValue(value)
         controls[name]=control;bar.addWidget(QLabel(name));bar.addWidget(control)
     controls['CLUT word'].setSingleStep(16)
@@ -183,6 +189,8 @@ def chooser(preview, current=None, parent=None):
         try:
             sheet=preview.sheets[group.currentIndex()];kind=mode.currentData();data=texels(sheet,kind)
             path=clut.currentData()
+            palette.setEnabled(not bool(path))
+            controls['CLUT word'].setEnabled(bool(path))
             if path:
                 words=np.frombuffer(project.payload(project.disc.entries[path]),'<u2')
                 start=controls['CLUT word'].value();row=words[start:start+(16 if kind=='npc' else 256)]
@@ -201,8 +209,10 @@ def chooser(preview, current=None, parent=None):
             picture=Image.fromarray(rgba)
             from PIL import ImageDraw
             x,y,w,h=spec['rect'];ImageDraw.Draw(picture).rectangle((x,y,x+w-1,y+h-1),outline=(0,255,255,255))
-            sheet_view.set_image(picture,preserve_view=True)
-            crop_view.set_image(graphic.image,preserve_view=True)
+            sheet_view.set_image(picture,preserve_view=state.get('sheet_size')==picture.size)
+            crop_view.set_image(graphic.image,preserve_view=state.get('crop_size')==graphic.image.size)
+            state['sheet_size']=picture.size
+            state['crop_size']=graphic.image.size
             state['choice']=graphic
             status.setText(graphic.label+' — manual assignment; not an original binding')
             buttons.button(QDialogButtonBox.StandardButton.Apply).setEnabled(True)
@@ -243,7 +253,12 @@ def chooser(preview, current=None, parent=None):
     group.currentIndexChanged.connect(fill);mode.currentIndexChanged.connect(fill)
     palette.currentIndexChanged.connect(update);clut.currentIndexChanged.connect(update)
     part.currentIndexChanged.connect(use_part)
-    for control in controls.values():control.valueChanged.connect(update)
+    def crop_changed():
+        if state['busy']:return
+        part.blockSignals(True);part.setCurrentIndex(0);part.blockSignals(False)
+        update()
+    for name,control in controls.items():
+        control.valueChanged.connect(crop_changed if name in ('X','Y','Width','Height') else update)
     transparent.toggled.connect(update);mirror.toggled.connect(update)
     sheet_view.canvas.clicked.connect(clicked)
     buttons.rejected.connect(dialog.reject)
