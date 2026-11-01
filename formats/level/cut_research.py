@@ -63,7 +63,7 @@ def view(project, jump=None, area=None):
                                 QTabWidget, QTableWidget, QTableWidgetItem)
     widget = QWidget()
     layout = QVBoxLayout(widget)
-    note = QLabel('JP retail research • 31 October 2026 • Source revision 4220d8e\n'
+    note = QLabel('JP retail research • Updated 1 November 2026 • Original 4220d8e / upstream refresh 1c91428\n'
                   'Recovered code/data, incomplete scenes and reconstruction leads are distinguished in the report. '
                   'The report records the original editor discrepancy; this editor now uses corrected dialogue bindings.')
     note.setWordWrap(True)

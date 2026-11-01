@@ -2,9 +2,92 @@
 
 Research date: **31 October 2026**. Target: the supplied `rom/Ore! Tomba (Japan).cue` and its BIN. This is a research report, not a playable restoration. No game code, editor code, save, or disc image was modified.
 
+## Upstream recalibration — 1 November 2026
+
+Compared the original snapshot `4220d8e1dc8635e51cbe33e2ca4588486786e796` with upstream
+**`1c91428b19f675c44d5afff14a532c1620cc0666`**. The rest of this report retains its original
+snapshot addresses and evidence. References below describe the refreshed source; they do not replace
+the hash-scoped JP runtime bindings or turn reconstruction hypotheses into recovered art.
+
+### Independent confirmation of this report
+
+Upstream added [SiergiejW's JP research — verification](https://github.com/afsenovilla/Tombi-Decomp/blob/1c91428b19f675c44d5afff14a532c1620cc0666/docs/CIVILIZATION.md#siergiejws-jp-research--verification),
+explicitly attributing these findings to TombaEdit. It confirms the external MAIN animation scripts,
+JP dialogue addresses, Wood relocation and unfinished controller, blocked iron-lump transaction and
+unset actor pointer, bomb-scene stubs, lift stops, internal passages, empty JP section lists, shared
+entrance pointers, and X19's repeated script payload. Its `tools/topdown.py` now follows MAIN pointers,
+fixing the diagnostic limitation identified here. The old missing-animation claim is therefore
+historical, not the current upstream position.
+
+The verification is deliberately incomplete: upstream labels our JP music comparison **unverified**
+(not rechecked), and the disc-residue result **partly checked** (CLUT/INFO2 copies and zero tail checked,
+full allocation/file-slack audit not repeated). Neither is a refutation. Preserve our original scoped
+checks; do not present them as independently confirmed in full. Its AREA18 viewer address is explicitly
+PAL `800F548C` / JP `800F6804`, distinct from the JP Iron dialogue routine `800F5488`.
+
+### New AREA18 evidence: FMV registration and animation windows
+
+Upstream reports five AREA18 test actors registering to residents in `MOVIE/BUNMEI.STR` frames135–225,
+with an almost unit-scale fit (reported x scale0.998, residuals at most1pixel). In its frames135–205
+median mosaic, the proposed relation is **mosaic pixel = world position − (215,104)**.
+This is a registration result reported upstream, **not independently re-fitted in this refresh**:
+
+| Zero-based actor | Subtype | Reported FMV correspondence | Confidence boundary |
+|---|---:|---|---|
+|3|1|wide-hat figure, visible around frame220|position/figure correspondence; original SPR binding still missing|
+|5|0|figure at castle gate, partly clipped at top|partial visual reference|
+|9|6|bald crouching man|visual correspondence; not identified on A08600|
+|7|3|boy on balcony|visual candidate; upstream points to Stone boy art on A07600|
+|2|2|blonde head at bottom edge|too little visible to identify the complete sprite|
+
+Actors0,1,4,6,8 are outside that visible movie region. Their identities cannot be filled in from this fit.
+This makes AREA18 useful evidence for planned population/layout; it still does not provide a completed
+town controller or dialogue caller.
+
+The following animation windows were **independently decoded from the supplied JP INFO2 in this refresh**.
+The definition table is `801000E4`, with12-byte entries and SPR slot11/page offset1 for all seven subtypes.
+Follow each definition's animation pointer, read the indicated initial scripts, then follow8-byte
+animation records and any control-word jump pointer. These are frame IDs, not recovered UV rectangles:
+
+| Subtype | JP animation-pointer table | Initial scripts inspected | Frame set | Upstream visual interpretation |
+|---|---|---|---|---|
+|0|`80107D90`|0–11|0–26|first A08600 figure group, boy in vest; candidate|
+|1|`80107DC0`|0–7|27–35|wide-hat figure,9 frames; candidate supported by FMV position|
+|2|`80107DE0`|0–11|36–62|only blonde head at corresponding FMV position; unresolved|
+|3|`80107E10`|0–11|63–89|balcony boy; candidate Stone boy, not A08600 figure identification|
+|4|`80107E40`|0–11|90–116|possible Iron Man; not visible in fitted FMV region|
+|5|`80107E70`|0–11|117–143|walking actor with idle/walk/talk scripts; not a save sign|
+|6|`80107EE4`|0–7|144–149|bald crouching figure; candidate from FMV, art unresolved|
+
+Do not interpret every24-pointer span as24 independent animations owned by one subtype. Upstream
+documents overlapping script-table windows: later entries may be another subtype's initial scripts.
+This is especially relevant to AREA18, where subtype1 has no independent talk frames. The original
+SPR table is lost, so none of these frame ranges alone proves which surviving picture to draw.
+
+### Save-point correction and presentation changes
+
+Upstream newly documents top-down saving through **talk spots (layer2 type2E)**, not side-view save-sign
+objects. PAL `topdownTalkSpotHandler` is `800EEAC8`, its step routine `800EE8B0`; it draws resident SPR
+slot4/frame50 with page offset15hex, then opens the area's save prompt `(1,0)`.
+Placed examples: AREA05 at `(240,456)` and AREA19 s2 at `(6,390)`. AREA08 has no such record.
+The cut sets0D/0E/0F/10 have none, and AREA18's spawner makes actors, so **do not relabel an unidentified
+AREA18 resident as a save sign**. These save-handler semantics/placements are source-backed upstream
+PAL findings; this refresh does not assign them unverified JP function addresses.
+
+`tools/civ_sheets.py` now includes `personajes` sheets, including AREA18, with explicit known/probable/
+unknown labels and neutral silhouettes when an original drawing cannot be identified. It flags the old
+Lumberjack Factory Worker names applied to lost-page subtypes as unsupported. This supports retaining
+translucent stand-ins and explicit uncertainty in the editor, not promoting those names into identities.
+
+Source: [refreshed Civilization research](https://github.com/afsenovilla/Tombi-Decomp/blob/1c91428b19f675c44d5afff14a532c1620cc0666/docs/CIVILIZATION.md),
+[sheet generator](https://github.com/afsenovilla/Tombi-Decomp/blob/1c91428b19f675c44d5afff14a532c1620cc0666/tools/civ_sheets.py),
+[fixed pointer reader](https://github.com/afsenovilla/Tombi-Decomp/blob/1c91428b19f675c44d5afff14a532c1620cc0666/tools/topdown.py).
+No original cut-town map, collision grid, missing SPR table, or Iron subtype4 texture page was newly
+recovered in this upstream delta. Original JP dialogue bindings and recovered animation data remain valid.
+
 ## What this investigation adds
 
-The most useful new connection is **Iron Town subtype 4 → an INFO2 pointer table → 24 valid animation scripts in the resident main executable**. Their exact frame IDs and timing survive. The current decomp documentation incorrectly labels this subtype's animation table missing because its diagnostic reader rejects pointers outside INFO2. The sprite rectangles and matching texture page have not been recovered.
+The most useful new connection is **Iron Town subtype 4 → an INFO2 pointer table → 24 valid animation scripts in the resident main executable**. Their exact frame IDs and timing survive. The decomp documentation at the original pinned revision incorrectly labelled this subtype's animation table missing because its diagnostic reader rejected pointers outside INFO2; upstream has now corrected it. The sprite rectangles and matching texture page have not been recovered.
 
 The investigation also found native JP details that go beyond positions, preserved text and patrols:
 
