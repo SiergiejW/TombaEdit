@@ -58,6 +58,7 @@ class PixelCanvas(QWidget):
 
     # (x, y) in image pixels, on a click that wasn't a drag.
     clicked = pyqtSignal(int, int)
+    user_zoomed = pyqtSignal(float)
 
     def __init__(self, zoom=1, parent=None):
         super().__init__(parent)
@@ -207,6 +208,7 @@ class PixelCanvas(QWidget):
         """Ctrl+wheel zooms; a plain wheel is left to the scroll area."""
         if event.modifiers() & Qt.KeyboardModifier.ControlModifier:
             self.zoom_by(1 if event.angleDelta().y() > 0 else -1)
+            self.user_zoomed.emit(self.zoom)
             event.accept()
         else:
             event.ignore()

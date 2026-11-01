@@ -52,6 +52,7 @@ class ImageView(QWidget):
         self.tools = tools
         layout.addLayout(tools)
         self.canvas = PixelCanvas()
+        self.canvas.user_zoomed.connect(self.manual_zoom_changed)
         self.view = QScrollArea()
         self.view.setWidget(self.canvas)
         self.view.setWidgetResizable(False)
@@ -82,6 +83,15 @@ class ImageView(QWidget):
         else:
             for bar, value in zip(bars, scroll):
                 bar.setValue(value)
+
+    def manual_zoom_changed(self, zoom):
+        # Ctrl-wheel changes the canvas directly. Leave Fit mode so a later
+        # selection/layout resize cannot silently fit the picture again.
+        self.scrollbars(True)
+        nearest = min(range(1, 5), key=lambda i: abs([1, 1, 2, 4, 8][i] - zoom))
+        self.zoom.blockSignals(True)
+        self.zoom.setCurrentIndex(nearest)
+        self.zoom.blockSignals(False)
 
     def scale_image(self):
         if self.image is None:

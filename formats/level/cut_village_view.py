@@ -163,7 +163,8 @@ def draw_plan(village, art=None, selected=(), hits=None, backdrop=None, graphics
     label, small = _font(13), _font(11)
     for n, (x0, y0, x1, y1) in enumerate(village.houses, 1):
         draw.rectangle([at(x0, y0), at(x1, y1)], outline=(40, 110, 230, 255), width=2)
-        draw.text((at(x0, y0)[0] + 4, at(x0, y0)[1] + 3), f'H{n}', fill=(40, 110, 230, 255), font=label)
+        draw.text((at(x0, y0)[0] + 4, at(x0, y0)[1] + 3), f'House H{n}', fill=(40, 110, 230, 255), font=label,
+                  stroke_width=1, stroke_fill=(255, 255, 255, 255))
         hits.append(('house', n - 1, (*at(x0, y0), *at(x1, y1))))
     for n, ((x0, y0, x1, y1), _where) in enumerate(exits):
         # An open side of an exit runs out to the edge of the map.
@@ -174,7 +175,7 @@ def draw_plan(village, art=None, selected=(), hits=None, backdrop=None, graphics
         image.alpha_composite(shade)
         draw = ImageDraw.Draw(image)
         draw.rectangle([*at(x0, y0), *at(x1, y1)], outline=(240, 130, 20, 255), width=3)
-        draw.text((at(x0, y0)[0] + 5, at(x0, y0)[1] + 4), f'exit {n + 1}', fill=(200, 90, 0, 255), font=label)
+        draw.text((at(x0, y0)[0] + 5, at(x0, y0)[1] + 4), f'Exit {n + 1}', fill=(200, 90, 0, 255), font=label)
         hits.append(('exit', n, (*at(x0, y0), *at(x1, y1))))
     for r in village.residents:
         box = patrol_box(village, r)
@@ -222,6 +223,8 @@ def draw_plan(village, art=None, selected=(), hits=None, backdrop=None, graphics
         box = draw.textbbox((0, 0), text, font=small)
         draw.text((px - (box[2] - box[0]) / 2 - box[0], py - 24 - lift - (box[3] - box[1]) / 2 - box[1]), text,
                   fill=(255, 255, 255, 255), font=small)
+        draw.text((px + 13, py - 32 - lift), f'Resident {r.index + 1}', font=small, fill=colour,
+                  stroke_width=1, stroke_fill=(255, 255, 255, 255))
         half = figure.width / 2 if found is not None or graphic else 10
         hits.append(('resident', r.index, (px - max(half, 10), py - 34 - lift, px + max(half, 10), py + 3)))
     if village.area == 17:
@@ -229,11 +232,13 @@ def draw_plan(village, art=None, selected=(), hits=None, backdrop=None, graphics
         for n, (x, y) in enumerate(STOPS, 1):
             px, py = at(x, y)
             draw.ellipse((px-7, py-7, px+7, py+7), outline=(0, 130, 160, 255), width=3)
-            draw.text((px+8, py-8), f'L{n}', font=small, fill=(0, 100, 130, 255))
+            draw.text((px+8, py-8), f'Lift L{n}', font=small, fill=(0, 100, 130, 255),
+                      stroke_width=1, stroke_fill=(255, 255, 255, 255))
             hits.append(('lift', n-1, (px-8, py-8, px+8, py+8)))
         for n, (x0, y0, x1, y1) in zip((8, 9, 10, 11), PASSAGES):
             draw.rectangle((*at(x0, y0), *at(x1, y1)), outline=(150, 75, 0, 255), width=3)
-            draw.text(at(x1+3, y0), f'P{n}', font=small, fill=(130, 65, 0, 255))
+            draw.text(at(x1+3, y0), f'Passage P{n}', font=small, fill=(130, 65, 0, 255),
+                      stroke_width=1, stroke_fill=(255, 255, 255, 255))
             a, b = at(x0, y0)
             c, d = at(x1, y1)
             hits.append(('passage', n-8, (a-3, b-3, c+3, d+3)))
