@@ -49,6 +49,7 @@ class DialogueView(QWidget):
         self.usage_filter = QComboBox()
         for label, status in [('All entries', ''), ('Possibly unused', 'not_found'),
                               ('Confirmed unused — cut-village dialogue', 'confirmed_unused_cut_village'),
+                              ('Shared text — referenced elsewhere', 'referenced_elsewhere'),
                               ('Display references', 'referenced'), ('Dynamic selection', 'dynamic'),
                               ('Usage not checked', 'unknown')]:
             self.usage_filter.addItem(label, status)
@@ -142,6 +143,7 @@ class DialogueView(QWidget):
         known = sum(c is not None for c in wfm.characters)
         candidates = sum((usage.entry(d) or {}).get('status') == 'not_found' for d in wfm.dialogues)
         confirmed_cut = sum(usage.confirmed_cut_village(d) for d in wfm.dialogues)
+        shared = sum((usage.entry(d) or {}).get('status') == 'referenced_elsewhere' for d in wfm.dialogues)
         audited = any(usage.entry(d) for d in wfm.dialogues)
         unchecked = sum((usage.entry(d) or {}).get('status', 'unknown') == 'unknown' for d in wfm.dialogues)
         recovered = len(getattr(wfm, 'recovered_glyphs', {}))
@@ -153,6 +155,8 @@ class DialogueView(QWidget):
             self.summary.setText(self.summary.text() + ' | Usage checked (static selectors)')
         if confirmed_cut:
             self.summary.setText(self.summary.text() + f' | {confirmed_cut} confirmed unused cut-village entries')
+        if shared:
+            self.summary.setText(self.summary.text() + f' | {shared} shared messages referenced elsewhere')
         self.summary.setToolTip(getattr(wfm, 'usage_summary', 'Native display analysis is not available for this build.'))
         if row >= 0:
             self.entries.setCurrentRow(row)
@@ -235,7 +239,8 @@ class DialogueView(QWidget):
         try:
             self.refresh_display()
             dialogue = self.wfm.dialogues[index]
-            context = usage.explanation(dialogue) + '\n\nScript:\n' if usage.confirmed_cut_village(dialogue) else ''
+            context = (usage.explanation(dialogue) + '\n\nScript:\n'
+                       if usage.confirmed_cut_village(dialogue) or (usage.entry(dialogue) or {}).get('status') == 'referenced_elsewhere' else '')
             self.script.setPlainText(context + dialogue.script())
             if not self.is_english:
                 self.translation.set_text(export.plain(dialogue), dialogue.warning)
@@ -268,10 +273,13 @@ class DialogueView(QWidget):
                           if flagged.get('status') == 'not_found' else '')
                 if usage.confirmed_cut_village(dialogue):
                     marker = '[Confirmed unused · cut village] '
+                elif flagged.get('status') == 'referenced_elsewhere':
+                    marker = '[Shared text · reference elsewhere] '
                 cut = usage.confirmed_cut_village(dialogue)
                 item.setData(CUT_DIALOGUE_ROLE, cut)
-                item.setData(UNUSED_ROLE, bool(marker) and not cut)
-                color = blue(self.entries.palette()) if cut else purple(self.entries.palette()) if marker else None
+                candidate = flagged.get('status') == 'not_found'
+                item.setData(UNUSED_ROLE, candidate)
+                color = blue(self.entries.palette()) if cut else purple(self.entries.palette()) if candidate else None
                 item.setData(Qt.ItemDataRole.ForegroundRole, QBrush(color) if color else None)
                 item.setText(f'{getattr(dialogue, "name", f"{i:03d}")} | {marker}{preview}')
                 item.setToolTip(usage.explanation(dialogue) + '\n\n' + original)

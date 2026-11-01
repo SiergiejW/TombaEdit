@@ -31,7 +31,7 @@ from formats.text.mips_args import Value, analyse, region_words
 from game.builds import executable
 
 SHA1 = '07d577698ad31ec1a69b9d7b80a7c3f90b650888'
-REVISION = 'jp-retail-selector-audit-v2-cut-villages'
+REVISION = 'jp-retail-selector-audit-v3-cut-and-shared-dialogue'
 # The message-window routine (800 2E480) and the wrappers that call it.
 WINDOW = {0x8002E3B4, 0x8002E3EC, 0x8002E42C, 0x8002E454, 0x8002E480}
 INFO_ROUTINE = 0x8002EDB0
@@ -314,6 +314,47 @@ class Audit:
         return text, complete
 
 
+def shared_message_references(result, parsed):
+    """Exact native glyph/control streams; no OCR, translation or text search.
+
+    A reference in another bank does not prove this local entry is selected.
+    Keep that distinction rather than painting the shared wording as unused.
+    """
+    streams = collections.defaultdict(list)
+    for key, wfm in parsed.items():
+        for index, dialogue in enumerate(wfm.dialogues):
+            tokens, glyphs = [], 0
+            for word, args in dialogue.tokens:
+                if word >= 0xFF00:
+                    tokens.append(('control', word, tuple(args)))
+                elif word & 0xFFF < len(wfm.exact_keys) and wfm.exact_keys[word & 0xFFF]:
+                    tokens.append(('glyph', word & 0xF000, wfm.exact_keys[word & 0xFFF]))
+                    glyphs += 1
+                else:
+                    break
+            else:
+                if glyphs >= 4:
+                    streams[(wfm.version, tuple(tokens))].append((key, index))
+    for stream, matches in streams.items():
+        references = [(key, i) for key, i in matches
+                      if result['banks'][key]['text'].get(str(i), {}).get('status') == 'referenced'
+                      and not result['banks'][key]['text'][str(i)].get('availability')]
+        if not references:
+            continue
+        for key, i in matches:
+            item = result['banks'][key]['text'].get(str(i), {})
+            if item.get('status') != 'not_found':
+                continue
+            item.update(status='referenced_elsewhere', local_status='not_found', method=REVISION,
+                equivalent_references=[dict(bank=k, index=n) for k, n in references[:3]],
+                evidence=['The exact native glyph bitmap stream, flags, control codes and arguments match '
+                          'a message with a display reference in another bank. No translation/OCR matching is used.',
+                          'This local bank entry still has no resolved selector; the shared message is not '
+                          'evidence of unused wording, or proof that this copy is shown in normal gameplay.'] +
+                         [f'{k} entry {n}: ' + '; '.join(result['banks'][k]['text'][str(n)]['evidence'][:2])
+                          for k, n in references[:3]])
+
+
 def study(project, record):
     """The profile record with every slot-0 bank of the area load tables classified."""
     audit = Audit(project)
@@ -326,12 +367,14 @@ def study(project, record):
                 if asset.kind == 'APD' and asset.source:
                     apd[f'{asset.source.path}@{asset.offset:X}'] = hashlib.sha1(project.asset_data(asset)).hexdigest()
     from formats.text.wfm import Wfm
+    parsed = {}
     for key, bank in result['banks'].items():
         source, offset = key.rsplit('@', 1)
         assets = [a for a in project.by_source.get(source, ()) if a.kind == 'WFM' and a.offset == int(offset, 16)]
         if not assets or {a.slot for a in assets} != {0}:
             continue
         wfm = Wfm(project.asset_data(assets[0]))
+        parsed[key] = wfm
         text, complete = audit.statuses(assets, wfm)
         bank['text'] = text
         from formats.text.cut_village_usage import entries as cut_village_entries, AVAILABILITY
@@ -348,6 +391,7 @@ def study(project, record):
                             'Possibly unused does not prove game-state unreachability.' if complete else
                             'Selector audit with open items: ' + '; '.join(sorted({r for a in {area_number(x.ldar) for x in assets}
                                                                                 for r in audit.open.get(a, ())})[:3]))
+    shared_message_references(result, parsed)
     result['audit_revision'] = REVISION
     result['apd_sha1'] = apd
     return result

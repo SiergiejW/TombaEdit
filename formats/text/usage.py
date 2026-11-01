@@ -144,6 +144,16 @@ def _attach_study(wfm, project, source, offset):
         return False
     for index, dialogue in enumerate(wfm.dialogues):
         evidence = record['text'].get(str(index))
+        if evidence and evidence.get('equivalent_references'):
+            valid = False
+            for reference in evidence['equivalent_references']:
+                path, start = reference['bank'].rsplit('@', 1)
+                if _bank_study(project, profile, path, int(start, 16)) is not None:
+                    valid = True
+                    break
+            if not valid:
+                evidence = dict(status='unknown', method='stale-shared-message-evidence',
+                                evidence=['The matching reference banks changed; shared-message evidence needs a fresh audit.'])
         dialogue.usage = evidence or dict(status='unknown', method='partial-native-reference-study',
             evidence=['Literal display calls and scripts were studied, but no resolved selection is recorded '
                       'for this entry. Computed indices and other display paths remain unchecked; '
@@ -293,6 +303,7 @@ def _attach_text(wfm, project, source, offset):
 
 
 LABELS = {'referenced': 'Display reference', 'dynamic': 'Dynamic display selection',
+          'referenced_elsewhere': 'Shared text — referenced elsewhere',
           'not_found': 'Possibly unused', 'unknown': 'Usage not checked'}
 
 
