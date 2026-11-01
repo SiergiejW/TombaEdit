@@ -265,7 +265,7 @@ python main.py "rom\Tomba! (USA).cue"
 
 ## The disc tree
 
-**File → Open BIN / CUE / ISO** loads an image; dropping one on the window does
+**File → Open BIN / CUE / ISO / CAR** loads an image; dropping one on the window does
 the same. CloneCD images open from either the `.img` or the `.ccd` beside it. The tree on the left is the disc's ISO9660 directory. Each `AREAnn`
 folder starts with a *Sections* node holding the area's load groups: the base
 group shared by the whole area, then one group per section in the order the
@@ -763,6 +763,17 @@ routines and tables; `game/builds.py` lists them for these builds:
 | `SLPM_801.65` | Japanese demo, 1997 | 00 |
 | `TOMBA/TOMBA.EXE` | Pure Pure 09 sampler (PCPX-96093), 1997 | 01 and 02 |
 | `EXE/MAIN0.EXE` to `MAIN8.EXE` | European release (SCES-01331), nine languages | all |
+| `SCUS_942.36` | Special Edition US (`t_data_u.car`), original US engine with modified artwork | all |
+| `SCUS_942.36` | Special Edition Japan (`t_data_j.car`), Japanese localization using the US engine | all |
+| `EXE/MAIN0.EXE` to `MAIN8.EXE` | Special Edition Europe (`t_data_e.car`, SCES-01330), nine languages | all |
+
+Open Special Edition's `.car` files directly through File > Open, drag and drop,
+or the command line. These are raw PlayStation disc images. The supplied images
+are identified by their complete SHA-256 in the disc overview; executable hashes
+select the engine independently. The Japanese edition is a different build from
+the original Ore! Tomba retail release. Its area-13 load table and modern button
+glyphs are supported. See [the Special Edition data comparison](docs/special-edition-data.md)
+for the file and resource differences and the scope of the audit.
 
 The European disc carries a program, a set of load tables (`SYS/LD0AR00.BIN`
 to `SYS/LD8AR19.BIN`) and a set of area overlays for each of its nine

@@ -9,7 +9,7 @@ from PyQt6.QtWidgets import (QMainWindow, QWidget, QVBoxLayout, QHBoxLayout, QLa
     QLineEdit, QSplitter, QTreeWidget, QTreeWidgetItem, QTabWidget, QFileDialog,
     QMessageBox, QToolBar, QTableWidget, QTableWidgetItem, QAbstractItemView,
     QHeaderView, QMenu, QApplication, QStyle, QComboBox, QInputDialog)
-from disc.reader import DiscEntry, FormatError
+from disc.reader import DISC_SUFFIXES, DiscEntry, FormatError
 from formats.archive.ldar import Project, Asset, area_number, table_name, system_table, bank_screens
 from game.areas import AREAS, section_name, language_name
 from gui.theme import apply_theme
@@ -24,7 +24,6 @@ from main import version
 import hashlib
 
 ROLE = Qt.ItemDataRole.UserRole
-DISC_SUFFIXES = (".bin", ".cue", ".iso", ".img", ".ccd")
 
 
 class ResourceTree(QTreeWidget):
@@ -886,7 +885,7 @@ class MainWindow(QMainWindow):
 
     def build_ui(self):
         file_menu = self.menuBar().addMenu("&File")
-        open_action = self.action(file_menu, "&Open BIN / CUE / ISO...", self.open_dialog, QKeySequence.StandardKey.Open)
+        open_action = self.action(file_menu, "&Open BIN / CUE / ISO / CAR...", self.open_dialog, QKeySequence.StandardKey.Open)
         open_action.setIcon(self.style().standardIcon(QStyle.StandardPixmap.SP_DriveDVDIcon))
         self.export_action = self.action(file_menu, "Export decoded &file (binary)...", self.export_payload, "Ctrl+E")
         self.raw_action = self.action(file_menu, "Export original disc &file...", self.export_raw)
@@ -984,7 +983,7 @@ class MainWindow(QMainWindow):
         self.setCentralWidget(self.split)
         self.export_action.setEnabled(False)
         self.raw_action.setEnabled(False)
-        self.statusBar().showMessage("Open a Tomba! data-track BIN, CUE or ISO.")
+        self.statusBar().showMessage("Open a Tomba! disc image or Special Edition CAR.")
 
     def make_tree(self):
         tree = ResourceTree()
@@ -1031,7 +1030,7 @@ class MainWindow(QMainWindow):
     def welcome(self):
         self.clear_tabs()
         self.tabs.addTab(text_view(
-            f"TombaEdit {version}\n\nOpen a BIN / CUE / ISO from File > Open or drop it here.\n\n"
+            f"TombaEdit {version}\n\nOpen a BIN / CUE / ISO / CAR from File > Open or drop it here.\n\n"
             "Disc folders\n  The original ISO9660 directory and files. Expand a file to inspect its LDAR resources.\n\n"
             "Areas / sections\n  Base resources and section-specific load groups, named from the area reference.\n"
             "  Select a group to inspect its load records and reconstructed VRAM.\n\n"
@@ -1044,7 +1043,7 @@ class MainWindow(QMainWindow):
 
     def open_dialog(self):
         path, _ = QFileDialog.getOpenFileName(self, "Open Tomba! disc", self.settings.value("last_dir", str(Path.cwd() / "rom")),
-                                              "Disc images (*.cue *.bin *.iso *.img *.ccd);;All files (*)")
+                                              "Disc images (*.cue *.bin *.iso *.img *.ccd *.car);;All files (*)")
         if path:
             self.open_path(path)
 
@@ -1222,6 +1221,8 @@ class MainWindow(QMainWindow):
         self.path_label.setText(str(project.disc.source))
         catalog = project.catalog
         summary = f"Disc: {project.disc.source}\nData track: {project.disc.path}\nSector size: {project.disc.stride}\nVolume: {project.disc.volume or '(unnamed)'}\n\n{self.count_label.text()}\n"
+        if project.edition:
+            summary += f"\nRelease: {project.edition.name}\n{project.edition.note}\n"
         if catalog:
             summary += f"\nFile-link table: {catalog.executable} +0x{catalog.offset:X}\n{catalog.matched:,} links matched to disc files.\n"
         if project.warnings:
@@ -2308,7 +2309,7 @@ class MainWindow(QMainWindow):
                 QMessageBox.warning(self, 'Cannot export labels', str(exc))
 
     def about(self):
-        QMessageBox.about(self, f"TombaEdit {version}", "Tomba! disc and asset browser\n\nBIN/CUE/ISO/IMG | LDAR | GAM | WMD | FOUR | SPR | WPP | WHM | APD | WFM | SEQ | WVD | STR\nTIM | TMD | VAB | MIDI | XA | archives of other games\n\nFormat research: vervalkon, zerovii, Woolmagician, hansbonini/psx_tomba, afsenovilla/Tombi-Decomp.\nSee README.md and docs/formats.md for format details and known gaps.")
+        QMessageBox.about(self, f"TombaEdit {version}", "Tomba! disc and asset browser\n\nBIN/CUE/ISO/IMG/CAR | LDAR | GAM | WMD | FOUR | SPR | WPP | WHM | APD | WFM | SEQ | WVD | STR\nTIM | TMD | VAB | MIDI | XA | archives of other games\n\nFormat research: vervalkon, zerovii, Woolmagician, hansbonini/psx_tomba, afsenovilla/Tombi-Decomp.\nSee README.md and docs/formats.md for format details and known gaps.")
 
     def dragEnterEvent(self, event):
         if event.mimeData().hasUrls() and any(u.isLocalFile() and Path(u.toLocalFile()).suffix.lower() in DISC_SUFFIXES for u in event.mimeData().urls()):

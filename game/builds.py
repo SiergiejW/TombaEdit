@@ -193,6 +193,47 @@ BUILDS.update({
 })
 
 
+def special_european(language, late, early=0):
+    """SCES-013.30 engines shipped in the Special Edition's European image.
+
+    Relative to the known SCES-013.31 programs, the data tables move by
+    0x514, BSS by 0x510, and overlays by 0x500. GetClut moves four bytes;
+    animation, visibility, draw queues and silent hooks retain their code
+    addresses. Dutch and Spanish have another 24 bytes less in late code
+    and tables. These profiles are selected only by exact executable hash.
+    """
+    e = european(language, late, early)
+    return replace(
+        e, name=f'European ({language_name(language)}, Special Edition)',
+        overlay=e.overlay - 0x500, area=e.area - 0x510,
+        variant=tuple(v - 0x510 for v in e.variant),
+        tables={k: v - 0x514 for k, v in e.tables.items()},
+        get_clut=e.get_clut - 4, slot_tables=e.slot_tables - 0x514,
+        common=e.common - 0x514, pictures=e.pictures - 0x514,
+        entrances=e.entrances - 0x514, origins=e.origins - 0x514,
+        wall_origins=e.wall_origins - 0x514,
+        alternate_origin=e.alternate_origin - 0x514,
+        plane_limits=(e.plane_limits[0] - 0x514,) + e.plane_limits[1:],
+        pages=e.pages - 0x514, items=tuple(v - 0x514 for v in e.items),
+        controllers=tuple(v - 0x514 for v in e.controllers))
+
+
+BUILDS.update({
+    # The Japanese image uses the US engine with localized resources and
+    # changed file links, rather than the original Japanese retail engine.
+    '4e6c2154a9f899389dab59595fed8a01e1c11930': BUILDS[US_RETAIL],
+    '118459cef9b3747f57b13a498c475ffb8ab512ec': special_european(0, 0),
+    '352797924e4bf16a763ed784091fd7d9aeb1a5f3': special_european(1, 0x18),
+    'aeebca303aff2f348f82d5f49049359f23ee430b': special_european(2, 0x38),
+    '12823e9d831443af0f028406d49aea8bb4b22fbe': special_european(3, 0x30),
+    '32d7666e98891e2bf92b4ee5d3b5a433b7e18106': special_european(4, 0x28, -0x18),
+    'ceb07655e746a622e755618351d44b08e236f759': special_european(5, 0x28, -0x18),
+    '856c965abff004620c720badb8c67a1441817ab8': special_european(6, 0x28),
+    '296b6811139b4770891f0e22184275c4137ec881': special_european(7, 8),
+    '9edb5d7ccfe6cc3cf8aad9d50d47135924c1c7a0': special_european(8, 0x28),
+})
+
+
 from game.sampler_builds import SAMPLERS
 BUILDS.update({digest: Build(**fields) for digest, fields in SAMPLERS.items()})
 

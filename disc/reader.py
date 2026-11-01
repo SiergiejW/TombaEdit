@@ -1,8 +1,11 @@
-"""Read-only ISO9660 reader for 2048-byte ISO and PSX raw BIN/CUE tracks."""
+"""Read-only ISO9660 reader for ISO and PSX raw tracks, including Special Edition CARs."""
 from dataclasses import dataclass, field
 from pathlib import Path
 import re
 import struct
+
+
+DISC_SUFFIXES = (".bin", ".cue", ".iso", ".img", ".ccd", ".car")
 
 
 class FormatError(ValueError):

@@ -1,4 +1,4 @@
-"""TombaEdit entry point. Usage: python main.py [disc.bin|disc.cue|disc.iso]."""
+"""TombaEdit entry point. Usage: python main.py [disc.bin|disc.cue|disc.iso|t_data_j.car]."""
 import sys
 import traceback
 from pathlib import Path

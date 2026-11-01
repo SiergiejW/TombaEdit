@@ -152,6 +152,11 @@ def parse_ldar(data, path, catalog):
     # The final pointer array is preceded by a zero word. Walk backwards over
     # KSEG0 pointers, validating their spacing against the parsed load groups.
     tail = len(data)
+    # Special Edition's Japanese area 13 terminates its pointer array with
+    # a null word. The preceding word must still be an ordinary group pointer;
+    # the record alignment and every pointer boundary are checked below.
+    if tail >= 8 and data[-4:] == bytes(4) and 0x80000000 <= struct.unpack_from('<I', data, tail - 8)[0] < 0x80200000:
+        tail -= 4
     pointers = []
     while tail >= 4:
         value = struct.unpack_from("<I", data, tail - 4)[0]
@@ -201,6 +206,8 @@ class Project:
         from disc.reader import Disc
         from game.catalog import Catalog
         self.disc = Disc(path)
+        from game.special_edition import identify
+        self.edition = identify(self.disc)
         self.catalog = None
         self.ldars = {}
         self.warnings = []
