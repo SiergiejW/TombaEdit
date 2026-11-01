@@ -1231,13 +1231,13 @@ class MainWindow(QMainWindow):
         self.tabs.addTab(text_view(summary), "Disc overview")
         from formats.level.cut_research import supported as research_supported
         if not hasattr(self, 'cut_research_action'):
-            self.cut_research_action = self.menuBar().addAction('Cut-village research')
+            self.cut_research_action = self.menuBar().addAction('JP retail research')
             self.cut_research_action.triggered.connect(self.open_cut_research)
         self.cut_research_action.setEnabled(research_supported(project))
         if research_supported(project):
             from formats.level.cut_research import view as research_view
             self.tabs.addTab(research_view(project, lambda kind, payload:
-                self.cut_village_jump(kind, payload) if self.project is project else None), 'Cut-village research')
+                self.cut_village_jump(kind, payload) if self.project is project else None), 'JP retail research')
         self.refresh_labels()
         self.refresh_review_status()
         if self.labels.entries:

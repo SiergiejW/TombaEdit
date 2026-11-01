@@ -317,7 +317,8 @@ def describe(preview, selected):
                 + ' ' + resident_evidence(preview,index))
     if kind == 'prop':
         q = village.props[index]
-        return (f'Prop P{index + 1}: subtype {q.subtype}, animation {q.animation}, type {q.kind}, '
+        return (f'Prop P{index + 1}: subtype {q.subtype}, animation {q.animation}, '
+                f'draw-order kind {q.kind} ({q.draw_order_name}), '
                 f'{"outdoors" if not q.room else f"inside house {q.room}"}, at ({q.x}, {q.y}).'
                 + (f' Manual graphics: {preview.graphics[kind,index].label}.' if (kind,index) in preview.graphics else ''))
     if kind == 'exit':
@@ -1124,7 +1125,9 @@ def view(preview, english=None, request=None, changed=None, jump=None, session=N
         graphic = preview.graphics.get(('prop',row))
         for col,value in enumerate((f'P{row+1}', f'{prop.subtype} / {prop.animation}',prop.room,prop.x,prop.y,
                                     graphic.label if graphic else 'Unassigned (yellow mark)')):
-            item=QTableWidgetItem(str(value));item.setToolTip(str(value));props_table.setItem(row,col,item)
+            item=QTableWidgetItem(str(value))
+            item.setToolTip(str(value) + (f'\nDraw-order kind {prop.kind}: {prop.draw_order_name}.' if col == 0 else ''))
+            props_table.setItem(row,col,item)
     props_table.resizeColumnsToContents()
     places = preview.places
 

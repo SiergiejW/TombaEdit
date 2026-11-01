@@ -2,7 +2,13 @@
 
 Research date: **31 October 2026**. Target: the supplied `rom/Ore! Tomba (Japan).cue` and its BIN. This is a research report, not a playable restoration. No game code, editor code, save, or disc image was modified.
 
+**Research beyond the cut villages, 1 November 2026:** the separate [JP retail unused-content report](jp-retail-unused-research.md) adds the Jungle eel's surviving graphics/script and missing item binding, JP/PAL shock controls, stat-item wording in two placeholder slots, material descriptor routes and the shared drum sprite. It also tracks the remaining supplied community leads without treating them all as confirmed unused.
+
 **Second orphan-data audit, 1 November 2026:** see [Deeper orphan-data audit](#deeper-orphan-data-audit--1-november-2026) for the newly enumerated Wood scenery scripts, Iron's unplaced fourth scenery definition, surviving scenery CLUT destinations, and controls against mistaking inline duplicates or progress-selected animations for lost content. The original investigation's no-edit statement above applies to that investigation; subsequent editor presentation changes are described separately.
+
+**Third JP-only audit, 1 November 2026:** see [Resident actions and an unbound animation template](#third-jp-orphan-data-audit--resident-actions-and-an-unbound-animation-template). This adds a 37-frame Wood animation template without its own resident definition, three unselected Wood action scripts, two unselected Iron action loops, and the native selector/terminal-mode checks that distinguish them from the already documented animation inventory.
+
+**Fourth JP-only audit, 1 November 2026:** see [Dormant state, rendering consumers and reused hints](#fourth-jp-audit--dormant-state-rendering-consumers-and-reused-hints). This finds Stone P6's unchanged sprite pointer during its requested state change, an unseeded phase candidate, the craftsman scene's wrong message anchor, and the meaning of prop kind 0/1/2. It also corrects this report's earlier raft attribution of Wood's orphan hint helper.
 
 ## Editor helper palettes — 1 November 2026
 
@@ -155,7 +161,7 @@ The investigation also found native JP details that go beyond positions, preserv
 | Iron lump `0x3D` handed in inside Iron Town house 5 → Iron Wheel `0x3E` → Clock Tower quest | JP controller/scene verified; retail consumer source identified | A real dependency across the cut town and the retail Clock Tower |
 | The menu rejects the iron lump, the wheel scene has an unset actor pointer, and bomb-maker steps 5–7 are stubs | JP binary plus matched C | Exposes implementation work that merely restoring map/SPR files would not fix |
 | Six exact lift boarding locations and two hidden passages inside Iron Town | JP native tables and movement code | Strong layout constraints independent of FMV or reconstructed scenery |
-| Wood actor 1 is relocated conditionally; a dialogue handshake has no scene consumer | JP native code | Story-dependent layout and evidence of an unfinished scene |
+| Wood actor 1 is relocated conditionally; a dialogue handshake has no scene consumer | JP native code | Story-dependent layout and an unconsumed hint handshake; its text also has a retail X11 counterpart |
 | JP has its own embedded load/music scheme; all four town s0 lists terminate immediately | Native JP pointers and load records | Exact loading anchors; music must be supplied explicitly in a JP restoration |
 | Orphan X19 has no unique animation-script payload in its area-specific tail | Entire tail accounted for and compared against X02 | Closes a plausible asset lead without discarding the historical scroll-controller remnant |
 | Free sectors, file slack, dummy data, duplicate INFO2 and unlisted CLUTs audited | Supplied JP image read directly | Rules out these particular hiding places; preserves a precise boundary on negative results |
@@ -347,7 +353,7 @@ Cause: `HANDLER_CASES = {0x0D: 23, 0x0E: 11, 0x0F: 16}` identifies functions by 
 
 Reproduction: `python work/cut_village_research/logic_dispatch.py` and `logic_confirm.py`; textual proof saved in matching `.txt` files. `logic_map.py` uses normalized instruction matching only to discover candidates; the dispatch/JAL chain and native jump tables supply the actual verification.
 
-## Lumberjack Town has a conditional resident position, plus an unfinished scene handshake
+## Lumberjack Town has a conditional resident position and an unconsumed hint handshake
 
 PAL `spawnNpcSet0D` `0x800FB054` (`src/i0nfo2/spawnNpcSet0D.c:78–79`) contains:
 
@@ -361,11 +367,11 @@ The same spawner computes shared dialogue phase 0/1/2 from event `0x66` (`0x8009
 
 True Wood dialogue case 1 (`topdownA11ActorOpenDialogue.c:23–29`, JP `0x800F3080…`) writes transient flag JP **`0x8009EB51`** (PAL `D_8009CFA9`) to 1 or 2 depending on event `0x4F` (`D_8009CDF3` / JP `0x8009E99B`). It returns no message.
 
-The scene controller **`updateNpcSet0D` PAL `0x800FB32C`, JP `0x800FC470` is empty in its live state 1** (`src/i0nfo2/updateNpcSet0D.c:14–15`). It spawns residents, idles, and can be freed. It does not consume this flag or execute a raft-making/woodworking scene.
+The scene controller **`updateNpcSet0D` PAL `0x800FB32C`, JP `0x800FC470` is empty in its live state 1** (`src/i0nfo2/updateNpcSet0D.c:14–15`). It spawns residents, idles, and can be freed. It does not consume this flag. This flag and the helper below are not evidence of a raft-making transaction: their actual messages concern the generator and the Watchtower elevator, as verified in the fourth audit below.
 
 An orphan helper survives: `topdownA11ActorDialogueBank2`, PAL `0x800F1BAC`, JP **`0x800F2F24`**, length `0xDC`. It can show `(2,4)`, then `(2,5)`, and set `o->state=2, o->wac=0x4F`, which would ask the general talk cleanup to start event 0x4F. However there are **zero direct JAL callers and zero 32-bit pointer references to this entry** in JP INFO2 and MAIN0. Source search likewise finds its definition but no named call. This is bounded static evidence, not a proof against every imaginable computed call; the normal Wood actor chain never calls it.
 
-This changes the interpretation of the baseline docs: the helper preserves intended dialogue/event behavior, but does not establish that Wood's surviving controller can run the corresponding scene. The Green Fortune Teller's actor case 11 is also outside the actual 0–10 switch on JP, just as on PAL. His recovered text needs an authored caller.
+The helper preserves a top-down implementation of a hint/event interaction that also survives in retail X11; its unused body does not make the message itself globally unused. It does not establish that Wood's surviving controller can run the corresponding interaction. The Green Fortune Teller's actor case 11 is also outside the actual 0–10 switch on JP, just as on PAL. His recovered text needs an authored caller.
 
 ## Iron Town's iron-lump → Iron Wheel transaction is more specific, and less complete, than the overview suggests
 
@@ -618,7 +624,7 @@ Reproduce: `python work/cut_village_research/disc_residue_scan.py`. `disc_residu
 3. **Search for sprite parts using the new constraints.** Iron subtype4 uses SPR slot11, page offset8, box8/16/8/16 and frames148..202. A usable replacement bank needs at least203 frame entries. The surviving 431-frame generic bank in JP `AREA02/D006.GAM+0x1E80`, `AREA08/D003.GAM+0xEE8` and `AREA19/D008.GAM+0x137C` is a candidate to compare, **not an identified original table**. Matching numeric frame IDs is insufficient: require UV, silhouette, palette, part-layout and facing/animation agreement.
 4. **Model Iron Town topology from code before drawing it.** Preserve six lift stops, the dummy stop slot, two passage pairs, exact room rectangles and exit rectangles. The hidden passages stay within the same section. Keep alternate visual interpretations editable.
 5. **Test the gear transaction as an isolated state machine.** First resolve the blocked inventory condition and identify the intended smith actor pointer. Then verify dialogue, player lock, wait, wheel reward and event0x62 completion, followed by the retail X016 consumer. Record any added material consumption or one-shot guard as authored behavior, since the surviving scene does not supply them.
-6. **Keep incomplete scene work visible.** Wood's empty state1 and Iron's reset-only steps5–7 cannot be repaired by loading an SPR. Any added raft/bomb-making sequence must be documented as a reconstruction, even when its dialogue and requests are original.
+6. **Keep incomplete scene work visible.** Wood's empty state1 and Iron's reset-only steps5–7 cannot be repaired by loading an SPR. Any added town interaction or bomb-making sequence must be documented as a reconstruction. In particular, do not turn Wood's generator/Watchtower hint handshake into an asserted original raft scene.
 7. **Use the native JP load architecture.** Supply complete map/SPR/CLUT/WPP resources and intentional music for the empty s0 lists. Reused entrance pointers are not proof of the original town arrival point. The mode, bounds and controller records provide authentic constraints without supplying missing graphics.
 
 ### Useful JP breakpoint/watchpoint ledger
@@ -651,7 +657,7 @@ These are investigation targets for a future emulator run, not evidence that suc
 |---|---|---|
 | Original Iron subtype4 pixels / SPR parts | Scripts retained; original rectangles/page not identified | A bank/page pair matching the55 recovered frame IDs across direction and motion, with a defensible load/palette chain |
 | Indoor subtype4 actor at (223,0), dlg4 | Placement and scripts survive; normal dialogue returns0 | A surviving scene caller/actor reference or independent pre-release evidence; do not infer identity from the outdoor actor sharing subtype |
-| Wood raft-making transaction | Text, material description, transient flag and orphan helper survive; controller does not implement it | Caller/scene body in another revision, or explicitly authored reconstruction |
+| Wood raft-making transaction | Raft dialogue and the wood material description survive; no transaction established. The previously associated flag/helper actually concerns a generator/Watchtower hint | A genuine raft caller/scene body in another revision, or explicitly authored reconstruction |
 | Iron bomb-making scene | Dialogue and three handshakes survive; steps5–7 reset | Another build's implementation or a labelled replacement sequence |
 | Original map/room SPR tables | No recovered payload; preserved reload pages are partial | Structurally validated table with correct frame ranges/parts and a load reference or unambiguous matching visual evidence |
 | Cut-town BGM choice | No explicit main BGM in JP empty s0 lists | Original section data from another build or a direct historical source; adjacent retail tracks are candidates only |
@@ -798,7 +804,7 @@ This pass scans all aligned words in the supplied **MAIN executable and INFO2**,
 
 | Function entry | JP address | INFO2 offset | Direct/pointer references in MAIN+INFO2 | Interpretation from the matched source |
 |---|---|---|---:|---|
-|`topdownA11ActorDialogueBank2`|`800F2F24`|`942C`|0|Already documented orphan raft-related branch; the normal Wood dialogue does not inline this body|
+|`topdownA11ActorDialogueBank2`|`800F2F24`|`942C`|0|Uncalled generator/Watchtower-hint helper; the normal Wood dialogue does not inline it, while X11 has the same messages/event interaction|
 |`topdownA16ActorDialogueBank2`|`800F413C`|`A644`|0|Standalone duplicate of logic retained inline in Stone dialogue case 8|
 |`topdownA17ActorDialogueBank2`|`800F5218`|`B720`|0|Standalone smith helper; equivalent logic is inline in Iron dialogue case 2|
 |`topdownA17ActorDialogueBank3`|`800F52F8`|`B800`|**1**|Positive control: real `JAL` at `800F55D0` from normal Iron dialogue|
@@ -814,7 +820,7 @@ These bodies are useful retained code, but “0 references to this entry” must
 
 **Iron animation 15 is not orphaned.** Placement selects script 13 for P16 at `(263,457)`. Its updater chooses `13 + D_8009CFA1` (JP flag **`8009EB49`**). On the first traversal of passage scene 8, starting with phase zero, the native scene changes that flag to 1 when its countdown reaches 42 (`800FE364`), then to 2 on completion (`800FE390`). Thus P16 has a real path **script/frame 13 → 14 → 15**. These three Iron scenery scripts are single held frames, respectively at `80107018`, `80107020`, `80107028`. All 24 entries of its table have a surviving selector once this progress path is included. This narrows the orphan finding to the **fourth definition**, not an invented missing Iron animation.
 
-**Stone script index 12 does not mean frame 12.** The normal seven-prop list selects slots `0,1,2,3,8,9,10`; the alternate list and scenery updater additionally select 11/12 for P6. JP table `80101C48` has slot 11 → `80101E20` → **frame 11**, slot 12 → `80101E30` → **frame 15**. Slot 13 points to `80101E28` → frame 12. All three are held-frame records. Consequently a tool that displays the placement's animation index as if it were the sprite frame would pick the wrong repaired-state drawing. The Stone scenery table also shares script data with the working Baccus definitions; its entries absent from Stone placements cannot be declared globally orphaned just from that absence.
+**Stone script index 12 does not mean frame 12.** The normal seven-prop list selects slots `0,1,2,3,8,9,10`; the alternate list selects 12 for P6, while the updater requests 11/12 in its index field. JP table `80101C48` has slot 11 → `80101E20` → **frame 11**, slot 12 → `80101E30` → **frame 15**. Slot 13 points to `80101E28` → frame 12. All three are held-frame records. The fourth audit adds an important consumer correction: the live updater does not refresh P6's animation pointer, so changing that index alone does not display these requested frames. Reinitializing from the alternate list does. The Stone scenery table also shares script data with the working Baccus definitions; its entries absent from Stone placements cannot be declared globally orphaned just from that absence.
 
 Source: [passage scene 8](https://github.com/afsenovilla/Tombi-Decomp/blob/44e814a6268f294f889ee77f5aad319f88e82a50/src/i0nfo2/npcSet0FSceneStep8.c), [Iron scenery updater](https://github.com/afsenovilla/Tombi-Decomp/blob/44e814a6268f294f889ee77f5aad319f88e82a50/src/i0nfo2/topdownA17SceneryUpdate.c), [Stone spawner](https://github.com/afsenovilla/Tombi-Decomp/blob/44e814a6268f294f889ee77f5aad319f88e82a50/src/i0nfo2/spawnNpcSet0E.c).
 
@@ -854,7 +860,7 @@ Stone's distinct set **0E**, `updateNpcSet0E` at JP **`800FD194`**, dispatches i
 
 Checked the supplied JP area's actual WFM D0FF bank in **`AREA11/A002.GAM`, decompressed offset `86E0`**, not just a translated transcription. It has 250 dialogue entries, with group starts `0,190,191,210,232` (remaining group offsets zero). Its only literal **ヤン** mention is entry **154**, `ヤンの弁当をつかった` (“Used Yan's lunch box”), in the common item-use text. That is not a conversation spoken by Yan or a town-specific resident binding.
 
-The normal Wood dialogue function **`800F3000`** has cases 0–10, selecting bank entries **210,232,233,234,235,236,237,238,239,242,243,248**; none contains Yan's name or establishes him as the speaker. The orphan raft helper is independently accounted for above. Resident **#12**, subtype 4, inside H3 at `(432,448)`, requests **case 11**, which that switch does not implement. Its lost sprite page/parts and unimplemented dialogue cannot be filled in as “Yan” from the placement alone.
+The normal Wood dialogue function **`800F3000`** has cases 0–10, selecting bank entries **210,232,233,234,235,236,237,238,239,242,243,248**; none contains Yan's name or establishes him as the speaker. The orphan generator/Watchtower hint helper is independently accounted for above. Resident **#12**, subtype 4, inside H3 at `(432,448)`, requests **case 11**, which that switch does not implement. Its lost sprite page/parts and unimplemented dialogue cannot be filled in as “Yan” from the placement alone.
 
 **Conclusion:** there is no confirmed Yan conversation attached to the surviving cut Lumberjack Town actor chain. This is not a proof that Yan was never planned to appear there: unidentified residents and missing data leave that historical question open. A name-less line's speaker cannot be ruled in or out merely by searching for ヤン; the native caller/actor linkage is the necessary second check. The shared lunch-box message must not be presented as evidence of a Yan conversation. Source: [Wood dialogue selector](https://github.com/afsenovilla/Tombi-Decomp/blob/44e814a6268f294f889ee77f5aad319f88e82a50/src/i0nfo2/topdownA11ActorOpenDialogue.c), [Wood spawner](https://github.com/afsenovilla/Tombi-Decomp/blob/44e814a6268f294f889ee77f5aad319f88e82a50/src/i0nfo2/spawnNpcSet0D.c); native text/case extraction is retained in `work/cut_village_research/yan_lumberjack_check.json`.
 
@@ -877,3 +883,223 @@ A second pass found **146 remaining `not_found` entries with exact native glyph/
 The regenerated JP profile (`jp-retail-selector-audit-v3-cut-and-shared-dialogue`) contains 4,647 referenced, 1,151 dynamic, 146 referenced-elsewhere and **339 possibly-unused** records. The 64 blue cut-path annotations are a subset of referenced records. The remaining purple classification is still a candidate, not confirmation of global unreachability. Counts cover this profile's audited slot-0 records; separate event-hint research retains its own classification. JSON/CSV exports carry the availability, native selector evidence, equivalent references and Gantetsu speaker-candidate metadata.
 
 WFM display also now starts at **Fit** while retaining a subsequently selected zoom across entries. Known English banks show the original preview without the Japanese-to-English translation pane/controls; Japanese banks retain those views. Checks: `python tools/validate_text_usage_ui.py "rom/Ore! Tomba (Japan).cue" --english-cue "rom/Tombi! (Europe) (En,Es,Pt,Sv,Da).cue"`.
+
+## Third JP orphan-data audit — resident actions and an unbound animation template
+
+This pass examines **JP retail only**, using the MAIN/INFO2 fingerprints in the target-identity table. It adds **17 high-slot resident animation-script candidates**, occupying **840 bytes of script payload**, beyond the earlier scenery-script and Iron subtype-4 inventory. They cover **46 distinct Wood frame IDs and 16 distinct Iron frame IDs**; frame numbers belong to each area's missing resident SPR bank, so these are not 62 recovered pictures or one global frame namespace.
+
+The documentation comparison was made against this report before this addition, the bundled research references, and upstream `docs/` and `notes/` at **`44e814a6268f294f889ee77f5aad319f88e82a50`**. The raw animation words already exist in upstream's data transcription; the new findings are the **unbound template, absence of a surviving selector for the action tails, native index mismatch, and terminal-mode differences**. The checked documents describe the Green Fortune Teller and Stone lifting frames, but do not make these particular connections. This is a bounded documentation comparison, not a claim about every unpublished/community document.
+
+All addresses in this section are **JP RAM addresses**. Unless stated otherwise, the file is **`SYSTEM/INFO2.BIN`**, and the physical file offset is `address - 800E9AF8`. Resident numbers are one-based editor numbers. These are **unselected candidates in the preserved native village chains**. The reference/selector limits below are part of the finding; absence of a literal pointer alone is not treated as proof of global unreachability.
+
+### G. Wood has an unbound 12-script template covering frames 167–203
+
+The five Wood resident definitions occupy **`800FFFFC..80100037`**. Their animation pointers are `80106224`, `80106268`, `801062B0`, `801062F0`, and `80106360`. The fourth definition, subtype 3 at **`80100020`** (+`16528`), points to `801062F0`. Its ordinary slots 0–15 cover frames 108–140. After those 16 pointers, a different, compact **12-pointer block** survives at **`80106330..8010635F`** (+`1C838..1C867`), immediately before subtype 4's table.
+
+**No resident definition points to `80106330`.** The only placed subtype-3 resident is **#11, `(496,344)`**, the old-signboard speaker. His normal native handler selects the prefix's ordinary idle/talk slots; it does not select this tail. Therefore the tail is reachable by artificially indexing subtype 3 with 16–27, but there is no surviving normal selector that does so. It must not be labelled as twelve proven actions of resident #11, or used to invent a sixth resident placement.
+
+The tail points to a contiguous **592-byte payload, `80106AB0..80106CFF`** (+`1CFB8..1D207`). All twelve scripts finish with **hold bit `8000`**, with no animation jump pointer. The complete frame/timing inventory is:
+
+| Tail index / subtype-3 index | Pointer cell | Script start | File offset | Frames in order | Ticks in order |
+|---|---|---|---|---|---|
+|0 / 16|`80106330`|`80106AB0`|`1CFB8`|167|60|
+|1 / 17|`80106334`|`80106AB8`|`1CFC0`|168|60|
+|2 / 18|`80106338`|`80106AC0`|`1CFC8`|169|60|
+|3 / 19|`8010633C`|`80106AC8`|`1CFD0`|188,189,190,189,190,189,190,189,188|5,3,17,7,17,7,17,3,5|
+|4 / 20|`80106340`|`80106B10`|`1D018`|191,192,193,192,193,192,193,192,191|5,3,17,7,17,7,17,3,5|
+|5 / 21|`80106344`|`80106B58`|`1D060`|194,195,196,195,196,195,196,195,194|5,3,17,7,17,7,17,3,5|
+|6 / 22|`80106348`|`80106BA0`|`1D0A8`|170,171,172,173,174,175|8,8,8,8,8,8|
+|7 / 23|`8010634C`|`80106BD0`|`1D0D8`|176,177,178,179,180,181|8,8,8,8,8,8|
+|8 / 24|`80106350`|`80106C00`|`1D108`|182,183,184,185,186,187|8,8,8,8,8,8|
+|9 / 25|`80106354`|`80106C30`|`1D138`|197|60|
+|10 / 26|`80106358`|`80106C38`|`1D140`|198,199,200,199,200,199,200,199,200,199,200,199,198|9,8,17,7,17,7,17,7,17,7,17,8,9|
+|11 / 27|`8010635C`|`80106CA0`|`1D1A8`|202,201,202,203,202,201,202,203,202,201,202,203|4,19,4,6,4,6,4,19,4,6,4,6|
+
+**Connection to the teller family:** compare these twelve scripts with Wood subtype 4's twelve scripts at `80106360`. Every frame is exactly **37 lower**, and every box word, argument word, duration, terminal flag, and record count is identical. The frame sets are 167–203 versus 204–240. Each orphan script start has exactly one aligned full-word reference in MAIN+INFO2: its own pointer cell above. There are no additional aligned pointers into the middle of this payload, and no aligned full-word pointer to its table start.
+
+This is stronger than a vaguely similar frame range: it is a second complete instance of the same compact animation template. **Identity remains unresolved.** It could be an earlier/alternative teller-style actor template or a discarded action bundle. It does not identify a second Fortune Teller, its colour, a character's position, a raft maker, or missing pixels. Its location after subtype 3's ordinary pointers is a retained table relationship, not a recovered drawing assignment.
+
+Source anchors: the definitions and pointer arrays in [`src/data/i0nfo2/D_800FEBD0.c`](https://github.com/afsenovilla/Tombi-Decomp/blob/44e814a6268f294f889ee77f5aad319f88e82a50/src/data/i0nfo2/D_800FEBD0.c) use PAL names `data_80107648[28]` and `data_801076B8[12]`; the candidate is the former's last twelve entries. Those source addresses are PAL, not substitutes for the JP addresses above.
+
+### H. Three short Wood resident actions have no surviving native selection
+
+The physical boundaries of the first two Wood pointer tables are **17 and 18 entries**, respectively. Reading an arbitrary 24 entries would incorrectly attribute some of the next subtype's scripts to the previous one. Beyond their ordinary slots 0–15, these scripts remain:
+
+| Subtype / slot | Definition; native page / SPR slot | Pointer cell | Script; file offset | Frames | Ticks |
+|---|---|---|---|---|---|
+|0 / 16|`800FFFFC`; page `01`, SPR `11` decimal|`80106264`|`80106560`; +`1CA68`|33,34,35,34|8,1,10,4|
+|1 / 16|`80100008`; page `0A`, SPR `11` decimal|`801062A8`|`801066D0`; +`1CBD8`|69,70,71,70|6,2,5,3|
+|1 / 17|same definition|`801062AC`|`801066F0`; +`1CBF8`|72,73,74,73|6,2,5,3|
+
+They are **three 32-byte scripts, 96 bytes total**, each ending in hold rather than loop. The subtype-0 definition is used by residents **#1–5**; subtype 1 by **#6/#8/#9/#10**. This identifies the resident families their table prefixes belong to. It does not establish which resident was meant to perform the extra actions. MAIN+INFO2 contains exactly one aligned full-word reference to each script, from the listed pointer cell, and no additional pointer into its body.
+
+Native initialization uses the preserved record's animation selector 0. Idle/movement/talk selection stays below 12; Wood's controller has no active scene body to select 16 or 17. The orphan hint helper also does not select them. These scripts are useful **extra-pose/action constraints** for a future matching SPR search. They are not an implemented crafting animation or a newly recovered reward sequence.
+
+### I. Iron retains two unselected repeating resident actions, including the smith's family
+
+The first two Iron resident pointer tables each have **17 entries**. Their final entries select distinct repeating actions:
+
+| Subtype / slot | Definition; page / SPR slot | Pointer cell | Script; file offset | Frames in order | Ticks |
+|---|---|---|---|---|---|
+|0 / 16|`801000A8`; page `01`, SPR `11` decimal|`801070B0`|`801072E0`; +`1D7E8`|33,34,35,36,37,38,39,40,36|16,4,4,16,7,5,5,7,60|
+|1 / 16|`801000B4`; page `0A`, SPR `11` decimal|`801070F4`|`80107494`; +`1D99C`|74,75,76,77,78,79,80,81,77|16,4,4,16,7,5,5,7,60|
+
+Both end with **control `403C`**, followed by a pointer back to their own start. Their jump words are at **`80107328`** and **`801074DC`**. Thus each occupies **76 bytes** and repeats after **124 ticks**. The second literal reference to each script is this self-loop, not another actor/scene consumer. There are no other full-word pointers into either body in the audited regions.
+
+Subtype 0 is used by residents **#1/#6/#8/#11/#12/#15**; subtype 1 by **#2/#3/#7/#10/#13**. In particular, **#3 at `(-75,371)` in H5**, the smith involved in the Iron Wheel transaction, uses subtype 1. This gives script `80107494` a concrete **smith-family connection**. Calling it the intended forging action is still an inference: the lost SPR parts prevent identifying the movement visually, and the surviving wheel scene selects ordinary `8 + facing` scripts, including slot 9, rather than slot 16. Its previously documented unset actor pointer is a separate defect.
+
+These two loops are separate from the already documented **24 MAIN scripts of subtype 4/Gantetsu**. Their payload belongs to INFO2 and their frame sets lie below that bank's 148–202 range. Restoring the loops cannot by itself restore the missing bomb scenes or an item handover.
+
+### J. The compact teller tables do not match Wood's ordinary selector layout
+
+The preceding template comparison also exposes an implementation mismatch for the **already documented Green Fortune Teller**, Wood resident **#12**, subtype 4, H3 `(432,448)`. His compact table is **`80106360`**, twelve entries. The native Wood handler still uses the ordinary four-direction conventions: idle `facing`, movement `facing + 4`, talk `contact_direction + 7`.
+
+The native selector probe records these exact choices:
+
+| Operation | Input from the preserved record / collision direction | Chosen compact slot | Script start; first frame |
+|---|---|---|---|
+|Initializer `800F3EC8`|record animation selector 0|0|`80106D00`; 204|
+|Normal idle in `800F3D0C`|preserved facing 3|3|`80106D18`; 225|
+|Talk entry `800F321C`|direction 1|8|`80106E50`; 219|
+|Talk entry|direction 2|9|`80106E80`; 234|
+|Talk entry|direction 3|10|`80106E88`; 235|
+|Talk entry|direction 4|11|`80106EF0`; 239|
+
+The initializer and idle path therefore do **not** keep selecting the same stationary-pose script. The talk path uses a different portion of the compact table from the teller's ordinary talking family. The stores occur at JP **`800F3FE0`**, **`800F3DDC`**, and **`800F3300`**, respectively. This is a native index/layout finding; no screenshot of a working original cut-town interaction is claimed.
+
+For an independent JP control, the working tunnel teller's definition is at **`SYSTEM/INFO3.BIN` `800F033C`** (+`6844`), its 15-entry table at **`800F068C`** (+`6B94`). INFO3 SHA-1 is **`c5284a56eaa9846752d8ade2a37b2dacbd3842a5`**. Compact slots 0–11 correspond to tunnel slots **`1,0,3,5,4,7,9,8,11,12,13,14`**, with frame offsets **+157** for the orphan and **+194** for Green. Tunnel aliases 0/2, 4/6, and 8/10 implement four-direction reuse; the compact tables omit those alias entries.
+
+**Important terminal-mode distinction:** relative frame order, box/argument words and tick counts match, but this is **not a byte-identical copy of the working tunnel animation logic**. In compact slots **3/4/5/6/7/8/10/11**, both Wood copies **hold** (`8000`), while the tunnel copy **loops** (`4000` plus a jump back). The other four compact slots are held poses in both. Upstream's teller correspondence remains useful, but “same timings” must not erase the different termination behavior.
+
+Rebuilding this character therefore needs an explicit decision about selector remapping and hold/loop behavior as well as SPR parts and the missing dialogue case. Copying the tunnel SPR's pictures alone leaves these original table/handler inconsistencies. The unbound 167–203 block is another constraint on that decision, not permission to silently choose a second named character.
+
+Source anchors: [`topdownA11ActorStep`](https://github.com/afsenovilla/Tombi-Decomp/blob/44e814a6268f294f889ee77f5aad319f88e82a50/src/i0nfo2/topdownA11ActorStep.c), [`topdownA11ActorTalkStep`](https://github.com/afsenovilla/Tombi-Decomp/blob/44e814a6268f294f889ee77f5aad319f88e82a50/src/i0nfo2/topdownA11ActorTalkStep.c), [`tunnelActorTalkStep`](https://github.com/afsenovilla/Tombi-Decomp/blob/44e814a6268f294f889ee77f5aad319f88e82a50/src/i0nfo3/tunnelActorTalkStep.c). The latter selects `contact_direction + 3`; Wood selects `+7`. JP raw records and MIPS execution, rather than the port's reconstructed assets, supply the comparisons above.
+
+### Native selection audit, controls and reproduction
+
+`tools/audit_cut_resident_orphans.py` rejects changed MAIN or INFO2 and checks the separate INFO3 fingerprint for the teller control. It decodes each physical pointer window, follows script control words, retains literal users including self-loops, and writes the decoded facts/hashes to ignored `work/cut_village_research/resident_orphans_jp.json`.
+
+The independent selector check runs original JP MIPS in isolated Unicorn memory, stopping on the **first store to the actor's animation pointer**, before drawing, file/device access or animation services. It exercises **41 preserved resident initializers**, and every defined Wood/Stone/Iron subtype over four facing directions, five ordinary movement behaviours and four talk-contact directions: **377 probes total**, all selecting **slots 0–11**. This intentionally includes more ordinary behaviour combinations than the placements use. It does not emulate an entire game, the incomplete scenes, or every possible game state.
+
+| Village | Initializer | Normal actor step | Talk step | Direction setter |
+|---|---|---|---|---|
+|Wood|`800F3EC8`|`800F3D0C`|`800F321C`|`800F31C0`|
+|Stone|`800F4FA0`|`800F4DE4`|`800F43D0`|`800F40C8`|
+|Iron|`800F64AC`|`800F62E8`|`800F60B4`|`800F51A4`|
+
+A separate control-flow argument scan resolves **25 direct INFO2 calls** to the direction setters: **15 Stone and 10 Iron**, with offset arguments only **0,4,8**; none calls Wood's setter. The scene source's facing assignments remain ordinary directions. Inlined movement/talk selectors are checked by the native probes rather than omitted from this accounting. Deliberately forcing selector 16 through each village's setter correctly reaches the high-slot data; this is kept as a **synthetic positive control**, not asserted to be an original game path.
+
+All 17 candidate scripts also execute through the original JP **`AnimLoadDuration` `80020DE4`** and **`AnimAdvance` `80020E38`** for a complete first pass. Held scripts stay on their final record and return the terminal signal; both Iron loops return to their original script start at tick 124. No new sprite rectangles, original colours, item-grant calls or quest-state transitions are inferred from that successful playback.
+
+Reference checks cover aligned full-word pointers throughout resident MAIN and INFO2, **including pointers to script interiors**. An additional deliberately overinclusive check pairs any `LUI` with an ADDI(U)/ORI/load/store low half within the following eight instructions, without requiring register agreement. It finds **zero candidates** for the new payloads or unbound table start. This improves on literal-only checking, but does not rule out arbitrary multi-stage/computed address construction or modified execution.
+
+The audit retains controls that prevent inflating this pass's discoveries:
+
+- **Stone lifting scripts 16–23, frames 120–129, were already documented.** Their absence from ordinary native selections is a useful consumer result, not eight newly discovered script payloads. Empty phase-table rows 0/9–15 add no lost dialogue.
+- **Gantetsu's 24 MAIN scripts were already documented.** They remain a positive cross-region decoder control, not 24 new findings here.
+- The Wood/Stone/Iron/reunited resident terminators are complete 28-byte records: type `00FF`, then 26 zero bytes. No hidden resident was found inside those terminators.
+- All **94 unique loaded APD payloads** end at their terminator record, with **no post-terminator payload**. This particular check supplies no extra cut-town placement list; it does not claim to inspect arbitrary encoded placements in every disc file.
+
+Run on the supplied JP disc:
+
+```text
+python tools/audit_cut_resident_orphans.py "rom/Ore! Tomba (Japan).cue"
+```
+
+The report is the durable interpretation; the JSON contains full per-step control/argument data, file offsets, literal users, all 377 selector traces, the 25 call sites, the 17 playback checks and the tunnel comparison. No ROM data is patched and no original game images are bundled by this audit.
+
+## Fourth JP audit — dormant state, rendering consumers and reused hints
+
+This pass follows **state writer → state consumer → actual drawing/message data**, rather than adding more animation-table entries. The following consumer defects and relationships were omitted from this report and were not described in the checked upstream research documents at `44e814a6268f294f889ee77f5aad319f88e82a50`. Their underlying functions are present in the decomp; these are additional interpretations and JP-native checks, not claims that the function definitions themselves were newly discovered.
+
+The target remains the same fingerprinted JP MAIN and INFO2. Two additional checked code payloads are **`SYSTEM/X11.BIN`**, 193,716 bytes, SHA-1 **`9ec2628e76ff4689408ed19400ec0851637e665f`**, and **`SYSTEM/X16.BIN`**, 191,476 bytes, SHA-1 **`b43230d3a7a49203207f6068eb6dc437d305f12b`**. These overlays are loaded into separate experiment instances; they are not assumed to coexist with INFO2.
+
+### K. Stone P6 requests different scripts but keeps drawing the old frame
+
+Stone's **P6**, zero-based prop index 5, is subtype 2, room 0, draw-order kind 2. Its normal record requests animation **10** at **`(-4,403)`**; its alternate record requests **12** at **`(-3,403)`**. The alternate list is selected only when runtime byte **`8009EB50`** (PAL `D_8009CFA8`) equals 4. These records and the raw 11/12 requests were already known. The omitted detail is that **the live state-change updater never updates the sprite's animation pointer**.
+
+JP functions in `SYSTEM/INFO2.BIN`:
+
+| Function / operation | JP RAM address | File offset |
+|---|---|---|
+|Stone scenery handler, `topdownA16SceneryHandler`|`800F1F84`|`848C`|
+|Live updater, `topdownA16SceneryUpdate`|`800F1E88`|`8390`|
+|Initializer's actual `object+24` animation-pointer store|`800F206C`|`8574`|
+|Stone controller, `updateNpcSet0E`|`800FD194`|`1369C`|
+|State-change scene, `npcSet0ESceneStep2`|`800FCD78`|`13280`|
+|Phase increments to 2 / 3 / 4|`800FCE18` / `800FCE5C` / `800FCE9C`|`13320` / `13364` / `133A4`|
+
+The updater stores 11 or 12 into **`object+B4`**, and adjusts X/Y. It neither stores a replacement pointer at **`object+24`** nor calls the animation-duration loader. The native drawing consumer uses that pointer: MAIN `drawObject` at **`80043728`** dispatches render kind 13 at **`80043A04`** to **`drawObjectSprtTinted` `80047C80`**. At **`80047D60`**, MAIN file +`38560`, it loads `object+24`; at **`80047D68`** it reads the frame word from that script. It does not use the requested index in `object+B4` to choose the frame anew.
+
+An isolated native run initializes P6 through the real handler and then executes the real Stone controller and handler each update. Starting phase 1 is an **explicit synthetic seed**, because the missing initiating write is the separate issue below. Counts include the controller's initial step-selection update:
+
+| Point in the experiment | Phase | Requested index (`+B4`) | Actual script pointer (`+24`) | Frame read by the drawing consumer | Position |
+|---|---:|---:|---|---:|---|
+|Normal initialization|0|10|`80101E18`|10|`(-4,403)`|
+|32nd update after synthetic phase-1 seed|2|11|`80101E18`|10|`(-4,403)`|
+|62nd update|3|12|`80101E18`|10|`(-3,403)`|
+|63rd update, scene finished|4|12|`80101E18`|10|`(-3,403)`|
+|Reinitialize from the phase-4 alternate record|4|12|`80101E30`|15|`(-3,403)`|
+
+Only the initializer writes the animation pointer in the continuous run. Thus the state-change scripts are not displayed merely because their numbers appear in the updater. **Frame 15 can be selected after reinitialization from the alternate list, while the continuous sequence retains frame 10.** This is a stronger reconstruction constraint than “animations 11/12 exist.” It also corrects the earlier wording that implied the live updater actually selected those drawing scripts. The object's precise visual identity remains unresolved; calling this prop the repaired clock is still an interpretation without its original SPR/map.
+
+**The phase-1 seed is missing from the checked direct references.** Scanning MAIN plus **23 unique loaded INS payloads** found twelve statically resolved accesses to `8009EB50`: nine reads and three writes, all in INFO2. The writes are the three increments in the scene above. There is no resolved direct constant-1 store and no aligned full-word pointer to this state byte. The scanner follows straight-line register constants and clears them after branches/calls and their delay slot; indexed/indirect aliases, save restoration and arbitrary computed writes are not ruled out. This is an **unseeded-state candidate**, not a universal proof that the byte can never become 1. Ninety ordinary native idle-controller/prop updates starting at zero leave it zero.
+
+The retail Clock Tower repair is a useful independent control. JP **`SYSTEM/X16.BIN` `brokenStoneGearsRepair` at `80116A2C`** (+`2CF34`) calls MAIN **`setEventComplete` `8001C988`**. Executing its repair state with the event-completion body included writes **`FF` to event 61 at `8009E9AD`**, at MAIN instruction **`8001C9CC`**. The experiment leaves a tag value in `8009EB50` unchanged. The subsequent inventory-service request is for item **`3E`**. Presentation/AP/inventory services are stubbed, so this is a native state-write/control check, not an inventory or full-game test. **Completing the retail clock event does not, by itself, supply the missing direct scenery-phase write in this retained code.**
+
+Source anchors: [`topdownA16SceneryUpdate`](https://github.com/afsenovilla/Tombi-Decomp/blob/44e814a6268f294f889ee77f5aad319f88e82a50/src/i0nfo2/topdownA16SceneryUpdate.c), [`npcSet0ESceneStep2`](https://github.com/afsenovilla/Tombi-Decomp/blob/44e814a6268f294f889ee77f5aad319f88e82a50/src/i0nfo2/npcSet0ESceneStep2.c), [`drawObjectSprtTinted`](https://github.com/afsenovilla/Tombi-Decomp/blob/44e814a6268f294f889ee77f5aad319f88e82a50/src/drawObjectSprtTinted.c), [`brokenStoneGearsRepair`](https://github.com/afsenovilla/Tombi-Decomp/blob/44e814a6268f294f889ee77f5aad319f88e82a50/src/x016/brokenStoneGearsRepair.c).
+
+### L. Stone's H4 craftsman scene copies the controller's position into its first message
+
+Stone resident **#9**, subtype 3, dialogue case 8, is the H4 craftsman at **`(26,174)`**. His actual JP text is in **`AREA16/A003.GAM`**, decoded WFM +`6CA8`, SHA-1 **`b70c77d7534df6745263a2df1b7baacb22a78f6d`**. Entries **185/186/187** are `(2,0/1/2)`: wanting something worthwhile to make; reacting to Tomba's capture by the Masakari; and discussing the **Funga drum, hard-to-find materials, and the Tree of Knowledge**. This is a concrete Stone-craftsman connection to the cut drum/material storyline, not an Iron Wheel or raft dialogue assignment.
+
+The normal case-8 branch checks the Masakari/Tree event bytes **3D/3E** and can increment **`8009EB52`** (PAL `D_8009CFAA`). The controller consumes value 1 and selects scene 3. The scene uses **`SCRIPT_OBJECTS[8]` at `800A0E88`**, matching one-based resident #9, and requests event **`3E`** after its two messages. This ties the scene to that particular craftsman rather than an unidentified generic resident. No drum item is granted by this scene.
+
+The overlooked defect is in **`npcSet0ESceneStep3` at JP `800FCEB0`**, INFO2 +`133B8`. Its first coordinate copy at **`800FCEC4..800FCED8`** (+`133CC..133E0`) reads twelve bytes through the **incoming `s0`**. Only afterward does **`800FCF00`** (+`13408`) load the intended resident pointer from `800A0E88`. The first message call is at **`800FCF74`** (+`1347C`), selecting `(2,1)` with the already copied coordinates.
+
+Two direct native trials changed the incoming `s0` object's coordinate bytes while leaving the real craftsman unchanged; the first message position changed with the incoming register. More decisively, running through **`updateNpcSet0E`'s actual scene-3 dispatch** makes incoming `s0` point to the **controller**. The message receives the controller's coordinate bytes instead of the craftsman's. The scene then correctly changes the real resident's step/state: this is **a wrong first-message anchor**, not evidence that every actor access uses an invalid pointer or that a crash was observed. Later in the scene the coordinates are copied again after the resident has been resolved.
+
+The decomp's [`npcSet0ESceneStep3.c`](https://github.com/afsenovilla/Tombi-Decomp/blob/44e814a6268f294f889ee77f5aad319f88e82a50/src/i0nfo2/npcSet0ESceneStep3.c) already notes the uninitialized C variable needed to match. The additional finding here is its **specific JP caller-chain consequence and resident/story association**. A rebuild should obtain the resident before copying its position; supplying an SPR alone does not repair that interaction.
+
+### M. Prop kind 0/1/2 is a draw-order policy
+
+The previous prop audit established that the first record word is copied into **object byte `+0E`**, while engine layer/type are fixed separately. Following the actual consumer now gives that word a meaning: JP **`topdownSortDrawOrder` `800EE910`**, INFO2 +`4E18`, reads it and assigns signed draw-depth byte **`object+0F`**.
+
+| Record kind / object `+0E` | Retained behavior |
+|---|---|
+|0|Participates in sorting by world Y with the other ordinary town objects/player; receives a relative depth such as `index - 10`|
+|1|Excluded from that Y-sort list; assigned fixed depth **-12**|
+|2|Excluded from that Y-sort list; assigned fixed depth **+12**|
+
+Native trials use two kind-0 props and one each of kinds 1/2. Swapping only the two kind-0 Y positions swaps their assigned depths **-9/-10**; the other depths remain **-12/+12**. Thus the field controls ordering of the existing drawing. It is not an item ID, inventory category, sprite group or subtype. Fixed depth alone also does not identify a particular drawing as a roof or interior.
+
+Source: [`topdownSortDrawOrder.c`](https://github.com/afsenovilla/Tombi-Decomp/blob/44e814a6268f294f889ee77f5aad319f88e82a50/src/i0nfo2/topdownSortDrawOrder.c). The editor now says **“draw-order kind …”** with the decoded meaning in the selected prop's description and the P# tooltip, replacing the ambiguous “type” wording. This explains the raw value without changing any graphics assignment or ROM record.
+
+### N. Correction: Wood's orphan helper is a reused generator/Watchtower hint, not raft crafting
+
+Earlier versions of this report called **`topdownA11ActorDialogueBank2` `800F2F24`** a raft-related helper and associated it with a raft transaction. **That attribution was wrong.** Its native selector arguments are `(2,4)` and `(2,5)`, with event **`4F`**. The supplied JP bank resolves them to:
+
+| Native pair | Live JP entry | Meaning |
+|---|---:|---|
+|`(2,4)`|195|Thanks Tomba for using the bomb and getting the generator repaired|
+|`(2,5)`|196|An old story about a Watchtower in the Dwarf Forest having an elevator down underground|
+
+Bank: **`AREA11/A002.GAM`**, decoded WFM +`86E0`, SHA-1 **`3eaa362d4c39bc8048deebdde12a031bdb9d05ee`**. Event `4F` is the underground-forest hint event, not the raft event. No stale transcription index or translated paraphrase is used to resolve these pairs.
+
+There is also a retained **retail side-view counterpart**, not merely similar wording: JP X11 **`powerPlantThanksTalk` `80117AFC`** (+`2E004`) selects those same pairs at **`80117C24`** (+`2E12C`) and calls `setEventStarted(4F,0,0)` at **`80117C64`** (+`2E16C`). Its native message call merges lines 4/5 from different states. Separate native executions of states 0 and 1 select line 4 and line 5 respectively. The repeat hint routine is **`80117D08`** (+`2E210`), selecting line 5.
+
+The native side-view dispatcher **`stepFactoryNpcTalk` `80118104`** (+`2E60C`) has its subtype-2 step-7 call at **`801183A4` → `80117AFC`**, and step-8 call at **`801183B4` → `80117D08`**. This establishes a preserved retail controller chain for the hint texts. The top-down helper body is still uncalled in the previously audited scope, and Wood's flag at `8009EB51` is still unconsumed by its empty controller; **the text/event interaction is not lost merely because that particular body is orphaned**.
+
+The actual separate raft discussion survives at **entries 220–224, `(3,10..14)`**, in the same JP bank. It identifies a raft specialist, asks for timber, refers to material beneath the Wise Old Tree, and describes using the completed raft at the river on Old Tree Hill. The audited normal Wood dialogue switch does not select those pairs. Those messages remain a raft-reconstruction lead, but this helper/flag supplies **no evidence of their caller, craftsman's placement or item hand-in sequence**. The earlier raft attribution has been removed from the main findings and unresolved-question tables above.
+
+Source anchors: [`powerPlantThanksTalk`](https://github.com/afsenovilla/Tombi-Decomp/blob/44e814a6268f294f889ee77f5aad319f88e82a50/src/x011/powerPlantThanksTalk.c), [`powerPlantElevatorHintTalk`](https://github.com/afsenovilla/Tombi-Decomp/blob/44e814a6268f294f889ee77f5aad319f88e82a50/src/x011/powerPlantElevatorHintTalk.c), [`stepFactoryNpcTalk`](https://github.com/afsenovilla/Tombi-Decomp/blob/44e814a6268f294f889ee77f5aad319f88e82a50/src/x011/stepFactoryNpcTalk.c). Their published C addresses are PAL; the JP addresses above were resolved and checked in the supplied X11.
+
+### Reproducing the fourth audit
+
+```text
+python tools/audit_cut_village_state.py "rom/Ore! Tomba (Japan).cue"
+```
+
+The durable tool checks MAIN/INFO2, X11/X16 and both WFM fingerprints. It records all scenery snapshots and transition ticks, the unchanged pointer versus alternate-record initialization, native phase writes, the bounded 24-region reference scan, the two perturbed-register message tests plus the actual controller-dispatch test, draw-order trials, retail event-completion control, and Wood's native dispatcher/message evidence. Output is ignored **`work/cut_village_research/state_consumers_jp.json`**. Read/write traces are obtained from executed instruction/register effective addresses and checked against memory snapshots; the installed Unicorn MIPS backend's global memory hooks were avoided because they disrupted a leaf return. No guest instructions were altered to make the experiment pass.
+
+These checks do not reconstruct a collision map, original sprite parts, palettes or full retail reachability. They identify concrete missing/disconnected behavior and prevent two false shortcuts: treating a requested animation index as the frame actually drawn, and treating an unused function body as proof that its dialogue/content is unused everywhere.

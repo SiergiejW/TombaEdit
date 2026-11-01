@@ -80,8 +80,13 @@ def main():
         search.returnPressed.emit()
         assert widget.findChild(QTextBrowser).textCursor().selectedText() == '0x801047F4'
         documents = widget.findChild(QComboBox)
-        assert documents.count() == 10
+        assert documents.count() == 11
         documents.setCurrentIndex(1)
+        assert 'Electric eel: graphics and script survive together' in widget.findChild(QTextBrowser).toPlainText()
+        search.setText('8012DEB8')
+        search.returnPressed.emit()
+        assert widget.findChild(QTextBrowser).textCursor().selectedText() == '8012DEB8'
+        documents.setCurrentIndex(2)
         assert "SiergiejW" in widget.findChild(QTextBrowser).toPlainText()
         outline = widget.findChild(QListWidget)
         port = next(i for i in range(outline.count()) if outline.item(i).text().startswith('Port test'))

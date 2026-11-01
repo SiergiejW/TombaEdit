@@ -72,9 +72,13 @@ class Prop:
     subtype: int
     animation: int
     room: int
-    kind: int
+    kind: int              # draw-order policy copied to object+0E, not an item ID
     x: int
     y: int
+
+    @property
+    def draw_order_name(self):
+        return {0: 'Y-sorted', 1: 'fixed depth -12', 2: 'fixed depth +12'}.get(self.kind, 'unmapped draw order')
 
 
 @dataclass

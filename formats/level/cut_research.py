@@ -5,6 +5,7 @@ from pathlib import Path
 import struct
 
 REPORT = Path(__file__).resolve().parents[2] / 'docs' / 'cut-villages-jp-research.md'
+UNUSED_REPORT = REPORT.parent / 'jp-retail-unused-research.md'
 REFERENCES = REPORT.parent / 'decomp'
 JP_EXE = '07d577698ad31ec1a69b9d7b80a7c3f90b650888'
 STOPS = ((55, 375), (231, 367), (390, 375), (111, 159), (230, 151), (334, 159))
@@ -85,8 +86,8 @@ def view(project, jump=None, area=None):
         manifest = None
         sync = f'Upstream reference snapshot unavailable: {exc}'
     note = QLabel(sync + '\n'
-                  'Recovered code/data, incomplete scenes and reconstruction leads are distinguished in the report. '
-                  'The report records the original editor discrepancy; this editor now uses corrected dialogue bindings.')
+                  'Choose a report below for cut villages or other JP remnants, including the eel, items and animations. '
+                  'Native findings, incomplete connections and unverified leads are identified in each report.')
     note.setWordWrap(True)
     layout.addWidget(note)
     tabs = QTabWidget()
@@ -95,6 +96,7 @@ def view(project, jump=None, area=None):
     body = QVBoxLayout(article)
     documents = QComboBox()
     documents.addItem('TombaEdit: JP findings, corrections and upstream recalibration', (REPORT, None))
+    documents.addItem('TombaEdit: JP unused content beyond cut villages', (UNUSED_REPORT, None))
     if manifest:
         for entry in manifest['files']:
             url = f"{manifest['repository']}/blob/{manifest['revision']}/{entry['path']}"
@@ -273,7 +275,7 @@ def show_dialog(project, parent=None, jump=None, area=None):
     from PyQt6.QtCore import Qt
     dialog = QDialog(parent)
     dialog.setAttribute(Qt.WidgetAttribute.WA_DeleteOnClose)
-    dialog.setWindowTitle('Cut-village research · Japanese retail')
+    dialog.setWindowTitle('JP retail research')
     dialog.resize(1200, 800)
     QVBoxLayout(dialog).addWidget(view(project, jump, area))
     dialog.show()
