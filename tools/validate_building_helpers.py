@@ -17,7 +17,8 @@ def main():
     args=parser.parse_args()
     project=Project(args.cue)
     data=entries()
-    assert set(data)=={61,76,80}
+    assert set(data)=={61,76,80,86}
+    assert data[86]["proposal"] and data[86]["observed_pixel_coverage"] == 0
     previews={}
     for area,group in ((11,61),(16,76),(17,80)):
         p=preview(project,f'SYS/LDAR{area:02d}.BIN',1);previews[area]=p

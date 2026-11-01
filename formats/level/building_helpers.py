@@ -35,6 +35,9 @@ def palette_for(group, indices):
     entry=entries().get(group)
     if entry is None or hashlib.sha256(indices.tobytes()).hexdigest()!=entry['indices_sha256']:
         return None
+    if entry.get('proposal'):
+        return ('PROPOSED CLUT: Reunited town · warm stone / timber · all colours artistic estimates · not original',
+                np.array(entry['words'], dtype=np.uint16))
     estimated_visible = len(set(entry['filled_indices']) & set(np.unique(indices).tolist()))
     estimates = (f'{estimated_visible} estimated visible colours' if estimated_visible else
                  f"{len(entry['filled_indices'])} unused slots estimated")

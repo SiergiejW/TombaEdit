@@ -126,6 +126,20 @@ def main():
         frequency=np.bincount(indices.ravel(),minlength=256)
         coverage=sum(frequency[i] for i in anchors)/max(1,frequency[1:].sum())
         if len(anchors)<32 or coverage<0.6:
+            if group == 86:
+                rgb = np.array([[min(255, i*1.10+6), min(255, i*.92+3), i*.72] for i in range(256)])
+                words = [0] + [word(c) for c in rgb[1:]]
+                entries.append(dict(group=group, name='Reunited town · warm stone / timber proposal',
+                    type='reconstructed_helper_not_original', proposal=True,
+                    indices_sha256=hashlib.sha256(indices.tobytes()).hexdigest(), words=words,
+                    observed_indices=[], filled_indices=list(range(1,256)),
+                    used_indices=(np.flatnonzero(frequency[1:])+1).astype(int).tolist(),
+                    observed_pixel_coverage=0.0, sources=[],
+                    method='Artistic warm stone/timber RGB ramp over texture index order; all colours proposed, not original.'))
+                Image.fromarray(colours(np.array(words,dtype=np.uint16))[indices]).save(args.preview/'group_86_proposal.png')
+                (args.preview/'group_86_proposal.clut').write_bytes(np.array(words,dtype='<u2').tobytes())
+                print('86: artistic warm stone/timber proposal; no recovered colour claim', flush=True)
+                continue
             unavailable.append(dict(group=group,name=name,observed_indices=len(anchors),
                                     observed_pixel_coverage=round(float(coverage),6),
                                     reason='Insufficient ground-truth pixel coverage for a reliable default helper',sources=records))
