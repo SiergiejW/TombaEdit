@@ -167,6 +167,14 @@ def audit(cue):
         result['prop_record_type_is_not_engine_type'].append(dict(area=area,
             engine_type=0x1D, engine_type_store=location(type_store),
             spawn_record_first_word_store=location(record_store), object_field_offset='0E'))
+    dispatch = struct.unpack('<12I', read(0x800EA534, 48))
+    result['iron_passage_dispatch'] = []
+    for step, call, target in ((8, 0x800FED80, 0x800FE22C), (9, 0x800FED90, 0x800FE3D8),
+                               (10, 0x800FEDA0, 0x800FE504), (11, 0x800FEDB0, 0x800FE668)):
+        assert dispatch[step] == call
+        assert u32(call) == 0x0C000000 | ((target & 0x0FFFFFFF) >> 2)
+        result['iron_passage_dispatch'].append(dict(area=17, npc_set='0F', controller='800FEC78',
+            step=step, jump_table='800EA534', call=location(call), target=location(target)))
     return result
 
 

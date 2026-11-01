@@ -243,7 +243,7 @@ def view(project, jump=None, area=None):
                  ('Up 84 px', 'Down 84 px', 'Up 145 px, sideways', 'Down 145 px, sideways'),
                  ('800FE22C', '800FE3D8', '800FE504', '800FE668'))]
     tabs.addTab(table(['Iron Town mechanism', 'World trigger x, y (inclusive)', 'Behavior', 'JP source address'], rows),
-                'Lifts and passages · audited JP')
+                'Iron Town · lifts and passages · audited JP')
     if jump:
         towns = QHBoxLayout()
         for number, name in ((11, 'Lumberjack Town'), (16, 'Stonetown'), (17, 'Iron Town'), (18, 'Reunited town')):

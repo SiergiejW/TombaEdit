@@ -1025,6 +1025,7 @@ def view(preview, english=None, request=None, changed=None, jump=None, session=N
     table.setSelectionBehavior(QAbstractItemView.SelectionBehavior.SelectRows)
     table.setWordWrap(True)
     table.setTextElideMode(Qt.TextElideMode.ElideNone)
+    table.setVerticalScrollMode(QAbstractItemView.ScrollMode.ScrollPerPixel)
     table.verticalHeader().setSectionResizeMode(QHeaderView.ResizeMode.ResizeToContents)
     table.horizontalHeader().sectionResized.connect(lambda *_: table.resizeRowsToContents())
     def lines(row):
@@ -1068,6 +1069,7 @@ def view(preview, english=None, request=None, changed=None, jump=None, session=N
             cells.append(translated(row))
         for c, text in enumerate(cells):
             item = QTableWidgetItem(text)
+            item.setTextAlignment(Qt.AlignmentFlag.AlignLeft | Qt.AlignmentFlag.AlignTop)
             item.setToolTip(text)
             if c == 3 and graphic:
                 item.setToolTip(graphic.label)
@@ -1077,10 +1079,10 @@ def view(preview, english=None, request=None, changed=None, jump=None, session=N
     table.resizeColumnsToContents()
     if english:
         show_english()
-    table.setColumnWidth(5, min(table.columnWidth(5), 300))     # the Japanese is the shorter column
+    table.horizontalHeader().setStretchLastSection(False)
+    table.horizontalHeader().setSectionResizeMode(5, QHeaderView.ResizeMode.Stretch)
     if english:
-        table.setColumnWidth(6, 560)
-        table.horizontalHeader().setStretchLastSection(True)
+        table.horizontalHeader().setSectionResizeMode(6, QHeaderView.ResizeMode.Stretch)
     if english and changed is not None:
         def refresh():
             try:

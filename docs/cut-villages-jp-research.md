@@ -2,6 +2,8 @@
 
 Research date: **31 October 2026**. Target: the supplied `rom/Ore! Tomba (Japan).cue` and its BIN. This is a research report, not a playable restoration. No game code, editor code, save, or disc image was modified.
 
+**Second orphan-data audit, 1 November 2026:** see [Deeper orphan-data audit](#deeper-orphan-data-audit--1-november-2026) for the newly enumerated Wood scenery scripts, Iron's unplaced fourth scenery definition, surviving scenery CLUT destinations, and controls against mistaking inline duplicates or progress-selected animations for lost content. The original investigation's no-edit statement above applies to that investigation; subsequent editor presentation changes are described separately.
+
 ## Editor helper palettes — 1 November 2026
 
 The editor now provides premade **reconstructed helper CLUTs**, derived from the user's
@@ -718,3 +720,140 @@ BUNMEI ISO payload SHA256: `c4873c05dc101d72675215e608beca2a6adbaef95834552009d6
 ### Reunited-town proposed building palette
 
 At the user's request, Group 86 now defaults to a warm stone/timber artistic palette proposal. All 255 nontransparent slots are estimated, with no claim of recovered FMV colours. The proposal retains the index-order brightness structure with RGB `(min(255, 1.10*i+6), min(255, .92*i+3), .72*i)`, quantized to RGB555; slot 0 stays transparent. The reference-matching attempt against the other coloured town sheets produced no additional exact matches, so their palettes were not transferred. Grayscale remains selectable and existing saved assignments remain intact. The proposal is bundled in `building_helper_cluts.json`, scoped to the exact Group 86 pixel hash, and clearly labelled PROPOSED CLUT in the editor. Earlier statements that Group 86 has no default colour helper describe the state before this artistic proposal.
+
+## Deeper orphan-data audit — 1 November 2026
+
+This pass follows **placement → definition → animation-pointer slot → script**, and separately checks code references. It extends the existing positions/text/route findings; it does not claim to have recovered missing sprite rectangles, original palettes or a playable section. The supplied JP executable and INFO2 were rechecked against the SHA-1 values in the target-identity table. All offsets below are hexadecimal offsets in the physical, uncompressed `SYSTEM/INFO2.BIN`, unless another file is named. Addresses are JP RAM addresses; one-based **P#** means the editor prop number, not an Iron passage scene number.
+
+Upstream was checked live at **`44e814a6268f294f889ee77f5aad319f88e82a50`**. The thirteen commits after the previous `b8fe30a` checkpoint concern port controls, panels, rendering and launcher behavior. Comparing those revisions changes neither `src/i0nfo2/`, `notes/data_names_i0nfo2.csv` nor `docs/CIVILIZATION.md`. The bundled nine-file reference snapshot remains pinned to its recorded revision; this section's newer source check is not a claim that the bundle was silently updated. The working upstream tree was not reset or switched.
+
+### A. Wood retains ten unselected scenery slots, including eight multi-frame/pose scripts
+
+The Wood scenery definitions are at **`80100198` / INFO2+`166A0`** and **`801001A4` / +`166AC`**. Both select **SPR slot 13**, with relative page offsets **2** and **8**, and point to **`801061C4` / +`1C6CC`**. This is the scenery namespace, not the residents' SPR slot 11.
+
+The pointer window has **24 entries**, ending at `80106224`, the next actor definition's animation-table start. It is not justified by reading an arbitrary 24 pointers beyond an unknown boundary: the definition references and the adjacent table establish this boundary. The 14 Wood prop records select scripts **0–11, 14, 15**. The surviving Wood scenery handler initializes from the selected record and handles room visibility; it does not select the other entries. The Wood set controller's unfinished idle scene was already established above.
+
+Consequently, **slots 12, 13 and 16–23 have no selection in those preserved Wood lists and handlers**. Slots 12/13 are single held frames 12/13. The eight higher slots retain **26 distinct frame IDs, 141–166**, and **256 contiguous bytes of script records** at `801069B0..80106AAF`. Their eight pointer cells occupy `80106204..80106220`. Every one of these ten script starts has exactly one aligned literal pointer reference in the audited MAIN+INFO2 regions: its scenery-table cell. No direct `J`/`JAL` into these script starts was found there.
+
+| Slot | Pointer cell | Script address | INFO2 script offset | Frame sequence | Tick fields in the same order |
+|---:|---|---|---|---|---|
+|12|`801061F4`|`801063F0`|`1C8F8`|12|60, hold|
+|13|`801061F8`|`801063F8`|`1C900`|13|60, hold|
+|16|`80106204`|`801069B0`|`1CEB8`|141|60, hold|
+|17|`80106208`|`801069B8`|`1CEC0`|142, 143, 144, 145, 146, 147|8, 8, 8, 8, 8, 8|
+|18|`8010620C`|`801069E8`|`1CEF0`|148, 149, 150, 149, 148|8, 12, 12, 12, 12|
+|19|`80106210`|`80106A10`|`1CF18`|151, 152, 153, 152|8, 1, 10, 4|
+|20|`80106214`|`80106A30`|`1CF38`|154|60, hold|
+|21|`80106218`|`80106A38`|`1CF40`|155, 156, 157, 158, 159, 160|8, 8, 8, 8, 8, 8|
+|22|`8010621C`|`80106A68`|`1CF70`|161, 162, 163, 162, 163|8, 12, 12, 12, 12|
+|23|`80106220`|`80106A90`|`1CF98`|164, 165, 166, 165|6, 2, 5, 3|
+
+All steps have box/argument fields zero. Each sequence ends with control bit `8000` (hold final frame); the tick fields are the low 14 bits, not a claim that a held frame disappears after that duration. None of these ten sequences uses a jump payload. Slot 22's final frame really is **163**, not 161; do not symmetrize the retained sequence during reconstruction.
+
+**Cross-build control:** the PAL scenery table is `8010751C`. The corresponding ten PAL script starts are `80107748`, `80107750`, `80107D08`, `80107D10`, `80107D40`, `80107D68`, `80107D88`, `80107D90`, `80107DC0`, `80107DE8`. Every complete bounded sequence compares byte-for-byte with JP, including box, argument and control words. Thus these are original retained scripts in both builds, not an editor-generated animation or JP-only leftover.
+
+**What this permits:** an SPR candidate for Wood scenery can be checked against these additional frame IDs and original timings. A future editor may expose them as unplaced scenery-animation candidates. **What it does not permit:** assigning them to the raft craftsman, windmill, a particular house or an item without the missing SPR parts or independent visual evidence. Identical frame numbers in resident SPR slot 11 and scenery SPR slot 13 do not identify the same drawing. A generic/computed assignment outside the audited paths is not ruled out; “unselected” here is deliberately narrower than proven unreachable.
+
+Source anchors: [Wood scenery handler](https://github.com/afsenovilla/Tombi-Decomp/blob/44e814a6268f294f889ee77f5aad319f88e82a50/src/i0nfo2/topdownA11SceneryHandler.c), [Wood spawner](https://github.com/afsenovilla/Tombi-Decomp/blob/44e814a6268f294f889ee77f5aad319f88e82a50/src/i0nfo2/spawnNpcSet0D.c), [definition names](https://github.com/afsenovilla/Tombi-Decomp/blob/44e814a6268f294f889ee77f5aad319f88e82a50/notes/data_names_i0nfo2.csv).
+
+### B. Iron's fourth scenery definition is retained but unplaced
+
+The decomp diagnostic's `DEFS` inventory lists **three** Iron scenery definitions. The native table preserves a fourth 12-byte record before the next area's table:
+
+| Subtype | JP definition | INFO2 offset | Relative page offset | SPR slot | Animation table | Placed Iron props |
+|---:|---|---|---:|---:|---|---|
+|0|`800FFF48`|`16450`|2|13|`80106F50`|P1–P5|
+|1|`800FFF54`|`1645C`|4|13|`80106F50`|P6–P13|
+|2|`800FFF60`|`16468`|6|13|`80106F50`|P14–P35|
+|**3**|**`800FFF6C`**|**`16474`**|**8**|**13**|**`80106F50`**|**none**|
+
+The fourth record decodes as `{w1e=8, pad=0, spad=13, pad=0, anims=80106F50}`. It ends exactly at `800FFF78`, the next area's definition table. The live Iron scenery init/handler computes `base + subtype*12`; it does not use a hard-coded three-entry limit. All 35 preserved Iron records have subtypes 0, 1 or 2, and the audited scenery updater does not change subtype. This makes subtype 3 a **retained, unplaced definition candidate**, not a newly found resident or a new set of 24 script payloads.
+
+PAL retains the same fourth record at **`800FEE28` / I0NFO2+`16E00`**, pointing to its Iron scenery table `801082A8`, with the same page offset/slot. This is also an inventory-count omission in `tools/topdown.py` / `tools/civ_i0nfo2_diff.py`, not proof that the upstream runtime rejects subtype 3.
+
+**Restoration implication:** retain a fourth selectable scenery definition and its page offset in research tools; do not assume that only three original Iron scenery page bindings existed. The missing SPR slot-13 table still determines UVs, sprite dimensions, part tpages and frame CLUTs/overrides. Page offset 8 alone cannot establish an original building-part crop or show which, if any, missing prop used it.
+
+Source anchors: [Iron scenery init](https://github.com/afsenovilla/Tombi-Decomp/blob/44e814a6268f294f889ee77f5aad319f88e82a50/src/i0nfo2/topdownA17SceneryInit.c), [Iron scenery handler](https://github.com/afsenovilla/Tombi-Decomp/blob/44e814a6268f294f889ee77f5aad319f88e82a50/src/i0nfo2/topdownA17SceneryHandler.c), [diagnostic inventory](https://github.com/afsenovilla/Tombi-Decomp/blob/44e814a6268f294f889ee77f5aad319f88e82a50/tools/topdown.py).
+
+### C. The intended scenery CLUT destinations survive even where the colours do not
+
+The scenery handlers set **object+0D = 1**, enabling the object's palette override, and put a CLUT identifier in **object+08**. The draw routine uses that override instead of the SPR part's CLUT when enabled. Therefore the absent original sprite table does not erase every palette-related connection:
+
+| Native JP handler | Palette constant instruction(s) | Selected CLUT | VRAM palette origin |
+|---|---|---|---|
+|Wood `800F80D4` / +`E5DC`, indoor room|`800F81D0` / +`E6D8`|`7F48`|x128, y509|
+|Wood, outdoor room 0|`800F81E4` / +`E6EC`|`7FC8`|x128, y511|
+|Stone `800F1F84` / +`848C`, both room branches|`800F2080`, `800F2094` / +`8588`, +`859C`|`7FC8`|x128, y511|
+|Iron `800F25E4` / +`8AEC`, both room branches|`800F26E0`, `800F26F4` / +`8BE8`, +`8BFC`|`7FC8`|x128, y511|
+
+The CLUT origin follows `(id & 63)*16, (id >> 6) & 511`, also used by TombaEdit's `psx/graphics.py`. An 8-bpp part requires 256 words beginning at that origin. This says **where the renderer expects colours**, not which source file supplied them or what the colours were. In particular, the indoor Wood branch is a distinct palette destination; treating every Wood prop as an outdoor-colour binding would discard real native behavior.
+
+This audit does **not** identify arbitrary nonzero words at y511 after a synthetic area/reload preview as the original palette: boot resources, prior section VRAM and incomplete empty-s0 loads must be accounted for. The current helper palettes remain reconstructed presentation data, and Group 86's warm ramp remains an artistic proposal. A restoration can intentionally upload its replacement palette to the surviving destinations, but that upload and its colours must be labelled authored. No Group 86 scenery handler/CLUT binding is established by this table; AREA18's surviving set has actors, not a prop list.
+
+Source anchors: [Wood handler](https://github.com/afsenovilla/Tombi-Decomp/blob/44e814a6268f294f889ee77f5aad319f88e82a50/src/i0nfo2/topdownA11SceneryHandler.c), [Stone handler](https://github.com/afsenovilla/Tombi-Decomp/blob/44e814a6268f294f889ee77f5aad319f88e82a50/src/i0nfo2/topdownA16SceneryHandler.c), [Iron handler](https://github.com/afsenovilla/Tombi-Decomp/blob/44e814a6268f294f889ee77f5aad319f88e82a50/src/i0nfo2/topdownA17SceneryHandler.c), [SPR part/CLUT override draw path](https://github.com/afsenovilla/Tombi-Decomp/blob/44e814a6268f294f889ee77f5aad319f88e82a50/src/i0nfo2/topdownDrawObjectSprite.c).
+
+### D. Orphan function bodies do not necessarily mean orphan gameplay
+
+This pass scans all aligned words in the supplied **MAIN executable and INFO2**, testing full 32-bit pointer equality and decoded direct `J`/`JAL` destinations. It includes unconditional tail jumps, not only calls. The main executable's addresses use its `+800` file header; the offsets below are all INFO2 offsets. This does not cover every possible split-address/computed reference or prove runtime reachability.
+
+| Function entry | JP address | INFO2 offset | Direct/pointer references in MAIN+INFO2 | Interpretation from the matched source |
+|---|---|---|---:|---|
+|`topdownA11ActorDialogueBank2`|`800F2F24`|`942C`|0|Already documented orphan raft-related branch; the normal Wood dialogue does not inline this body|
+|`topdownA16ActorDialogueBank2`|`800F413C`|`A644`|0|Standalone duplicate of logic retained inline in Stone dialogue case 8|
+|`topdownA17ActorDialogueBank2`|`800F5218`|`B720`|0|Standalone smith helper; equivalent logic is inline in Iron dialogue case 2|
+|`topdownA17ActorDialogueBank3`|`800F52F8`|`B800`|**1**|Positive control: real `JAL` at `800F55D0` from normal Iron dialogue|
+|`topdownA11SceneryInit`|`800F7F6C`|`E474`|0|Initialization is embedded in the live Wood scenery handler|
+|`topdownA11SceneryUpdate`|`800F8070`|`E578`|0|Room-visibility behavior is embedded in that handler|
+|`topdownA16SceneryInit`|`800F1CFC`|`8204`|0|Initialization is embedded in the live Stone handler|
+|`topdownA16SceneryApplyState`|`800F1E00`|`8308`|0|Its state-2/3 substitution is embedded in the live Stone updater|
+|`topdownA17SceneryInit`|`800F20F8`|`8600`|0|Initialization is embedded in the live Iron handler|
+
+These bodies are useful retained code, but “0 references to this entry” must not become “the smith dialogue/Stone state change was removed.” The source makes the inline duplication explicit, and native JP matches the same masked instruction structures at these scoped addresses. This comparison is a structural cross-build control, not a newly compiled/matched-C claim. Source: [Stone dialogue](https://github.com/afsenovilla/Tombi-Decomp/blob/44e814a6268f294f889ee77f5aad319f88e82a50/src/i0nfo2/topdownA16ActorOpenDialogue.c), [Iron dialogue with inline helper](https://github.com/afsenovilla/Tombi-Decomp/blob/44e814a6268f294f889ee77f5aad319f88e82a50/src/i0nfo2/topdownA17ActorOpenDialogue.c), [Stone scenery updater](https://github.com/afsenovilla/Tombi-Decomp/blob/44e814a6268f294f889ee77f5aad319f88e82a50/src/i0nfo2/topdownA16SceneryUpdate.c).
+
+### E. Two selection traps resolved by following the native consumers
+
+**Iron animation 15 is not orphaned.** Placement selects script 13 for P16 at `(263,457)`. Its updater chooses `13 + D_8009CFA1` (JP flag **`8009EB49`**). On the first traversal of passage scene 8, starting with phase zero, the native scene changes that flag to 1 when its countdown reaches 42 (`800FE364`), then to 2 on completion (`800FE390`). Thus P16 has a real path **script/frame 13 → 14 → 15**. These three Iron scenery scripts are single held frames, respectively at `80107018`, `80107020`, `80107028`. All 24 entries of its table have a surviving selector once this progress path is included. This narrows the orphan finding to the **fourth definition**, not an invented missing Iron animation.
+
+**Stone script index 12 does not mean frame 12.** The normal seven-prop list selects slots `0,1,2,3,8,9,10`; the alternate list and scenery updater additionally select 11/12 for P6. JP table `80101C48` has slot 11 → `80101E20` → **frame 11**, slot 12 → `80101E30` → **frame 15**. Slot 13 points to `80101E28` → frame 12. All three are held-frame records. Consequently a tool that displays the placement's animation index as if it were the sprite frame would pick the wrong repaired-state drawing. The Stone scenery table also shares script data with the working Baccus definitions; its entries absent from Stone placements cannot be declared globally orphaned just from that absence.
+
+Source: [passage scene 8](https://github.com/afsenovilla/Tombi-Decomp/blob/44e814a6268f294f889ee77f5aad319f88e82a50/src/i0nfo2/npcSet0FSceneStep8.c), [Iron scenery updater](https://github.com/afsenovilla/Tombi-Decomp/blob/44e814a6268f294f889ee77f5aad319f88e82a50/src/i0nfo2/topdownA17SceneryUpdate.c), [Stone spawner](https://github.com/afsenovilla/Tombi-Decomp/blob/44e814a6268f294f889ee77f5aad319f88e82a50/src/i0nfo2/spawnNpcSet0E.c).
+
+### F. What a P# prop actually dispatches to: not an APD item ID
+
+The native spawners allocate all these `SpawnB` records as **layer-3 engine object type `1D`**, then copy the record's first word into **object byte `0E`**. These are different fields. Therefore the `Prop.kind` / source `SpawnB.type` values 0/1/2 in the editor are **not** object handler IDs 0/1/2 and are not inventory item numbers.
+
+| Town | Native store of fixed engine type `1D` to object+02 | Native store of record first word to object+0E |
+|---|---|---|
+|Wood|`800FC388` / INFO2+`12890`|`800FC3B8` / +`128C0`|
+|Stone|`800FC7D8` / +`12CE0`|`800FC808` / +`12D10`|
+|Iron|`800FD4D0` / +`139D8`|`800FD500` / +`13A08`|
+
+The area dispatcher routes engine type `1D` to the scenery handlers discussed above. Some of those scenery objects have real gameplay effects—the lifts move the player and passage progress changes a prop—but the record does not directly say “give inventory item X.” The distinct top-down pickup handler is **layer 2/type `2D`**, `topdownItemSpotHandler` / `topdownItemSpotCheckStep`, whose definition table and item-grant call explicitly contain the item ID. The known cut-town spawners create residents (`30`) and these scenery objects (`1D`), not an extra hidden `2D` pickup list.
+
+This corrects the overly broad suggestion that any editor P# could itself be an APD item placement. P# is an editor label for a native INFO2 scenery record. Its visual identity can remain unknown while its dispatch class is known. The meaning of every value stored at byte `0E` is not established here; it should remain a raw field rather than being renamed to a guessed item or behavior. Source: [Wood spawn](https://github.com/afsenovilla/Tombi-Decomp/blob/44e814a6268f294f889ee77f5aad319f88e82a50/src/i0nfo2/spawnNpcSet0D.c), [Stone spawn](https://github.com/afsenovilla/Tombi-Decomp/blob/44e814a6268f294f889ee77f5aad319f88e82a50/src/i0nfo2/spawnNpcSet0E.c), [Iron spawn](https://github.com/afsenovilla/Tombi-Decomp/blob/44e814a6268f294f889ee77f5aad319f88e82a50/src/i0nfo2/spawnNpcSet0F.c), [item-spot grant logic](https://github.com/afsenovilla/Tombi-Decomp/blob/44e814a6268f294f889ee77f5aad319f88e82a50/src/i0nfo2/topdownItemSpotCheckStep.c).
+
+### Reproducing this pass and its limits
+
+The durable read-only audit is **`tools/audit_cut_village_orphans.py`**. Run:
+
+```powershell
+python tools/audit_cut_village_orphans.py "rom/Ore! Tomba (Japan).cue" --pal-cue "rom/Tombi! (Europe) (En,Es,Pt,Sv,Da).cue"
+```
+
+It rejects a changed MAIN/INFO2 fingerprint, decodes all three scenery windows, preserves the fourth Iron definition, records prop selectors, follows bounded animation records, checks all ten Wood script starts' literal references, and scans the nine helper entries for pointers and direct jumps. It also verifies the native spawner stores that distinguish engine type from the raw prop field, and records the scenery handlers' CLUT constants. Optional PAL comparison verifies its INFO2 hash, exact Wood script records and fourth Iron definition. Decoded findings, per-function hashes and physical offsets are written to ignored `work/cut_village_research/orphans_deeper.json`; the essential facts are reproduced above and do not depend on that scratch file.
+
+The audit is a binary-data/reference check, not a console/emulator execution, a C recompilation or a proof that every candidate is unreachable. Native scene/handler semantics are established with the pinned matched C and inspected JP instructions; selector exclusions include the audited scene-driven alternatives. No new original CLUT payload, sprite-part table, cut-town map, alternate complete controller or unique X19 payload was recovered in this pass. The strongest new reconstruction leads are the **Wood scenery script window** and **Iron subtype-3/page-8 definition**; the CLUT destinations and false-positive controls make them more usable without turning guesses into recovered assets.
+
+### Town-attribution check: passage scenes 8/9 are Iron, not Stone
+
+The observation that Stonetown also mentions a lift is not enough to assign these particular scenes to it. The decisive evidence is the native controller dispatch, not a visual resemblance or the word “lift.” Iron's NPC set **0F**, `updateNpcSet0F` at JP **`800FEC78`**, uses the 12-entry scene jump table at **`800EA534`**. Entries 8/9 select code at `800FED80` / `800FED90`, containing direct calls to **`800FE22C` / `800FE3D8`**, respectively. Entries 10/11 likewise call `800FE504` / `800FE668`. The `npcSet0FCheckTriggerSpots` code selects those steps from the exact Iron passage rectangles already listed in this report.
+
+Stone's distinct set **0E**, `updateNpcSet0E` at JP **`800FD194`**, dispatches idle step 0 and scenes 1–3; it has no scene-8/9 branches. Its three scene calls are at `800FD2AC`, `800FD2BC`, `800FD2CC`, targeting `800FC89C`, `800FCD78`, `800FCEB0`. Stone's lift references can be investigated separately, but do not reassign the Iron controller's routes. Source: [Iron scene dispatcher](https://github.com/afsenovilla/Tombi-Decomp/blob/44e814a6268f294f889ee77f5aad319f88e82a50/src/i0nfo2/updateNpcSet0F.c), [Iron trigger selector](https://github.com/afsenovilla/Tombi-Decomp/blob/44e814a6268f294f889ee77f5aad319f88e82a50/src/i0nfo2/npcSet0FCheckTriggerSpots.c), [Stone scene dispatcher](https://github.com/afsenovilla/Tombi-Decomp/blob/44e814a6268f294f889ee77f5aad319f88e82a50/src/i0nfo2/updateNpcSet0E.c). The durable audit now asserts the Iron table entries and native call instructions too.
+
+### Character-attribution check: Yan dialogue in Lumberjack Town is unconfirmed
+
+Checked the supplied JP area's actual WFM D0FF bank in **`AREA11/A002.GAM`, decompressed offset `86E0`**, not just a translated transcription. It has 250 dialogue entries, with group starts `0,190,191,210,232` (remaining group offsets zero). Its only literal **ヤン** mention is entry **154**, `ヤンの弁当をつかった` (“Used Yan's lunch box”), in the common item-use text. That is not a conversation spoken by Yan or a town-specific resident binding.
+
+The normal Wood dialogue function **`800F3000`** has cases 0–10, selecting bank entries **210,232,233,234,235,236,237,238,239,242,243,248**; none contains Yan's name or establishes him as the speaker. The orphan raft helper is independently accounted for above. Resident **#12**, subtype 4, inside H3 at `(432,448)`, requests **case 11**, which that switch does not implement. Its lost sprite page/parts and unimplemented dialogue cannot be filled in as “Yan” from the placement alone.
+
+**Conclusion:** there is no confirmed Yan conversation attached to the surviving cut Lumberjack Town actor chain. This is not a proof that Yan was never planned to appear there: unidentified residents and missing data leave that historical question open. A name-less line's speaker cannot be ruled in or out merely by searching for ヤン; the native caller/actor linkage is the necessary second check. The shared lunch-box message must not be presented as evidence of a Yan conversation. Source: [Wood dialogue selector](https://github.com/afsenovilla/Tombi-Decomp/blob/44e814a6268f294f889ee77f5aad319f88e82a50/src/i0nfo2/topdownA11ActorOpenDialogue.c), [Wood spawner](https://github.com/afsenovilla/Tombi-Decomp/blob/44e814a6268f294f889ee77f5aad319f88e82a50/src/i0nfo2/spawnNpcSet0D.c); native text/case extraction is retained in `work/cut_village_research/yan_lumberjack_check.json`.

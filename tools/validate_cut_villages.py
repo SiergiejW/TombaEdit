@@ -98,6 +98,14 @@ def main():
             plan.close()
         from PyQt6.QtWidgets import QTableWidget, QLabel
         plan = village_view(iron, lambda text: translations.get(text, 'Japanese retail'))
+        plan.resize(1500, 950)
+        plan.show()
+        app.processEvents()
+        dialogue_table = next(t for t in plan.findChildren(QTableWidget) if t.columnCount() == 7)
+        assert 'fixed the stone clock tower' in dialogue_table.item(0, 6).text()
+        assert dialogue_table.rowHeight(0) >= dialogue_table.fontMetrics().height() * 4
+        assert (dialogue_table.horizontalHeader().sectionPosition(6) + dialogue_table.columnWidth(6)
+                <= dialogue_table.viewport().width() + 2)
         mechanism_table = next(t for t in plan.findChildren(QTableWidget) if t.columnCount() == 4)
         mechanism_table.selectRow(0)
         assert any('L1 — Lower lift' in label.text() for label in plan.findChildren(QLabel))
