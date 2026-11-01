@@ -9,7 +9,7 @@ import sys
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 from formats.archive.ldar import Project
 from formats.level.cut_towns import dialogue_routines, WINDOWS
-from formats.level.cut_village_view import _overlay, preview
+from formats.level.cut_village_view import _overlay, preview, mechanisms, draw_plan, hit_test, describe
 from formats.level.cut_research import animations, supported, REPORT
 from game.builds import executable
 
@@ -37,6 +37,20 @@ def main():
     # The house-1 strongman has exactly his four phase lines.
     assert [entry for entry, _ in stone.rows[3].messages] == [210, 214, 217, 221]
     assert not previews[11].rows[-1].messages  # dlg11 is outside Wood's actual switch
+    from formats.text import premade
+    translations = premade.load()
+    iron = previews[17]
+    messages = [text for row in iron.rows for _, text in row.messages]
+    assert len(messages) == 32 and all(translations.get(text, 'Japanese retail') for text in messages)
+    assert any('\n' in text for text in messages), 'Translation keys must retain original line breaks'
+    assert len(mechanisms(iron.village)) == 10
+    hits = []
+    draw_plan(iron.village, hits=hits)
+    markers = [h for h in hits if h[0] in ('lift', 'passage')]
+    assert len(markers) == 10
+    for kind, index, (x0, y0, x1, y1) in markers:
+        assert hit_test(hits, (x0+x1)/2, (y0+y1)/2) == (kind, index)
+        assert 'World trigger' in describe(iron, [(kind, index)])
     scripts = animations(project)
     assert len(scripts) == 24
     assert sorted({s[0] for _, _, steps in scripts for s in steps}) == list(range(148, 203))
@@ -66,6 +80,14 @@ def main():
             plan = village_view(p)
             assert any('Research' in b.text() for b in plan.findChildren(QPushButton))
             plan.close()
+        from PyQt6.QtWidgets import QTableWidget, QLabel
+        plan = village_view(iron, lambda text: translations.get(text, 'Japanese retail'))
+        mechanism_table = next(t for t in plan.findChildren(QTableWidget) if t.columnCount() == 4)
+        mechanism_table.selectRow(0)
+        assert any('L1 — Lower lift' in label.text() for label in plan.findChildren(QLabel))
+        mechanism_table.selectRow(6)
+        assert any('P8 — Internal passage' in label.text() for label in plan.findChildren(QLabel))
+        plan.close()
         widget.close()
     print('Passed: native dialogue bindings, phase-specific Stone text, modified-overlay rejection, '
           'all 24 animations, report availability' + (', UI search/navigation and four previews.' if args.ui else '.'))

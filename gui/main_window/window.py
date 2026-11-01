@@ -1436,7 +1436,7 @@ class MainWindow(QMainWindow):
                     session = session_for(self.project, self)
                     # A selected row is translated first, even with whole-disc preloading off.
                     self.tabs.addTab(cut_village_view(result['cut_village'], session.translations.get,
-                                                      session.request_texts, session.changed, self.cut_village_jump),
+                                                      session.request_texts, session.changed, self.cut_village_jump, session=session),
                                      'Cut village')
                     self.tabs.setCurrentIndex(self.tabs.count() - 1)
                 if 'level' in result:

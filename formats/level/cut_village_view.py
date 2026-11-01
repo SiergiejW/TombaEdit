@@ -18,6 +18,27 @@ from PIL import Image, ImageDraw, ImageFont
 
 from formats.level.cut_towns import CUT, EXITS, VILLAGES, WINDOWS, dialogue_cases, villages
 
+
+def mechanisms(village):
+    """Map labels and entry descriptions share one definition."""
+    if village is None or village.area != 17:
+        return []
+    from formats.level.cut_research import STOPS, PASSAGES
+    rows = []
+    for i, (x, y) in enumerate(STOPS):
+        name = f'{"Lower" if i < 3 else "Upper"} lift — {("left", "middle", "right")[i % 3]} stop'
+        rows.append(('lift', i, f'L{i+1}', name, (x, y, x+2, y+2),
+                     'Boarding trigger: Tomba walks onto the lift, rides it to another stop, then walks off. '
+                     'Six stops belong to two lifts; these are not six separate lifts. JP trigger code: 800FE0EC.'))
+    for i, bounds in enumerate(PASSAGES):
+        scene = i+8
+        direction = ('north 84', 'south 84', 'north 145 with a sideways shift', 'south 145 with a sideways shift')[i]
+        rows.append(('passage', i, f'P{scene}', f'Internal passage — scene {scene}', bounds,
+                     f'Trigger for scripted movement {direction} pixels. Paired with P{(9,8,11,10)[i]}. '
+                     'Tomba is hidden during part of the movement. This stays inside Iron Town; it is not an area exit. '
+                     'The original tunnel/stair/gate appearance is unknown.'))
+    return rows
+
 SCALE = 2
 MARGIN = 40
 AREA_SETS = {area: number for number, (area, *_rest) in VILLAGES.items() if number in CUT}
@@ -188,9 +209,13 @@ def draw_plan(village, art=None, selected=(), hits=None, backdrop=None):
             px, py = at(x, y)
             draw.ellipse((px-7, py-7, px+7, py+7), outline=(0, 130, 160, 255), width=3)
             draw.text((px+8, py-8), f'L{n}', font=small, fill=(0, 100, 130, 255))
+            hits.append(('lift', n-1, (px-8, py-8, px+8, py+8)))
         for n, (x0, y0, x1, y1) in zip((8, 9, 10, 11), PASSAGES):
             draw.rectangle((*at(x0, y0), *at(x1, y1)), outline=(150, 75, 0, 255), width=3)
             draw.text(at(x1+3, y0), f'P{n}', font=small, fill=(130, 65, 0, 255))
+            a, b = at(x0, y0)
+            c, d = at(x1, y1)
+            hits.append(('passage', n-8, (a-3, b-3, c+3, d+3)))
     for kind, index in chosen:
         for k, i, (x0, y0, x1, y1) in hits:
             if (k, i) != (kind, index):
@@ -208,7 +233,7 @@ def draw_plan(village, art=None, selected=(), hits=None, backdrop=None):
 
 def hit_test(hits, x, y):
     """The (kind, index) of the element at an image pixel: residents before props before houses, the smallest first."""
-    for kind in ('resident', 'prop', 'exit', 'house'):
+    for kind in ('lift', 'passage', 'resident', 'prop', 'exit', 'house'):
         found = [((x1 - x0) * (y1 - y0), index) for k, index, (x0, y0, x1, y1) in hits
                  if k == kind and x0 <= x <= x1 and y0 <= y <= y1]
         if found:
@@ -220,10 +245,17 @@ def describe(preview, selected):
     """A line about what is selected on the plan."""
     village = preview.village
     if not selected:
-        return 'Click a resident, prop or house on the plan, or a row of the table, to select it. Click empty space to deselect.'
+        return ('Click a resident, prop, house or map marker to see its description. '
+                'L = lift boarding stop; P = internal passage trigger. See the Mechanisms entries for all L/P labels.'
+                if village.area == 17 else
+                'Click a resident, prop or house on the plan, or a row of the table, to select it. Click empty space to deselect.')
     if len(selected) > 1:
-        return f'{len(selected)} residents selected.'
+        return f'{len(selected)} plan entries selected.'
     kind, index = selected[0]
+    if kind in ('lift', 'passage'):
+        _, _, label, name, (x0, y0, x1, y1), detail = next(
+            row for row in mechanisms(village) if row[:2] == (kind, index))
+        return f'{label} — {name}. World trigger: x {x0}–{x1}, y {y0}–{y1} (inclusive). {detail}'
     if kind == 'resident':
         r, row = village.residents[index], preview.rows[index]
         return (f'Resident {row.number}: {row.where}, {row.behaviour}, subtype {r.subtype}, case {row.case}, '
@@ -578,7 +610,7 @@ def preview(project, path, index):
             for g, l in pairs or ():
                 entry = (bank.groups[g] if g < len(bank.groups) else 0) + l
                 if entry < len(bank.dialogues):
-                    row.messages.append((entry, export.plain(bank.dialogues[entry]).replace('\n', ' ')))
+                    row.messages.append((entry, export.plain(bank.dialogues[entry])))
                 else:
                     row.messages.append((None, f'(group {g}, line {l}: the line is not in this disc\'s text)'))
         rows.append(row)
@@ -827,7 +859,7 @@ def _backdrop_bar(preview, changed):
     return holder
 
 
-def view(preview, english=None, request=None, changed=None, jump=None):
+def view(preview, english=None, request=None, changed=None, jump=None, session=None):
     """The widget for a Preview. `english(text)` gives a translation of a line, or None.
 
     `jump(kind, payload)` takes the user to something the selection is made of: kind 'text' (payload: the bank's
@@ -902,6 +934,9 @@ def view(preview, english=None, request=None, changed=None, jump=None):
         found = [english(text) for text in lines(row)]
         return ' / '.join(line for line in found if line)
 
+    translation_status = QLabel()
+    translation_status.setWordWrap(True)
+
     def show_english():
         column = len(headers) - 1
         for r, row in enumerate(preview.rows):
@@ -910,6 +945,20 @@ def view(preview, english=None, request=None, changed=None, jump=None):
             if item is not None and item.text() != text:
                 item.setText(text)
                 item.setToolTip(text)
+        if english:
+            total = sum(bool(lines(row)) for row in preview.rows)
+            covered = sum(bool(translated(row)) for row in preview.rows)
+            detail = ''
+            if session is not None:
+                if session.error:
+                    detail = ' ' + session.error
+                elif session.model_off:
+                    detail = ' Live model is off.'
+                elif not session.enabled or not session.folder:
+                    detail = ' Live translation is not configured/enabled; bundled English is shown when available.'
+                if not session.use_premade:
+                    detail += ' Bundled translations are disabled in translation settings.'
+            translation_status.setText(f'English available for {covered}/{total} residents with dialogue.' + detail)
 
     for r, row in enumerate(preview.rows):
         says = ' / '.join(text if entry is None else f'#{entry}: {text}' for entry, text in row.messages) or row.note
@@ -921,6 +970,8 @@ def view(preview, english=None, request=None, changed=None, jump=None):
             item.setToolTip(text)
             table.setItem(r, c, item)
     table.resizeColumnsToContents()
+    if english:
+        show_english()
     table.setColumnWidth(5, min(table.columnWidth(5), 300))     # the Japanese is the shorter column
     if english:
         table.setColumnWidth(6, 560)
@@ -944,6 +995,20 @@ def view(preview, english=None, request=None, changed=None, jump=None):
     # Selection: the table's rows and the plan's elements show each other. `syncing` stops the one
     # from answering while the other is being set.
     state = dict(selected=[], syncing=False, hits=[])
+    mechanism_rows = mechanisms(preview.village)
+    mechanism_table = QTableWidget(len(mechanism_rows), 4)
+    mechanism_table.setHorizontalHeaderLabels(['Map label', 'What it is', 'World trigger (inclusive)', 'What happens'])
+    mechanism_table.setEditTriggers(QAbstractItemView.EditTrigger.NoEditTriggers)
+    mechanism_table.setSelectionBehavior(QAbstractItemView.SelectionBehavior.SelectRows)
+    for row, (_, _, label, name, (x0, y0, x1, y1), detail) in enumerate(mechanism_rows):
+        for column, value in enumerate((label, name, f'x {x0}–{x1}; y {y0}–{y1}', detail)):
+            item = QTableWidgetItem(value)
+            item.setToolTip(value)
+            mechanism_table.setItem(row, column, item)
+    mechanism_table.resizeColumnsToContents()
+    mechanism_table.setColumnWidth(3, 360)
+    from PyQt6.QtWidgets import QTabWidget
+    entry_tabs = QTabWidget()
     places = preview.places
 
     def chosen_rows(selected):
@@ -1008,16 +1073,37 @@ def view(preview, english=None, request=None, changed=None, jump=None):
             if state['syncing']:
                 return
             rows = sorted({i.row() for i in table.selectedIndexes()})
+            state['syncing'] = True
+            mechanism_table.clearSelection()
+            state['syncing'] = False
             show([('resident', r) for r in rows])
+
+        def mechanism_changed():
+            if state['syncing']:
+                return
+            rows = sorted({i.row() for i in mechanism_table.selectedIndexes()})
+            state['syncing'] = True
+            table.clearSelection()
+            state['syncing'] = False
+            show([mechanism_rows[r][:2] for r in rows])
+
+        mechanism_table.itemSelectionChanged.connect(mechanism_changed)
 
         def plan_clicked(x, y):
             found = hit_test(state['hits'], x, y)
             state['syncing'] = True
             try:
                 table.clearSelection()
+                mechanism_table.clearSelection()
                 if found is not None and found[0] == 'resident':
+                    entry_tabs.setCurrentIndex(0)
                     table.selectRow(found[1])
                     table.scrollToItem(table.item(found[1], 0))
+                elif found is not None and found[0] in ('lift', 'passage'):
+                    row = next(i for i, value in enumerate(mechanism_rows) if value[:2] == found)
+                    entry_tabs.setCurrentIndex(1)
+                    mechanism_table.selectRow(row)
+                    mechanism_table.scrollToItem(mechanism_table.item(row, 0))
             finally:
                 state['syncing'] = False
             show([found] if found is not None else [])
@@ -1031,18 +1117,27 @@ def view(preview, english=None, request=None, changed=None, jump=None):
     inside.setContentsMargins(0, 0, 0, 0)
     inside.addWidget(_title(f'Residents of {preview.name}: {len(preview.rows)} entries, the numbered marks of the plan'))
     inside.addWidget(table, 1)
+    if english:
+        inside.addWidget(translation_status)
+    entry_tabs.addTab(residents, 'Residents')
+    if mechanism_rows:
+        entry_tabs.addTab(mechanism_table, 'Mechanisms · L/P map labels')
     if preview.sheets:
         # Under the residents, so the plan keeps the whole height of the tab.
         right = QSplitter(Qt.Orientation.Vertical)
-        right.addWidget(residents)
+        right.addWidget(entry_tabs)
         right.addWidget(_sheets_panel(preview.sheets))
         right.setSizes([380, 340])
         split.addWidget(right)
     else:
-        split.addWidget(residents)
+        split.addWidget(entry_tabs)
     split.setSizes([480, 900])
     layout.addWidget(split, 1)
-    layout.addWidget(QLabel('Red: resident outdoors. Purple: resident inside a house. Blue: house. '
+    legend = QLabel('Red: resident outdoors. Purple: resident inside a house. Blue: house. '
                             'Green: where a patrolling resident walks. Yellow: prop. A translucent figure is a stand-in. '
-                            'Numbers are the rows of the table.'))
+                            'Numbers are the resident rows. '
+                            + ('Cyan L1–L6: lift boarding stops. Brown P8–P11: internal passages. '
+                               'Click a marker or open the Mechanisms tab for its entry.' if mechanism_rows else ''))
+    legend.setWordWrap(True)
+    layout.addWidget(legend)
     return widget

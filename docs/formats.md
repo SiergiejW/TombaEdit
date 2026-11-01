@@ -169,7 +169,12 @@ search, pinned source links, and buttons to open the village plans and relevant 
 animation table follows Iron subtype 4's INFO2-to-MAIN pointer chain and decodes all 24 scripts from
 the opened disc, including frame numbers and update ticks. A changed INFO2 disables that live view.
 Iron Town's plan marks the six lift boarding stops (L1–L6) and four internal passage triggers (P8–P11);
-the mechanisms table gives coordinates, behavior and JP code addresses. Quest blockers, unfinished
+the adjacent Mechanisms entries name every marker and give coordinates and behavior. Clicking a map
+marker selects its entry; selecting an entry highlights its trigger and shows a plain-language description.
+The research mechanisms table also gives JP code addresses. Dialogue translation lookup keeps the
+original line breaks as part of the bundled translation key; changing them to spaces hides existing English.
+The resident table reports English coverage and explains unavailable/disabled translation settings.
+Quest blockers, unfinished
 scenes, JP load/music wiring and negative searches remain labelled research evidence rather than
 being presented as restored gameplay. The report is included in the frozen application's data files.
 
