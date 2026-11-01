@@ -1,0 +1,62 @@
+{
+  "repository": "https://github.com/afsenovilla/Tombi-Decomp",
+  "revision": "b8fe30a1ad2660451c0b6c69b625bb18dac48403",
+  "checked_date": "2026-11-01",
+  "scope": "Cut-village and related retail/build/format/port research; not a game-code import",
+  "files": [
+    {
+      "label": "Civilization: complete cut-town evidence",
+      "path": "docs/CIVILIZATION.md",
+      "bytes": 109794,
+      "sha256": "10e9331ec47624dccd8fe1b5625ad3b161fc7095b32ae9c650d8c5a2add1dfa3"
+    },
+    {
+      "label": "Cut-content inventory and status",
+      "path": "docs/CUT_CONTENT.md",
+      "bytes": 41578,
+      "sha256": "3ee4794e6e996c9bbddb5ca2ffe19e1d0601f58e4eb669b3061a32202c8b8c9a"
+    },
+    {
+      "label": "Japanese retail build",
+      "path": "docs/JP.md",
+      "bytes": 6823,
+      "sha256": "bced2f1d4d870b570cd1037dd1bbcf4223b6a67e492f1c68439e26d3d4fb5e15"
+    },
+    {
+      "label": "Known builds and disc versions",
+      "path": "docs/BUILDS.md",
+      "bytes": 5305,
+      "sha256": "91bb151798293b864e3858f17b762ff682b533466bff0e837ebecf82234e545f"
+    },
+    {
+      "label": "Format documentation",
+      "path": "docs/FORMATS.md",
+      "bytes": 11901,
+      "sha256": "02c63237515a92cafa8e14c230251f0d190235746ec23333f19679d6d1f7cf12"
+    },
+    {
+      "label": "Engine format research",
+      "path": "notes/formats.md",
+      "bytes": 80512,
+      "sha256": "ce8cc11c55ec37d5779ca463c9a1b1a08f7302910a244af5c135ddca01d03a4c"
+    },
+    {
+      "label": "Events and unused-content research",
+      "path": "notes/secrets.md",
+      "bytes": 28264,
+      "sha256": "95507fe0dd0685eae15646d028caf2b38e32ecd46a7c914dc6fdd9ab9a9a356f"
+    },
+    {
+      "label": "Native port and authored reconstruction",
+      "path": "docs/PORT.md",
+      "bytes": 258680,
+      "sha256": "9c011dd9c7cceedef7a574903bd84c728c2b198a719492350927a0f96c452c92"
+    },
+    {
+      "label": "Upstream license",
+      "path": "LICENSE",
+      "bytes": 1316,
+      "sha256": "a2d63cb314361301eddf9067958c0be8312718d14abede1cae0cb0d3f72c4ed3"
+    }
+  ]
+}

@@ -260,6 +260,33 @@ def hit_test(hits, x, y):
     return None
 
 
+def resident_evidence(preview, index):
+    """Display confidence, never promote a stand-in into an original identity."""
+    r = preview.village.residents[index]
+    if ('resident',index) in preview.graphics:
+        return 'Manual reconstruction choice; not a recovered original sprite binding.'
+    if preview.area == 18:
+        candidates = {3:'wide-hat figure',5:'partly clipped figure at the castle gate',
+                      9:'bald crouching figure',7:'boy on a balcony',2:'partially visible blonde head'}
+        candidate = candidates.get(index)
+        return (f'Upstream FMV registration suggests a {candidate} at this position; '
+                'the match was not independently re-fitted here and the original SPR binding is missing.'
+                if candidate else 'Test actor outside the upstream fitted FMV region; original identity unresolved.')
+    found = preview.art.look_for(r.subtype) if preview.art is not None else None
+    if found is None:
+        return 'Original drawing unresolved; no recovered SPR binding is available.'
+    look, substitute = found
+    if substitute:
+        return f'Translucent substitute: {look.label}. This does not identify the original actor.'
+    if preview.area == 16 and r.subtype == 2:
+        confidence = 'Figure/palette matched pixel-exact to the comparison sprite; original SPR table remains missing.'
+    elif preview.area == 17 and r.subtype == 0:
+        confidence = 'Figure consistent; this palette is backed by the retail side-view Iron resident.'
+    else:
+        confidence = 'Probable identification from frame order and community palette comparisons; original SPR table missing.'
+    return f'{look.label}. {confidence}'
+
+
 def describe(preview, selected):
     """A line about what is selected on the plan."""
     village = preview.village
@@ -279,7 +306,8 @@ def describe(preview, selected):
         r, row = village.residents[index], preview.rows[index]
         return (f'Resident {row.number}: {row.where}, {row.behaviour}, subtype {r.subtype}, case {row.case}, '
                 f'facing {r.frame}, at ({r.x}, {r.y}).'
-                + (f' Manual graphics: {preview.graphics[kind,index].label}.' if (kind,index) in preview.graphics else ''))
+                + (f' Manual graphics: {preview.graphics[kind,index].label}.' if (kind,index) in preview.graphics else '')
+                + ' ' + resident_evidence(preview,index))
     if kind == 'prop':
         q = village.props[index]
         return (f'Prop {index + 1}: subtype {q.subtype}, animation {q.animation}, type {q.kind}, '
@@ -733,10 +761,11 @@ def _sheets_panel(sheets):
     outer.addWidget(columns, 1)
     note = QLabel('Page 0 of each group that loads the village overlay holds 4-bit figures (256 x 256 texels), pages 1 to 6 '
                   '8-bit pictures of buildings (768 x 256): pieces of the village that were put together from data '
-                  'the disc does not hold, so they are shown as they are stored. Nothing read from the game says which '
-                  'village loads which group or which palette is used; the palettes are those of the area CLUT files that '
-                  'colour the whole page, the named ones first, then the one that makes neighbouring texels most alike, '
-                  'so pick another if the colours look wrong.')
+                  'the disc does not hold, so they are shown as stored. Menu-close reload tables associate village groups '
+                  '61/76/80/86 with Wood/Stone/Iron/reunited town; other groups are available for comparison. '
+                  'Resident palettes have different evidence levels; building palettes remain unrecovered. '
+                  'The named or visually ranked CLUT choices here are not all proven original bindings. '
+                  'Manual assignments remain your reconstruction choices.')
     note.setWordWrap(True)
     outer.addWidget(note)
 
@@ -1007,6 +1036,8 @@ def view(preview, english=None, request=None, changed=None, jump=None, session=N
             item.setToolTip(text)
             if c == 3 and graphic:
                 item.setToolTip(graphic.label)
+            elif c == 3:
+                item.setToolTip(resident_evidence(preview,r))
             table.setItem(r, c, item)
     table.resizeColumnsToContents()
     if english:
@@ -1158,7 +1189,7 @@ def view(preview, english=None, request=None, changed=None, jump=None, session=N
             for row in range(len(preview.rows)):
                 item=table.item(row,3);graphic=preview.graphics.get(('resident',row))
                 item.setText(f'{preview.rows[row].subtype}' + (' · manual' if graphic else ''))
-                item.setToolTip(graphic.label if graphic else str(preview.rows[row].subtype))
+                item.setToolTip(graphic.label if graphic else resident_evidence(preview,row))
             for row in range(len(preview.village.props)):
                 graphic=preview.graphics.get(('prop',row));item=props_table.item(row,5)
                 item.setText(graphic.label if graphic else 'Unassigned (yellow mark)');item.setToolTip(item.text())

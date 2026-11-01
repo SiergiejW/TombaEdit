@@ -168,6 +168,13 @@ ships the complete [research report](cut-villages-jp-research.md), with a sectio
 search, pinned source links, and buttons to open the village plans and relevant ROM files. Its live
 animation table follows Iron subtype 4's INFO2-to-MAIN pointer chain and decodes all 24 scripts from
 the opened disc, including frame numbers and update ticks. A changed INFO2 disables that live view.
+Its document selector also includes nine exact upstream references (complete Civilization and
+cut-content articles, JP/build/format/event/port notes, and MIT license). The common revision,
+checked date and per-file SHA-256 values are stored in `docs/decomp/manifest.json` and validated by
+the browser. Source links resolve to the pinned upstream revision. Use `tools/sync_decomp_research.py`
+after reviewing a newly fetched upstream delta; startup does not fetch or silently adopt new claims.
+Resident selection and drawing tooltips distinguish probable identifications, palette-backed figures,
+translucent substitutes, AREA18 FMV candidates and user-authored graphics choices.
 Iron Town's plan marks the six lift boarding stops (L1–L6) and four internal passage triggers (P8–P11);
 the adjacent Mechanisms entries name every marker and give coordinates and behavior. Clicking a map
 marker selects its entry; selecting an entry highlights its trigger and shows a plain-language description.

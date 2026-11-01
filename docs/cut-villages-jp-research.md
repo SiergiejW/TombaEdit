@@ -2,6 +2,30 @@
 
 Research date: **31 October 2026**. Target: the supplied `rom/Ore! Tomba (Japan).cue` and its BIN. This is a research report, not a playable restoration. No game code, editor code, save, or disc image was modified.
 
+## Synchronization checkpoint — 1 November 2026
+
+Latest upstream checked: **`b8fe30a1ad2660451c0b6c69b625bb18dac48403`**. The two commits after
+the detailed `1c91428` refresh concern Android controller labels and launcher options, not cut-town
+evidence. Comparing original `4220d8e` to this checkpoint changes no `src/i0nfo2/` retail source file;
+the native JP hash-scoped dialogue/animation mappings therefore require no new address substitution.
+
+The editor now bundles nine exact upstream references, including the complete Civilization article,
+cut-content inventory, JP/build notes, format/event research, port/reconstruction documentation and
+MIT license. Choose them in the Research document selector. `docs/decomp/manifest.json` records
+the common revision, checked date, byte counts and SHA-256 of every file; the browser checks these
+before calling the snapshot synchronized. `.gitattributes` preserves their exact source line endings.
+Relative upstream links resolve against that same pinned revision. Original game assets are not bundled.
+
+This synchronizes **cut-village and related retail/build/format/port research**, not every upstream
+port feature or executable. Retained source data, reported visual matches, authored port behavior and
+manual editor graphics choices keep separate evidence labels. A live manual crop never changes an
+original NPC definition or proves that a prop originally used that drawing.
+
+To repeat the controlled update, fetch the upstream checkout, run
+`python tools/sync_decomp_research.py work/cut_village_research/upstream_current --ref origin/master --checked-date YYYY-MM-DD`,
+review the document/code delta, and run `tools/validate_cut_villages.py` against the audited ROM.
+The editor does not silently fetch or apply future upstream changes at startup.
+
 ## Upstream recalibration — 1 November 2026
 
 Compared the original snapshot `4220d8e1dc8635e51cbe33e2ca4588486786e796` with upstream

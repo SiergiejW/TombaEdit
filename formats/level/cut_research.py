@@ -1,13 +1,28 @@
 """Retail evidence browser; live data is gated by the audited JP fingerprints."""
 import hashlib
+import json
 from pathlib import Path
 import struct
 
 REPORT = Path(__file__).resolve().parents[2] / 'docs' / 'cut-villages-jp-research.md'
+REFERENCES = REPORT.parent / 'decomp'
 JP_EXE = '07d577698ad31ec1a69b9d7b80a7c3f90b650888'
 STOPS = ((55, 375), (231, 367), (390, 375), (111, 159), (230, 151), (334, 159))
 PASSAGES = ((100, 420, 128, 428), (110, 348, 128, 354),
             (295, 406, 312, 410), (280, 268, 296, 272))
+
+
+def reference_manifest():
+    """Verify the bundled snapshot before presenting it as synchronized."""
+    manifest = json.loads((REFERENCES/'manifest.json').read_text(encoding='utf8'))
+    for entry in manifest['files']:
+        target = (REFERENCES/entry['path']).resolve()
+        if REFERENCES.resolve() not in target.parents:
+            raise ValueError('Reference path outside bundle')
+        data = target.read_bytes()
+        if len(data) != entry['bytes'] or hashlib.sha256(data).hexdigest() != entry['sha256']:
+            raise ValueError(f"Reference integrity check failed: {entry['path']}")
+    return manifest
 
 
 def supported(project):
@@ -60,10 +75,16 @@ def view(project, jump=None, area=None):
     from PyQt6.QtGui import QTextCursor, QTextDocument
     from PyQt6.QtWidgets import (QWidget, QVBoxLayout, QHBoxLayout, QLabel, QLineEdit,
                                 QPushButton, QSplitter, QListWidget, QTextBrowser,
-                                QTabWidget, QTableWidget, QTableWidgetItem)
+                                QTabWidget, QTableWidget, QTableWidgetItem, QComboBox)
     widget = QWidget()
     layout = QVBoxLayout(widget)
-    note = QLabel('JP retail research • Updated 1 November 2026 • Original 4220d8e / upstream refresh 1c91428\n'
+    try:
+        manifest = reference_manifest()
+        sync = f"Upstream snapshot {manifest['revision'][:12]} • checked {manifest['checked_date']} • file hashes verified"
+    except (OSError,ValueError,KeyError,TypeError) as exc:
+        manifest = None
+        sync = f'Upstream reference snapshot unavailable: {exc}'
+    note = QLabel(sync + '\n'
                   'Recovered code/data, incomplete scenes and reconstruction leads are distinguished in the report. '
                   'The report records the original editor discrepancy; this editor now uses corrected dialogue bindings.')
     note.setWordWrap(True)
@@ -72,6 +93,13 @@ def view(project, jump=None, area=None):
     layout.addWidget(tabs, 1)
     article = QWidget()
     body = QVBoxLayout(article)
+    documents = QComboBox()
+    documents.addItem('TombaEdit: JP findings, corrections and upstream recalibration', (REPORT, None))
+    if manifest:
+        for entry in manifest['files']:
+            url = f"{manifest['repository']}/blob/{manifest['revision']}/{entry['path']}"
+            documents.addItem('Upstream: '+entry['label'], (REFERENCES/entry['path'],url))
+    body.addWidget(documents)
     bar = QHBoxLayout()
     search = QLineEdit()
     search.setPlaceholderText('Find in the complete research report (addresses, functions, items…)')
@@ -83,13 +111,7 @@ def view(project, jump=None, area=None):
     split = QSplitter()
     outline, text = QListWidget(), QTextBrowser()
     text.setOpenExternalLinks(True)
-    try:
-        report = REPORT.read_text(encoding='utf8')
-    except OSError as exc:
-        report = f'Research report unavailable: {exc}'
-    text.setMarkdown(report)
-    headings = [line.lstrip('#').strip() for line in report.splitlines() if line.startswith('## ')]
-    outline.addItems(headings)
+    headings = []
     split.addWidget(outline)
     split.addWidget(text)
     split.setStretchFactor(1, 1)
@@ -117,6 +139,26 @@ def view(project, jump=None, area=None):
             text.find(headings[index])
 
     outline.currentRowChanged.connect(section)
+    def document_changed():
+        from PyQt6.QtCore import QUrl
+        path,url = documents.currentData()
+        try:
+            report = path.read_text(encoding='utf8')
+        except OSError as exc:
+            report = f'Document unavailable: {exc}'
+        text.document().setBaseUrl(QUrl(url or ''))
+        text.setMarkdown(report)
+        outline.clear()
+        headings.clear()
+        for line in report.splitlines():
+            if line.startswith('## '):
+                heading = QTextDocument()
+                heading.setMarkdown(line)
+                headings.append(heading.toPlainText().strip())
+        outline.addItems(headings)
+        status.clear()
+    documents.currentIndexChanged.connect(document_changed)
+    document_changed()
     search.returnPressed.connect(find)
     next_button.clicked.connect(lambda: find(False))
     previous.clicked.connect(lambda: find(True))
@@ -168,7 +210,7 @@ def view(project, jump=None, area=None):
         layout.addLayout(links)
     if area:
         terms = {11: 'Lumberjack Town has a conditional', 16: 'Confirmed correction:',
-                 17: "Iron Town's iron-lump", 18: 'Native JP loading'}
+                 17: "Iron Town's iron-lump", 18: 'Upstream recalibration'}
         wanted = terms.get(area, '')
         index = next((i for i, h in enumerate(headings) if wanted in h), -1)
         if index >= 0:
