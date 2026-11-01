@@ -142,15 +142,69 @@ def audit(cue):
     assert not result['functions'][1]['references']
     assert not result['functions'][2]['references']
     assert any(r['kind'] == 'JAL' for r in result['functions'][3]['references'])
+    assert result['scenery'][2]['no_selection_in_preserved_lists_and_audited_scenery_handlers'] == []
+    result['scenery_palette_origins'] = []
+    for name, address, length in (
+            ('Wood handler', 0x800F80D4, 452), ('Stone handler', 0x800F1F84, 372),
+            ('Iron handler', 0x800F25E4, 372)):
+        constants = []
+        for pc in range(address, address+length, 4):
+            value = u32(pc)
+            if value >> 26 in (9, 13) and value & 0xFFFF in (0x7F48, 0x7FC8):
+                clut = value & 0xFFFF
+                constants.append(dict(**location(pc), clut=f'{clut:04X}',
+                                      vram_x=(clut & 63)*16, vram_y=(clut >> 6) & 511))
+        assert constants
+        result['scenery_palette_origins'].append(dict(name=name, **location(address), constants=constants))
+    result['prop_record_type_is_not_engine_type'] = []
+    for area, type_constant, type_store, record_store in (
+            (11, 0x800FC384, 0x800FC388, 0x800FC3B8),
+            (16, 0x800FC7D4, 0x800FC7D8, 0x800FC808),
+            (17, 0x800FD4CC, 0x800FD4D0, 0x800FD500)):
+        assert u32(type_constant) == 0x2402001D  # addiu v0, zero, 0x1D
+        assert u32(type_store) == 0xA0820002  # sb v0, 2(a0)
+        assert u32(record_store) == 0xA082000E  # sb v0, 14(a0)
+        result['prop_record_type_is_not_engine_type'].append(dict(area=area,
+            engine_type=0x1D, engine_type_store=location(type_store),
+            spawn_record_first_word_store=location(record_store), object_field_offset='0E'))
     return result
+
+
+def compare_pal(result, cue):
+    """Cross-build control, not a claim of rebuilding C or matching whole files."""
+    project = Project(cue)
+    overlay = bytes(_overlay(project))
+    if hashlib.sha1(overlay).hexdigest() != '43b1ce474711d299c0a4bb7c5add80e745b67f77':
+        raise ValueError('Expected the audited PAL I0NFO2 overlay for comparison.')
+    base = executable(project).build.overlay
+    ptr = struct.unpack_from('<I', overlay, 0x800FF054-base+8)[0]
+    comparisons = []
+    jp = result['wood_unselected_scripts']
+    for entry in jp:
+        address = struct.unpack_from('<I', overlay, ptr-base+entry['index']*4)[0]
+        native = [struct.unpack_from('<HHhH', overlay, address-base+k*8) for k in range(len(entry['steps']))]
+        expected = [(s['frame'], s['box'], s['argument'], int(s['control'], 16)) for s in entry['steps']]
+        assert native == expected
+        comparisons.append(dict(index=entry['index'], pal_address=f'{address:08X}',
+                                pal_offset=f'{address-base:X}', bytes=len(native)*8, exact_record_match=True))
+    iron_ptr = struct.unpack_from('<I', overlay, 0x800FEE04-base+8)[0]
+    fourth = struct.unpack_from('<HhhhI', overlay, 0x800FEE28-base)
+    assert fourth == (8, 0, 13, 0, iron_ptr)
+    result['pal_control'] = dict(info2_sha1=hashlib.sha1(overlay).hexdigest(),
+        wood_scenery_table=f'{ptr:08X}', wood_scripts=comparisons,
+        iron_fourth_definition=dict(address='800FEE28', offset=f'{0x800FEE28-base:X}',
+                                    page_offset=8, spr_slot=13, table=f'{iron_ptr:08X}'))
 
 
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('cue')
     parser.add_argument('--output', type=Path, default=Path('work/cut_village_research/orphans_deeper.json'))
+    parser.add_argument('--pal-cue', help='Optional audited PAL disc: compare the newly identified records')
     args = parser.parse_args()
     result = audit(args.cue)
+    if args.pal_cue:
+        compare_pal(result, args.pal_cue)
     args.output.parent.mkdir(parents=True, exist_ok=True)
     args.output.write_text(json.dumps(result, indent=2)+'\n', encoding='utf8')
     print('JP fingerprints verified; Wood 10 unselected scenery slots (8 cover frames 141..166); Iron unplaced subtype 3/page 8.')

@@ -959,7 +959,7 @@ def view(preview, english=None, request=None, changed=None, jump=None, session=N
     `changed` is a signal that fires when a translation may have arrived.
     """
     from PyQt6.QtCore import Qt
-    from PyQt6.QtWidgets import QLabel, QSplitter, QTableWidget, QTableWidgetItem, QVBoxLayout, QWidget, QAbstractItemView
+    from PyQt6.QtWidgets import QLabel, QSplitter, QTableWidget, QTableWidgetItem, QVBoxLayout, QWidget, QAbstractItemView, QHeaderView
     from gui.widgets.image_view import ImageView
     widget = QWidget()
     layout = QVBoxLayout(widget)
@@ -1023,6 +1023,10 @@ def view(preview, english=None, request=None, changed=None, jump=None, session=N
     table.setHorizontalHeaderLabels(headers)
     table.setEditTriggers(QAbstractItemView.EditTrigger.NoEditTriggers)
     table.setSelectionBehavior(QAbstractItemView.SelectionBehavior.SelectRows)
+    table.setWordWrap(True)
+    table.setTextElideMode(Qt.TextElideMode.ElideNone)
+    table.verticalHeader().setSectionResizeMode(QHeaderView.ResizeMode.ResizeToContents)
+    table.horizontalHeader().sectionResized.connect(lambda *_: table.resizeRowsToContents())
     def lines(row):
         return [text for entry, text in row.messages if entry is not None]
 
