@@ -32,6 +32,10 @@ def main():
     wood, asset = banks[11]
     assert usage.confirmed_cut_village(wood.dialogues[210])
     assert not usage.confirmed_cut_village(wood.dialogues[220])  # old wrong routine's binding
+    gloves = usage.entry(banks[17][0].dialogues[246])
+    assert gloves['speaker_candidate']['name'] == 'Gantetsu'
+    assert gloves['speaker_candidate']['position'] == [223, 123]
+    assert gloves['status'] == 'not_found' and not gloves.get('availability')
     emitted = list(export.entries(export.Bank('Wood', asset.source.path, asset.offset, wfm=wood)))
     assert emitted[210]['usage']['availability'] == 'confirmed_unused_cut_village'
     profile = usage._study_for(project)
@@ -39,6 +43,23 @@ def main():
               if item['status'] == 'referenced_elsewhere']
     assert len(shared) == 146
     assert all(item['local_status'] == 'not_found' and item['equivalent_references'] for _, _, item in shared)
+    key, index, note = shared[0]
+    source, offset = key.rsplit('@', 1)
+    shared_asset = next(a for a in project.by_source[source] if a.kind == 'WFM' and a.offset == int(offset, 16))
+    shared_wfm = Wfm(project.asset_data(shared_asset))
+    usage.attach(shared_wfm, project, source, int(offset, 16))
+    assert usage.entry(shared_wfm.dialogues[index])['status'] == 'referenced_elsewhere'
+    reference_keys = {r['bank'] for r in note['equivalent_references']}
+    read_shared_asset = project.asset_data
+    def changed_reference(item):
+        raw = bytes(read_shared_asset(item))
+        if item.kind == 'WFM' and f'{item.source.path}@{item.offset:X}' in reference_keys:
+            return raw[:16]+bytes([raw[16] ^ 1])+raw[17:]
+        return raw
+    with patch.object(project, 'asset_data', side_effect=changed_reference):
+        changed = Wfm(read_shared_asset(shared_asset))
+        usage.attach(changed, project, source, int(offset, 16))
+        assert usage.entry(changed.dialogues[index])['status'] == 'unknown'
 
     # A changed code input must lose the retail-only classification.
     read_asset = project.asset_data
@@ -79,6 +100,17 @@ def main():
     assert viewer.rendered.zoom.currentIndex() == 3
     assert not viewer.translation.isHidden() and not viewer.panes.widget(1).isHidden()
     viewer.close()
+    session.closed = True
+
+    session = TranslationSession(project)
+    session.enabled = False
+    session.model_off = True
+    session.discovered = True
+    shared_view = DialogueView(shared_wfm, 'Shared', source, int(offset, 16), session)
+    shared_view.usage_filter.setCurrentIndex(shared_view.usage_filter.findData('referenced_elsewhere'))
+    item = shared_view.entries.item(index)
+    assert not item.isHidden() and not item.data(UNUSED_ROLE) and not item.data(CUT_DIALOGUE_ROLE)
+    shared_view.close()
     session.closed = True
 
     english = Project(args.english_cue)

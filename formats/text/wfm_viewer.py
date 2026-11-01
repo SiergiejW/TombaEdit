@@ -240,7 +240,9 @@ class DialogueView(QWidget):
             self.refresh_display()
             dialogue = self.wfm.dialogues[index]
             context = (usage.explanation(dialogue) + '\n\nScript:\n'
-                       if usage.confirmed_cut_village(dialogue) or (usage.entry(dialogue) or {}).get('status') == 'referenced_elsewhere' else '')
+                       if usage.confirmed_cut_village(dialogue)
+                       or (usage.entry(dialogue) or {}).get('status') == 'referenced_elsewhere'
+                       or (usage.entry(dialogue) or {}).get('speaker_candidate') else '')
             self.script.setPlainText(context + dialogue.script())
             if not self.is_english:
                 self.translation.set_text(export.plain(dialogue), dialogue.warning)

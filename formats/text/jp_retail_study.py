@@ -384,6 +384,20 @@ def study(project, record):
             item['availability'] = AVAILABILITY
             item['cut_villages'] = contexts
             item['method'] = REVISION
+        if (area_number(assets[0].ldar) == 17 and
+                hashlib.sha1(project.asset_data(assets[0])).hexdigest() == 'c7ee48bfef0f60e33321f64f3e650d1081b6bdf0'):
+            # This line lacks a surviving caller: preserve its selector status.
+            # The named intro identifies the block, not an implemented reward.
+            item = bank['text']['246']
+            item['speaker_candidate'] = dict(name='Gantetsu', confidence='strong contextual evidence',
+                area=17, section=0, resident=4, position=[223,123], group=3, line=6,
+                intro_entry=240, intro_routine='800F52F8', handover_implemented=False)
+            item['evidence'] += [
+                'Speaker candidate: Gantetsu. Entry 240 (3,0) explicitly names him; that intro is '
+                'selected by Iron Town NPC #4 at (223,123), via 800F5488 -> 800F52F8. '
+                'Entry 246 (3,6), the eel/bare-hands warning, sits between his material request and delivery dialogue.',
+                'The warning has no surviving display selector or complete glove-handover scene. '
+                'Iron Town/Gantetsu is the strongly supported intended context, not a verified working reward.']
         bank['coverage_complete'] = complete
         bank['computed_calls'] = 0
         bank['coverage'] = ('Static selector audit of the message-window calls, signposts, scripts, item and event notice tables '
