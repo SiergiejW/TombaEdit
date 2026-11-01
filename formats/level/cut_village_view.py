@@ -618,10 +618,18 @@ def figure_sheets(project, path):
                 ranked.insert(0, (0, f'{who} (named in the research notes): {name} palette {at}', row))
         if ranked:
             sheet = Sheet(number, words, [(label, row) for _score, label, row in ranked], 0)
+            from formats.level.community_reference import annotate_palettes
+            sheet.palettes = annotate_palettes(sheet.palettes)
             buildings = vram[0:256, 128:512].copy()
             sheet.building_words = buildings
             texels = byte_indices(buildings)
             sheet.building_palettes = [GREY] + rank_windows(windows256, texels)
+            from formats.level.building_helpers import palette_for
+            helper = palette_for(number, texels)
+            if helper is not None:
+                sheet.building_palettes.insert(0, helper)
+            elif number == 86:
+                sheet.building_palettes[0] = ('Grey fallback: reunited town has insufficient matched ground-truth coverage', GREY[1])
             sheets.append(sheet)
     return sheets
 
@@ -741,7 +749,7 @@ def Qt_PointingHand():
     return Qt.CursorShape.PointingHandCursor
 
 
-def _sheets_panel(sheets):
+def _sheets_panel(sheets, preferred_group=None):
     """The sprite sheets of the village load groups, side by side: the figures of page 0 on the left and the
     buildings of the pages after it on the right, each with a choice of palette above its picture."""
     from PyQt6.QtCore import Qt
@@ -754,6 +762,7 @@ def _sheets_panel(sheets):
     bar = QHBoxLayout()
     sprite = QComboBox()
     sprite.addItems([f'Sprite {n} of {len(sheets)} (group {sheet.group})' for n, sheet in enumerate(sheets, 1)])
+    sprite.setCurrentIndex(next((i for i,s in enumerate(sheets) if s.group==preferred_group),0))
     bar.addWidget(QLabel('Sprite'))
     bar.addWidget(sprite, 1)
     outer.addLayout(bar)
@@ -763,7 +772,9 @@ def _sheets_panel(sheets):
                   '8-bit pictures of buildings (768 x 256): pieces of the village that were put together from data '
                   'the disc does not hold, so they are shown as stored. Menu-close reload tables associate village groups '
                   '61/76/80/86 with Wood/Stone/Iron/reunited town; other groups are available for comparison. '
-                  'Resident palettes have different evidence levels; building palettes remain unrecovered. '
+                  'Resident palettes have different evidence levels; original building palettes remain unrecovered. '
+                  'Premade HELPER CLUTs derived from the ground-truth reconstructions are the default where available; '
+                  'their labels distinguish reference colours from estimated entries. They are not original disc CLUTs. '
                   'The named or visually ranked CLUT choices here are not all proven original bindings. '
                   'Manual assignments remain your reconstruction choices.')
     note.setWordWrap(True)
@@ -1250,7 +1261,7 @@ def view(preview, english=None, request=None, changed=None, jump=None, session=N
         # Under the residents, so the plan keeps the whole height of the tab.
         right = QSplitter(Qt.Orientation.Vertical)
         right.addWidget(entry_tabs)
-        right.addWidget(_sheets_panel(preview.sheets))
+        right.addWidget(_sheets_panel(preview.sheets, preview.art.group if preview.art is not None else {18:86}.get(preview.area)))
         right.setSizes([380, 340])
         split.addWidget(right)
     else:

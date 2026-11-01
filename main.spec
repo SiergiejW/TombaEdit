@@ -14,6 +14,8 @@ text_files = [(str(ROOT / 'formats' / 'text' / name), 'formats/text')
                            'glyphs_prepre8_recovered.json', 'glyphs_jp.json', 'native_text_usage.json',
                            'unused_events.json')]
 text_files += [(str(path), 'formats/text/translations') for path in (ROOT / 'formats' / 'text' / 'translations').glob('*.json')]
+text_files.append((str(ROOT / 'formats' / 'level' / 'building_helper_cluts.json'), 'formats/level'))
+text_files.append((str(ROOT / 'formats' / 'level' / 'civ_towns_reference.json'), 'formats/level'))
 text_files += [(str(path), 'formats/text/fonts') for path in (ROOT / 'formats' / 'text' / 'fonts').iterdir()
                if path.suffix in ('.png', '.json')]
 import PyQt6

@@ -209,9 +209,9 @@ the male Stonetown resident `AREA16/CLUT07.GAM` 53 and the Iron Town residents `
 
 Which drawing a subtype is, which palette it has and which sheet frame a facing is were in tables the
 disc does not hold. The plan draws a figure for each resident whose subtype a named palette fits:
-in the Wood People's village the male lumberjack for subtype 0 and the factory worker for subtype 1
-(the cursed palette, 68, is only offered in the sheet panel), in Stonetown the muscular male
-resident for subtype 3. The residents of the other subtypes are drawn translucent as stand-ins,
+in the Wood People's village the hard-hat worker for subtype 0 (palette 4), and in Stonetown the
+woman, boy and strongman for subtypes 0, 1 and 2 (palettes 21, 37 and 53). The other Wood palettes
+remain available in the sheet panel. The residents of the other subtypes are drawn translucent as stand-ins,
 in the first palette, in the Wood People's village and Iron Town, where their drawing is not known;
 in Stonetown they stay marks, because its sheet holds other drawings and no palette is named for
 them. The front, back or side frame follows the resident's facing field, which is a guess. The
@@ -220,11 +220,24 @@ the area's files that colours the whole page after them.
 
 The pages after the first (VRAM x 128 to 511, six pages of 64 words) are 8-bit: two texels to a word, the
 low byte first, 768 x 256 texels of pieces of the village's buildings, laid out the way the artist packed
-them. The pieces' shapes read clearly, but their colours were not recovered: no 256-colour palette of the
-`CLUTnn.GAM` files (read at any multiple of 16 words) makes them smooth, so the "Buildings" page of the
-sprites panel starts on the texel value as grey and offers the smoothest windows of the area's files after
-it. The data that places each piece in the village is not on the disc either, so the pieces are not put
-together.
+them. Their original colours were not recovered from disc CLUTs. Premade **HELPER CLUTs** in
+`formats/level/building_helper_cluts.json` derive index-to-colour mappings from the user-supplied
+`voc/ground truth` restored sheets and map reference. They are labelled reconstructed, not original,
+and default for groups 61/76/80 in both the Buildings panel and manual graphics picker. The panel
+opens the current town's own sprite group first. All nonzero indices actually used by those three
+building sheets are reference-covered; estimated palette slots are unused by the matched pixels.
+RGB colours are quantized to PS1 RGB555. Grey and disc-derived candidate palettes remain selectable;
+an explicitly saved manual grey/CLUT choice is preserved. Reunited-town group 86 retains a labelled
+grey fallback: its references cover only about 3.1% of pixels, insufficient for a reliable helper.
+Each helper is guarded by a SHA-256 of its index pixels, so modified sheets do not inherit stale
+colours. The data that places each piece in the village remains missing; use manual prop assignments.
+
+Regenerate with `python tools/make_building_cluts.py --cue "rom/Ore! Tomba (Japan).cue" --references "voc/ground truth"`.
+The output stores source image hashes, observed/estimated indices and coverage; preview PNGs and
+512-byte little-endian RGB555 `.clut` files are written under `work/cut_village_research/helper_cluts`.
+The overlapping-patch holdout is an internal consistency check, not proof of an original retail palette.
+Run `tools/validate_building_helpers.py` with the CUE and `--ui` to verify defaults, rendered pixels,
+transparency, changed-source rejection and preservation of existing explicit palette choices.
 
 The plan can have a picture under it. "Background picture..." takes any picture (a restored view of the
 village, for example) and draws it under the plan with its top left corner at the world position X, Y and its

@@ -2,6 +2,37 @@
 
 Research date: **31 October 2026**. Target: the supplied `rom/Ore! Tomba (Japan).cue` and its BIN. This is a research report, not a playable restoration. No game code, editor code, save, or disc image was modified.
 
+## Editor helper palettes — 1 November 2026
+
+The editor now provides premade **reconstructed helper CLUTs**, derived from the user's
+`voc/ground truth` references. They are new editor presentation aids, not newly recovered retail
+CLUT files and not a change to the upstream snapshot. The Buildings panel and manual prop/NPC
+graphics picker default to these helpers for the three matched sheets; existing explicit palette
+assignments remain unchanged.
+
+| Sheet | Nonzero used indices matched | Source-pixel coverage | Unused palette slots estimated | Main reference |
+|---|---:|---:|---:|---|
+|Wood, group61|255|100%|0|`wood-overlay-restored.png`; five colours supplemented from `FullMapWIP.png`|
+|Stone, group76|219|100%|36|`stone-overlay-restored.png`|
+|Iron, group80|232|100%|23|`iron-overlay-restored.png`; individual prop/lift references checked too|
+
+Colour-independent pixel-equality signatures find candidate patches, then full8×8 index/colour
+correspondences must be one-to-one. Each anchored index needs at least8 votes and98% dominant-colour
+agreement. Every seventh matching patch is omitted from fitting for a consistency check; because
+patches overlap, this is not an independent statistical validation. Held-out quantized-colour agreement
+is99.9967% Wood,99.9950% Stone and100% Iron. Unobserved entries are harmonic-filled, but none is used by
+the three matched sheet images. Values are quantized to PS1 RGB555 with index0 transparent.
+
+Reunited-town group86 has only56 usable colour anchors and3.1397% source-pixel coverage in these
+references. It keeps a labelled grey fallback instead of receiving a mostly invented default palette.
+
+Runtime data: `formats/level/building_helper_cluts.json`, including source-image SHA-256 values and
+exact index-pixel fingerprints. A changed sheet fails the helper lookup. Regeneration and rendered
+pixel/UI checks are in `tools/make_building_cluts.py` and `tools/validate_building_helpers.py`.
+Only palettes and provenance are bundled; reference images and ROM textures are read from the user's
+own files. Missing SPR placement/part tables remain missing, and manual graphics assignments remain
+user reconstruction choices.
+
 ## Synchronization checkpoint — 1 November 2026
 
 Latest upstream checked: **`b8fe30a1ad2660451c0b6c69b625bb18dac48403`**. The two commits after
@@ -667,3 +698,18 @@ The analysis checked native bytes and static control flow. It did not run a rest
 - [JP X19 split](https://github.com/afsenovilla/Tombi-Decomp/blob/4220d8e1dc8635e51cbe33e2ca4588486786e796/config/slps01144/x19.yaml), [X19 scroll controller](https://github.com/afsenovilla/Tombi-Decomp/blob/4220d8e1dc8635e51cbe33e2ca4588486786e796/src/x019/updateAreaScroll.c), [X02 scroll controller](https://github.com/afsenovilla/Tombi-Decomp/blob/4220d8e1dc8635e51cbe33e2ca4588486786e796/src/x002/updateAreaScroll.c), [X19 data tables](https://github.com/afsenovilla/Tombi-Decomp/blob/4220d8e1dc8635e51cbe33e2ca4588486786e796/src/data/x019/D_80116004.c).
 
 Every source link above is pinned to the investigated revision. Semantic names assist navigation; the supplied-image hashes and explicit native JP dispatch/table checks establish which build the new addresses describe.
+
+
+## Community civ_towns spreadsheet cross-check — 1 November 2026
+
+Source: [civ_towns community research sheet](https://docs.google.com/spreadsheets/d/14QfyM5j8V3zQocUOMLXNa9FhJ_M4YUyJIGxFGFb5G_4/edit), read-only XLSX export on 2026-11-01. The transcribed snapshot is `formats/level/civ_towns_reference.json`; its metadata records the exact export SHA256. The editor Research window exposes all four source tabs, including confidence, source notes, palette aliases and raw 16-word palettes. Blank identification fields remain blank. This community snapshot is separate from the pinned decomp documentation and does not assert that upstream independently verified community claims.
+
+The sheet has 108 palette records, 51 resident records and 56 prop records. Against the supplied JP retail disc, 82 palette records match all sixteen words at the stated file/row; 26 differ. By area, matches are 45/55 (11), 6/10 (16), 11/17 (17), 20/26 (18). Do not overwrite JP palettes with these source values or assume the sheet is JP-specific. Example: `Palettes!AA67`, Iron Town CLUT03 row 1, starts `0000 0C63 7FFF 56B5`; JP retail starts `0000 0421 7FFF 5EF7`. The cause of the differences has not been established here. The Research table calculates status and native words against the currently opened disc. Named community claims appear in palette selectors only on an exact 16-word match, preserving the sheet confidence rather than promoting it to verified identity.
+
+Useful leads include purple-dress/red-shirt FMV palette matches (`Palettes` rows 62/64, 73/76, 94/98), the unverified miner identification, and reunited-town wide-hat/boy hypotheses (`Residents` rows 46/49/50/51). These do not recover the original subtype-to-sprite or subtype-to-CLUT tables. The Palettes tab concerns 16-colour residents, not the missing 256-colour building palettes. Prop P# markers and Iron passage scene numbers are distinct namespaces even where their numbers overlap. Patrol boxes transcribed in the sheet may be relative (notably Stone); use native decoded movement for actual placement.
+
+### BUNMEI and BUNMEI2 colour evidence
+
+The supplied JP disc has BUNMEI (227 decoded frames, 320x224, LBA 43084) and BUNMEI2 (157 frames, 320x224, LBA 45356). These are MDEC video streams: decoded colours can guide reconstruction but are not original indexed CLUT words. BUNMEI contains the Wood/Stone/Iron town pans and later reunited exterior; BUNMEI2 shows machine/clock interiors and a later building pan. Contact sheets and decoded samples are retained under `work/cut_village_research/movie_cluts/`. No unverified BUNMEI2 building-pixel registration is applied to the default helper palettes.
+
+BUNMEI ISO payload SHA256: `c4873c05dc101d72675215e608beca2a6adbaef95834552009d6d3714920ae8e` (same payload in the compared PAL disc). JP BUNMEI2 payload: `fc107dcb1480354713a87afe71b91fac3b86986a5dd4b52be2fe4a6b85f0647c`; compared PAL payload: `e4031833d099a74f0579ba0d50aedfed71ae9455e8b0001dc7e666aecb832010`. The demuxed video also differs; PAL BUNMEI2 must not be silently substituted for JP evidence. Existing Wood/Stone/Iron helper defaults remain based on exact index-pattern correspondences with the supplied restored ground-truth images. Reunited town still lacks sufficient matched coverage for a default building helper.

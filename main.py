@@ -3,7 +3,7 @@ import sys
 import traceback
 from pathlib import Path
 
-version = "0.1.2"
+version = "0.1.3"
 
 
 def main():

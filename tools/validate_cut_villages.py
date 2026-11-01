@@ -72,7 +72,9 @@ def main():
         widget.resize(1200, 800)
         widget.show()
         app.processEvents()
-        assert widget.findChild(QTabWidget).count() == 3
+        research_tabs = widget.findChild(QTabWidget)
+        assert research_tabs.count() == 4
+        assert research_tabs.tabText(1) == 'Community palettes, residents and props'
         search = widget.findChild(QLineEdit)
         search.setText('0x801047F4')
         search.returnPressed.emit()

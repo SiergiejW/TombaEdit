@@ -170,9 +170,59 @@ def view(project, jump=None, area=None):
         result.setEditTriggers(QTableWidget.EditTrigger.NoEditTriggers)
         for i, row in enumerate(rows):
             for j, value in enumerate(row):
-                result.setItem(i, j, QTableWidgetItem(str(value)))
+                item = QTableWidgetItem()
+                if isinstance(value, int):
+                    item.setData(Qt.ItemDataRole.DisplayRole, value)
+                else:
+                    item.setText(str(value))
+                result.setItem(i, j, item)
         result.resizeColumnsToContents()
         return result
+
+    from formats.level.community_reference import snapshot, compare_palette
+    community = snapshot()
+    reference = QWidget()
+    reference_layout = QVBoxLayout(reference)
+    reference_note = QLabel(
+        f'Community civ_towns spreadsheet · read-only snapshot {community["retrieved"]}. '
+        'Confidence and identification claims are transcribed from the sheet, not independently confirmed. '
+        'Palette labels attach only when all 16 words match the opened ROM. '
+        'Resident/prop rows are reference data, not live ROM decoding. '
+        'Lost sprite mappings remain unknown; patrol boxes may be relative coordinates. '
+        'P# prop markers and passage scene numbers are separate numbering systems. '
+        f'<a href="{community["source"]}">Open current community sheet</a>')
+    reference_note.setWordWrap(True)
+    reference_note.setOpenExternalLinks(True)
+    reference_layout.addWidget(reference_note)
+    reference_tabs = QTabWidget()
+    reference_layout.addWidget(reference_tabs)
+    for title, rows in community['sheets'].items():
+        if title == 'Read me':
+            reference_tabs.addTab(table(['Source notes'], rows), title)
+        else:
+            headers = [str(v or '') for v in rows[0]]
+            values = [[v if v is not None else '' for v in row] for row in rows[1:]]
+            if title == 'Palettes':
+                order = [0, 1, 2, 20, 21, 22] + list(range(4, 20)) + [23, 24, 25, 26, 3]
+                headers = ['Sheet row', 'Opened ROM comparison'] + [headers[i] for i in order] + ['Opened ROM 16 words']
+                values = [[n, compare_palette(project, row)[0]] + [value[i] for i in order] +
+                          [compare_palette(project, row)[1]] for n, (row, value) in enumerate(zip(rows[1:], values), 2)]
+            shown = table(headers, values)
+            if title == 'Palettes':
+                from PyQt6.QtGui import QColor
+                for n, row in enumerate(rows[1:]):
+                    for column, word in enumerate(row[26].split(), 8):
+                        word = int(word, 16)
+                        rgb = [(word >> shift & 31) * 255 // 31 for shift in (0, 5, 10)]
+                        cell = shown.item(n, column)
+                        cell.setText(f'{word:04X}')
+                        cell.setBackground(QColor(*rgb))
+                        cell.setForeground(QColor('black' if sum(rgb) > 384 else 'white'))
+                        cell.setToolTip('Community sheet colour, not the opened ROM value. Bit 15 is preserved in the hex word.')
+            shown.setSortingEnabled(True)
+            shown.sortItems(0, Qt.SortOrder.AscendingOrder)
+            reference_tabs.addTab(shown, title)
+    tabs.addTab(reference, 'Community palettes, residents and props')
 
     try:
         decoded = animations(project)
