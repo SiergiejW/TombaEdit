@@ -29,6 +29,7 @@ class Figure:
     delays: list = None                       # milliseconds per frame when it is an animation
     asset: object = None                      # the bank it comes from, for the open button
     button: str = 'Open the sprite bank'
+    anchor: str = None                        # when given, the picture follows the paragraph with this text instead
 
 
 def _resources(project):
@@ -134,7 +135,56 @@ def funga(project):
                   [_labelled(cells, labels)], None, resources['SPR', 3], 'Open the Jungle sprite bank (SPR 3)')
 
 
-BUILDERS = (eel, chief, funga)
+def math_beads(project):
+    """Math Bead 11 is the one number item with a world descriptor of its own; the other nine use the generic one."""
+    from psx.graphics import render_sprite, sprite_frames
+    resources = _resources(project)
+    vram = project.vram(*GROUP)
+    common = sprite_frames(bytes(project.asset_data(resources['SPR', 4])))
+    cells = [render_sprite(common[171], vram, tpage=20), render_sprite(common[0], vram, tpage=21, clut=0x7D56)]
+    caption = ('Math Bead 11 (slot 77): descriptor 89, SPR 4 frame 171, page 20. Slots 78-86 use descriptor 0, the generic berry '
+               'graphic (SPR 4 frame 0, CLUT 7D56). Every one of them says "Error" when used.')
+    return Figure('beads', 'jp-retail-unused-research.md', 'Math Beads and numbered placeholders', caption,
+                  [_labelled(cells, ['Bead 11 (77)', 'slots 78-86'])], None, resources['SPR', 4], 'Open the common sprite bank (SPR 4)')
+
+
+def tunnel(project):
+    """The AREA02 tunnel sheet: ten by three cells of 24 pixels at page 13, u 0-239, v 72-143, in a grey ramp."""
+    import numpy as np
+    from psx.graphics import texture_page
+    asset = next((a for g in project.ldars['SYS/LDAR02.BIN'] for a in g.assets
+                  if a.source and a.source.path == 'AREA02/B301.000'), None)
+    group = next(i for i, g in enumerate(project.ldars['SYS/LDAR02.BIN']) if asset in g.assets)
+    vram = project.vram('SYS/LDAR02.BIN', group)
+    ramp = np.array([0] + [(2 * i) << 10 | (2 * i) << 5 | 2 * i for i in range(1, 16)], dtype=np.uint16)
+    sheet = texture_page(vram, 13, 0, palette=ramp).crop((0, 72, 240, 144))
+    for x in range(0, 240, 24):                       # the 24 pixel cells
+        for y in range(72):
+            if sheet.getpixel((x, y))[3] == 0:
+                sheet.putpixel((x, y), (90, 90, 120, 255))
+    caption = ('AREA02/B301.000, page 13, u 0-239, v 72-143: ten by three cells of 24 pixels (the first row numerals, the second '
+               'pictorial symbols). Drawn in a grey ramp because the palette is not established; the blue lines mark the cells.')
+    return Figure('tunnel', 'jp-retail-unused-research.md', 'Graffiti Rocks — upstream research', caption,
+                  [_scaled(sheet, scale=3)], None, asset, 'Open the tunnel sheet (B301.000)', 'The adjacent AREA02 tunnel sheet')
+
+
+def debug_font(project):
+    """The 8 x 8 debug font of the executable, on the system texture, in the first of its four palette rows."""
+    from psx.graphics import texture_page
+    asset = next(a for a in project.ldars['SYS/LDSYS.BIN'][0].assets if a.source and a.source.path == 'SYSTEM/A00000.GAM')
+    vram = project.vram(*GROUP)
+    page = texture_page(vram, 21, 0x7C17)
+    box = page.getbbox()
+    if box is None:
+        return None
+    caption = ('SYSTEM/A00000.GAM at VRAM page 21 in the first of the four CLUT rows that begin at (368,496): the 8 x 8 font of the '
+               'debug printer MAIN 80021E5C, used for the ending statistics and some game-over text.')
+    return Figure('debugfont', 'jp-retail-unused-research.md', 'Graffiti Rocks — upstream research', caption,
+                  [_scaled(page.crop(box), scale=3)], None, asset, 'Open the system font texture',
+                  'The JP debug printer is MAIN')
+
+
+BUILDERS = (eel, chief, funga, math_beads, tunnel, debug_font)
 
 
 def build(project):
@@ -167,20 +217,29 @@ def decorate(report, document, figures, project=None):
             line = PATH.sub(lambda m: f'[`{m.group(1)}`](tomba://file/{m.group(1)})'
                             if m.group(1) in project.disc.entries else m.group(0), line)
         out.append(line)
-    pending = [f for f in figures if f.document == document]
-    result, i = [], 0
-    while i < len(out):
-        result.append(out[i])
-        figure = next((f for f in pending if out[i].startswith('#') and f.heading in out[i]), None)
-        if figure is not None:
-            pending.remove(figure)
-            i += 1
-            while i < len(out) and not out[i].strip():
-                result.append(out[i]); i += 1
-            while i < len(out) and out[i].strip():       # the first paragraph or table under the heading
-                result.append(out[i]); i += 1
+    def block_end(start):
+        """The line after the paragraph, list or table that starts at `start`."""
+        while start < len(out) and not out[start].strip():
+            start += 1
+        while start < len(out) and out[start].strip():
+            start += 1
+        return start
+
+    after = {}                                            # line index -> the figures that follow that line
+    for figure in (f for f in figures if f.document == document):
+        if figure.anchor:
+            line = next((n for n, text in enumerate(out) if figure.anchor in text and not text.startswith('#')), None)
+            end = block_end(line) if line is not None else None
+        else:
+            line = next((n for n, text in enumerate(out) if text.startswith('#') and figure.heading in text), None)
+            end = block_end(line + 1) if line is not None else None
+        if end is not None:
+            after.setdefault(end, []).append(figure)
+    result = []
+    for number, line in enumerate(out + ['']):
+        for figure in after.get(number, ()):
             result += ['', f'![{figure.key}](fig:{figure.key})', '',
                        f'*{figure.caption}* — [{figure.button}](tomba://asset/{figure.key})', '']
-            continue
-        i += 1
+        if number < len(out):
+            result.append(line)
     return '\n'.join(result)
