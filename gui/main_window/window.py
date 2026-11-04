@@ -1819,6 +1819,8 @@ class MainWindow(QMainWindow):
             self.jump_group(*payload, tab='VRAM')     # the sheet is a picture in the group's VRAM
         elif kind == 'village':
             self.jump_group(*payload, tab='Cut village')
+        elif kind == 'section':
+            self.jump_group(*payload)
         elif kind == 'asset':
             self.jump_asset(payload)
         elif kind == 'file':

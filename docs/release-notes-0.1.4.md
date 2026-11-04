@@ -19,7 +19,7 @@ Changes since **0.1.3**.
 
 - Discs and banks that are already English show a single pane, labelled **English (original)**, with no translation machinery.
 - New markers in the entry list: **Confirmed unused · cut village** (blue) and **Shared text · reference elsewhere**, each with its own filter, and counts in the summary line. A confirmed cut-village entry, a shared entry or one with a speaker candidate shows the evidence above its script, including the town, NPCs and routine.
-- The *Cut-village research* menu is now *JP retail research*. Its reports show the sprites they describe, drawn from the opened disc: the electric eel animated with its retail timing, the Masakari Chief's candidate frames, and the Funga materials and drum. Each has a button that opens the sprite bank, and file names in the reports link to the file in the disc tree. This needs the audited Japanese retail disc.
+- The *Cut-village research* menu is now *JP retail research*. Its reports show the sprites they describe, drawn from the opened disc: the electric eel animated with its retail timing, the Masakari Chief's candidate frames, the Funga materials and drum, the Math Beads, the Doodle Rock tunnel sheet and the debug font. Each has a button that opens the sprite bank, and file names in the reports link to the file in the disc tree. Double-clicking a row of any table in the window (residents, props, palettes, events, animations, lifts, findings) opens that entry in the editor. The pictures need the audited Japanese retail disc.
 - The English preview's 7 and Q were wrong glyphs; they are the game's own now. The game's single z serves for z and Z, so "amazing" no longer mixes in a bold z.
 
 ## Cut villages and levels

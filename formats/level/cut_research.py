@@ -313,6 +313,66 @@ def view(project, jump=None, area=None):
         result.resizeColumnsToContents()
         return result
 
+    def area_of(value):
+        found = re.search(r'AREA\s*(\d+)', value or '')
+        return int(found.group(1)) if found else None
+
+    def overlay_path(name):
+        """The disc file of an overlay named in the reports ('X01'): the one in SYSTEM, else the first one found."""
+        paths = sorted(p for p in project.disc.entries if p.endswith(f'/{name}.BIN'))
+        return next((p for p in paths if p.startswith('SYSTEM/')), paths[0] if paths else None)
+
+    def activate(grid, resolve):
+        """Double-clicking a row opens what it names: `resolve` gets the row's cells by header and returns the
+        arguments of `jump` (or None when the row names nothing that can be opened)."""
+        grid.setToolTip('Double-click a row to open it in the editor.' if jump else '')
+        def opened(row, column):
+            if jump is None:
+                return
+            cells = {}
+            for c in range(grid.columnCount()):
+                header, item = grid.horizontalHeaderItem(c), grid.item(row, c)
+                cells[header.text() if header else str(c)] = item.text() if item else ''
+            try:
+                target = resolve(cells)
+            except (KeyError, ValueError, IndexError):
+                target = None
+            if target:
+                jump(*target)
+        grid.cellDoubleClicked.connect(opened)
+        return grid
+
+    def town_plan(cells):
+        number = area_of(cells.get('Town'))
+        return ('village', (f'SYS/LDAR{number:02d}.BIN', 1)) if number in (11, 16, 17, 18) else None
+
+    def town_palette(cells):
+        number = area_of(cells.get('Town'))
+        path = f'AREA{number:02d}/{cells.get("File", "")}.GAM' if number else ''
+        if path in project.disc.entries:
+            return ('file', path)
+        return town_plan(cells)
+
+    def event_place(cells):
+        place = cells.get('Location', '')
+        number = area_of(place)
+        section = re.search(r'section\s*(\d+)', place)
+        if number is not None and f'SYS/LDAR{number:02d}.BIN' in project.ldars:
+            return ('section', (f'SYS/LDAR{number:02d}.BIN', int(section.group(1)) + 1 if section else 0))
+        return ('file', 'SYSTEM/DSPSUB.BIN')
+
+    def finding_place(cells):
+        place = cells.get('JP location', '')
+        if place.startswith('MAIN'):
+            return ('file', 'SLPS_011.44')
+        overlay = re.match(r'(X\d\d)', place)
+        path = overlay_path(overlay.group(1)) if overlay else None
+        return ('file', path) if path else None
+
+    def plaque_place(cells):
+        number = area_of(cells.get('Reported area / texture'))
+        return ('section', (f'SYS/LDAR{number:02d}.BIN', 0)) if number is not None else None
+
     from formats.level.community_reference import snapshot, compare_palette
     community = snapshot()
     reference = QWidget()
@@ -355,6 +415,7 @@ def view(project, jump=None, area=None):
                         cell.setToolTip('Community sheet colour, not the opened ROM value. Bit 15 is preserved in the hex word.')
             shown.setSortingEnabled(True)
             shown.sortItems(0, Qt.SortOrder.AscendingOrder)
+            activate(shown, town_palette if title == 'Palettes' else town_plan)
             reference_tabs.addTab(shown, title)
     tabs.addTab(reference, 'Community palettes, residents and props')
 
@@ -363,7 +424,8 @@ def view(project, jump=None, area=None):
         rows = [(i, f'{address:08X}', ', '.join(str(s[0]) for s in steps),
                  ', '.join(str(s[1]) for s in steps), 'Hold final frame (8000)')
                 for i, address, steps in decoded]
-        tabs.addTab(table(['Script', 'JP address', 'Frames', 'Update ticks', 'End control'], rows),
+        tabs.addTab(activate(table(['Script', 'JP address', 'Frames', 'Update ticks', 'End control'], rows),
+                             lambda cells: ('file', 'SLPS_011.44')),     # the 24 scripts are resident in MAIN
                     'Recovered animations · live ROM')
     except ValueError as exc:
         warning = QLabel(str(exc))
@@ -376,22 +438,23 @@ def view(project, jump=None, area=None):
              for n, (a, b, c, d), motion, address in zip((8, 9, 10, 11), PASSAGES,
                  ('Up 84 px', 'Down 84 px', 'Up 145 px, sideways', 'Down 145 px, sideways'),
                  ('800FE22C', '800FE3D8', '800FE504', '800FE668'))]
-    tabs.addTab(table(['Iron Town mechanism', 'World trigger x, y (inclusive)', 'Behavior', 'JP source address'], rows),
+    tabs.addTab(activate(table(['Iron Town mechanism', 'World trigger x, y (inclusive)', 'Behavior', 'JP source address'], rows),
+                         lambda cells: ('village', ('SYS/LDAR17.BIN', 1))),
                 'Iron Town · lifts and passages · audited JP')
     rocks = QWidget()
     rocks_layout = QVBoxLayout(rocks)
-    rock_note = QLabel('Graffiti Rock research from Tombi-Decomp. Two plaques have documented retail placements; '
+    rock_note = QLabel('Doodle Rock research from Tombi-Decomp. Two plaques have documented retail placements; '
                        'the other texture finds and their intended puzzle are research evidence. '
                        'The JP text buttons open the complete original entries.')
     rock_note.setWordWrap(True)
     rocks_layout.addWidget(rock_note)
-    rocks_layout.addWidget(table(['Plaque value', 'Reported area / texture', 'Retail placement'], [
+    rocks_layout.addWidget(activate(table(['Plaque value', 'Reported area / texture', 'Retail placement'], [
         ('2', 'AREA01 / AREA07 forest', 'Placed as a decorative model'),
         ('5', 'AREA04 / AREA12 Haunted Mansion', 'Placed as a decorative model'),
         ('18', 'AREA03 mountain / caves', 'Texture found; placement not identified'),
         ('139', 'AREA10 jungle', 'Texture found; placement not identified'),
         ('59', 'AREA11; also JP AREA10 room pages', 'Texture found; placement not identified'),
-    ]))
+    ]), plaque_place))
     if jump:
         rock_links = QHBoxLayout()
         def open_rock_text(area, entry):
@@ -416,20 +479,20 @@ def view(project, jump=None, area=None):
             button.clicked.connect(lambda checked=False: jump('asset', glyph))
             rock_links.addWidget(button)
         rocks_layout.addLayout(rock_links)
-    tabs.addTab(rocks, 'Graffiti Rocks · research')
+    tabs.addTab(rocks, 'Doodle Rocks · research')
     recent = QWidget()
     recent_layout = QVBoxLayout(recent)
     recent_note = QLabel('Recent Tombi-Decomp findings: regional addresses and unreferenced-code conclusions '
                          'are attributed to upstream research. Open the research report for details and limits.')
     recent_note.setWordWrap(True)
     recent_layout.addWidget(recent_note)
-    recent_layout.addWidget(table(['Finding', 'JP location', 'Research result'], [
+    recent_layout.addWidget(activate(table(['Finding', 'JP location', 'Research result'], [
         ('Flower Tower gate', 'X01 80116238', 'Million-AP threshold; tower interior is AREA13 section 0'),
         ('Caterpillar patrol', 'X01 80131DB8', 'Older one-way route; no identified retail caller'),
         ('Flower Tears seeker', 'X09 80127CD4', 'Unreferenced walk-off routine'),
         ('Seven Friends', 'X02 801182E4', 'Unreferenced fly-up exit routine'),
         ('Debug font', 'MAIN 80021E5C', '8 × 8 font used by JP ending and game-over text'),
-    ]))
+    ]), finding_place))
     if jump:
         system = project.ldars.get('SYS/LDSYS.BIN', [])
         font = next((a for a in (system[0].assets if system else ())
@@ -457,7 +520,7 @@ def view(project, jump=None, area=None):
             cells = [part.strip() for part in line.strip().strip('|').split('|', 3)]
             if len(cells) == 4:
                 event_rows.append(cells)
-        event_table = table(['Event ID', 'Location', 'Kind', 'Evidence'], event_rows)
+        event_table = activate(table(['Event ID', 'Location', 'Kind', 'Evidence'], event_rows), event_place)
         for row in range(event_table.rowCount()):
             for column in range(event_table.columnCount()):
                 event_table.item(row, column).setToolTip(event_table.item(row, column).text())

@@ -164,7 +164,7 @@ def tunnel(project):
                 sheet.putpixel((x, y), (90, 90, 120, 255))
     caption = ('AREA02/B301.000, page 13, u 0-239, v 72-143: ten by three cells of 24 pixels (the first row numerals, the second '
                'pictorial symbols). Drawn in a grey ramp because the palette is not established; the blue lines mark the cells.')
-    return Figure('tunnel', 'jp-retail-unused-research.md', 'Graffiti Rocks — upstream research', caption,
+    return Figure('tunnel', 'jp-retail-unused-research.md', 'Doodle Rocks — upstream research', caption,
                   [_scaled(sheet, scale=3)], None, asset, 'Open the tunnel sheet (B301.000)', 'The adjacent AREA02 tunnel sheet')
 
 
@@ -174,12 +174,12 @@ def debug_font(project):
     asset = next(a for a in project.ldars['SYS/LDSYS.BIN'][0].assets if a.source and a.source.path == 'SYSTEM/A00000.GAM')
     vram = project.vram(*GROUP)
     page = texture_page(vram, 21, 0x7C17)
-    box = page.getbbox()
-    if box is None:
+    box = (0, 0, 256, 72)            # the 8 x 8 font is the top of the page; the rest is effects and numerals
+    if page.crop(box).getbbox() is None:
         return None
     caption = ('SYSTEM/A00000.GAM at VRAM page 21 in the first of the four CLUT rows that begin at (368,496): the 8 x 8 font of the '
                'debug printer MAIN 80021E5C, used for the ending statistics and some game-over text.')
-    return Figure('debugfont', 'jp-retail-unused-research.md', 'Graffiti Rocks — upstream research', caption,
+    return Figure('debugfont', 'jp-retail-unused-research.md', 'Doodle Rocks — upstream research', caption,
                   [_scaled(page.crop(box), scale=3)], None, asset, 'Open the system font texture',
                   'The JP debug printer is MAIN')
 
