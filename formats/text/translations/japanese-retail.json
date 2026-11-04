@@ -47,19 +47,19 @@
   "かみつき草の花をつかった": "Used the Biting Grass Flower",
   "げどくダケをつかった": "Used an antidote mushroom",
   "バロンをつかった": "Used Baron",
-  "ウッキーパラソルをそうびした": "I equipped the Ukki Parasol.",
-  "ウッドブーメランをそうびした": "I equipped the Wood Boomerang.",
-  "ストーンブーメランをそうびした": "I equipped the Stone Boomerang.",
-  "アイアンブーメランをそうびした": "I equipped the Iron Boomerang.",
-  "ぶっとびのパンツをそうびした": "I put on the Dashing Pants.",
-  "グルドカをそうびした": "I equipped Blackjack.",
-  "いだてんのパンツをそうびした": "I put on the Flash Pants.",
-  "かっとびのパンツをそうびした": "I put on the Jumping Pants.",
+  "ウッキーパラソルをそうびした": "Equipped the Ukki Parasol",
+  "ウッドブーメランをそうびした": "Equipped the Wood Boomerang",
+  "ストーンブーメランをそうびした": "Equipped the Stone Boomerang",
+  "アイアンブーメランをそうびした": "Equipped the Iron Boomerang",
+  "ぶっとびのパンツをそうびした": "Put on the Blasting Pants",
+  "グルドカをそうびした": "Equipped Blackjack",
+  "いだてんのパンツをそうびした": "Put on the Idaten Pants",
+  "かっとびのパンツをそうびした": "Put on the Dashing Pants",
   "べんとうをつかった": "Used a lunch box",
   "おおもりべんとうをつかった": "Used a large lunch box",
-  "ノーマルパンツをそうびした": "I put on the Normal Pants.",
-  "グルピンをそうびした": "I equipped Grapple.",
-  "ドカピンをそうびした": "I equipped Grapple Jack.",
+  "ノーマルパンツをそうびした": "Put on the Normal Pants",
+  "グルピンをそうびした": "Equipped Grapple",
+  "ドカピンをそうびした": "Equipped Grapple Jack",
   "マゴブタをつかった": "Used Mago Buta",
   "1000年のカギをつかった": "Used the 1,000-Year Key",
   "エサねんりょうをつかった": "Used the bait fuel",
@@ -199,11 +199,11 @@
   "たっしゃでな・・・": "Take care of yourself...",
   "げ・・・元気でな・・・\n\n気をつけてかえれよ・・・\n\nカゼひくなよ・・・\n\nえ〜っと、それから・・・・・・": "T-take care...\n\nBe careful on your way home...\n\nDon't catch a cold...\n\nUm, and also......",
   "まったく・・・\n自分のマゴに話してるみたいじゃな・・・\nほっ ほっ ほっ・・・": "Honestly...\nIt's like I'm talking to my own grandchild...\nHo ho ho...",
-  "・・・恵みコゾウが復活すると、幻の塔が現れる・・・": "...When the Megumi Kozo revive, the Phantom Tower appears...",
+  "・・・恵みコゾウが復活すると、幻の塔が現れる・・・": "...When the Megumi Statues revive, the Phantom Tower appears...",
   "・・・ドワーフの集落に花の種をまくと、\n   金色の花がさく・・・": "...When you sow flower seeds in the Dwarf Settlement,\ngolden flowers will bloom...",
   "・・・山の頂上には、かくれた村がある・・・": "At the top of the mountain lies a hidden village...",
   "・・・ウワサを聞いた後、納屋のある小屋に\n   魔女がかえってくる・・・": "...After hearing the rumor, the Witch returns\nto the hut with the barn...",
-  "バケツをそうびした": "I equipped the bucket.",
+  "バケツをそうびした": "Equipped the bucket",
   "ぼうえんきょうをつかった": "Used the telescope",
   "ナミダのビン(カラ)をつかった": "Used the Tear Bottle (empty)",
   "ナミダのビンをつかった": "Used the Tear Bottle",
@@ -283,7 +283,7 @@
   "小ダイコをつかった": "Used the small drum",
   "めざめの粉をつかった": "Used the Awakening Powder",
   "族長のヤリをつかった": "Used the Chief's Spear",
-  "サンタのパンツをつかった": "Used the Santa Pants",
+  "サンタのパンツをつかった": "Used Santa's Pants",
   "水晶をつかった": "Used the crystal",
   "盗賊のさがしものをつかった": "Used what the thief was looking for",
   "盗賊のわすれものをつかった": "Used what the thief forgot",
@@ -316,11 +316,11 @@
   "百花の森\n\nセーブしますか?\n  はい→△ いいえ→×": "Forest of 100 Flowers\n\nSave?\nYes → △  No → ×",
   "グラグラ桟橋\n\nセーブしますか?\n  はい→△ いいえ→×": "Wobbly Pier\n\nSave?\nYes → △  No → ×",
   "高見ヤグラ\n\nセーブしますか?\n  はい→△ いいえ→×": "Watch Tower\n\nSave?\nYes → △  No → ×",
-  "めぐみの広場\n\nセーブしますか?\n  はい→△ いいえ→×": "Megumi Square\n\nSave?\nYes → △  No → ×",
+  "めぐみの広場\n\nセーブしますか?\n  はい→△ いいえ→×": "Megumi Plaza\n\nSave?\nYes → △  No → ×",
   "キノコの森\n\nセーブしますか?\n  はい→△ いいえ→×": "Mushroom Forest\n\nSave?\nYes → △  No → ×",
   "リーフスライダー\n\nセーブしますか?\n  はい→△ いいえ→×": "Leaf Slider\n\nSave?\nYes → △  No → ×",
-  "○△ーー○!!": "○△ーー○!!",
-  "う△ーー○!!": "Uu△---○!!",
+  "○△ーー○!!": "Whoa!!",
+  "う△ーー○!!": "Whoa!!",
   "うわーーっ!!": "Whoa!!",
   "いてぇーーーっ!!": "Ouch!!",
   "よぉ!びっくりしたかい?\n・・・オレは、カレハチョウを\n集めてるんだ・・・\n\nウワサによると、カレハチョウには\nふしぎな力があって・・・\n\n何匹か集めるとスゴイことが\nおこるらしいゼ・・・\n\n何がおこるか、もし見たいんだったら、\nつかまえた カレハチョウを\nこのムシカゴの中に入れてくれよ": "Hey! Did I startle you?\n...I'm collecting Leaf Butterflies...\n\nRumor has it Leaf Butterflies have\na mysterious power...\n\nIf you gather a few of them,\nsomething amazing is supposed to happen...\n\nIf you want to see what happens,\nput the Leaf Butterflies you've caught\nin this bug cage.",
@@ -359,26 +359,26 @@
   "ん?・・・うおおぉぉぉっ!\nそ、その あいしゅうにみちたカオ!・・・\n・・・そうか・・・\n\nさっきの笑がおと、いまの泣きがおをマスターして・・・\nふむふむ・・・\n・・・んーーーーーーっ\n\n見えた!!\nうん!ありがとう!! \n\nキミのおかげで何かつかめそうな気がする!\nおっと、こうしちゃいられない\n・・・今から とっくんだ!!": "Huh?... Whoooa!\nT-that face full of sorrow!...\n...I see...\n\nIf I master that laughing face from before and that crying face now...\nHm-hm...\n...Mmmmmm...\n\nI see it!!\nYes! Thank you!!\n\nThanks to you, I feel like I'm onto something!\nOops, no time to lose.\n...Time to start training!!",
   "おっと、わすれてた・・・\nさっき、長老、山の方へ入っていった・・・\n\n何でも、キミに用があるらしい・・・\nはやく行ったほうがいいよ": "Oops, I forgot...\nThe Elder just went off toward the mountain...\n\nHe seems to have business with you...\nYou'd better hurry.",
   "立ち入り禁止\nこの森には怪物がすんでいます。\n\nキケンですので立ち入らないで下さい\nバッカス村しぜんかんりきょく": "KEEP OUT\nMonsters live in this forest.\n\nIt is dangerous, so please do not enter.\nBacchus Village Nature Management Office",
-  "おれ、花のナミダとりに来た・・・\n花のナミダ、めぐみさまの復活にかかせない・・・\n\nでも・・・\nどうやってナミダ、集めるのかわからない・・・": "I came to get Flower Tears...\nFlower Tears are essential to reviving Lady Megumi...\n\nBut...\nI don't know how to collect the tears...",
+  "おれ、花のナミダとりに来た・・・\n花のナミダ、めぐみさまの復活にかかせない・・・\n\nでも・・・\nどうやってナミダ、集めるのかわからない・・・": "I came to get Flower Tears...\nFlower Tears are essential to reviving the Megumi Fountain...\n\nBut...\nI don't know how to collect the tears...",
   "・・・こまった・・・": "...I'm in trouble...",
-  "○○○◎◎○◎◎・・・◎◎○○○\n●△○○・・・○○◎△○○?": "○○○◎◎○◎◎・・・◎◎○○○●△○○・・・○○◎△○○?",
+  "○○○◎◎○◎◎・・・◎◎○○○\n●△○○・・・○○◎△○○?": "Gnee gnug glop... gnee gnug\ngnu... gruf gnu?",
   "ここ、めぐみの広場・・・": "Here, Megumi Plaza...",
   "高見ヤグラの下のほう、\n木でできてるところ・・・\n\nこわれやすいから\n気をつけたほうがいい・・・": "The lower part of the Watch Tower,\nthe part made of wood...\n\nIt breaks easily,\nso you'd better be careful...",
-  "あの、まんなかにいるのが\nめぐみコゾウさまたち・・・\nでも、うごかない・・・": "The ones in the middle are\nthe Megumi Kozo...\nBut they don't move...",
+  "あの、まんなかにいるのが\nめぐみコゾウさまたち・・・\nでも、うごかない・・・": "The ones in the middle are\nthe Megumi Statues...\nBut they don't move...",
   "ココロあらわれるこのポーズ\n・・・うつくしい・・・": "This pose that reveals the heart... beautiful...",
-  "めぐみさまが復活し、\n動きはじめるとき・・・\n何かがおこるといわれてる・・・": "When Lady Megumi revives\nand starts to move...\nthey say something will happen...",
+  "めぐみさまが復活し、\n動きはじめるとき・・・\n何かがおこるといわれてる・・・": "When the Megumi Fountain revives\nand starts to move...\nthey say something will happen...",
   "ここ、めぐみの広場・・・\n魔ブタの魔法さえとければ、\nもっとキレイなところ・・・": "Here, Megumi Plaza...\nIf only the Evil Pig's magic were undone,\nit would be a prettier place...",
   "キノコの森には\n怪物がすんでるというウワサ・・・\n気をつけたほうがいい・・・": "There's a rumor that a monster lives in the Mushroom Forest...\nYou should be careful...",
-  "めぐみさま・・・\nやっぱり動かない・・・": "Lady Megumi...\nstill doesn't move...",
-  "そう言えば、めぐみさまの\n動いてるところ・・・\nだれも見たことない・・・": "Come to think of it,\nno one has ever seen\nLady Megumi move...",
+  "めぐみさま・・・\nやっぱり動かない・・・": "The Megumi Fountain...\nstill doesn't move...",
+  "そう言えば、めぐみさまの\n動いてるところ・・・\nだれも見たことない・・・": "Come to think of it,\nno one has ever seen\nthe Megumi Fountain move...",
   "わし、きょうは村の\n地下ロウの見はり当番・・・\n\nあれ?これ、\nないしょだったっけ??": "Today I'm on guard duty at the village's\nunderground prison...\n\nHuh? Wasn't this a secret??",
   "この森も、昔はキレイな花が\nいっぱい咲いてた・・・\nこれもみんな、魔ブタのせい・・・": "This forest too used to be\nfull of beautiful flowers...\nIt's all the Evil Pigs' fault...",
   "魔ブタのかくれ家、\n目には見えないらしい・・・\n\nでも、入口は\nどこかにあるハズ・・・": "The Evil Pigs' hideout\napparently can't be seen...\n\nBut there must be an entrance\nsomewhere...",
   "ここは・・・もう知ってるよね・・・": "This is... you already know, right?",
   "バッカスの湖にある水は、\nぜんぶアルコール・・・\n\nよっぱらうから、\n気をつけたほうがいい・・・": "The water in Bacchus Lake\nis all alcohol...\n\nYou'll get drunk,\nso you'd better be careful...",
-  "めぐみさまを復活させるには\nなにかが必要らしい・・・\n\nえ〜と・・・\nどわすれした・・・": "It seems you need something\nto revive Lady Megumi...\n\nLet me see...\nI forgot...",
-  "ん?・・・\nめぐみさまを復活させるもの?\n\n・・・そういえば、なにかの\nナミダが必要とか・・・": "Hm?...\nWhat revives Lady Megumi?\n\n...Come to think of it,\nI hear you need some kind of tears...",
-  "めぐみコゾウさま、\n人気者・・・みんな、\nこの広場にあつまってくる": "The Megumi Kozo are popular...\neveryone gathers\nin this square",
+  "めぐみさまを復活させるには\nなにかが必要らしい・・・\n\nえ〜と・・・\nどわすれした・・・": "It seems you need something\nto revive the Megumi Fountain...\n\nLet me see...\nI forgot...",
+  "ん?・・・\nめぐみさまを復活させるもの?\n\n・・・そういえば、なにかの\nナミダが必要とか・・・": "Hm?...\nWhat revives the Megumi Fountain?\n\n...Come to think of it,\nI hear you need some kind of tears...",
+  "めぐみコゾウさま、\n人気者・・・みんな、\nこの広場にあつまってくる": "The Megumi Statues are popular...\neveryone gathers\nin this square",
   "嵐の山にも魔ブタの魔法が\nかかっているらしい・・・\n封印ぶくろ、どこかにあるハズ・・・": "It seems the Evil Pigs' magic has been cast on Storm Mountain too...\nThere must be a Seal Bag somewhere...",
   "ときどき、森の地面の下から、\nものおとがきこえてくる・・・\nちょっとコワイ・・・": "Sometimes noises come from under the forest floor...\nIt's a little scary...",
   "シーフマンション、\nたくさんの小部屋がある\n\n・・・全部見たか?\n・・・たいへんだけど・・・": "Thief Mansion\nhas lots of small rooms.\n\n...Have you seen them all?\n...It's tough, but...",
@@ -397,7 +397,7 @@
   "・・・おっ、やっと気がついたかい\n・・・いやぁ、ひどい目にあったなぁ\n\n・・・しばらく空を飛んだかとおもえば、\nとちゅうで虫カゴはバラバラ・・・\n\n気がついたら、こんなところに\n落とされちまった・・・": "...Oh, you've come to at last\n...Boy, did I have a terrible time\n\n...I flew through the sky for a while,\nthen the bug cage fell apart on the way...\n\nNext thing I knew,\nI'd been dropped in a place like this...",
   "やめた、やめた!・・・\n何が伝説のカレハチョウだよ・・・\n\nあんたも あきらめたほうがいいゼ\n・・・え?チョウ?・・・ああ、\n\nカレハチョウなら そこの\nタマゴみたいなものに集まってるぜ\nまったく、何だったんだよ・・・\n\nじやぁ、オレはもう行くゼ・・・って、\nここはいったいドコなんだ?": "I quit, I quit!...\nWhat's so legendary about the Leaf Butterfly anyway...\n\nYou'd better give up too.\n...Huh? Butterflies?... Oh,\n\nthe Leaf Butterflies are gathered over there\naround that egg-like thing.\nWhat a waste of time...\n\nWell, I'm off... wait,\nwhere the heck is this place?",
   "始まりの村で、サンタとかいう\nサルみかけた・・・\nはらへって動けないとかなんとか・・・": "In the Village of Beginnings I saw a monkey called Santa...\nHe said he was too hungry to move or something...",
-  "トンバも めぐみコゾウさま 見にきたか?\n・・・きっといいことある・・・\nたぶん・・・": "Did Tomba come to see the Megumi Kozo too?\n...Something good is sure to happen...\nProbably...",
+  "トンバも めぐみコゾウさま 見にきたか?\n・・・きっといいことある・・・\nたぶん・・・": "Did Tomba come to see the Megumi Statues too?\n...Something good is sure to happen...\nProbably...",
   "マグマのどうくつも\n魔ブタの魔法かかってる\n\n・・・炎けすには\n魔ブタを封印しなければ・・・": "The Lava Cave is under\nthe Evil Pigs' magic too.\n\n...To put out the flames,\nyou have to seal the Evil Pigs...",
   "シーフマンション・・・むかし、\nとうぞくの すみかだったところ・・・": "Thief Mansion...\na place where thieves once lived...",
   "ひぃ・・・ふぅ・・・みぃ・・・\nカレハチョウは今3匹ぐらいだな・・・": "Hii... fuu... mi...\nThere are about three Leaf Butterflies now...",
@@ -433,17 +433,17 @@
   "このおく・・・地面がすべり台みたいになってる・・・\nみんな、リーフスライダーと よんでるけど・・・\n\nちょっとキケン・・・だから、\nここは 通せない・・・泣いたってダメ・・・": "This... the ground looks like a slide...\nEveryone calls it the Leaf Slider, but...\n\nIt's a little dangerous... so I can't let you pass here... crying won't help...",
   "お・・・おい・・・\nほんとうに泣いてるのか\n\n・・・いや・・・\nあれは ただのたとえ話・・・\n\nわかった・・・通してやるから、\nもう 泣くな・・・": "O... hey...\nAre you really crying?\n\n...No...\nThat was just a parable...\n\nGot it... I'll let you through, so stop crying now...",
   "わし、むかし じいさんから\nふしぎな話聞いた・・・\n\n赤い花に・・・粉をかけると・・・\n青くなる・・・赤と青が合わさると\n・・・・・・え〜っと・・・あと、\n\nわすれた・・・": "I once heard a strange story from my grandfather...\n\nWhen you sprinkle powder on a red flower...\nit turns blue... when red and blue combine... um... also,\n\nI forgot...",
-  "◎のコ□バ・・・\n○にを◎△て○ん●かな・・・": "The ◎ of □ba...\nI wonder if ○ can be ◎△ed to ○n●...",
-  "ここは・・・恵みの広場!\n\n・・・ほんとーの、恵みの広場!!": "This is... Megumi Square!\n\n...The real Megumi Square!!",
-  "森も、もとにもどった\n\n・・・あとは\n恵みさまの復活を待つばかり・・・": "The forest has returned to normal too\n\n...All that's left\nis to wait for Lady Megumi's revival...",
+  "◎のコ□バ・・・\n○にを◎△て○ん●かな・・・": "Gruf gnu...\ngrub gruu glub grup...",
+  "ここは・・・恵みの広場!\n\n・・・ほんとーの、恵みの広場!!": "This is... Megumi Plaza!\n\n...The real Megumi Plaza!!",
+  "森も、もとにもどった\n\n・・・あとは\n恵みさまの復活を待つばかり・・・": "The forest has returned to normal too\n\n...All that's left\nis to wait for the Megumi Fountain's revival...",
   "トンバ・・・\nドカピンって 知ってるか?・・・": "Tomba...\nDo you know Grapple Jack?...",
   "ドワーフ、\nトンバを おうえんしてる・・・\n\nおうえんだけだけど・・・": "The dwarves\nare cheering Tomba on...\n\nOnly cheering, though...",
-  "トンバ、つよい!\nわし、よわい・・・\n\n恵みさま、エライ!\nわし、エラクナイ・・・\n\nトホホ・・・": "Tomba is strong!\nI am weak...\n\nLady Megumi is great!\nI am not great...\n\nSigh...",
+  "トンバ、つよい!\nわし、よわい・・・\n\n恵みさま、エライ!\nわし、エラクナイ・・・\n\nトホホ・・・": "Tomba is strong!\nI am weak...\n\nThe Megumi Fountain is great!\nI am not great...\n\nSigh...",
   "ここは・・・恵みの広場!\nしかもミリオンの塔つき!!": "This is... Megumi Plaza!\nAnd it even has the Million Tower!!",
   "び・・・びっくりしたっ!": "I was surprised!",
-  "恵みさま・・・\n2人だけ のこった・・・": "Lady Megumi...\nonly two are left...",
+  "恵みさま・・・\n2人だけ のこった・・・": "The Megumi Fountain...\nonly two are left...",
   "これがウワサに聞く ミリオンの塔!\nでも、どうやって入る?": "This is the Million Tower you hear about in rumors!\nBut how do you get in?",
-  "恵みさま スゴイ!\n・・・ちいさな芽が\nこんなに大きくなった!": "Lady Megumi is amazing!\n...The little buds\nhave grown this big!",
+  "恵みさま スゴイ!\n・・・ちいさな芽が\nこんなに大きくなった!": "The Megumi Fountain is amazing!\n...The little buds\nhave grown this big!",
   "この上・・・一体 何があるのか?\n・・・・・・とっても気になる・・・": "What on earth is there above this...?\n...I'm really curious...",
   "ハハハ・・・ビックリしたかい?\n\nこの塔に 入りたいんだったら\nたくさんAPを あつめないとねっ!": "Hahaha... did I startle you?\n\nIf you want to enter this tower,\nyou'll have to collect lots of AP!",
   "こうやってないと・・・\nミリオンの塔が\nまたしぼんじゃうんだ・・・": "If I don't keep doing this...\nthe Million Tower\nwill wither again...",
@@ -470,11 +470,11 @@
   "水晶のじゅもん": "Crystal's Spell",
   "とびっきりの笑がお!": "The Best Smile Ever!",
   "とびっきりの泣きがお?": "The Best Crying Face Ever?",
-  "動かない恵みコゾウ": "The Motionless Megumi Kozo",
+  "動かない恵みコゾウ": "The Motionless Megumi Statues",
   "怪物?勝てるかな?": "A Monster? Can I Win?",
   "死神の巣をつぶせ": "Crush the Reaper's Nest",
   "花をさかせよう!": "Let's make flowers bloom!",
-  "解読?らくがき岩": "Decipher? Scribble Rock",
+  "解読?らくがき岩": "Decipher? Doodle Rock",
   "森の地下には何がある?": "What is there in the forest's underground?",
   "動かない鉄の車": "The Iron Car That Doesn't Move",
   "盗賊のトビラ": "The door of the thief.",
@@ -506,11 +506,11 @@
   "ドワーフの集落\n\nセーブしますか?\n  はい→△ いいえ→×": "Dwarf Settlement\n\nSave?\nYes → △ No → ×",
   "ドワーフの集落の広場\n\nセーブしますか?\n  はい→△ いいえ→×": "Dwarf Settlement Square\n\nSave?\nYes → △ No → ×",
   "あやしい小部屋\n\nセーブしますか?\n  はい→△ いいえ→×": "A Suspicious Little Room\n\nSave?\nYes → △  No → ×",
-  "◎○□□□・・・○○○◎△○○○●○○・・・": "◎○□□□・・・○○○◎△○○○●○○・・・",
+  "◎○□□□・・・○○○◎△○○○●○○・・・": "Glub grup... glop grug grub gruu...",
   "わし、けっこうアタマいい\nおまえのコトバわかる・・・けど、\nおまえ、ドワーフのコトバ知らない・・・\n\nわしらのコトバ、ドワーフにかみつけば\nおぼえられる・・・\nいっかいじゃ ダメかもしれないけど・・・": "I'm pretty smart.\nI understand your language... but\nyou don't know the Dwarf language...\n\nIf you bite a dwarf,\nyou can learn our language...\nOnce might not be enough, though...",
-  "コ○バ・・・\nわ○○○ない・・・": "Lang○age...\nI do○'t u○○erstand...",
-  "◎のまえ●、◎◎\nいなくな△た・・・": "The ◎ in front of ●, the ◎◎ disappeared…",
-  "な○とか ひ△しで\n◎●てきた・・・": "Somehow, desperately,\nI ◎●d here...",
+  "コ○バ・・・\nわ○○○ない・・・": "Glop...\nglub grup...",
+  "◎のまえ●、◎◎\nいなくな△た・・・": "Gruu glub, grub\ngnug glop...",
+  "な○とか ひ△しで\n◎●てきた・・・": "Somehow, desperately,\nI escaped...",
   "目のまえで、なかま\nいなくなった・・・": "Right before my eyes, my friend\ndisappeared...",
   "なんとか ひっしで\nにげてきた・・・": "Somehow, desperately,\nI escaped...",
   "どうしようかねぇ・・・\nあれがないと こまるんだけどねぇ\n・・・おや、きいてたのかい?\n\n・・・じつは・・・森の中に だいじなものを\nかくしておいたんだけど・・・\n\n今の森には、コマブタがウヨウヨいるから\nとりにいけないのさ・・・\nとっても だいじなものなんだけどねぇ・・・": "What should I do...\nI'm in trouble without that...\n...Oh, were you listening?\n\n...The truth is... I hid something important\nin the forest, but...\n\nThe forest is crawling with Koma Buta now,\nso I can't go get it...\nIt's really important to me, though...",
@@ -587,27 +587,27 @@
   "わく わく!・・・": "Ooh, exciting!...",
   "キレイだね・・・": "It's beautiful...",
   "・・・楽しみだね": "...I'm looking forward to it.",
-  "○○○、□□□□○◎・・・○○、\n○△○○○○○○": "○○○、□□□□○◎・・・○○、○△○○○○○○",
-  "た○へ○だ!た○へ○だぁ!": "Oh n○! Oh n○!",
+  "○○○、□□□□○◎・・・○○、\n○△○○○○○○": "Gnock, grug grub... gnu,\ngrub gruu glub",
+  "た○へ○だ!た○へ○だぁ!": "Oh no! Oh no!",
   "たいへんだ!たいへんだぁ!": "Oh no! Oh no!",
-  "○○○、○△○○○・・・\n○○○○○△○○○●・・・": "○○○, ○△○○○...\n○○○○○△○○○●...",
-  "○○、○○○○□□□○○・・・": "○○○○□□□○○・・・",
-  "○△、◎△○○○○●○△・・・": "○△、◎△○○○○●○△・・・",
-  "◎○◎○○●○○○・・・": "◎○◎○○●○○○・・・",
-  "そ○の◎◎の◎◎・・・◎◎に\nつな○△てる・・・もう◎△たか?": "The ○○ of the ○○... is connected to the ○○... Is it already the ○○?",
-  "○○●・・・\n○○○○○": "○○●・・・\n○○○○○",
-  "コ○バ・・・\nわ○○ない・・・": "Lang○age...\nI do○'t u○○erstand...",
-  "◎●、へ○な□□◎た\n・・・お○え◎たか?": "◎●, did you ○e◎k?",
-  "○や、か○いい□□□だね・・・": "○h, what a c○te □□□...",
-  "ね△、◎△て○いいでし△・・・": "Hey, c○n I go...?",
-  "◎の◎はあ●ないよ・・・": "The ◎ of the ◎ doesn't have a ●...",
-  "わ○ら、○ても◎△て○": "W○, ○ven ◎△ ○...",
-  "な○まの○と・・・とても○ん◎い": "Ab○ut my fri○nds... I'm very w○rried",
-  "な○まの○と・・・\nと○も○ん◎い": "Ab○ut my fri○nds...\nI'm very w○rried",
+  "○○○、○△○○○・・・\n○○○○○△○○○●・・・": "Gnock, gnub gnock...\ngnug glop grug...",
+  "○○、○○○○□□□○○・・・": "Gruu, gruu glub grup...",
+  "○△、◎△○○○○●○△・・・": "Gnu, gnu gnub gnock...",
+  "◎○◎○○●○○○・・・": "Grug grub gruu...",
+  "そ○の◎◎の◎◎・・・◎◎に\nつな○△てる・・・もう◎△たか?": "Gruu glub grup... grup\ngnock gnee... gnug glop?",
+  "○○●・・・\n○○○○○": "Glop...\ngnug glop",
+  "コ○バ・・・\nわ○○ない・・・": "Glop...\ngnug glop...",
+  "◎●、へ○な□□◎た\n・・・お○え◎たか?": "In the forest, I saw a strange dog...\nDid you see it?",
+  "○や、か○いい□□□だね・・・": "Gnug, gnug glop grug...",
+  "ね△、◎△て○いいでし△・・・": "Hey, can I go now...?",
+  "◎の◎はあ●ないよ・・・": "Gnub gnock gnee...",
+  "わ○ら、○ても◎△て○": "Gnug, gnub gnock",
+  "な○まの○と・・・とても○ん◎い": "About my friends...\nI'm very worried.",
+  "な○まの○と・・・\nと○も○ん◎い": "About my friends...\nI'm very worried.",
   "ねぇ、行ってもいいでしょ・・・": "Hey, can I go now...?",
   "森の中、とてもあぶない\n・・・ぜったいダメ!": "It's very dangerous in the forest\n...absolutely not!",
   "そこの右側の入口・・・\n長老の家につながってる\n\n・・・でも、今みんな\nいそがしい・・・": "The entrance on the right side over there...\nIt's connected to Elder's house.\n\n...But everyone's busy right now...",
-  "こ○は、□□□□の◎・・・": "This is □□□□'s ◎...",
+  "こ○は、□□□□の◎・・・": "Gruu, gnu gnub...",
   "おおっ! コトバ少し おぼえたか・・・\nでも、まだ かんぜんには わからない\n\n・・・あと、ひとりに かみつけば\nたぶんコトバおぼえられる・・・": "Oh! You've learned a little of our language...\nBut I still don't understand you completely.\n\n...If you bite one more,\nyou can probably learn the language...",
   "ここ、ドワーフの村\n・・・なかまいなくなって\nおおさわぎ・・・": "This is the Dwarf Village...\nour friends have gone missing,\nand it's a big uproar...",
   "たいへん!たいへん!\nなかま、いなくなった!\n\nいま、みんなで 森にある小屋と\n村の入口ちかくのとびらをあけて、\n\nグラグラ桟橋と、高見ヤグラに\nさがしにいったところ・・・": "Oh no! Oh no!\nOur friends are gone!\n\nRight now everyone has opened the hut in the forest\nand the door near the village entrance,\n\nand gone to search\nWobbly Pier and the Watch Tower...",
@@ -632,9 +632,9 @@
   "キノコの森には、\nいろんなキノコはえてるけど\nむやみに食べない方がいい": "There are various mushrooms growing in the Mushroom Forest, but you shouldn't eat them recklessly.",
   "高見ヤグラのぼうえんきょう、もう見たか?\nあそこのけしき、とてもキレイ・・・": "Have you seen the Watch Tower's telescope yet?\nThe view from there is really beautiful...",
   "わし・・・見はり・・・\nちょっとたいへん・・・": "I... I'm a lookout...\nIt's a little difficult...",
-  "◎○□□□・・・○○○◎\n△○○○●○○・・・": "◎○□□□・・・○○○◎△○○○●○○・・・",
-  "わしらの◎◎、いなくな△た・・・\n◎は◎に◎ないほう●いい・・・": "Our ◎◎, has disappeared...\n◎ is better than ◎...",
-  "わしらの◎◎にはもう◎△たか?": "Is our ◎◎ already ◎△?",
+  "◎○□□□・・・○○○◎\n△○○○●○○・・・": "Grug grub... gnee\ngrub gruu...",
+  "わしらの◎◎、いなくな△た・・・\n◎は◎に◎ないほう●いい・・・": "Gnu gnub, gnock gnee...\ngrup gruf gnu gnub...",
+  "わしらの◎◎にはもう◎△たか?": "Have you met our Elder yet?",
   "わしらのなかま、いなくなった・・・\n今は森に出ないほうがいい・・・": "Our comrades have disappeared...\nIt's better not to go into the forest now...",
   "わしらの長老にはもう会ったか?": "Have you met our Elder yet?",
   "たき火といえば・・・\n・・・・・・ヤキイモだねぇ・・・\n\nそういえば、\n森の中でいいニオイがするんだけどねぇ・・・": "Speaking of bonfires...\n...it's baked sweet potatoes, isn't it...\n\nCome to think of it, there's a nice smell in the forest...",
@@ -664,7 +664,7 @@
   "なにか、かんじましたかな・・・\n\nおまえさんが いまかんじた\n「嵐の山の怪」こそ、この山に\n魔法がかけられている しょうこですじゃ\n\n・・・この先も、あたらしいばしょで\nなにかかんじることがあれば、\nそこは魔法のかかったところ・・・\n\nつまり、封印ぶくろのかくされたばしょですじゃ・・・\n\n魔法のかけられたばしょをみきわめることが、\n封印ぶくろ発見のポイントですじゃ・・・": "Did you feel something...?\n\nWhat you just felt,\nthe strange presence of Storm Mountain,\nis proof that this mountain\nhas been put under a spell.\n\n...Further on, too, if you feel something\nin a new place,\nthat place has been put under a spell...\n\nIn other words,\nit's where a Seal Bag is hidden...\n\nSpotting the places under the spell\nis the key to finding the Seal Bags...",
   "・・・おっ・・・ぬけ穴が見えた\n・・・ありがてぇ・・・これでやっと\nぬけだせるぜ・・・あばよ!": "...Oh... I can see the escape hole\n...Great... now I can finally\nget out... So long!",
   "わし・・・見はり・・・ん?\n何の見はりか?\n・・・・・それはおしえられない": "I... watch... hmm?\nWhat kind of watch?\n...I can't tell you that.",
-  "○●△○○ー○!": "○●△○○ー○!",
+  "○●△○○ー○!": "Gnub gnock! grub!",
   "ケガを早く治すのに「ナオリ草」があれば\nいいんだけど・・・\n\nあれがあるのは\nたしか大トリの山だったかしら\n\nでも\nあそこは風が強くてキケンだからねェ・・・": "I wish I had some Naori Herb\nto heal an injury quickly...\n\nI think that grows on Great Bird Mountain,\nif I remember right...\n\nBut\nit's windy and dangerous there...",
   "あらっ! ナオリ草じゃないか\n\nあんた 大トリの山まで 取りに行ったのかい!?\nよく 無事だったねぇ\n\nでもこれで バロンのケガも早く治るよ": "Oh my! Isn't that Naori Herb!\n\nYou went all the way to Great Bird Mountain to get it!?\nIt's lucky you came back safe.\n\nBut with this, Baron's injury will heal quickly.",
   "あとは おいしいものでも たべさせて\nゆっくりしとけば 元気になるさ・・・\n\nそうそう おいしいものと言えば「百識の木の実」!\nあたしも むかしたべたことがあるんだけど\nあれは おいしかったねェ\n\nまた たべてみたいよ・・・・・": "After that, if you feed it something tasty\nand let it rest, it'll perk up...\n\nOh, speaking of tasty things — the \"Knowledge Fruit\"!\nI ate one a long time ago,\nand it was delicious.\n\nI'd love to eat it again...",
@@ -726,8 +726,8 @@
   "おおっ・・・\n・・・なんということだ・・・・・・\n\nやはり 力無きものは・・・\n強者にしたがわねばならんのか・・・\n\n・・・・・・んっ?・・・これは・・・?\n・・・・・・フムフム・・・・・・\nこれは、いっしゅのカラクリのようじゃな・・・\n\n・・・この台座にのっていた\n魔ブタがいなくなったことで\nトビラが閉じた・・・・・・\n\nと、すれば・・・\nこの7つの台座に再び だれかが\nのればいいんじゃ・・・・・・\n\nそうすれば また、トビラは開くハズじゃ・・・": "Ohh...\n...What a thing...\n\nAs expected, those without strength\nmust follow the strong...\n\n......Hm?... What is this...?\n......Hm-hm......\nThis seems to be some kind of mechanism...\n\n...Now that the Evil Pig that stood on this pedestal\nis gone, the door has closed......\n\nIf so...\nsomeone just has to stand\non these seven pedestals again......\n\nThen the door should open again...",
   "そうか! 友達か!\n\n・・・・・・友達を7人\nつれてくるんじゃな・・・・・・": "I see! Friends, then!\n\n......So you'll bring seven friends with you...",
   "よしっ!\n・・・わしは あなたがもどってくるまで\nここで待っているから・・・\n\n友達には\nまっすぐここにくるように伝えてくだされ\nあとの説明は わたしが しておきますじゃ・・・\n\nもし、どうしても そろわない時は\n一度ここにもどってきなされ・・・\n・・・たのみましたぞ・・・・・・": "All right!\n...I'll wait here until you come back...\n\nTell your friends to come straight here.\nI'll explain the rest...\n\nIf you really can't gather them all,\ncome back here once...\n...I'm counting on you......",
-  "おおっ! そうじゃ・・・思い出したっ!・・・\nあなたに こいつを あずけておきますじゃ・・・\n\nどうですかな?・・・・・・\nおぼえておりますかな・・・\n\nこいつは あなたがドワーフの森で助けた\n小犬ですじゃ・・・・・・\n\nまだ、ケガは なおりきっておらんので\nさいしょにあずけた ドワーフの言うことを\nよく きいてくだされ・・・・・\n\nバロンには 不思議な力がありましてな・・・\n\nアイテム画面でバロンをつかうと\nめぐみの羽根と\n同じこうかが ありますのじゃ・・・・・・\n\nさぁ、バロン・・・いっておいで・・・": "Oh! That's right... I remember now!...\nI'll leave this one with you...\n\nWell?\nDo you remember...?\n\nThis is the puppy you saved\nin the Dwarf Forest......\n\nIts injuries haven't fully healed yet,\nso listen carefully to what the dwarf\nwho first took care of it tells you.....\n\nBaron has a mysterious power...\n\nIf you use Baron on the item screen,\nhe has the same effect\nas the Megumi Wings......\n\nNow, Baron... off you go...",
-  "おおっ! そうじゃ・・・思い出したっ!・・・\nあなたに こいつを あずけておきますじゃ・・・\n\nこいつは バロンと言いましてな・・・・・・\nドワーフの森でケガをしていたので\nわたしがそだてて おりましたのじゃ・・・\n\nきっと 力になるハズじゃから・・・\n友達だと思って大事にしてやって下され・・・\n\nバロンには 不思議な力がありましてな・・・\n\nアイテム画面でバロンをつかうと\nめぐみの羽根と\n同じこうかが ありますのじゃ・・・・・・\n\nさぁ、バロン・・・いっておいで・・・": "Oh! That's right... I remember now!...\nI'll leave this one with you...\n\nThis one is called Baron......\nHe was hurt in the Dwarf Forest,\nso I've been raising him...\n\nHe's sure to be a help to you...\nThink of him as a friend and treasure him...\n\nBaron has a mysterious power...\n\nIf you use Baron on the item screen,\nhe has the same effect\nas the Megumi Wings......\n\nNow, Baron... off you go...",
+  "おおっ! そうじゃ・・・思い出したっ!・・・\nあなたに こいつを あずけておきますじゃ・・・\n\nどうですかな?・・・・・・\nおぼえておりますかな・・・\n\nこいつは あなたがドワーフの森で助けた\n小犬ですじゃ・・・・・・\n\nまだ、ケガは なおりきっておらんので\nさいしょにあずけた ドワーフの言うことを\nよく きいてくだされ・・・・・\n\nバロンには 不思議な力がありましてな・・・\n\nアイテム画面でバロンをつかうと\nめぐみの羽根と\n同じこうかが ありますのじゃ・・・・・・\n\nさぁ、バロン・・・いっておいで・・・": "Oh! That's right... I remember now!...\nI'll leave this one with you...\n\nWell?\nDo you remember...?\n\nThis is the puppy you saved\nin the Dwarf Forest......\n\nIts injuries haven't fully healed yet,\nso listen carefully to what the dwarf\nwho first took care of it tells you.....\n\nBaron has a mysterious power...\n\nIf you use Baron on the item screen,\nhe has the same effect\nas the Megumi Feather......\n\nNow, Baron... off you go...",
+  "おおっ! そうじゃ・・・思い出したっ!・・・\nあなたに こいつを あずけておきますじゃ・・・\n\nこいつは バロンと言いましてな・・・・・・\nドワーフの森でケガをしていたので\nわたしがそだてて おりましたのじゃ・・・\n\nきっと 力になるハズじゃから・・・\n友達だと思って大事にしてやって下され・・・\n\nバロンには 不思議な力がありましてな・・・\n\nアイテム画面でバロンをつかうと\nめぐみの羽根と\n同じこうかが ありますのじゃ・・・・・・\n\nさぁ、バロン・・・いっておいで・・・": "Oh! That's right... I remember now!...\nI'll leave this one with you...\n\nThis one is called Baron......\nHe was hurt in the Dwarf Forest,\nso I've been raising him...\n\nHe's sure to be a help to you...\nThink of him as a friend and treasure him...\n\nBaron has a mysterious power...\n\nIf you use Baron on the item screen,\nhe has the same effect\nas the Megumi Feather......\n\nNow, Baron... off you go...",
   "・・・・・・そうか\n・・・どうしても ひとり足りんか・・・・・・\nこまったのぉ・・・": "......I see\n...so one is still missing......\nWhat a bother...",
   "バロン!?・・・・・・\nそうか・・・\n\nバロンもトンバにとっては\nりっぱな友達じゃな・・・": "Baron!?...\nI see...\n\nBaron is also a splendid friend to Tomba...",
   "おお・・・トンバ!・・・\nあれから、何とかトビラを固定してのぉ・・・\n\nこれで いつでも ゲートを\n通ることができるんじゃ": "Oh... Tomba!...\nI managed to fix the door in place since then...\n\nNow you can go through the gate\nany time you like",
@@ -977,7 +977,7 @@
   "この先バッカスの湖につながっているんだが\n・・・とてもあぶないんだ・・・\n特に用がないならやめときな": "It leads to Lake Bacchus from here, but\n...it's very dangerous...\nIf you've no particular business, give it up",
   "おまえさん・・・トンバとかいったっけ?\n湖のポンプをなおしてくれるんだったら、\nオレが みちあんないしてやるよ": "You... Tomba, was it?\nIf you're going to fix the lake's pump,\nI'll show you the way.",
   "ごくろうさん・・・中央センターへ、\nほうこくするのもわすれずにな・・・": "Thank you very much... Don't forget to report to Central Center...",
-  "子ネズミを見つけた!": "I found a baby mouse!",
+  "子ネズミを見つけた!": "Found a baby mouse!",
   "・・・おれ、思うんだけどさぁ・・・\nなきダケや わらいダケを食ったら\nげどくダケでなおすだろ?\n\n・・・もし、それ以外のキノコ・・・\nたとえば ふしぎなキノコなんかをかじって\nおかしくなった時は何でなおすんだろーな?\n\n・・・まぁ、あそこには ヘンなキノコが\nいっぱいあるからなぁ・・・\n\nそんな まともなキノコ があっても\nおかしくないか・・・": "...I think, you know...\nIf you eat a Crying Mushroom or a Laughing Mushroom, you can cure it with an Antidote Mushroom, right?\n\n...If it's some other mushroom...\nFor example, if you bite into a Mysterious Mushroom and go crazy, how do you cure that?\n\n...Well, there are plenty of strange mushrooms over there...\n\nWouldn't it be okay if there was an Ordinary Mushroom like that...",
   "・・・えっ? 最後の魔ブタだって?\nよ〜しっ! わかった!\n・・・まかしとけっ!": "...Huh? The last Evil Pig?\nAlright! Got it!\n...Leave it to me!",
   "よぉ、トンバ! ひさしぶりだな\n・・・どうした??\n・・・アルコールがいるって?\n\nいいぜ、ほかならぬ トンバのたのみだ\nいくらでも もっていきな\n・・・でも、子どもは のんじゃだめだぞ": "Hey, Tomba! Long time no see\n...What's up??\n...You need alcohol?\n\nSure, for Tomba, no problem\n— take as much as you want\n...But kids shouldn't drink it.",
@@ -1009,21 +1009,21 @@
   "金色のメダルがほしい": "I want a gold medal.",
   " 人魚の歌岩": "Mermaid's Singing Rock",
   "なにかを取り付ける穴があいている・・・": "There's a hole for attaching something...",
-  "バルブを取り付けた!": "I installed the valve!",
+  "バルブを取り付けた!": "Installed the valve!",
   "・・・スイッチがオフになっている・・・": "The switch is turned off...",
-  "スイッチを入れた": "I turned on the switch.",
+  "スイッチを入れた": "Turned on the switch",
   "・・・・・・かすかにポンプのおとがきこえる\n・・・どうやら なおったようだ・・・": "......I can faintly hear the pump\n...It seems to be fixed...",
   "ふぅ、なんとか たどりついたな\n・・・おれはここで待ってるから、\nよろしくな": "Phew, I finally made it here... I'll be waiting here, so take care.",
   "・・・ありがとうな・・・": "...Thank you...",
-  "死神の実をひとつ つぶした": "I crushed one Reaper Fruit.",
-  "死神の実をふたつ つぶした": "I crushed two Reaper Fruits.",
-  "死神の実を3コ つぶした": "I crushed three Reaper Fruits.",
-  "死神の実を4コ つぶした": "I crushed four Reaper Fruits.",
-  "死神の実をすべて つぶした": "I crushed all the Reaper Fruit.",
+  "死神の実をひとつ つぶした": "Crushed one Reaper Fruit",
+  "死神の実をふたつ つぶした": "Crushed two Reaper Fruits",
+  "死神の実を3コ つぶした": "Crushed three Reaper Fruits",
+  "死神の実を4コ つぶした": "Crushed four Reaper Fruits",
+  "死神の実をすべて つぶした": "Crushed all the Reaper Fruit",
   "トビラがしまっている・・・": "The door is closed...",
   "このさき大トリの山・・・\n\nいつもつよい風ふく とてもきけんな山・・・\nわし、長老にいわれて ここ、見はってる・・・\n・・・けど、とてもたいくつ・・・\n\nだから、いつもここで れんしゅうしてる\nえっ?何のれんしゅうか?\n\n・・・・・・じつは、わし役者になるのがゆめ・・・\n役者になって、みんなを笑わせたり、\n泣かせたり してみたい・・・\n\nでも、れんしゅう とてもたいへん・・・\nどんなカオすれば みんなかんどうするのか・・・": "Beyond here is Great Bird Mountain...\n\nA very dangerous mountain where a strong wind always blows...\nThe Elder told me to keep watch here...\n...but it's awfully boring...\n\nSo I always practice here.\nEh? Practice for what?\n\n......The truth is, my dream is to become an actor...\nI want to become an actor and make everyone laugh,\nor cry...\n\nBut practice is really hard...\nWhat kind of face should I make to move everyone...?",
   "ん?・・・うおおぉぉぉっ!\nそ、その あいしゅうにみちたカオ!・・・\n・・・そうか・・・\n\nさっきの笑がおと、\nいまの泣きがおをマスターして・・・\nふむふむ・・・\n\n・・・んーーーーーーっ\n見えた!!\nうん!ありがとう!! \n\nキミのおかげで何かつかめそうな気がする!\nおっと、こうしちゃいられない\n・・・今から とっくんだ!!": "Huh?... Whoooa!\nT-that face full of sorrow!...\n...I see...\n\nIf I master that laughing face from before and that crying face now...\nHm-hm...\n\n...Mmmmmm...\nI see it!!\nYes! Thank you!!\n\nThanks to you, I feel like I'm onto something!\nOops, no time to lose.\n...Time to start training!!",
-  "おれ、花のナミダとりに来た・・・\n花のナミダ、めぐみさまのふっかつにかかせない\n\n・・・このつぼみ さかせることできれば\nナミダながすらしい・・・でも\n・・・どうやってナミダ、集めるのかわからない": "I came to get Flower Tears...\nFlower Tears are essential to Lady Megumi's revival...\n\n...If I can make this bud bloom,\nit seems it will shed tears... but\n...I don't know how to collect the tears...",
+  "おれ、花のナミダとりに来た・・・\n花のナミダ、めぐみさまのふっかつにかかせない\n\n・・・このつぼみ さかせることできれば\nナミダながすらしい・・・でも\n・・・どうやってナミダ、集めるのかわからない": "I came to get Flower Tears...\nFlower Tears are essential to the Megumi Fountain's revival...\n\n...If I can make this bud bloom,\nit seems it will shed tears... but\n...I don't know how to collect the tears...",
   "やっぱり、ウワサにきく\nナミダのびん ひつようかも\n・・・こまった・・・": "Maybe I need the Tear Bottle\neveryone talks about...\n...What a problem...",
   "はじまりの村に出かけますので、\nしばらく ふねは出せません": "I'm going out to the Village of Beginnings,\nso I can't take the boat out for a while.",
   "やぁ、またあったね・・・\nふねに のりたいのかい?\n\nそれはかまわないけど、\nボクもいそがしいから\nかたみちだけだよ": "Hey, we meet again...\nDo you want a ride on my boat?\n\nThat's fine, but I'm busy too,\nso it's one way only.",
@@ -1204,9 +1204,9 @@
   "・・・・・・フムフム・・・・・・これは、\nいっしゅのカラクリのようじゃな・・・\n\nこの台座にのっていた 魔ブタが\nいなくなったことで トビラが閉じた・・・\n\nと、すれば・・・この7つの台座に再び\nだれかが のればいいんじゃ・・・・・・\n\nそうすれば また、トビラは開くハズじゃ・・・": "......Hm-hm...... This seems to be\nsome kind of mechanism...\n\nNow that the Evil Pig that stood on this pedestal\nis gone, the door has closed...\n\nIf so... someone just has to stand\non these seven pedestals again......\n\nThen the door should open again...",
   "よしっ!・・・わしは あなたが\nもどってくるまで ここで待っているから\n\n・・・友達には まっすぐここにくるように\n伝えてくだされ あとの説明は わたしが\nしておきますじゃ・・・\n\n・・・・・・たのみましたぞ・・・・・・": "All right!... I'll wait here\nuntil you come back\n\n...Tell your friends to come straight here.\nI'll explain the rest...\n\n......I'm counting on you......",
   "おおっ! そうじゃ・・・思い出したっ!\n・・・あなたに こいつを\nあずけておきますじゃ・・・": "Oh! That's right... I remember now!\n...I'll leave this one with you...",
-  "どうですかな?\n・・・・・・おぼえておりますかな\n\n・・・こいつは あなたが\nドワーフの森で助けた小犬ですじゃ\n\n・・・・・・やっと元気になったとかで\nわたしが あずかっておりましたのじゃ\n\n・・・バロンには 不思識な力がありましてな\n・・・アイテム画面でバロンをつかうと\nめぐみの羽根と 同じこうかが ありますのじゃ\n\n・・・・・・さぁ、バロン・・・いっておいで・・・": "Well?\n......Do you remember?\n\n...This is the puppy you saved\nin the Dwarf Forest\n\n......Since it finally got better,\nI've been looking after it\n\n...Baron has a mysterious power\n...If you use Baron on the item screen,\nhe has the same effect as the Megumi Wings\n\n......Now, Baron... off you go...",
+  "どうですかな?\n・・・・・・おぼえておりますかな\n\n・・・こいつは あなたが\nドワーフの森で助けた小犬ですじゃ\n\n・・・・・・やっと元気になったとかで\nわたしが あずかっておりましたのじゃ\n\n・・・バロンには 不思識な力がありましてな\n・・・アイテム画面でバロンをつかうと\nめぐみの羽根と 同じこうかが ありますのじゃ\n\n・・・・・・さぁ、バロン・・・いっておいで・・・": "Well?\n......Do you remember?\n\n...This is the puppy you saved\nin the Dwarf Forest\n\n......Since it finally got better,\nI've been looking after it\n\n...Baron has a mysterious power\n...If you use Baron on the item screen,\nhe has the same effect as the Megumi Feather\n\n......Now, Baron... off you go...",
   "おおっ!\nそうじゃ・・・思い出したっ!\n\n・・・あなたに こいつを\nあずけておきますじゃ・・・": "Oh!\nThat's right... I remember now!\n\n...I'll leave this one with you...",
-  "こいつは バロンと言いましてな\n\n・・・・・・ドワーフの森で\nケガをしていたので わたしが\nそだてて おりましたのじゃ・・・\n\nきっと 力になるハズじゃから・・・\n友達だと思って大事にしてやって下され\n・・・バロンには 不思識な力がありましてな\n\n・・・アイテム画面でバロンをつかうと\nめぐみの羽根と 同じこうかが ありますのじゃ\n・・・・・・さぁ、バロン・・・いっておいで・・・": "This one is called Baron\n\n......He was hurt in the Dwarf Forest,\nso I've been raising him...\n\nHe's sure to be a help to you...\nThink of him as a friend and treasure him\n...Baron has a mysterious power\n\n...If you use Baron on the item screen,\nhe has the same effect as the Megumi Wings\n......Now, Baron... off you go...",
+  "こいつは バロンと言いましてな\n\n・・・・・・ドワーフの森で\nケガをしていたので わたしが\nそだてて おりましたのじゃ・・・\n\nきっと 力になるハズじゃから・・・\n友達だと思って大事にしてやって下され\n・・・バロンには 不思識な力がありましてな\n\n・・・アイテム画面でバロンをつかうと\nめぐみの羽根と 同じこうかが ありますのじゃ\n・・・・・・さぁ、バロン・・・いっておいで・・・": "This one is called Baron\n\n......He was hurt in the Dwarf Forest,\nso I've been raising him...\n\nHe's sure to be a help to you...\nThink of him as a friend and treasure him\n...Baron has a mysterious power\n\n...If you use Baron on the item screen,\nhe has the same effect as the Megumi Feather\n......Now, Baron... off you go...",
   "ジャングル ": "Jungle",
   "からくり村 ": "Karakuri Village",
   "石のハグルマがこわれている・・・": "The stone gear is broken...",
@@ -1214,8 +1214,8 @@
   "・・・ん〜っ・・・\nなにか つくりたいなぁ・・・\n\nおれの ウデをふるえるような\nつくりごたえの あるものは\nないかなぁ・・・": "...Mmm...\nI want to make something...\n\nIsn't there something\nworth making,\nthat would let me show off my skill...",
   "・・・えぇっ!\nあんた マサカリ族につかまったのか?\n・・・よく、無事だったなぁ・・・": "...What!\nYou got captured by the Masakari tribe?\n...It's lucky you got out safe...",
   "そういえば・・・\n\nウワサに聞いたんだけど マサカリ族は\nむかしから フンガの大ダイコをつかって\n祭りをするらしいな・・・\n\nとてもいい音がするタイコらしいんだが\n材料がなかなか 手に入らないんだ・・・\n材料さえあれば・・・つくってみたいなぁ\n\n・・・そうだ!\n・・・物知りの木だったら\n何かしってるかもしれないな・・・": "Come to think of it...\n\nI heard a rumor that the Masakari tribe\nhas held festivals with Funga's Great Drum\nsince long ago...\n\nIt's supposed to be a drum with a wonderful sound,\nbut the materials are hard to get...\nIf I had the materials... I'd love to try making it\n\n...I know!\n...The all-knowing tree\nmight know something...",
-  "キミ、いろんなところを旅してるんだって?\nだったら、へんな点とか線がきざんである\nらくがき岩・・・見たことないかなぁ・・・\n\nおれ、ずーっとまえに木人の加工場で\n見たことがあるんだけど、\nどうも気になってなぁ・・・": "I hear you've been traveling all over?\nThen, have you ever seen a Scribble Rock\nwith strange dots and lines carved on it?...\n\nI saw one a long time ago\nat the Wood People's workshop,\nand I've been curious about it ever since...",
-  "ウワサじゃ\n全部で6つのらくがき岩があって、\n\nそこに書かれてあるナゾをとけば\nたくさんの お宝が\n手に入るらしいんだけど\n\n・・・なんかむずかしそうだなぁ\n・・・が1・・・ーが5の・・・\n\n20進数とかなんとか・・・\nおれにはとても わかんないよ・・・": "Rumor has it\nthat there are six Scribble Rocks in all,\n\nand if you solve the mystery written on them\nyou can get lots of treasure\n...or so they say\n\n...It sounds hard\n...a 1 for ー and a 5 for...\n\nSomething about base 20...\nI can't make heads or tails of it...",
+  "キミ、いろんなところを旅してるんだって?\nだったら、へんな点とか線がきざんである\nらくがき岩・・・見たことないかなぁ・・・\n\nおれ、ずーっとまえに木人の加工場で\n見たことがあるんだけど、\nどうも気になってなぁ・・・": "I hear you've been traveling all over?\nThen, have you ever seen a Doodle Rock\nwith strange dots and lines carved on it?...\n\nI saw one a long time ago\nat the Wood People's workshop,\nand I've been curious about it ever since...",
+  "ウワサじゃ\n全部で6つのらくがき岩があって、\n\nそこに書かれてあるナゾをとけば\nたくさんの お宝が\n手に入るらしいんだけど\n\n・・・なんかむずかしそうだなぁ\n・・・が1・・・ーが5の・・・\n\n20進数とかなんとか・・・\nおれにはとても わかんないよ・・・": "Rumor has it\nthat there are six Doodle Rocks in all,\n\nand if you solve the riddle written on them\nyou can get lots of treasure\n\n...It sounds hard\n...A dot is 1, a bar is 5, and so on...\n\nSomething about base 20...\nI can't make heads or tails of it...",
   "キミ、この先の時計台に 何か用かい?": "You, do you have business at the Clock Tower up ahead?",
   "ざんねんだけど・・・\n今、時計台はこわれてて\n動かないんだ・・・": "Too bad...\nthe Clock Tower is broken right now\nand doesn't run...",
   "・・・そうだ!\nこの少年におねがいして、\n鉄人にたのんでもらおうか?": "...I know!\nLet's ask this boy\nto ask the Iron People for us?",
@@ -1302,7 +1302,7 @@
   "・・・・・・う〜〜〜ん・・・・・\n\n鉄の城も こうなっちまうと \nどうしようもねぇなぁ・・・": "・・・・・・Hmm...\n\nEven an iron castle can't be saved once it's like this...",
   "・・・・・・う〜〜〜ん・・・・・\n\n鉄の城も こうなっちまうと \nどうしようもねぇなぁ・・・\n\n・・・・・・う〜〜〜ん・・・・・んっ?\n・・・なんだ? 聞いてたのか・・・え?\n\n・・・たしかに このトビラの むこうが\nキカイ室だけど・・・ホラ、見てのとおり\n・・・これじゃ開けるのは とてもムリだよ・・・\n\n・・・長いあいだ ほったらかしに しといたからなぁ\n・・・ついには、中にあるハツデンキまで止まっちまって\nこのありさまだよ・・・\n\nまったく、文明の国の名がなくぜ・・・": "......Hmmmm.....\n\nOnce the Iron Castle is like this,\nthere's nothing to be done...\n\n......Hmmmm.....Hm?\n...What? You were listening... eh?\n\n...It's true, the machine room is beyond this door...\nbut look, as you can see...\nthere's no way to open it like this...\n\n...We left it alone for so long...\nand in the end even the generator inside stopped,\nand now it's come to this...\n\nHonestly, it's a disgrace to the name of the Land of Civilization...",
   "・・・こんなに さびついてたらなぁ・・・\n押しても 引いてもビクともしねぇや": "...It's rusted so badly...\nit won't budge whether you push or pull",
-  "スイッチをいれた!": "I turned on the switch!",
+  "スイッチをいれた!": "Turned on the switch!",
   "ガンテツ?\n・・・ああ、あのへんくつの\nガンテツ博土かい?\n\n博土なら 自分の小屋に帰ったぜ\n・・・ほら、あの\nリフトから行ける 真ん中の小屋さ": "Gantetsu?\n...Oh, you mean the crotchety\nDr. Gantetsu?\n\nThe doctor went back to his hut\n...you know, the one in the middle\nyou can get to by that lift",
   "・・・地下迷宮の魔ブタゲートか・・・\nほかならぬトンバのたのみだ\n・・・やってやるぜ!": "...The Evil Pig Gate in the Underground Maze...\nFor Tomba, no less...\n...I'll do it!",
   "・・・ふん! 見なれないカオだな・・・\nこの先には 鉄の城があるんだが・・・\n特に用がないんなら 帰りな・・・\n\nん?\nわしか? わしの名はガンテツ・・・\n\nまぁ、お前さんが この国の役にたつのなら\n力になってやるがな・・・": "...Hmph! What an unfamiliar face...\nBeyond here lies the Iron Castle...\nIf you don't have any particular business, you should go home...\n\nHmm?\nMe? My name is Gantetsu...\n\nWell, if you're useful to this country, I'll lend you my strength...",
@@ -1379,7 +1379,7 @@
   "「ブタムシのトゲ」": "Butamushi Thorn",
   "「ハリゲーターのキバ」": "Needlegator Fang",
   "が いるわよ": "is needed.",
-  "かくれざと\n\nセーブしますか?\n  はい→△ いいえ→×": "Hidden Village\n\nSave?\nYes → △  No → ×",
+  "かくれざと\n\nセーブしますか?\n  はい→△ いいえ→×": "Hidden Village\n\nSave?\n  Yes → △  No → ×",
   "おお、おまえ、ドワーフのことばわかるか!?\nドワーフ、とてもこまってる・・・\n\nじつは・・・このドワーフの森、\n魔ブタの魔法かかってる・・・\n花々はかれ、木々たちも すがた変えた・・・\n\nさっき、7人の なかま、森で しょくぶつに取り込まれ\nゆくえ知れずになった・・・\n\nたぶん、大きめの しょくぶつの中か、\nほうしに取り付かれて\nうごけなくなってるハズ・・・\n\nいそいで 森にある小屋と\n村の入口ちかくのとびらをあけて、\n森のおく、みはりにいったところ・・・\n\nなかま見つからないと、\n森のおく とおしてくれないはず・・・": "Oh, you understand the Dwarf language!?\nThe dwarves are in great trouble...\n\n...The truth is... this Dwarf Forest\nis under the Evil Pig's magic...\nThe flowers withered, and the trees changed their shape...\n\nJust now, seven of our friends\nwere swallowed up by plants in the forest\nand went missing...\n\nThey must be inside one of the big plants,\nor caught by spores\nand unable to move...\n\nQuickly we opened the hut in the forest\nand the door near the village entrance,\nand went to keep watch deep in the forest...\n\n...If you don't find our friends,\nthey won't let you through\nto the back of the forest...",
   "・・・7人のなかま、かえってきたけど・・・\nじつは、こどもがひとり・・・\n森のなかで迷子になったまま・・・": "...Seven companions have returned, but...\nActually, one child is missing...\nStill lost in the forest...",
   "もう、森のおくを\n見はる必要もないじゃろう・・・\n自由に通ってくだされ・・・": "There's no need to guard\nthe back of the forest anymore...\nPlease feel free to pass through...",
@@ -1567,7 +1567,7 @@
   "かくれていた とまっている\nエレベーター": "A hidden elevator\nthat has stopped",
   "うわさの宝を\n手に入れる": "Get the rumored treasure",
   "長老は、大トリの山へ\n行けといった・・・": "The Elder told me to go\nto the Great Bird's mountain...",
-  "めぐみさまを復活させると\n何かがおこる": "Revive Lady Megumi\nand something will happen",
+  "めぐみさまを復活させると\n何かがおこる": "Revive the Megumi Fountain\nand something will happen",
   "まえに 見たような やしき・・・\nどこでだろう?": "A mansion I've seen before...\nWhere was it?",
   "かくされた封印ぶくろを\n手に入れる": "Get the hidden Seal Bag",
   "魔ブタを 封印ぶくろに封じてしまう": "Seal the Evil Pig in a Seal Bag",
@@ -1606,7 +1606,7 @@
   "サンタの きげんをとると\nあたらしいことを おしえてくれる": "Humor Santa\nand he'll teach you something new",
   "ナミダのビンは どこに・・・?": "Where is the Tear Bottle...?",
   "・・・・・・???": "・・・・・・???",
-  "らくがき岩の もじを かいどくする": "Decipher the writing\non the Graffiti Rock",
+  "らくがき岩の もじを かいどくする": "Decipher the writing\non the Doodle Rock",
   "動かなくなった時計台の\n時計を動かす": "Get the stopped clock\nof the Clock Tower running again",
   "きけんな 電気うなぎを つかまえる": "Catch the dangerous electric eel",
   "ぬすまれた 封印ぶくろを さがしだす": "Track down the stolen Seal Bag",
@@ -1915,42 +1915,42 @@
     {
      "index": 11,
      "original": "ウッキーパラソルをそうびした",
-     "translation": "I equipped the Ukki Parasol."
+     "translation": "Equipped the Ukki Parasol"
     },
     {
      "index": 12,
      "original": "ウッドブーメランをそうびした",
-     "translation": "I equipped the Wood Boomerang."
+     "translation": "Equipped the Wood Boomerang"
     },
     {
      "index": 13,
      "original": "ストーンブーメランをそうびした",
-     "translation": "I equipped the Stone Boomerang."
+     "translation": "Equipped the Stone Boomerang"
     },
     {
      "index": 14,
      "original": "アイアンブーメランをそうびした",
-     "translation": "I equipped the Iron Boomerang."
+     "translation": "Equipped the Iron Boomerang"
     },
     {
      "index": 15,
      "original": "ぶっとびのパンツをそうびした",
-     "translation": "I put on the Dashing Pants."
+     "translation": "Put on the Blasting Pants"
     },
     {
      "index": 16,
      "original": "グルドカをそうびした",
-     "translation": "I equipped Blackjack."
+     "translation": "Equipped Blackjack"
     },
     {
      "index": 17,
      "original": "いだてんのパンツをそうびした",
-     "translation": "I put on the Flash Pants."
+     "translation": "Put on the Idaten Pants"
     },
     {
      "index": 18,
      "original": "かっとびのパンツをそうびした",
-     "translation": "I put on the Jumping Pants."
+     "translation": "Put on the Dashing Pants"
     },
     {
      "index": 19,
@@ -1965,17 +1965,17 @@
     {
      "index": 21,
      "original": "ノーマルパンツをそうびした",
-     "translation": "I put on the Normal Pants."
+     "translation": "Put on the Normal Pants"
     },
     {
      "index": 22,
      "original": "グルピンをそうびした",
-     "translation": "I equipped Grapple."
+     "translation": "Equipped Grapple"
     },
     {
      "index": 23,
      "original": "ドカピンをそうびした",
-     "translation": "I equipped Grapple Jack."
+     "translation": "Equipped Grapple Jack"
     },
     {
      "index": 24,
@@ -2757,42 +2757,42 @@
     {
      "index": 11,
      "original": "ウッキーパラソルをそうびした",
-     "translation": "I equipped the Ukki Parasol."
+     "translation": "Equipped the Ukki Parasol"
     },
     {
      "index": 12,
      "original": "ウッドブーメランをそうびした",
-     "translation": "I equipped the Wood Boomerang."
+     "translation": "Equipped the Wood Boomerang"
     },
     {
      "index": 13,
      "original": "ストーンブーメランをそうびした",
-     "translation": "I equipped the Stone Boomerang."
+     "translation": "Equipped the Stone Boomerang"
     },
     {
      "index": 14,
      "original": "アイアンブーメランをそうびした",
-     "translation": "I equipped the Iron Boomerang."
+     "translation": "Equipped the Iron Boomerang"
     },
     {
      "index": 15,
      "original": "ぶっとびのパンツをそうびした",
-     "translation": "I put on the Dashing Pants."
+     "translation": "Put on the Blasting Pants"
     },
     {
      "index": 16,
      "original": "グルドカをそうびした",
-     "translation": "I equipped Blackjack."
+     "translation": "Equipped Blackjack"
     },
     {
      "index": 17,
      "original": "いだてんのパンツをそうびした",
-     "translation": "I put on the Flash Pants."
+     "translation": "Put on the Idaten Pants"
     },
     {
      "index": 18,
      "original": "かっとびのパンツをそうびした",
-     "translation": "I put on the Jumping Pants."
+     "translation": "Put on the Dashing Pants"
     },
     {
      "index": 19,
@@ -2807,17 +2807,17 @@
     {
      "index": 21,
      "original": "ノーマルパンツをそうびした",
-     "translation": "I put on the Normal Pants."
+     "translation": "Put on the Normal Pants"
     },
     {
      "index": 22,
      "original": "グルピンをそうびした",
-     "translation": "I equipped Grapple."
+     "translation": "Equipped Grapple"
     },
     {
      "index": 23,
      "original": "ドカピンをそうびした",
-     "translation": "I equipped Grapple Jack."
+     "translation": "Equipped Grapple Jack"
     },
     {
      "index": 24,
@@ -3599,42 +3599,42 @@
     {
      "index": 11,
      "original": "ウッキーパラソルをそうびした",
-     "translation": "I equipped the Ukki Parasol."
+     "translation": "Equipped the Ukki Parasol"
     },
     {
      "index": 12,
      "original": "ウッドブーメランをそうびした",
-     "translation": "I equipped the Wood Boomerang."
+     "translation": "Equipped the Wood Boomerang"
     },
     {
      "index": 13,
      "original": "ストーンブーメランをそうびした",
-     "translation": "I equipped the Stone Boomerang."
+     "translation": "Equipped the Stone Boomerang"
     },
     {
      "index": 14,
      "original": "アイアンブーメランをそうびした",
-     "translation": "I equipped the Iron Boomerang."
+     "translation": "Equipped the Iron Boomerang"
     },
     {
      "index": 15,
      "original": "ぶっとびのパンツをそうびした",
-     "translation": "I put on the Dashing Pants."
+     "translation": "Put on the Blasting Pants"
     },
     {
      "index": 16,
      "original": "グルドカをそうびした",
-     "translation": "I equipped Blackjack."
+     "translation": "Equipped Blackjack"
     },
     {
      "index": 17,
      "original": "いだてんのパンツをそうびした",
-     "translation": "I put on the Flash Pants."
+     "translation": "Put on the Idaten Pants"
     },
     {
      "index": 18,
      "original": "かっとびのパンツをそうびした",
-     "translation": "I put on the Jumping Pants."
+     "translation": "Put on the Dashing Pants"
     },
     {
      "index": 19,
@@ -3649,17 +3649,17 @@
     {
      "index": 21,
      "original": "ノーマルパンツをそうびした",
-     "translation": "I put on the Normal Pants."
+     "translation": "Put on the Normal Pants"
     },
     {
      "index": 22,
      "original": "グルピンをそうびした",
-     "translation": "I equipped Grapple."
+     "translation": "Equipped Grapple"
     },
     {
      "index": 23,
      "original": "ドカピンをそうびした",
-     "translation": "I equipped Grapple Jack."
+     "translation": "Equipped Grapple Jack"
     },
     {
      "index": 24,
@@ -4441,42 +4441,42 @@
     {
      "index": 11,
      "original": "ウッキーパラソルをそうびした",
-     "translation": "I equipped the Ukki Parasol."
+     "translation": "Equipped the Ukki Parasol"
     },
     {
      "index": 12,
      "original": "ウッドブーメランをそうびした",
-     "translation": "I equipped the Wood Boomerang."
+     "translation": "Equipped the Wood Boomerang"
     },
     {
      "index": 13,
      "original": "ストーンブーメランをそうびした",
-     "translation": "I equipped the Stone Boomerang."
+     "translation": "Equipped the Stone Boomerang"
     },
     {
      "index": 14,
      "original": "アイアンブーメランをそうびした",
-     "translation": "I equipped the Iron Boomerang."
+     "translation": "Equipped the Iron Boomerang"
     },
     {
      "index": 15,
      "original": "ぶっとびのパンツをそうびした",
-     "translation": "I put on the Dashing Pants."
+     "translation": "Put on the Blasting Pants"
     },
     {
      "index": 16,
      "original": "グルドカをそうびした",
-     "translation": "I equipped Blackjack."
+     "translation": "Equipped Blackjack"
     },
     {
      "index": 17,
      "original": "いだてんのパンツをそうびした",
-     "translation": "I put on the Flash Pants."
+     "translation": "Put on the Idaten Pants"
     },
     {
      "index": 18,
      "original": "かっとびのパンツをそうびした",
-     "translation": "I put on the Jumping Pants."
+     "translation": "Put on the Dashing Pants"
     },
     {
      "index": 19,
@@ -4491,17 +4491,17 @@
     {
      "index": 21,
      "original": "ノーマルパンツをそうびした",
-     "translation": "I put on the Normal Pants."
+     "translation": "Put on the Normal Pants"
     },
     {
      "index": 22,
      "original": "グルピンをそうびした",
-     "translation": "I equipped Grapple."
+     "translation": "Equipped Grapple"
     },
     {
      "index": 23,
      "original": "ドカピンをそうびした",
-     "translation": "I equipped Grapple Jack."
+     "translation": "Equipped Grapple Jack"
     },
     {
      "index": 24,
@@ -4936,7 +4936,7 @@
     {
      "index": 110,
      "original": "・・・恵みコゾウが復活すると、幻の塔が現れる・・・",
-     "translation": "...When the Megumi Kozo revive, the Phantom Tower appears..."
+     "translation": "...When the Megumi Statues revive, the Phantom Tower appears..."
     },
     {
      "index": 111,
@@ -5018,42 +5018,42 @@
     {
      "index": 11,
      "original": "ウッキーパラソルをそうびした",
-     "translation": "I equipped the Ukki Parasol."
+     "translation": "Equipped the Ukki Parasol"
     },
     {
      "index": 12,
      "original": "ウッドブーメランをそうびした",
-     "translation": "I equipped the Wood Boomerang."
+     "translation": "Equipped the Wood Boomerang"
     },
     {
      "index": 13,
      "original": "ストーンブーメランをそうびした",
-     "translation": "I equipped the Stone Boomerang."
+     "translation": "Equipped the Stone Boomerang"
     },
     {
      "index": 14,
      "original": "アイアンブーメランをそうびした",
-     "translation": "I equipped the Iron Boomerang."
+     "translation": "Equipped the Iron Boomerang"
     },
     {
      "index": 15,
      "original": "ぶっとびのパンツをそうびした",
-     "translation": "I put on the Dashing Pants."
+     "translation": "Put on the Blasting Pants"
     },
     {
      "index": 16,
      "original": "グルドカをそうびした",
-     "translation": "I equipped Blackjack."
+     "translation": "Equipped Blackjack"
     },
     {
      "index": 17,
      "original": "いだてんのパンツをそうびした",
-     "translation": "I put on the Flash Pants."
+     "translation": "Put on the Idaten Pants"
     },
     {
      "index": 18,
      "original": "かっとびのパンツをそうびした",
-     "translation": "I put on the Jumping Pants."
+     "translation": "Put on the Dashing Pants"
     },
     {
      "index": 19,
@@ -5068,17 +5068,17 @@
     {
      "index": 21,
      "original": "ノーマルパンツをそうびした",
-     "translation": "I put on the Normal Pants."
+     "translation": "Put on the Normal Pants"
     },
     {
      "index": 22,
      "original": "グルピンをそうびした",
-     "translation": "I equipped Grapple."
+     "translation": "Equipped Grapple"
     },
     {
      "index": 23,
      "original": "ドカピンをそうびした",
-     "translation": "I equipped Grapple Jack."
+     "translation": "Equipped Grapple Jack"
     },
     {
      "index": 24,
@@ -5860,42 +5860,42 @@
     {
      "index": 11,
      "original": "ウッキーパラソルをそうびした",
-     "translation": "I equipped the Ukki Parasol."
+     "translation": "Equipped the Ukki Parasol"
     },
     {
      "index": 12,
      "original": "ウッドブーメランをそうびした",
-     "translation": "I equipped the Wood Boomerang."
+     "translation": "Equipped the Wood Boomerang"
     },
     {
      "index": 13,
      "original": "ストーンブーメランをそうびした",
-     "translation": "I equipped the Stone Boomerang."
+     "translation": "Equipped the Stone Boomerang"
     },
     {
      "index": 14,
      "original": "アイアンブーメランをそうびした",
-     "translation": "I equipped the Iron Boomerang."
+     "translation": "Equipped the Iron Boomerang"
     },
     {
      "index": 15,
      "original": "ぶっとびのパンツをそうびした",
-     "translation": "I put on the Dashing Pants."
+     "translation": "Put on the Blasting Pants"
     },
     {
      "index": 16,
      "original": "グルドカをそうびした",
-     "translation": "I equipped Blackjack."
+     "translation": "Equipped Blackjack"
     },
     {
      "index": 17,
      "original": "いだてんのパンツをそうびした",
-     "translation": "I put on the Flash Pants."
+     "translation": "Put on the Idaten Pants"
     },
     {
      "index": 18,
      "original": "かっとびのパンツをそうびした",
-     "translation": "I put on the Jumping Pants."
+     "translation": "Put on the Dashing Pants"
     },
     {
      "index": 19,
@@ -5910,17 +5910,17 @@
     {
      "index": 21,
      "original": "ノーマルパンツをそうびした",
-     "translation": "I put on the Normal Pants."
+     "translation": "Put on the Normal Pants"
     },
     {
      "index": 22,
      "original": "グルピンをそうびした",
-     "translation": "I equipped Grapple."
+     "translation": "Equipped Grapple"
     },
     {
      "index": 23,
      "original": "ドカピンをそうびした",
-     "translation": "I equipped Grapple Jack."
+     "translation": "Equipped Grapple Jack"
     },
     {
      "index": 24,
@@ -6697,7 +6697,7 @@
     {
      "index": 10,
      "original": "バケツをそうびした",
-     "translation": "I equipped the bucket."
+     "translation": "Equipped the bucket"
     },
     {
      "index": 11,
@@ -6747,27 +6747,27 @@
     {
      "index": 20,
      "original": "ウッキーパラソルをそうびした",
-     "translation": "I equipped the Ukki Parasol."
+     "translation": "Equipped the Ukki Parasol"
     },
     {
      "index": 21,
      "original": "ウッドブーメランをそうびした",
-     "translation": "I equipped the Wood Boomerang."
+     "translation": "Equipped the Wood Boomerang"
     },
     {
      "index": 22,
      "original": "ストーンブーメランをそうびした",
-     "translation": "I equipped the Stone Boomerang."
+     "translation": "Equipped the Stone Boomerang"
     },
     {
      "index": 23,
      "original": "アイアンブーメランをそうびした",
-     "translation": "I equipped the Iron Boomerang."
+     "translation": "Equipped the Iron Boomerang"
     },
     {
      "index": 24,
      "original": "ぶっとびのパンツをそうびした",
-     "translation": "I put on the Dashing Pants."
+     "translation": "Put on the Blasting Pants"
     },
     {
      "index": 25,
@@ -6782,17 +6782,17 @@
     {
      "index": 27,
      "original": "グルドカをそうびした",
-     "translation": "I equipped Blackjack."
+     "translation": "Equipped Blackjack"
     },
     {
      "index": 28,
      "original": "いだてんのパンツをそうびした",
-     "translation": "I put on the Flash Pants."
+     "translation": "Put on the Idaten Pants"
     },
     {
      "index": 29,
      "original": "かっとびのパンツをそうびした",
-     "translation": "I put on the Jumping Pants."
+     "translation": "Put on the Dashing Pants"
     },
     {
      "index": 30,
@@ -6807,17 +6807,17 @@
     {
      "index": 32,
      "original": "ノーマルパンツをそうびした",
-     "translation": "I put on the Normal Pants."
+     "translation": "Put on the Normal Pants"
     },
     {
      "index": 33,
      "original": "グルピンをそうびした",
-     "translation": "I equipped Grapple."
+     "translation": "Equipped Grapple"
     },
     {
      "index": 34,
      "original": "ドカピンをそうびした",
-     "translation": "I equipped Grapple Jack."
+     "translation": "Equipped Grapple Jack"
     },
     {
      "index": 35,
@@ -7352,7 +7352,7 @@
     {
      "index": 141,
      "original": "サンタのパンツをつかった",
-     "translation": "Used the Santa Pants"
+     "translation": "Used Santa's Pants"
     },
     {
      "index": 142,
@@ -7647,7 +7647,7 @@
     {
      "index": 200,
      "original": "めぐみの広場\n\nセーブしますか?\n  はい→△ いいえ→×",
-     "translation": "Megumi Square\n\nSave?\nYes → △  No → ×"
+     "translation": "Megumi Plaza\n\nSave?\nYes → △  No → ×"
     },
     {
      "index": 201,
@@ -7662,12 +7662,12 @@
     {
      "index": 203,
      "original": "○△ーー○!!",
-     "translation": "○△ーー○!!"
+     "translation": "Whoa!!"
     },
     {
      "index": 204,
      "original": "う△ーー○!!",
-     "translation": "Uu△---○!!"
+     "translation": "Whoa!!"
     },
     {
      "index": 205,
@@ -7862,7 +7862,7 @@
     {
      "index": 243,
      "original": "おれ、花のナミダとりに来た・・・\n花のナミダ、めぐみさまの復活にかかせない・・・\n\nでも・・・\nどうやってナミダ、集めるのかわからない・・・",
-     "translation": "I came to get Flower Tears...\nFlower Tears are essential to reviving Lady Megumi...\n\nBut...\nI don't know how to collect the tears..."
+     "translation": "I came to get Flower Tears...\nFlower Tears are essential to reviving the Megumi Fountain...\n\nBut...\nI don't know how to collect the tears..."
     },
     {
      "index": 244,
@@ -7872,7 +7872,7 @@
     {
      "index": 245,
      "original": "○○○◎◎○◎◎・・・◎◎○○○\n●△○○・・・○○◎△○○?",
-     "translation": "○○○◎◎○◎◎・・・◎◎○○○●△○○・・・○○◎△○○?"
+     "translation": "Gnee gnug glop... gnee gnug\ngnu... gruf gnu?"
     },
     {
      "index": 246,
@@ -7887,7 +7887,7 @@
     {
      "index": 248,
      "original": "あの、まんなかにいるのが\nめぐみコゾウさまたち・・・\nでも、うごかない・・・",
-     "translation": "The ones in the middle are\nthe Megumi Kozo...\nBut they don't move..."
+     "translation": "The ones in the middle are\nthe Megumi Statues...\nBut they don't move..."
     },
     {
      "index": 249,
@@ -7897,7 +7897,7 @@
     {
      "index": 250,
      "original": "めぐみさまが復活し、\n動きはじめるとき・・・\n何かがおこるといわれてる・・・",
-     "translation": "When Lady Megumi revives\nand starts to move...\nthey say something will happen..."
+     "translation": "When the Megumi Fountain revives\nand starts to move...\nthey say something will happen..."
     },
     {
      "index": 251,
@@ -7912,12 +7912,12 @@
     {
      "index": 253,
      "original": "めぐみさま・・・\nやっぱり動かない・・・",
-     "translation": "Lady Megumi...\nstill doesn't move..."
+     "translation": "The Megumi Fountain...\nstill doesn't move..."
     },
     {
      "index": 254,
      "original": "そう言えば、めぐみさまの\n動いてるところ・・・\nだれも見たことない・・・",
-     "translation": "Come to think of it,\nno one has ever seen\nLady Megumi move..."
+     "translation": "Come to think of it,\nno one has ever seen\nthe Megumi Fountain move..."
     },
     {
      "index": 255,
@@ -7947,17 +7947,17 @@
     {
      "index": 260,
      "original": "めぐみさまを復活させるには\nなにかが必要らしい・・・\n\nえ〜と・・・\nどわすれした・・・",
-     "translation": "It seems you need something\nto revive Lady Megumi...\n\nLet me see...\nI forgot..."
+     "translation": "It seems you need something\nto revive the Megumi Fountain...\n\nLet me see...\nI forgot..."
     },
     {
      "index": 261,
      "original": "ん?・・・\nめぐみさまを復活させるもの?\n\n・・・そういえば、なにかの\nナミダが必要とか・・・",
-     "translation": "Hm?...\nWhat revives Lady Megumi?\n\n...Come to think of it,\nI hear you need some kind of tears..."
+     "translation": "Hm?...\nWhat revives the Megumi Fountain?\n\n...Come to think of it,\nI hear you need some kind of tears..."
     },
     {
      "index": 262,
      "original": "めぐみコゾウさま、\n人気者・・・みんな、\nこの広場にあつまってくる",
-     "translation": "The Megumi Kozo are popular...\neveryone gathers\nin this square"
+     "translation": "The Megumi Statues are popular...\neveryone gathers\nin this square"
     },
     {
      "index": 263,
@@ -8052,7 +8052,7 @@
     {
      "index": 281,
      "original": "トンバも めぐみコゾウさま 見にきたか?\n・・・きっといいことある・・・\nたぶん・・・",
-     "translation": "Did Tomba come to see the Megumi Kozo too?\n...Something good is sure to happen...\nProbably..."
+     "translation": "Did Tomba come to see the Megumi Statues too?\n...Something good is sure to happen...\nProbably..."
     },
     {
      "index": 282,
@@ -8232,17 +8232,17 @@
     {
      "index": 317,
      "original": "◎のコ□バ・・・\n○にを◎△て○ん●かな・・・",
-     "translation": "The ◎ of □ba...\nI wonder if ○ can be ◎△ed to ○n●..."
+     "translation": "Gruf gnu...\ngrub gruu glub grup..."
     },
     {
      "index": 318,
      "original": "ここは・・・恵みの広場!\n\n・・・ほんとーの、恵みの広場!!",
-     "translation": "This is... Megumi Square!\n\n...The real Megumi Square!!"
+     "translation": "This is... Megumi Plaza!\n\n...The real Megumi Plaza!!"
     },
     {
      "index": 319,
      "original": "森も、もとにもどった\n\n・・・あとは\n恵みさまの復活を待つばかり・・・",
-     "translation": "The forest has returned to normal too\n\n...All that's left\nis to wait for Lady Megumi's revival..."
+     "translation": "The forest has returned to normal too\n\n...All that's left\nis to wait for the Megumi Fountain's revival..."
     },
     {
      "index": 320,
@@ -8257,7 +8257,7 @@
     {
      "index": 322,
      "original": "トンバ、つよい!\nわし、よわい・・・\n\n恵みさま、エライ!\nわし、エラクナイ・・・\n\nトホホ・・・",
-     "translation": "Tomba is strong!\nI am weak...\n\nLady Megumi is great!\nI am not great...\n\nSigh..."
+     "translation": "Tomba is strong!\nI am weak...\n\nThe Megumi Fountain is great!\nI am not great...\n\nSigh..."
     },
     {
      "index": 323,
@@ -8272,7 +8272,7 @@
     {
      "index": 325,
      "original": "恵みさま・・・\n2人だけ のこった・・・",
-     "translation": "Lady Megumi...\nonly two are left..."
+     "translation": "The Megumi Fountain...\nonly two are left..."
     },
     {
      "index": 326,
@@ -8282,7 +8282,7 @@
     {
      "index": 327,
      "original": "恵みさま スゴイ!\n・・・ちいさな芽が\nこんなに大きくなった!",
-     "translation": "Lady Megumi is amazing!\n...The little buds\nhave grown this big!"
+     "translation": "The Megumi Fountain is amazing!\n...The little buds\nhave grown this big!"
     },
     {
      "index": 328,
@@ -8454,7 +8454,7 @@
     {
      "index": 27,
      "original": "動かない恵みコゾウ",
-     "translation": "The Motionless Megumi Kozo"
+     "translation": "The Motionless Megumi Statues"
     },
     {
      "index": 28,
@@ -8479,7 +8479,7 @@
     {
      "index": 32,
      "original": "解読?らくがき岩",
-     "translation": "Decipher? Scribble Rock"
+     "translation": "Decipher? Doodle Rock"
     },
     {
      "index": 33,
@@ -8621,7 +8621,7 @@
     {
      "index": 10,
      "original": "バケツをそうびした",
-     "translation": "I equipped the bucket."
+     "translation": "Equipped the bucket"
     },
     {
      "index": 11,
@@ -8671,27 +8671,27 @@
     {
      "index": 20,
      "original": "ウッキーパラソルをそうびした",
-     "translation": "I equipped the Ukki Parasol."
+     "translation": "Equipped the Ukki Parasol"
     },
     {
      "index": 21,
      "original": "ウッドブーメランをそうびした",
-     "translation": "I equipped the Wood Boomerang."
+     "translation": "Equipped the Wood Boomerang"
     },
     {
      "index": 22,
      "original": "ストーンブーメランをそうびした",
-     "translation": "I equipped the Stone Boomerang."
+     "translation": "Equipped the Stone Boomerang"
     },
     {
      "index": 23,
      "original": "アイアンブーメランをそうびした",
-     "translation": "I equipped the Iron Boomerang."
+     "translation": "Equipped the Iron Boomerang"
     },
     {
      "index": 24,
      "original": "ぶっとびのパンツをそうびした",
-     "translation": "I put on the Dashing Pants."
+     "translation": "Put on the Blasting Pants"
     },
     {
      "index": 25,
@@ -8706,17 +8706,17 @@
     {
      "index": 27,
      "original": "グルドカをそうびした",
-     "translation": "I equipped Blackjack."
+     "translation": "Equipped Blackjack"
     },
     {
      "index": 28,
      "original": "いだてんのパンツをそうびした",
-     "translation": "I put on the Flash Pants."
+     "translation": "Put on the Idaten Pants"
     },
     {
      "index": 29,
      "original": "かっとびのパンツをそうびした",
-     "translation": "I put on the Jumping Pants."
+     "translation": "Put on the Dashing Pants"
     },
     {
      "index": 30,
@@ -8731,17 +8731,17 @@
     {
      "index": 32,
      "original": "ノーマルパンツをそうびした",
-     "translation": "I put on the Normal Pants."
+     "translation": "Put on the Normal Pants"
     },
     {
      "index": 33,
      "original": "グルピンをそうびした",
-     "translation": "I equipped Grapple."
+     "translation": "Equipped Grapple"
     },
     {
      "index": 34,
      "original": "ドカピンをそうびした",
-     "translation": "I equipped Grapple Jack."
+     "translation": "Equipped Grapple Jack"
     },
     {
      "index": 35,
@@ -9276,7 +9276,7 @@
     {
      "index": 141,
      "original": "サンタのパンツをつかった",
-     "translation": "Used the Santa Pants"
+     "translation": "Used Santa's Pants"
     },
     {
      "index": 142,
@@ -9601,12 +9601,12 @@
     {
      "index": 206,
      "original": "○△ーー○!!",
-     "translation": "○△ーー○!!"
+     "translation": "Whoa!!"
     },
     {
      "index": 207,
      "original": "う△ーー○!!",
-     "translation": "Uu△---○!!"
+     "translation": "Whoa!!"
     },
     {
      "index": 208,
@@ -9616,7 +9616,7 @@
     {
      "index": 209,
      "original": "◎○□□□・・・○○○◎△○○○●○○・・・",
-     "translation": "◎○□□□・・・○○○◎△○○○●○○・・・"
+     "translation": "Glub grup... glop grug grub gruu..."
     },
     {
      "index": 210,
@@ -9626,17 +9626,17 @@
     {
      "index": 211,
      "original": "コ○バ・・・\nわ○○○ない・・・",
-     "translation": "Lang○age...\nI do○'t u○○erstand..."
+     "translation": "Glop...\nglub grup..."
     },
     {
      "index": 212,
      "original": "◎のまえ●、◎◎\nいなくな△た・・・",
-     "translation": "The ◎ in front of ●, the ◎◎ disappeared…"
+     "translation": "Gruu glub, grub\ngnug glop..."
     },
     {
      "index": 213,
      "original": "な○とか ひ△しで\n◎●てきた・・・",
-     "translation": "Somehow, desperately,\nI ◎●d here..."
+     "translation": "Somehow, desperately,\nI escaped..."
     },
     {
      "index": 214,
@@ -10021,12 +10021,12 @@
     {
      "index": 290,
      "original": "○○○◎◎○◎◎・・・◎◎○○○\n●△○○・・・○○◎△○○?",
-     "translation": "○○○◎◎○◎◎・・・◎◎○○○●△○○・・・○○◎△○○?"
+     "translation": "Gnee gnug glop... gnee gnug\ngnu... gruf gnu?"
     },
     {
      "index": 291,
      "original": "○○○、□□□□○◎・・・○○、\n○△○○○○○○",
-     "translation": "○○○、□□□□○◎・・・○○、○△○○○○○○"
+     "translation": "Gnock, grug grub... gnu,\ngrub gruu glub"
     },
     {
      "index": 292,
@@ -10036,12 +10036,12 @@
     {
      "index": 293,
      "original": "た○へ○だ!た○へ○だぁ!",
-     "translation": "Oh n○! Oh n○!"
+     "translation": "Oh no! Oh no!"
     },
     {
      "index": 294,
      "original": "た○へ○だ!た○へ○だぁ!",
-     "translation": "Oh n○! Oh n○!"
+     "translation": "Oh no! Oh no!"
     },
     {
      "index": 295,
@@ -10056,22 +10056,22 @@
     {
      "index": 297,
      "original": "○○○、○△○○○・・・\n○○○○○△○○○●・・・",
-     "translation": "○○○, ○△○○○...\n○○○○○△○○○●..."
+     "translation": "Gnock, gnub gnock...\ngnug glop grug..."
     },
     {
      "index": 298,
      "original": "○○、○○○○□□□○○・・・",
-     "translation": "○○○○□□□○○・・・"
+     "translation": "Gruu, gruu glub grup..."
     },
     {
      "index": 299,
      "original": "○△、◎△○○○○●○△・・・",
-     "translation": "○△、◎△○○○○●○△・・・"
+     "translation": "Gnu, gnu gnub gnock..."
     },
     {
      "index": 300,
      "original": "◎○◎○○●○○○・・・",
-     "translation": "◎○◎○○●○○○・・・"
+     "translation": "Grug grub gruu..."
     },
     {
      "index": 301,
@@ -10086,67 +10086,67 @@
     {
      "index": 303,
      "original": "そ○の◎◎の◎◎・・・◎◎に\nつな○△てる・・・もう◎△たか?",
-     "translation": "The ○○ of the ○○... is connected to the ○○... Is it already the ○○?"
+     "translation": "Gruu glub grup... grup\ngnock gnee... gnug glop?"
     },
     {
      "index": 304,
      "original": "○○●・・・\n○○○○○",
-     "translation": "○○●・・・\n○○○○○"
+     "translation": "Glop...\ngnug glop"
     },
     {
      "index": 305,
      "original": "コ○バ・・・\nわ○○ない・・・",
-     "translation": "Lang○age...\nI do○'t u○○erstand..."
+     "translation": "Glop...\ngnug glop..."
     },
     {
      "index": 306,
      "original": "◎●、へ○な□□◎た\n・・・お○え◎たか?",
-     "translation": "◎●, did you ○e◎k?"
+     "translation": "In the forest, I saw a strange dog...\nDid you see it?"
     },
     {
      "index": 307,
      "original": "◎のまえ●、◎◎\nいなくな△た・・・",
-     "translation": "The ◎ in front of ●, the ◎◎ disappeared…"
+     "translation": "Gruu glub, grub\ngnug glop..."
     },
     {
      "index": 308,
      "original": "な○とか ひ△しで\n◎●てきた・・・",
-     "translation": "Somehow, desperately,\nI ◎●d here..."
+     "translation": "Somehow, desperately,\nI escaped..."
     },
     {
      "index": 309,
      "original": "○や、か○いい□□□だね・・・",
-     "translation": "○h, what a c○te □□□..."
+     "translation": "Gnug, gnug glop grug..."
     },
     {
      "index": 310,
      "original": "ね△、◎△て○いいでし△・・・",
-     "translation": "Hey, c○n I go...?"
+     "translation": "Hey, can I go now...?"
     },
     {
      "index": 311,
      "original": "◎の◎はあ●ないよ・・・",
-     "translation": "The ◎ of the ◎ doesn't have a ●..."
+     "translation": "Gnub gnock gnee..."
     },
     {
      "index": 312,
      "original": "わ○ら、○ても◎△て○",
-     "translation": "W○, ○ven ◎△ ○..."
+     "translation": "Gnug, gnub gnock"
     },
     {
      "index": 313,
      "original": "わ○ら、○ても◎△て○",
-     "translation": "W○, ○ven ◎△ ○..."
+     "translation": "Gnug, gnub gnock"
     },
     {
      "index": 314,
      "original": "な○まの○と・・・とても○ん◎い",
-     "translation": "Ab○ut my fri○nds... I'm very w○rried"
+     "translation": "About my friends...\nI'm very worried."
     },
     {
      "index": 315,
      "original": "な○まの○と・・・\nと○も○ん◎い",
-     "translation": "Ab○ut my fri○nds...\nI'm very w○rried"
+     "translation": "About my friends...\nI'm very worried."
     },
     {
      "index": 316,
@@ -10166,7 +10166,7 @@
     {
      "index": 319,
      "original": "こ○は、□□□□の◎・・・",
-     "translation": "This is □□□□'s ◎..."
+     "translation": "Gruu, gnu gnub..."
     },
     {
      "index": 320,
@@ -10301,17 +10301,17 @@
     {
      "index": 346,
      "original": "◎○□□□・・・○○○◎\n△○○○●○○・・・",
-     "translation": "◎○□□□・・・○○○◎△○○○●○○・・・"
+     "translation": "Grug grub... gnee\ngrub gruu..."
     },
     {
      "index": 347,
      "original": "わしらの◎◎、いなくな△た・・・\n◎は◎に◎ないほう●いい・・・",
-     "translation": "Our ◎◎, has disappeared...\n◎ is better than ◎..."
+     "translation": "Gnu gnub, gnock gnee...\ngrup gruf gnu gnub..."
     },
     {
      "index": 348,
      "original": "わしらの◎◎にはもう◎△たか?",
-     "translation": "Is our ◎◎ already ◎△?"
+     "translation": "Have you met our Elder yet?"
     },
     {
      "index": 349,
@@ -10461,12 +10461,12 @@
     {
      "index": 378,
      "original": "○●△○○ー○!",
-     "translation": "○●△○○ー○!"
+     "translation": "Gnub gnock! grub!"
     },
     {
      "index": 379,
      "original": "○●△○○ー○!",
-     "translation": "○●△○○ー○!"
+     "translation": "Gnub gnock! grub!"
     },
     {
      "index": 380,
@@ -10781,12 +10781,12 @@
     {
      "index": 442,
      "original": "おおっ! そうじゃ・・・思い出したっ!・・・\nあなたに こいつを あずけておきますじゃ・・・\n\nどうですかな?・・・・・・\nおぼえておりますかな・・・\n\nこいつは あなたがドワーフの森で助けた\n小犬ですじゃ・・・・・・\n\nまだ、ケガは なおりきっておらんので\nさいしょにあずけた ドワーフの言うことを\nよく きいてくだされ・・・・・\n\nバロンには 不思議な力がありましてな・・・\n\nアイテム画面でバロンをつかうと\nめぐみの羽根と\n同じこうかが ありますのじゃ・・・・・・\n\nさぁ、バロン・・・いっておいで・・・",
-     "translation": "Oh! That's right... I remember now!...\nI'll leave this one with you...\n\nWell?\nDo you remember...?\n\nThis is the puppy you saved\nin the Dwarf Forest......\n\nIts injuries haven't fully healed yet,\nso listen carefully to what the dwarf\nwho first took care of it tells you.....\n\nBaron has a mysterious power...\n\nIf you use Baron on the item screen,\nhe has the same effect\nas the Megumi Wings......\n\nNow, Baron... off you go..."
+     "translation": "Oh! That's right... I remember now!...\nI'll leave this one with you...\n\nWell?\nDo you remember...?\n\nThis is the puppy you saved\nin the Dwarf Forest......\n\nIts injuries haven't fully healed yet,\nso listen carefully to what the dwarf\nwho first took care of it tells you.....\n\nBaron has a mysterious power...\n\nIf you use Baron on the item screen,\nhe has the same effect\nas the Megumi Feather......\n\nNow, Baron... off you go..."
     },
     {
      "index": 443,
      "original": "おおっ! そうじゃ・・・思い出したっ!・・・\nあなたに こいつを あずけておきますじゃ・・・\n\nこいつは バロンと言いましてな・・・・・・\nドワーフの森でケガをしていたので\nわたしがそだてて おりましたのじゃ・・・\n\nきっと 力になるハズじゃから・・・\n友達だと思って大事にしてやって下され・・・\n\nバロンには 不思議な力がありましてな・・・\n\nアイテム画面でバロンをつかうと\nめぐみの羽根と\n同じこうかが ありますのじゃ・・・・・・\n\nさぁ、バロン・・・いっておいで・・・",
-     "translation": "Oh! That's right... I remember now!...\nI'll leave this one with you...\n\nThis one is called Baron......\nHe was hurt in the Dwarf Forest,\nso I've been raising him...\n\nHe's sure to be a help to you...\nThink of him as a friend and treasure him...\n\nBaron has a mysterious power...\n\nIf you use Baron on the item screen,\nhe has the same effect\nas the Megumi Wings......\n\nNow, Baron... off you go..."
+     "translation": "Oh! That's right... I remember now!...\nI'll leave this one with you...\n\nThis one is called Baron......\nHe was hurt in the Dwarf Forest,\nso I've been raising him...\n\nHe's sure to be a help to you...\nThink of him as a friend and treasure him...\n\nBaron has a mysterious power...\n\nIf you use Baron on the item screen,\nhe has the same effect\nas the Megumi Feather......\n\nNow, Baron... off you go..."
     },
     {
      "index": 444,
@@ -11090,7 +11090,7 @@
     {
      "index": 10,
      "original": "バケツをそうびした",
-     "translation": "I equipped the bucket."
+     "translation": "Equipped the bucket"
     },
     {
      "index": 11,
@@ -11140,27 +11140,27 @@
     {
      "index": 20,
      "original": "ウッキーパラソルをそうびした",
-     "translation": "I equipped the Ukki Parasol."
+     "translation": "Equipped the Ukki Parasol"
     },
     {
      "index": 21,
      "original": "ウッドブーメランをそうびした",
-     "translation": "I equipped the Wood Boomerang."
+     "translation": "Equipped the Wood Boomerang"
     },
     {
      "index": 22,
      "original": "ストーンブーメランをそうびした",
-     "translation": "I equipped the Stone Boomerang."
+     "translation": "Equipped the Stone Boomerang"
     },
     {
      "index": 23,
      "original": "アイアンブーメランをそうびした",
-     "translation": "I equipped the Iron Boomerang."
+     "translation": "Equipped the Iron Boomerang"
     },
     {
      "index": 24,
      "original": "ぶっとびのパンツをそうびした",
-     "translation": "I put on the Dashing Pants."
+     "translation": "Put on the Blasting Pants"
     },
     {
      "index": 25,
@@ -11175,17 +11175,17 @@
     {
      "index": 27,
      "original": "グルドカをそうびした",
-     "translation": "I equipped Blackjack."
+     "translation": "Equipped Blackjack"
     },
     {
      "index": 28,
      "original": "いだてんのパンツをそうびした",
-     "translation": "I put on the Flash Pants."
+     "translation": "Put on the Idaten Pants"
     },
     {
      "index": 29,
      "original": "かっとびのパンツをそうびした",
-     "translation": "I put on the Jumping Pants."
+     "translation": "Put on the Dashing Pants"
     },
     {
      "index": 30,
@@ -11200,17 +11200,17 @@
     {
      "index": 32,
      "original": "ノーマルパンツをそうびした",
-     "translation": "I put on the Normal Pants."
+     "translation": "Put on the Normal Pants"
     },
     {
      "index": 33,
      "original": "グルピンをそうびした",
-     "translation": "I equipped Grapple."
+     "translation": "Equipped Grapple"
     },
     {
      "index": 34,
      "original": "ドカピンをそうびした",
-     "translation": "I equipped Grapple Jack."
+     "translation": "Equipped Grapple Jack"
     },
     {
      "index": 35,
@@ -11745,7 +11745,7 @@
     {
      "index": 141,
      "original": "サンタのパンツをつかった",
-     "translation": "Used the Santa Pants"
+     "translation": "Used Santa's Pants"
     },
     {
      "index": 142,
@@ -12374,7 +12374,7 @@
     {
      "index": 10,
      "original": "バケツをそうびした",
-     "translation": "I equipped the bucket."
+     "translation": "Equipped the bucket"
     },
     {
      "index": 11,
@@ -12424,27 +12424,27 @@
     {
      "index": 20,
      "original": "ウッキーパラソルをそうびした",
-     "translation": "I equipped the Ukki Parasol."
+     "translation": "Equipped the Ukki Parasol"
     },
     {
      "index": 21,
      "original": "ウッドブーメランをそうびした",
-     "translation": "I equipped the Wood Boomerang."
+     "translation": "Equipped the Wood Boomerang"
     },
     {
      "index": 22,
      "original": "ストーンブーメランをそうびした",
-     "translation": "I equipped the Stone Boomerang."
+     "translation": "Equipped the Stone Boomerang"
     },
     {
      "index": 23,
      "original": "アイアンブーメランをそうびした",
-     "translation": "I equipped the Iron Boomerang."
+     "translation": "Equipped the Iron Boomerang"
     },
     {
      "index": 24,
      "original": "ぶっとびのパンツをそうびした",
-     "translation": "I put on the Dashing Pants."
+     "translation": "Put on the Blasting Pants"
     },
     {
      "index": 25,
@@ -12459,17 +12459,17 @@
     {
      "index": 27,
      "original": "グルドカをそうびした",
-     "translation": "I equipped Blackjack."
+     "translation": "Equipped Blackjack"
     },
     {
      "index": 28,
      "original": "いだてんのパンツをそうびした",
-     "translation": "I put on the Flash Pants."
+     "translation": "Put on the Idaten Pants"
     },
     {
      "index": 29,
      "original": "かっとびのパンツをそうびした",
-     "translation": "I put on the Jumping Pants."
+     "translation": "Put on the Dashing Pants"
     },
     {
      "index": 30,
@@ -12484,17 +12484,17 @@
     {
      "index": 32,
      "original": "ノーマルパンツをそうびした",
-     "translation": "I put on the Normal Pants."
+     "translation": "Put on the Normal Pants"
     },
     {
      "index": 33,
      "original": "グルピンをそうびした",
-     "translation": "I equipped Grapple."
+     "translation": "Equipped Grapple"
     },
     {
      "index": 34,
      "original": "ドカピンをそうびした",
-     "translation": "I equipped Grapple Jack."
+     "translation": "Equipped Grapple Jack"
     },
     {
      "index": 35,
@@ -13029,7 +13029,7 @@
     {
      "index": 141,
      "original": "サンタのパンツをつかった",
-     "translation": "Used the Santa Pants"
+     "translation": "Used Santa's Pants"
     },
     {
      "index": 142,
@@ -13638,7 +13638,7 @@
     {
      "index": 10,
      "original": "バケツをそうびした",
-     "translation": "I equipped the bucket."
+     "translation": "Equipped the bucket"
     },
     {
      "index": 11,
@@ -13688,27 +13688,27 @@
     {
      "index": 20,
      "original": "ウッキーパラソルをそうびした",
-     "translation": "I equipped the Ukki Parasol."
+     "translation": "Equipped the Ukki Parasol"
     },
     {
      "index": 21,
      "original": "ウッドブーメランをそうびした",
-     "translation": "I equipped the Wood Boomerang."
+     "translation": "Equipped the Wood Boomerang"
     },
     {
      "index": 22,
      "original": "ストーンブーメランをそうびした",
-     "translation": "I equipped the Stone Boomerang."
+     "translation": "Equipped the Stone Boomerang"
     },
     {
      "index": 23,
      "original": "アイアンブーメランをそうびした",
-     "translation": "I equipped the Iron Boomerang."
+     "translation": "Equipped the Iron Boomerang"
     },
     {
      "index": 24,
      "original": "ぶっとびのパンツをそうびした",
-     "translation": "I put on the Dashing Pants."
+     "translation": "Put on the Blasting Pants"
     },
     {
      "index": 25,
@@ -13723,17 +13723,17 @@
     {
      "index": 27,
      "original": "グルドカをそうびした",
-     "translation": "I equipped Blackjack."
+     "translation": "Equipped Blackjack"
     },
     {
      "index": 28,
      "original": "いだてんのパンツをそうびした",
-     "translation": "I put on the Flash Pants."
+     "translation": "Put on the Idaten Pants"
     },
     {
      "index": 29,
      "original": "かっとびのパンツをそうびした",
-     "translation": "I put on the Jumping Pants."
+     "translation": "Put on the Dashing Pants"
     },
     {
      "index": 30,
@@ -13748,17 +13748,17 @@
     {
      "index": 32,
      "original": "ノーマルパンツをそうびした",
-     "translation": "I put on the Normal Pants."
+     "translation": "Put on the Normal Pants"
     },
     {
      "index": 33,
      "original": "グルピンをそうびした",
-     "translation": "I equipped Grapple."
+     "translation": "Equipped Grapple"
     },
     {
      "index": 34,
      "original": "ドカピンをそうびした",
-     "translation": "I equipped Grapple Jack."
+     "translation": "Equipped Grapple Jack"
     },
     {
      "index": 35,
@@ -14293,7 +14293,7 @@
     {
      "index": 141,
      "original": "サンタのパンツをつかった",
-     "translation": "Used the Santa Pants"
+     "translation": "Used Santa's Pants"
     },
     {
      "index": 142,
@@ -14983,7 +14983,7 @@
     {
      "index": 279,
      "original": "子ネズミを見つけた!",
-     "translation": "I found a baby mouse!"
+     "translation": "Found a baby mouse!"
     },
     {
      "index": 280,
@@ -15157,7 +15157,7 @@
     {
      "index": 10,
      "original": "バケツをそうびした",
-     "translation": "I equipped the bucket."
+     "translation": "Equipped the bucket"
     },
     {
      "index": 11,
@@ -15207,27 +15207,27 @@
     {
      "index": 20,
      "original": "ウッキーパラソルをそうびした",
-     "translation": "I equipped the Ukki Parasol."
+     "translation": "Equipped the Ukki Parasol"
     },
     {
      "index": 21,
      "original": "ウッドブーメランをそうびした",
-     "translation": "I equipped the Wood Boomerang."
+     "translation": "Equipped the Wood Boomerang"
     },
     {
      "index": 22,
      "original": "ストーンブーメランをそうびした",
-     "translation": "I equipped the Stone Boomerang."
+     "translation": "Equipped the Stone Boomerang"
     },
     {
      "index": 23,
      "original": "アイアンブーメランをそうびした",
-     "translation": "I equipped the Iron Boomerang."
+     "translation": "Equipped the Iron Boomerang"
     },
     {
      "index": 24,
      "original": "ぶっとびのパンツをそうびした",
-     "translation": "I put on the Dashing Pants."
+     "translation": "Put on the Blasting Pants"
     },
     {
      "index": 25,
@@ -15242,17 +15242,17 @@
     {
      "index": 27,
      "original": "グルドカをそうびした",
-     "translation": "I equipped Blackjack."
+     "translation": "Equipped Blackjack"
     },
     {
      "index": 28,
      "original": "いだてんのパンツをそうびした",
-     "translation": "I put on the Flash Pants."
+     "translation": "Put on the Idaten Pants"
     },
     {
      "index": 29,
      "original": "かっとびのパンツをそうびした",
-     "translation": "I put on the Jumping Pants."
+     "translation": "Put on the Dashing Pants"
     },
     {
      "index": 30,
@@ -15267,17 +15267,17 @@
     {
      "index": 32,
      "original": "ノーマルパンツをそうびした",
-     "translation": "I put on the Normal Pants."
+     "translation": "Put on the Normal Pants"
     },
     {
      "index": 33,
      "original": "グルピンをそうびした",
-     "translation": "I equipped Grapple."
+     "translation": "Equipped Grapple"
     },
     {
      "index": 34,
      "original": "ドカピンをそうびした",
-     "translation": "I equipped Grapple Jack."
+     "translation": "Equipped Grapple Jack"
     },
     {
      "index": 35,
@@ -15812,7 +15812,7 @@
     {
      "index": 141,
      "original": "サンタのパンツをつかった",
-     "translation": "Used the Santa Pants"
+     "translation": "Used Santa's Pants"
     },
     {
      "index": 142,
@@ -16146,7 +16146,7 @@
     {
      "index": 10,
      "original": "バケツをそうびした",
-     "translation": "I equipped the bucket."
+     "translation": "Equipped the bucket"
     },
     {
      "index": 11,
@@ -16196,27 +16196,27 @@
     {
      "index": 20,
      "original": "ウッキーパラソルをそうびした",
-     "translation": "I equipped the Ukki Parasol."
+     "translation": "Equipped the Ukki Parasol"
     },
     {
      "index": 21,
      "original": "ウッドブーメランをそうびした",
-     "translation": "I equipped the Wood Boomerang."
+     "translation": "Equipped the Wood Boomerang"
     },
     {
      "index": 22,
      "original": "ストーンブーメランをそうびした",
-     "translation": "I equipped the Stone Boomerang."
+     "translation": "Equipped the Stone Boomerang"
     },
     {
      "index": 23,
      "original": "アイアンブーメランをそうびした",
-     "translation": "I equipped the Iron Boomerang."
+     "translation": "Equipped the Iron Boomerang"
     },
     {
      "index": 24,
      "original": "ぶっとびのパンツをそうびした",
-     "translation": "I put on the Dashing Pants."
+     "translation": "Put on the Blasting Pants"
     },
     {
      "index": 25,
@@ -16231,17 +16231,17 @@
     {
      "index": 27,
      "original": "グルドカをそうびした",
-     "translation": "I equipped Blackjack."
+     "translation": "Equipped Blackjack"
     },
     {
      "index": 28,
      "original": "いだてんのパンツをそうびした",
-     "translation": "I put on the Flash Pants."
+     "translation": "Put on the Idaten Pants"
     },
     {
      "index": 29,
      "original": "かっとびのパンツをそうびした",
-     "translation": "I put on the Jumping Pants."
+     "translation": "Put on the Dashing Pants"
     },
     {
      "index": 30,
@@ -16256,17 +16256,17 @@
     {
      "index": 32,
      "original": "ノーマルパンツをそうびした",
-     "translation": "I put on the Normal Pants."
+     "translation": "Put on the Normal Pants"
     },
     {
      "index": 33,
      "original": "グルピンをそうびした",
-     "translation": "I equipped Grapple."
+     "translation": "Equipped Grapple"
     },
     {
      "index": 34,
      "original": "ドカピンをそうびした",
-     "translation": "I equipped Grapple Jack."
+     "translation": "Equipped Grapple Jack"
     },
     {
      "index": 35,
@@ -16801,7 +16801,7 @@
     {
      "index": 141,
      "original": "サンタのパンツをつかった",
-     "translation": "Used the Santa Pants"
+     "translation": "Used Santa's Pants"
     },
     {
      "index": 142,
@@ -17096,7 +17096,7 @@
     {
      "index": 200,
      "original": "めぐみの広場\n\nセーブしますか?\n  はい→△ いいえ→×",
-     "translation": "Megumi Square\n\nSave?\nYes → △  No → ×"
+     "translation": "Megumi Plaza\n\nSave?\nYes → △  No → ×"
     },
     {
      "index": 201,
@@ -17111,12 +17111,12 @@
     {
      "index": 203,
      "original": "○△ーー○!!",
-     "translation": "○△ーー○!!"
+     "translation": "Whoa!!"
     },
     {
      "index": 204,
      "original": "う△ーー○!!",
-     "translation": "Uu△---○!!"
+     "translation": "Whoa!!"
     },
     {
      "index": 205,
@@ -17311,7 +17311,7 @@
     {
      "index": 243,
      "original": "おれ、花のナミダとりに来た・・・\n花のナミダ、めぐみさまの復活にかかせない・・・\n\nでも・・・\nどうやってナミダ、集めるのかわからない・・・",
-     "translation": "I came to get Flower Tears...\nFlower Tears are essential to reviving Lady Megumi...\n\nBut...\nI don't know how to collect the tears..."
+     "translation": "I came to get Flower Tears...\nFlower Tears are essential to reviving the Megumi Fountain...\n\nBut...\nI don't know how to collect the tears..."
     },
     {
      "index": 244,
@@ -17321,7 +17321,7 @@
     {
      "index": 245,
      "original": "○○○◎◎○◎◎・・・◎◎○○○\n●△○○・・・○○◎△○○?",
-     "translation": "○○○◎◎○◎◎・・・◎◎○○○●△○○・・・○○◎△○○?"
+     "translation": "Gnee gnug glop... gnee gnug\ngnu... gruf gnu?"
     },
     {
      "index": 246,
@@ -17336,7 +17336,7 @@
     {
      "index": 248,
      "original": "あの、まんなかにいるのが\nめぐみコゾウさまたち・・・\nでも、うごかない・・・",
-     "translation": "The ones in the middle are\nthe Megumi Kozo...\nBut they don't move..."
+     "translation": "The ones in the middle are\nthe Megumi Statues...\nBut they don't move..."
     },
     {
      "index": 249,
@@ -17346,7 +17346,7 @@
     {
      "index": 250,
      "original": "めぐみさまが復活し、\n動きはじめるとき・・・\n何かがおこるといわれてる・・・",
-     "translation": "When Lady Megumi revives\nand starts to move...\nthey say something will happen..."
+     "translation": "When the Megumi Fountain revives\nand starts to move...\nthey say something will happen..."
     },
     {
      "index": 251,
@@ -17361,12 +17361,12 @@
     {
      "index": 253,
      "original": "めぐみさま・・・\nやっぱり動かない・・・",
-     "translation": "Lady Megumi...\nstill doesn't move..."
+     "translation": "The Megumi Fountain...\nstill doesn't move..."
     },
     {
      "index": 254,
      "original": "そう言えば、めぐみさまの\n動いてるところ・・・\nだれも見たことない・・・",
-     "translation": "Come to think of it,\nno one has ever seen\nLady Megumi move..."
+     "translation": "Come to think of it,\nno one has ever seen\nthe Megumi Fountain move..."
     },
     {
      "index": 255,
@@ -17396,17 +17396,17 @@
     {
      "index": 260,
      "original": "めぐみさまを復活させるには\nなにかが必要らしい・・・\n\nえ〜と・・・\nどわすれした・・・",
-     "translation": "It seems you need something\nto revive Lady Megumi...\n\nLet me see...\nI forgot..."
+     "translation": "It seems you need something\nto revive the Megumi Fountain...\n\nLet me see...\nI forgot..."
     },
     {
      "index": 261,
      "original": "ん?・・・\nめぐみさまを復活させるもの?\n\n・・・そういえば、なにかの\nナミダが必要とか・・・",
-     "translation": "Hm?...\nWhat revives Lady Megumi?\n\n...Come to think of it,\nI hear you need some kind of tears..."
+     "translation": "Hm?...\nWhat revives the Megumi Fountain?\n\n...Come to think of it,\nI hear you need some kind of tears..."
     },
     {
      "index": 262,
      "original": "めぐみコゾウさま、\n人気者・・・みんな、\nこの広場にあつまってくる",
-     "translation": "The Megumi Kozo are popular...\neveryone gathers\nin this square"
+     "translation": "The Megumi Statues are popular...\neveryone gathers\nin this square"
     },
     {
      "index": 263,
@@ -17501,7 +17501,7 @@
     {
      "index": 281,
      "original": "トンバも めぐみコゾウさま 見にきたか?\n・・・きっといいことある・・・\nたぶん・・・",
-     "translation": "Did Tomba come to see the Megumi Kozo too?\n...Something good is sure to happen...\nProbably..."
+     "translation": "Did Tomba come to see the Megumi Statues too?\n...Something good is sure to happen...\nProbably..."
     },
     {
      "index": 282,
@@ -17681,17 +17681,17 @@
     {
      "index": 317,
      "original": "◎のコ□バ・・・\n○にを◎△て○ん●かな・・・",
-     "translation": "The ◎ of □ba...\nI wonder if ○ can be ◎△ed to ○n●..."
+     "translation": "Gruf gnu...\ngrub gruu glub grup..."
     },
     {
      "index": 318,
      "original": "ここは・・・恵みの広場!\n\n・・・ほんとーの、恵みの広場!!",
-     "translation": "This is... Megumi Square!\n\n...The real Megumi Square!!"
+     "translation": "This is... Megumi Plaza!\n\n...The real Megumi Plaza!!"
     },
     {
      "index": 319,
      "original": "森も、もとにもどった\n\n・・・あとは\n恵みさまの復活を待つばかり・・・",
-     "translation": "The forest has returned to normal too\n\n...All that's left\nis to wait for Lady Megumi's revival..."
+     "translation": "The forest has returned to normal too\n\n...All that's left\nis to wait for the Megumi Fountain's revival..."
     },
     {
      "index": 320,
@@ -17706,7 +17706,7 @@
     {
      "index": 322,
      "original": "トンバ、つよい!\nわし、よわい・・・\n\n恵みさま、エライ!\nわし、エラクナイ・・・\n\nトホホ・・・",
-     "translation": "Tomba is strong!\nI am weak...\n\nLady Megumi is great!\nI am not great...\n\nSigh..."
+     "translation": "Tomba is strong!\nI am weak...\n\nThe Megumi Fountain is great!\nI am not great...\n\nSigh..."
     },
     {
      "index": 323,
@@ -17721,7 +17721,7 @@
     {
      "index": 325,
      "original": "恵みさま・・・\n2人だけ のこった・・・",
-     "translation": "Lady Megumi...\nonly two are left..."
+     "translation": "The Megumi Fountain...\nonly two are left..."
     },
     {
      "index": 326,
@@ -17731,7 +17731,7 @@
     {
      "index": 327,
      "original": "恵みさま スゴイ!\n・・・ちいさな芽が\nこんなに大きくなった!",
-     "translation": "Lady Megumi is amazing!\n...The little buds\nhave grown this big!"
+     "translation": "The Megumi Fountain is amazing!\n...The little buds\nhave grown this big!"
     },
     {
      "index": 328,
@@ -17903,7 +17903,7 @@
     {
      "index": 27,
      "original": "動かない恵みコゾウ",
-     "translation": "The Motionless Megumi Kozo"
+     "translation": "The Motionless Megumi Statues"
     },
     {
      "index": 28,
@@ -17928,7 +17928,7 @@
     {
      "index": 32,
      "original": "解読?らくがき岩",
-     "translation": "Decipher? Scribble Rock"
+     "translation": "Decipher? Doodle Rock"
     },
     {
      "index": 33,
@@ -18070,7 +18070,7 @@
     {
      "index": 10,
      "original": "バケツをそうびした",
-     "translation": "I equipped the bucket."
+     "translation": "Equipped the bucket"
     },
     {
      "index": 11,
@@ -18120,27 +18120,27 @@
     {
      "index": 20,
      "original": "ウッキーパラソルをそうびした",
-     "translation": "I equipped the Ukki Parasol."
+     "translation": "Equipped the Ukki Parasol"
     },
     {
      "index": 21,
      "original": "ウッドブーメランをそうびした",
-     "translation": "I equipped the Wood Boomerang."
+     "translation": "Equipped the Wood Boomerang"
     },
     {
      "index": 22,
      "original": "ストーンブーメランをそうびした",
-     "translation": "I equipped the Stone Boomerang."
+     "translation": "Equipped the Stone Boomerang"
     },
     {
      "index": 23,
      "original": "アイアンブーメランをそうびした",
-     "translation": "I equipped the Iron Boomerang."
+     "translation": "Equipped the Iron Boomerang"
     },
     {
      "index": 24,
      "original": "ぶっとびのパンツをそうびした",
-     "translation": "I put on the Dashing Pants."
+     "translation": "Put on the Blasting Pants"
     },
     {
      "index": 25,
@@ -18155,17 +18155,17 @@
     {
      "index": 27,
      "original": "グルドカをそうびした",
-     "translation": "I equipped Blackjack."
+     "translation": "Equipped Blackjack"
     },
     {
      "index": 28,
      "original": "いだてんのパンツをそうびした",
-     "translation": "I put on the Flash Pants."
+     "translation": "Put on the Idaten Pants"
     },
     {
      "index": 29,
      "original": "かっとびのパンツをそうびした",
-     "translation": "I put on the Jumping Pants."
+     "translation": "Put on the Dashing Pants"
     },
     {
      "index": 30,
@@ -18180,17 +18180,17 @@
     {
      "index": 32,
      "original": "ノーマルパンツをそうびした",
-     "translation": "I put on the Normal Pants."
+     "translation": "Put on the Normal Pants"
     },
     {
      "index": 33,
      "original": "グルピンをそうびした",
-     "translation": "I equipped Grapple."
+     "translation": "Equipped Grapple"
     },
     {
      "index": 34,
      "original": "ドカピンをそうびした",
-     "translation": "I equipped Grapple Jack."
+     "translation": "Equipped Grapple Jack"
     },
     {
      "index": 35,
@@ -18725,7 +18725,7 @@
     {
      "index": 141,
      "original": "サンタのパンツをつかった",
-     "translation": "Used the Santa Pants"
+     "translation": "Used Santa's Pants"
     },
     {
      "index": 142,
@@ -18900,7 +18900,7 @@
     {
      "index": 176,
      "original": "バルブを取り付けた!",
-     "translation": "I installed the valve!"
+     "translation": "Installed the valve!"
     },
     {
      "index": 177,
@@ -18910,7 +18910,7 @@
     {
      "index": 178,
      "original": "スイッチを入れた",
-     "translation": "I turned on the switch."
+     "translation": "Turned on the switch"
     },
     {
      "index": 179,
@@ -19039,7 +19039,7 @@
     {
      "index": 10,
      "original": "バケツをそうびした",
-     "translation": "I equipped the bucket."
+     "translation": "Equipped the bucket"
     },
     {
      "index": 11,
@@ -19089,27 +19089,27 @@
     {
      "index": 20,
      "original": "ウッキーパラソルをそうびした",
-     "translation": "I equipped the Ukki Parasol."
+     "translation": "Equipped the Ukki Parasol"
     },
     {
      "index": 21,
      "original": "ウッドブーメランをそうびした",
-     "translation": "I equipped the Wood Boomerang."
+     "translation": "Equipped the Wood Boomerang"
     },
     {
      "index": 22,
      "original": "ストーンブーメランをそうびした",
-     "translation": "I equipped the Stone Boomerang."
+     "translation": "Equipped the Stone Boomerang"
     },
     {
      "index": 23,
      "original": "アイアンブーメランをそうびした",
-     "translation": "I equipped the Iron Boomerang."
+     "translation": "Equipped the Iron Boomerang"
     },
     {
      "index": 24,
      "original": "ぶっとびのパンツをそうびした",
-     "translation": "I put on the Dashing Pants."
+     "translation": "Put on the Blasting Pants"
     },
     {
      "index": 25,
@@ -19124,17 +19124,17 @@
     {
      "index": 27,
      "original": "グルドカをそうびした",
-     "translation": "I equipped Blackjack."
+     "translation": "Equipped Blackjack"
     },
     {
      "index": 28,
      "original": "いだてんのパンツをそうびした",
-     "translation": "I put on the Flash Pants."
+     "translation": "Put on the Idaten Pants"
     },
     {
      "index": 29,
      "original": "かっとびのパンツをそうびした",
-     "translation": "I put on the Jumping Pants."
+     "translation": "Put on the Dashing Pants"
     },
     {
      "index": 30,
@@ -19149,17 +19149,17 @@
     {
      "index": 32,
      "original": "ノーマルパンツをそうびした",
-     "translation": "I put on the Normal Pants."
+     "translation": "Put on the Normal Pants"
     },
     {
      "index": 33,
      "original": "グルピンをそうびした",
-     "translation": "I equipped Grapple."
+     "translation": "Equipped Grapple"
     },
     {
      "index": 34,
      "original": "ドカピンをそうびした",
-     "translation": "I equipped Grapple Jack."
+     "translation": "Equipped Grapple Jack"
     },
     {
      "index": 35,
@@ -19694,7 +19694,7 @@
     {
      "index": 141,
      "original": "サンタのパンツをつかった",
-     "translation": "Used the Santa Pants"
+     "translation": "Used Santa's Pants"
     },
     {
      "index": 142,
@@ -19829,27 +19829,27 @@
     {
      "index": 168,
      "original": "死神の実をひとつ つぶした",
-     "translation": "I crushed one Reaper Fruit."
+     "translation": "Crushed one Reaper Fruit"
     },
     {
      "index": 169,
      "original": "死神の実をふたつ つぶした",
-     "translation": "I crushed two Reaper Fruits."
+     "translation": "Crushed two Reaper Fruits"
     },
     {
      "index": 170,
      "original": "死神の実を3コ つぶした",
-     "translation": "I crushed three Reaper Fruits."
+     "translation": "Crushed three Reaper Fruits"
     },
     {
      "index": 171,
      "original": "死神の実を4コ つぶした",
-     "translation": "I crushed four Reaper Fruits."
+     "translation": "Crushed four Reaper Fruits"
     },
     {
      "index": 172,
      "original": "死神の実をすべて つぶした",
-     "translation": "I crushed all the Reaper Fruit."
+     "translation": "Crushed all the Reaper Fruit"
     },
     {
      "index": 173,
@@ -19944,7 +19944,7 @@
     {
      "index": 191,
      "original": "おれ、花のナミダとりに来た・・・\n花のナミダ、めぐみさまのふっかつにかかせない\n\n・・・このつぼみ さかせることできれば\nナミダながすらしい・・・でも\n・・・どうやってナミダ、集めるのかわからない",
-     "translation": "I came to get Flower Tears...\nFlower Tears are essential to Lady Megumi's revival...\n\n...If I can make this bud bloom,\nit seems it will shed tears... but\n...I don't know how to collect the tears..."
+     "translation": "I came to get Flower Tears...\nFlower Tears are essential to the Megumi Fountain's revival...\n\n...If I can make this bud bloom,\nit seems it will shed tears... but\n...I don't know how to collect the tears..."
     },
     {
      "index": 192,
@@ -20103,7 +20103,7 @@
     {
      "index": 10,
      "original": "バケツをそうびした",
-     "translation": "I equipped the bucket."
+     "translation": "Equipped the bucket"
     },
     {
      "index": 11,
@@ -20153,27 +20153,27 @@
     {
      "index": 20,
      "original": "ウッキーパラソルをそうびした",
-     "translation": "I equipped the Ukki Parasol."
+     "translation": "Equipped the Ukki Parasol"
     },
     {
      "index": 21,
      "original": "ウッドブーメランをそうびした",
-     "translation": "I equipped the Wood Boomerang."
+     "translation": "Equipped the Wood Boomerang"
     },
     {
      "index": 22,
      "original": "ストーンブーメランをそうびした",
-     "translation": "I equipped the Stone Boomerang."
+     "translation": "Equipped the Stone Boomerang"
     },
     {
      "index": 23,
      "original": "アイアンブーメランをそうびした",
-     "translation": "I equipped the Iron Boomerang."
+     "translation": "Equipped the Iron Boomerang"
     },
     {
      "index": 24,
      "original": "ぶっとびのパンツをそうびした",
-     "translation": "I put on the Dashing Pants."
+     "translation": "Put on the Blasting Pants"
     },
     {
      "index": 25,
@@ -20188,17 +20188,17 @@
     {
      "index": 27,
      "original": "グルドカをそうびした",
-     "translation": "I equipped Blackjack."
+     "translation": "Equipped Blackjack"
     },
     {
      "index": 28,
      "original": "いだてんのパンツをそうびした",
-     "translation": "I put on the Flash Pants."
+     "translation": "Put on the Idaten Pants"
     },
     {
      "index": 29,
      "original": "かっとびのパンツをそうびした",
-     "translation": "I put on the Jumping Pants."
+     "translation": "Put on the Dashing Pants"
     },
     {
      "index": 30,
@@ -20213,17 +20213,17 @@
     {
      "index": 32,
      "original": "ノーマルパンツをそうびした",
-     "translation": "I put on the Normal Pants."
+     "translation": "Put on the Normal Pants"
     },
     {
      "index": 33,
      "original": "グルピンをそうびした",
-     "translation": "I equipped Grapple."
+     "translation": "Equipped Grapple"
     },
     {
      "index": 34,
      "original": "ドカピンをそうびした",
-     "translation": "I equipped Grapple Jack."
+     "translation": "Equipped Grapple Jack"
     },
     {
      "index": 35,
@@ -20758,7 +20758,7 @@
     {
      "index": 141,
      "original": "サンタのパンツをつかった",
-     "translation": "Used the Santa Pants"
+     "translation": "Used Santa's Pants"
     },
     {
      "index": 142,
@@ -21497,7 +21497,7 @@
     {
      "index": 10,
      "original": "バケツをそうびした",
-     "translation": "I equipped the bucket."
+     "translation": "Equipped the bucket"
     },
     {
      "index": 11,
@@ -21547,27 +21547,27 @@
     {
      "index": 20,
      "original": "ウッキーパラソルをそうびした",
-     "translation": "I equipped the Ukki Parasol."
+     "translation": "Equipped the Ukki Parasol"
     },
     {
      "index": 21,
      "original": "ウッドブーメランをそうびした",
-     "translation": "I equipped the Wood Boomerang."
+     "translation": "Equipped the Wood Boomerang"
     },
     {
      "index": 22,
      "original": "ストーンブーメランをそうびした",
-     "translation": "I equipped the Stone Boomerang."
+     "translation": "Equipped the Stone Boomerang"
     },
     {
      "index": 23,
      "original": "アイアンブーメランをそうびした",
-     "translation": "I equipped the Iron Boomerang."
+     "translation": "Equipped the Iron Boomerang"
     },
     {
      "index": 24,
      "original": "ぶっとびのパンツをそうびした",
-     "translation": "I put on the Dashing Pants."
+     "translation": "Put on the Blasting Pants"
     },
     {
      "index": 25,
@@ -21582,17 +21582,17 @@
     {
      "index": 27,
      "original": "グルドカをそうびした",
-     "translation": "I equipped Blackjack."
+     "translation": "Equipped Blackjack"
     },
     {
      "index": 28,
      "original": "いだてんのパンツをそうびした",
-     "translation": "I put on the Flash Pants."
+     "translation": "Put on the Idaten Pants"
     },
     {
      "index": 29,
      "original": "かっとびのパンツをそうびした",
-     "translation": "I put on the Jumping Pants."
+     "translation": "Put on the Dashing Pants"
     },
     {
      "index": 30,
@@ -21607,17 +21607,17 @@
     {
      "index": 32,
      "original": "ノーマルパンツをそうびした",
-     "translation": "I put on the Normal Pants."
+     "translation": "Put on the Normal Pants"
     },
     {
      "index": 33,
      "original": "グルピンをそうびした",
-     "translation": "I equipped Grapple."
+     "translation": "Equipped Grapple"
     },
     {
      "index": 34,
      "original": "ドカピンをそうびした",
-     "translation": "I equipped Grapple Jack."
+     "translation": "Equipped Grapple Jack"
     },
     {
      "index": 35,
@@ -22152,7 +22152,7 @@
     {
      "index": 141,
      "original": "サンタのパンツをつかった",
-     "translation": "Used the Santa Pants"
+     "translation": "Used Santa's Pants"
     },
     {
      "index": 142,
@@ -22844,7 +22844,7 @@
     {
      "index": 28,
      "original": "動かない恵みコゾウ",
-     "translation": "The Motionless Megumi Kozo"
+     "translation": "The Motionless Megumi Statues"
     },
     {
      "index": 29,
@@ -22926,7 +22926,7 @@
     {
      "index": 10,
      "original": "バケツをそうびした",
-     "translation": "I equipped the bucket."
+     "translation": "Equipped the bucket"
     },
     {
      "index": 11,
@@ -22976,27 +22976,27 @@
     {
      "index": 20,
      "original": "ウッキーパラソルをそうびした",
-     "translation": "I equipped the Ukki Parasol."
+     "translation": "Equipped the Ukki Parasol"
     },
     {
      "index": 21,
      "original": "ウッドブーメランをそうびした",
-     "translation": "I equipped the Wood Boomerang."
+     "translation": "Equipped the Wood Boomerang"
     },
     {
      "index": 22,
      "original": "ストーンブーメランをそうびした",
-     "translation": "I equipped the Stone Boomerang."
+     "translation": "Equipped the Stone Boomerang"
     },
     {
      "index": 23,
      "original": "アイアンブーメランをそうびした",
-     "translation": "I equipped the Iron Boomerang."
+     "translation": "Equipped the Iron Boomerang"
     },
     {
      "index": 24,
      "original": "ぶっとびのパンツをそうびした",
-     "translation": "I put on the Dashing Pants."
+     "translation": "Put on the Blasting Pants"
     },
     {
      "index": 25,
@@ -23011,17 +23011,17 @@
     {
      "index": 27,
      "original": "グルドカをそうびした",
-     "translation": "I equipped Blackjack."
+     "translation": "Equipped Blackjack"
     },
     {
      "index": 28,
      "original": "いだてんのパンツをそうびした",
-     "translation": "I put on the Flash Pants."
+     "translation": "Put on the Idaten Pants"
     },
     {
      "index": 29,
      "original": "かっとびのパンツをそうびした",
-     "translation": "I put on the Jumping Pants."
+     "translation": "Put on the Dashing Pants"
     },
     {
      "index": 30,
@@ -23036,17 +23036,17 @@
     {
      "index": 32,
      "original": "ノーマルパンツをそうびした",
-     "translation": "I put on the Normal Pants."
+     "translation": "Put on the Normal Pants"
     },
     {
      "index": 33,
      "original": "グルピンをそうびした",
-     "translation": "I equipped Grapple."
+     "translation": "Equipped Grapple"
     },
     {
      "index": 34,
      "original": "ドカピンをそうびした",
-     "translation": "I equipped Grapple Jack."
+     "translation": "Equipped Grapple Jack"
     },
     {
      "index": 35,
@@ -23581,7 +23581,7 @@
     {
      "index": 141,
      "original": "サンタのパンツをつかった",
-     "translation": "Used the Santa Pants"
+     "translation": "Used Santa's Pants"
     },
     {
      "index": 142,
@@ -24190,7 +24190,7 @@
     {
      "index": 10,
      "original": "バケツをそうびした",
-     "translation": "I equipped the bucket."
+     "translation": "Equipped the bucket"
     },
     {
      "index": 11,
@@ -24240,27 +24240,27 @@
     {
      "index": 20,
      "original": "ウッキーパラソルをそうびした",
-     "translation": "I equipped the Ukki Parasol."
+     "translation": "Equipped the Ukki Parasol"
     },
     {
      "index": 21,
      "original": "ウッドブーメランをそうびした",
-     "translation": "I equipped the Wood Boomerang."
+     "translation": "Equipped the Wood Boomerang"
     },
     {
      "index": 22,
      "original": "ストーンブーメランをそうびした",
-     "translation": "I equipped the Stone Boomerang."
+     "translation": "Equipped the Stone Boomerang"
     },
     {
      "index": 23,
      "original": "アイアンブーメランをそうびした",
-     "translation": "I equipped the Iron Boomerang."
+     "translation": "Equipped the Iron Boomerang"
     },
     {
      "index": 24,
      "original": "ぶっとびのパンツをそうびした",
-     "translation": "I put on the Dashing Pants."
+     "translation": "Put on the Blasting Pants"
     },
     {
      "index": 25,
@@ -24275,17 +24275,17 @@
     {
      "index": 27,
      "original": "グルドカをそうびした",
-     "translation": "I equipped Blackjack."
+     "translation": "Equipped Blackjack"
     },
     {
      "index": 28,
      "original": "いだてんのパンツをそうびした",
-     "translation": "I put on the Flash Pants."
+     "translation": "Put on the Idaten Pants"
     },
     {
      "index": 29,
      "original": "かっとびのパンツをそうびした",
-     "translation": "I put on the Jumping Pants."
+     "translation": "Put on the Dashing Pants"
     },
     {
      "index": 30,
@@ -24300,17 +24300,17 @@
     {
      "index": 32,
      "original": "ノーマルパンツをそうびした",
-     "translation": "I put on the Normal Pants."
+     "translation": "Put on the Normal Pants"
     },
     {
      "index": 33,
      "original": "グルピンをそうびした",
-     "translation": "I equipped Grapple."
+     "translation": "Equipped Grapple"
     },
     {
      "index": 34,
      "original": "ドカピンをそうびした",
-     "translation": "I equipped Grapple Jack."
+     "translation": "Equipped Grapple Jack"
     },
     {
      "index": 35,
@@ -24845,7 +24845,7 @@
     {
      "index": 141,
      "original": "サンタのパンツをつかった",
-     "translation": "Used the Santa Pants"
+     "translation": "Used Santa's Pants"
     },
     {
      "index": 142,
@@ -25212,7 +25212,7 @@
     {
      "index": 28,
      "original": "動かない恵みコゾウ",
-     "translation": "The Motionless Megumi Kozo"
+     "translation": "The Motionless Megumi Statues"
     },
     {
      "index": 29,
@@ -25299,42 +25299,42 @@
     {
      "index": 11,
      "original": "ウッキーパラソルをそうびした",
-     "translation": "I equipped the Ukki Parasol."
+     "translation": "Equipped the Ukki Parasol"
     },
     {
      "index": 12,
      "original": "ウッドブーメランをそうびした",
-     "translation": "I equipped the Wood Boomerang."
+     "translation": "Equipped the Wood Boomerang"
     },
     {
      "index": 13,
      "original": "ストーンブーメランをそうびした",
-     "translation": "I equipped the Stone Boomerang."
+     "translation": "Equipped the Stone Boomerang"
     },
     {
      "index": 14,
      "original": "アイアンブーメランをそうびした",
-     "translation": "I equipped the Iron Boomerang."
+     "translation": "Equipped the Iron Boomerang"
     },
     {
      "index": 15,
      "original": "ぶっとびのパンツをそうびした",
-     "translation": "I put on the Dashing Pants."
+     "translation": "Put on the Blasting Pants"
     },
     {
      "index": 16,
      "original": "グルドカをそうびした",
-     "translation": "I equipped Blackjack."
+     "translation": "Equipped Blackjack"
     },
     {
      "index": 17,
      "original": "いだてんのパンツをそうびした",
-     "translation": "I put on the Flash Pants."
+     "translation": "Put on the Idaten Pants"
     },
     {
      "index": 18,
      "original": "かっとびのパンツをそうびした",
-     "translation": "I put on the Jumping Pants."
+     "translation": "Put on the Dashing Pants"
     },
     {
      "index": 19,
@@ -25349,17 +25349,17 @@
     {
      "index": 21,
      "original": "ノーマルパンツをそうびした",
-     "translation": "I put on the Normal Pants."
+     "translation": "Put on the Normal Pants"
     },
     {
      "index": 22,
      "original": "グルピンをそうびした",
-     "translation": "I equipped Grapple."
+     "translation": "Equipped Grapple"
     },
     {
      "index": 23,
      "original": "ドカピンをそうびした",
-     "translation": "I equipped Grapple Jack."
+     "translation": "Equipped Grapple Jack"
     },
     {
      "index": 24,
@@ -25794,7 +25794,7 @@
     {
      "index": 110,
      "original": "・・・恵みコゾウが復活すると、幻の塔が現れる・・・",
-     "translation": "...When the Megumi Kozo revive, the Phantom Tower appears..."
+     "translation": "...When the Megumi Statues revive, the Phantom Tower appears..."
     },
     {
      "index": 111,
@@ -25871,7 +25871,7 @@
     {
      "index": 10,
      "original": "バケツをそうびした",
-     "translation": "I equipped the bucket."
+     "translation": "Equipped the bucket"
     },
     {
      "index": 11,
@@ -25921,27 +25921,27 @@
     {
      "index": 20,
      "original": "ウッキーパラソルをそうびした",
-     "translation": "I equipped the Ukki Parasol."
+     "translation": "Equipped the Ukki Parasol"
     },
     {
      "index": 21,
      "original": "ウッドブーメランをそうびした",
-     "translation": "I equipped the Wood Boomerang."
+     "translation": "Equipped the Wood Boomerang"
     },
     {
      "index": 22,
      "original": "ストーンブーメランをそうびした",
-     "translation": "I equipped the Stone Boomerang."
+     "translation": "Equipped the Stone Boomerang"
     },
     {
      "index": 23,
      "original": "アイアンブーメランをそうびした",
-     "translation": "I equipped the Iron Boomerang."
+     "translation": "Equipped the Iron Boomerang"
     },
     {
      "index": 24,
      "original": "ぶっとびのパンツをそうびした",
-     "translation": "I put on the Dashing Pants."
+     "translation": "Put on the Blasting Pants"
     },
     {
      "index": 25,
@@ -25956,17 +25956,17 @@
     {
      "index": 27,
      "original": "グルドカをそうびした",
-     "translation": "I equipped Blackjack."
+     "translation": "Equipped Blackjack"
     },
     {
      "index": 28,
      "original": "いだてんのパンツをそうびした",
-     "translation": "I put on the Flash Pants."
+     "translation": "Put on the Idaten Pants"
     },
     {
      "index": 29,
      "original": "かっとびのパンツをそうびした",
-     "translation": "I put on the Jumping Pants."
+     "translation": "Put on the Dashing Pants"
     },
     {
      "index": 30,
@@ -25981,17 +25981,17 @@
     {
      "index": 32,
      "original": "ノーマルパンツをそうびした",
-     "translation": "I put on the Normal Pants."
+     "translation": "Put on the Normal Pants"
     },
     {
      "index": 33,
      "original": "グルピンをそうびした",
-     "translation": "I equipped Grapple."
+     "translation": "Equipped Grapple"
     },
     {
      "index": 34,
      "original": "ドカピンをそうびした",
-     "translation": "I equipped Grapple Jack."
+     "translation": "Equipped Grapple Jack"
     },
     {
      "index": 35,
@@ -26526,7 +26526,7 @@
     {
      "index": 141,
      "original": "サンタのパンツをつかった",
-     "translation": "Used the Santa Pants"
+     "translation": "Used Santa's Pants"
     },
     {
      "index": 142,
@@ -26826,7 +26826,7 @@
     {
      "index": 201,
      "original": "どうですかな?\n・・・・・・おぼえておりますかな\n\n・・・こいつは あなたが\nドワーフの森で助けた小犬ですじゃ\n\n・・・・・・やっと元気になったとかで\nわたしが あずかっておりましたのじゃ\n\n・・・バロンには 不思識な力がありましてな\n・・・アイテム画面でバロンをつかうと\nめぐみの羽根と 同じこうかが ありますのじゃ\n\n・・・・・・さぁ、バロン・・・いっておいで・・・",
-     "translation": "Well?\n......Do you remember?\n\n...This is the puppy you saved\nin the Dwarf Forest\n\n......Since it finally got better,\nI've been looking after it\n\n...Baron has a mysterious power\n...If you use Baron on the item screen,\nhe has the same effect as the Megumi Wings\n\n......Now, Baron... off you go..."
+     "translation": "Well?\n......Do you remember?\n\n...This is the puppy you saved\nin the Dwarf Forest\n\n......Since it finally got better,\nI've been looking after it\n\n...Baron has a mysterious power\n...If you use Baron on the item screen,\nhe has the same effect as the Megumi Feather\n\n......Now, Baron... off you go..."
     },
     {
      "index": 202,
@@ -26836,7 +26836,7 @@
     {
      "index": 203,
      "original": "こいつは バロンと言いましてな\n\n・・・・・・ドワーフの森で\nケガをしていたので わたしが\nそだてて おりましたのじゃ・・・\n\nきっと 力になるハズじゃから・・・\n友達だと思って大事にしてやって下され\n・・・バロンには 不思識な力がありましてな\n\n・・・アイテム画面でバロンをつかうと\nめぐみの羽根と 同じこうかが ありますのじゃ\n・・・・・・さぁ、バロン・・・いっておいで・・・",
-     "translation": "This one is called Baron\n\n......He was hurt in the Dwarf Forest,\nso I've been raising him...\n\nHe's sure to be a help to you...\nThink of him as a friend and treasure him\n...Baron has a mysterious power\n\n...If you use Baron on the item screen,\nhe has the same effect as the Megumi Wings\n......Now, Baron... off you go..."
+     "translation": "This one is called Baron\n\n......He was hurt in the Dwarf Forest,\nso I've been raising him...\n\nHe's sure to be a help to you...\nThink of him as a friend and treasure him\n...Baron has a mysterious power\n\n...If you use Baron on the item screen,\nhe has the same effect as the Megumi Feather\n......Now, Baron... off you go..."
     }
    ]
   },
@@ -26988,7 +26988,7 @@
     {
      "index": 28,
      "original": "動かない恵みコゾウ",
-     "translation": "The Motionless Megumi Kozo"
+     "translation": "The Motionless Megumi Statues"
     },
     {
      "index": 29,
@@ -27095,7 +27095,7 @@
     {
      "index": 10,
      "original": "バケツをそうびした",
-     "translation": "I equipped the bucket."
+     "translation": "Equipped the bucket"
     },
     {
      "index": 11,
@@ -27145,27 +27145,27 @@
     {
      "index": 20,
      "original": "ウッキーパラソルをそうびした",
-     "translation": "I equipped the Ukki Parasol."
+     "translation": "Equipped the Ukki Parasol"
     },
     {
      "index": 21,
      "original": "ウッドブーメランをそうびした",
-     "translation": "I equipped the Wood Boomerang."
+     "translation": "Equipped the Wood Boomerang"
     },
     {
      "index": 22,
      "original": "ストーンブーメランをそうびした",
-     "translation": "I equipped the Stone Boomerang."
+     "translation": "Equipped the Stone Boomerang"
     },
     {
      "index": 23,
      "original": "アイアンブーメランをそうびした",
-     "translation": "I equipped the Iron Boomerang."
+     "translation": "Equipped the Iron Boomerang"
     },
     {
      "index": 24,
      "original": "ぶっとびのパンツをそうびした",
-     "translation": "I put on the Dashing Pants."
+     "translation": "Put on the Blasting Pants"
     },
     {
      "index": 25,
@@ -27180,17 +27180,17 @@
     {
      "index": 27,
      "original": "グルドカをそうびした",
-     "translation": "I equipped Blackjack."
+     "translation": "Equipped Blackjack"
     },
     {
      "index": 28,
      "original": "いだてんのパンツをそうびした",
-     "translation": "I put on the Flash Pants."
+     "translation": "Put on the Idaten Pants"
     },
     {
      "index": 29,
      "original": "かっとびのパンツをそうびした",
-     "translation": "I put on the Jumping Pants."
+     "translation": "Put on the Dashing Pants"
     },
     {
      "index": 30,
@@ -27205,17 +27205,17 @@
     {
      "index": 32,
      "original": "ノーマルパンツをそうびした",
-     "translation": "I put on the Normal Pants."
+     "translation": "Put on the Normal Pants"
     },
     {
      "index": 33,
      "original": "グルピンをそうびした",
-     "translation": "I equipped Grapple."
+     "translation": "Equipped Grapple"
     },
     {
      "index": 34,
      "original": "ドカピンをそうびした",
-     "translation": "I equipped Grapple Jack."
+     "translation": "Equipped Grapple Jack"
     },
     {
      "index": 35,
@@ -27750,7 +27750,7 @@
     {
      "index": 141,
      "original": "サンタのパンツをつかった",
-     "translation": "Used the Santa Pants"
+     "translation": "Used Santa's Pants"
     },
     {
      "index": 142,
@@ -27985,12 +27985,12 @@
     {
      "index": 188,
      "original": "キミ、いろんなところを旅してるんだって?\nだったら、へんな点とか線がきざんである\nらくがき岩・・・見たことないかなぁ・・・\n\nおれ、ずーっとまえに木人の加工場で\n見たことがあるんだけど、\nどうも気になってなぁ・・・",
-     "translation": "I hear you've been traveling all over?\nThen, have you ever seen a Scribble Rock\nwith strange dots and lines carved on it?...\n\nI saw one a long time ago\nat the Wood People's workshop,\nand I've been curious about it ever since..."
+     "translation": "I hear you've been traveling all over?\nThen, have you ever seen a Doodle Rock\nwith strange dots and lines carved on it?...\n\nI saw one a long time ago\nat the Wood People's workshop,\nand I've been curious about it ever since..."
     },
     {
      "index": 189,
      "original": "ウワサじゃ\n全部で6つのらくがき岩があって、\n\nそこに書かれてあるナゾをとけば\nたくさんの お宝が\n手に入るらしいんだけど\n\n・・・なんかむずかしそうだなぁ\n・・・が1・・・ーが5の・・・\n\n20進数とかなんとか・・・\nおれにはとても わかんないよ・・・",
-     "translation": "Rumor has it\nthat there are six Scribble Rocks in all,\n\nand if you solve the mystery written on them\nyou can get lots of treasure\n...or so they say\n\n...It sounds hard\n...a 1 for ー and a 5 for...\n\nSomething about base 20...\nI can't make heads or tails of it..."
+     "translation": "Rumor has it\nthat there are six Doodle Rocks in all,\n\nand if you solve the riddle written on them\nyou can get lots of treasure\n\n...It sounds hard\n...A dot is 1, a bar is 5, and so on...\n\nSomething about base 20...\nI can't make heads or tails of it..."
     },
     {
      "index": 190,
@@ -28212,7 +28212,7 @@
     {
      "index": 6,
      "original": "解読?らくがき岩",
-     "translation": "Decipher? Scribble Rock"
+     "translation": "Decipher? Doodle Rock"
     },
     {
      "index": 7,
@@ -28294,7 +28294,7 @@
     {
      "index": 10,
      "original": "バケツをそうびした",
-     "translation": "I equipped the bucket."
+     "translation": "Equipped the bucket"
     },
     {
      "index": 11,
@@ -28344,27 +28344,27 @@
     {
      "index": 20,
      "original": "ウッキーパラソルをそうびした",
-     "translation": "I equipped the Ukki Parasol."
+     "translation": "Equipped the Ukki Parasol"
     },
     {
      "index": 21,
      "original": "ウッドブーメランをそうびした",
-     "translation": "I equipped the Wood Boomerang."
+     "translation": "Equipped the Wood Boomerang"
     },
     {
      "index": 22,
      "original": "ストーンブーメランをそうびした",
-     "translation": "I equipped the Stone Boomerang."
+     "translation": "Equipped the Stone Boomerang"
     },
     {
      "index": 23,
      "original": "アイアンブーメランをそうびした",
-     "translation": "I equipped the Iron Boomerang."
+     "translation": "Equipped the Iron Boomerang"
     },
     {
      "index": 24,
      "original": "ぶっとびのパンツをそうびした",
-     "translation": "I put on the Dashing Pants."
+     "translation": "Put on the Blasting Pants"
     },
     {
      "index": 25,
@@ -28379,17 +28379,17 @@
     {
      "index": 27,
      "original": "グルドカをそうびした",
-     "translation": "I equipped Blackjack."
+     "translation": "Equipped Blackjack"
     },
     {
      "index": 28,
      "original": "いだてんのパンツをそうびした",
-     "translation": "I put on the Flash Pants."
+     "translation": "Put on the Idaten Pants"
     },
     {
      "index": 29,
      "original": "かっとびのパンツをそうびした",
-     "translation": "I put on the Jumping Pants."
+     "translation": "Put on the Dashing Pants"
     },
     {
      "index": 30,
@@ -28404,17 +28404,17 @@
     {
      "index": 32,
      "original": "ノーマルパンツをそうびした",
-     "translation": "I put on the Normal Pants."
+     "translation": "Put on the Normal Pants"
     },
     {
      "index": 33,
      "original": "グルピンをそうびした",
-     "translation": "I equipped Grapple."
+     "translation": "Equipped Grapple"
     },
     {
      "index": 34,
      "original": "ドカピンをそうびした",
-     "translation": "I equipped Grapple Jack."
+     "translation": "Equipped Grapple Jack"
     },
     {
      "index": 35,
@@ -28949,7 +28949,7 @@
     {
      "index": 141,
      "original": "サンタのパンツをつかった",
-     "translation": "Used the Santa Pants"
+     "translation": "Used Santa's Pants"
     },
     {
      "index": 142,
@@ -29429,7 +29429,7 @@
     {
      "index": 237,
      "original": "スイッチをいれた!",
-     "translation": "I turned on the switch!"
+     "translation": "Turned on the switch!"
     },
     {
      "index": 238,
@@ -29733,7 +29733,7 @@
     {
      "index": 10,
      "original": "バケツをそうびした",
-     "translation": "I equipped the bucket."
+     "translation": "Equipped the bucket"
     },
     {
      "index": 11,
@@ -29783,27 +29783,27 @@
     {
      "index": 20,
      "original": "ウッキーパラソルをそうびした",
-     "translation": "I equipped the Ukki Parasol."
+     "translation": "Equipped the Ukki Parasol"
     },
     {
      "index": 21,
      "original": "ウッドブーメランをそうびした",
-     "translation": "I equipped the Wood Boomerang."
+     "translation": "Equipped the Wood Boomerang"
     },
     {
      "index": 22,
      "original": "ストーンブーメランをそうびした",
-     "translation": "I equipped the Stone Boomerang."
+     "translation": "Equipped the Stone Boomerang"
     },
     {
      "index": 23,
      "original": "アイアンブーメランをそうびした",
-     "translation": "I equipped the Iron Boomerang."
+     "translation": "Equipped the Iron Boomerang"
     },
     {
      "index": 24,
      "original": "ぶっとびのパンツをそうびした",
-     "translation": "I put on the Dashing Pants."
+     "translation": "Put on the Blasting Pants"
     },
     {
      "index": 25,
@@ -29818,17 +29818,17 @@
     {
      "index": 27,
      "original": "グルドカをそうびした",
-     "translation": "I equipped Blackjack."
+     "translation": "Equipped Blackjack"
     },
     {
      "index": 28,
      "original": "いだてんのパンツをそうびした",
-     "translation": "I put on the Flash Pants."
+     "translation": "Put on the Idaten Pants"
     },
     {
      "index": 29,
      "original": "かっとびのパンツをそうびした",
-     "translation": "I put on the Jumping Pants."
+     "translation": "Put on the Dashing Pants"
     },
     {
      "index": 30,
@@ -29843,17 +29843,17 @@
     {
      "index": 32,
      "original": "ノーマルパンツをそうびした",
-     "translation": "I put on the Normal Pants."
+     "translation": "Put on the Normal Pants"
     },
     {
      "index": 33,
      "original": "グルピンをそうびした",
-     "translation": "I equipped Grapple."
+     "translation": "Equipped Grapple"
     },
     {
      "index": 34,
      "original": "ドカピンをそうびした",
-     "translation": "I equipped Grapple Jack."
+     "translation": "Equipped Grapple Jack"
     },
     {
      "index": 35,
@@ -30388,7 +30388,7 @@
     {
      "index": 141,
      "original": "サンタのパンツをつかった",
-     "translation": "Used the Santa Pants"
+     "translation": "Used Santa's Pants"
     },
     {
      "index": 142,
@@ -30975,7 +30975,7 @@
     {
      "index": 27,
      "original": "動かない恵みコゾウ",
-     "translation": "The Motionless Megumi Kozo"
+     "translation": "The Motionless Megumi Statues"
     },
     {
      "index": 28,
@@ -31005,7 +31005,7 @@
     {
      "index": 33,
      "original": "解読?らくがき岩",
-     "translation": "Decipher? Scribble Rock"
+     "translation": "Decipher? Doodle Rock"
     },
     {
      "index": 34,
@@ -31147,7 +31147,7 @@
     {
      "index": 10,
      "original": "バケツをそうびした",
-     "translation": "I equipped the bucket."
+     "translation": "Equipped the bucket"
     },
     {
      "index": 11,
@@ -31197,27 +31197,27 @@
     {
      "index": 20,
      "original": "ウッキーパラソルをそうびした",
-     "translation": "I equipped the Ukki Parasol."
+     "translation": "Equipped the Ukki Parasol"
     },
     {
      "index": 21,
      "original": "ウッドブーメランをそうびした",
-     "translation": "I equipped the Wood Boomerang."
+     "translation": "Equipped the Wood Boomerang"
     },
     {
      "index": 22,
      "original": "ストーンブーメランをそうびした",
-     "translation": "I equipped the Stone Boomerang."
+     "translation": "Equipped the Stone Boomerang"
     },
     {
      "index": 23,
      "original": "アイアンブーメランをそうびした",
-     "translation": "I equipped the Iron Boomerang."
+     "translation": "Equipped the Iron Boomerang"
     },
     {
      "index": 24,
      "original": "ぶっとびのパンツをそうびした",
-     "translation": "I put on the Dashing Pants."
+     "translation": "Put on the Blasting Pants"
     },
     {
      "index": 25,
@@ -31232,17 +31232,17 @@
     {
      "index": 27,
      "original": "グルドカをそうびした",
-     "translation": "I equipped Blackjack."
+     "translation": "Equipped Blackjack"
     },
     {
      "index": 28,
      "original": "いだてんのパンツをそうびした",
-     "translation": "I put on the Flash Pants."
+     "translation": "Put on the Idaten Pants"
     },
     {
      "index": 29,
      "original": "かっとびのパンツをそうびした",
-     "translation": "I put on the Jumping Pants."
+     "translation": "Put on the Dashing Pants"
     },
     {
      "index": 30,
@@ -31257,17 +31257,17 @@
     {
      "index": 32,
      "original": "ノーマルパンツをそうびした",
-     "translation": "I put on the Normal Pants."
+     "translation": "Put on the Normal Pants"
     },
     {
      "index": 33,
      "original": "グルピンをそうびした",
-     "translation": "I equipped Grapple."
+     "translation": "Equipped Grapple"
     },
     {
      "index": 34,
      "original": "ドカピンをそうびした",
-     "translation": "I equipped Grapple Jack."
+     "translation": "Equipped Grapple Jack"
     },
     {
      "index": 35,
@@ -31802,7 +31802,7 @@
     {
      "index": 141,
      "original": "サンタのパンツをつかった",
-     "translation": "Used the Santa Pants"
+     "translation": "Used Santa's Pants"
     },
     {
      "index": 142,
@@ -32127,12 +32127,12 @@
     {
      "index": 206,
      "original": "○△ーー○!!",
-     "translation": "○△ーー○!!"
+     "translation": "Whoa!!"
     },
     {
      "index": 207,
      "original": "う△ーー○!!",
-     "translation": "Uu△---○!!"
+     "translation": "Whoa!!"
     },
     {
      "index": 208,
@@ -32142,7 +32142,7 @@
     {
      "index": 209,
      "original": "◎○□□□・・・○○○◎△○○○●○○・・・",
-     "translation": "◎○□□□・・・○○○◎△○○○●○○・・・"
+     "translation": "Glub grup... glop grug grub gruu..."
     },
     {
      "index": 210,
@@ -32152,17 +32152,17 @@
     {
      "index": 211,
      "original": "コ○バ・・・\nわ○○○ない・・・",
-     "translation": "Lang○age...\nI do○'t u○○erstand..."
+     "translation": "Glop...\nglub grup..."
     },
     {
      "index": 212,
      "original": "◎のまえ●、◎◎\nいなくな△た・・・",
-     "translation": "The ◎ in front of ●, the ◎◎ disappeared…"
+     "translation": "Gruu glub, grub\ngnug glop..."
     },
     {
      "index": 213,
      "original": "な○とか ひ△しで\n◎●てきた・・・",
-     "translation": "Somehow, desperately,\nI ◎●d here..."
+     "translation": "Somehow, desperately,\nI escaped..."
     },
     {
      "index": 214,
@@ -32547,12 +32547,12 @@
     {
      "index": 290,
      "original": "○○○◎◎○◎◎・・・◎◎○○○\n●△○○・・・○○◎△○○?",
-     "translation": "○○○◎◎○◎◎・・・◎◎○○○●△○○・・・○○◎△○○?"
+     "translation": "Gnee gnug glop... gnee gnug\ngnu... gruf gnu?"
     },
     {
      "index": 291,
      "original": "○○○、□□□□○◎・・・○○、\n○△○○○○○○",
-     "translation": "○○○、□□□□○◎・・・○○、○△○○○○○○"
+     "translation": "Gnock, grug grub... gnu,\ngrub gruu glub"
     },
     {
      "index": 292,
@@ -32562,12 +32562,12 @@
     {
      "index": 293,
      "original": "た○へ○だ!た○へ○だぁ!",
-     "translation": "Oh n○! Oh n○!"
+     "translation": "Oh no! Oh no!"
     },
     {
      "index": 294,
      "original": "た○へ○だ!た○へ○だぁ!",
-     "translation": "Oh n○! Oh n○!"
+     "translation": "Oh no! Oh no!"
     },
     {
      "index": 295,
@@ -32582,22 +32582,22 @@
     {
      "index": 297,
      "original": "○○○、○△○○○・・・\n○○○○○△○○○●・・・",
-     "translation": "○○○, ○△○○○...\n○○○○○△○○○●..."
+     "translation": "Gnock, gnub gnock...\ngnug glop grug..."
     },
     {
      "index": 298,
      "original": "○○、○○○○□□□○○・・・",
-     "translation": "○○○○□□□○○・・・"
+     "translation": "Gruu, gruu glub grup..."
     },
     {
      "index": 299,
      "original": "○△、◎△○○○○●○△・・・",
-     "translation": "○△、◎△○○○○●○△・・・"
+     "translation": "Gnu, gnu gnub gnock..."
     },
     {
      "index": 300,
      "original": "◎○◎○○●○○○・・・",
-     "translation": "◎○◎○○●○○○・・・"
+     "translation": "Grug grub gruu..."
     },
     {
      "index": 301,
@@ -32612,67 +32612,67 @@
     {
      "index": 303,
      "original": "そ○の◎◎の◎◎・・・◎◎に\nつな○△てる・・・もう◎△たか?",
-     "translation": "The ○○ of the ○○... is connected to the ○○... Is it already the ○○?"
+     "translation": "Gruu glub grup... grup\ngnock gnee... gnug glop?"
     },
     {
      "index": 304,
      "original": "○○●・・・\n○○○○○",
-     "translation": "○○●・・・\n○○○○○"
+     "translation": "Glop...\ngnug glop"
     },
     {
      "index": 305,
      "original": "コ○バ・・・\nわ○○ない・・・",
-     "translation": "Lang○age...\nI do○'t u○○erstand..."
+     "translation": "Glop...\ngnug glop..."
     },
     {
      "index": 306,
      "original": "◎●、へ○な□□◎た\n・・・お○え◎たか?",
-     "translation": "◎●, did you ○e◎k?"
+     "translation": "In the forest, I saw a strange dog...\nDid you see it?"
     },
     {
      "index": 307,
      "original": "◎のまえ●、◎◎\nいなくな△た・・・",
-     "translation": "The ◎ in front of ●, the ◎◎ disappeared…"
+     "translation": "Gruu glub, grub\ngnug glop..."
     },
     {
      "index": 308,
      "original": "な○とか ひ△しで\n◎●てきた・・・",
-     "translation": "Somehow, desperately,\nI ◎●d here..."
+     "translation": "Somehow, desperately,\nI escaped..."
     },
     {
      "index": 309,
      "original": "○や、か○いい□□□だね・・・",
-     "translation": "○h, what a c○te □□□..."
+     "translation": "Gnug, gnug glop grug..."
     },
     {
      "index": 310,
      "original": "ね△、◎△て○いいでし△・・・",
-     "translation": "Hey, c○n I go...?"
+     "translation": "Hey, can I go now...?"
     },
     {
      "index": 311,
      "original": "◎の◎はあ●ないよ・・・",
-     "translation": "The ◎ of the ◎ doesn't have a ●..."
+     "translation": "Gnub gnock gnee..."
     },
     {
      "index": 312,
      "original": "わ○ら、○ても◎△て○",
-     "translation": "W○, ○ven ◎△ ○..."
+     "translation": "Gnug, gnub gnock"
     },
     {
      "index": 313,
      "original": "わ○ら、○ても◎△て○",
-     "translation": "W○, ○ven ◎△ ○..."
+     "translation": "Gnug, gnub gnock"
     },
     {
      "index": 314,
      "original": "な○まの○と・・・とても○ん◎い",
-     "translation": "Ab○ut my fri○nds... I'm very w○rried"
+     "translation": "About my friends...\nI'm very worried."
     },
     {
      "index": 315,
      "original": "な○まの○と・・・\nと○も○ん◎い",
-     "translation": "Ab○ut my fri○nds...\nI'm very w○rried"
+     "translation": "About my friends...\nI'm very worried."
     },
     {
      "index": 316,
@@ -32692,7 +32692,7 @@
     {
      "index": 319,
      "original": "こ○は、□□□□の◎・・・",
-     "translation": "This is □□□□'s ◎..."
+     "translation": "Gruu, gnu gnub..."
     },
     {
      "index": 320,
@@ -32827,17 +32827,17 @@
     {
      "index": 346,
      "original": "◎○□□□・・・○○○◎\n△○○○●○○・・・",
-     "translation": "◎○□□□・・・○○○◎△○○○●○○・・・"
+     "translation": "Grug grub... gnee\ngrub gruu..."
     },
     {
      "index": 347,
      "original": "わしらの◎◎、いなくな△た・・・\n◎は◎に◎ないほう●いい・・・",
-     "translation": "Our ◎◎, has disappeared...\n◎ is better than ◎..."
+     "translation": "Gnu gnub, gnock gnee...\ngrup gruf gnu gnub..."
     },
     {
      "index": 348,
      "original": "わしらの◎◎にはもう◎△たか?",
-     "translation": "Is our ◎◎ already ◎△?"
+     "translation": "Have you met our Elder yet?"
     },
     {
      "index": 349,
@@ -32987,12 +32987,12 @@
     {
      "index": 378,
      "original": "○●△○○ー○!",
-     "translation": "○●△○○ー○!"
+     "translation": "Gnub gnock! grub!"
     },
     {
      "index": 379,
      "original": "○●△○○ー○!",
-     "translation": "○●△○○ー○!"
+     "translation": "Gnub gnock! grub!"
     },
     {
      "index": 380,
@@ -33307,12 +33307,12 @@
     {
      "index": 442,
      "original": "おおっ! そうじゃ・・・思い出したっ!・・・\nあなたに こいつを あずけておきますじゃ・・・\n\nどうですかな?・・・・・・\nおぼえておりますかな・・・\n\nこいつは あなたがドワーフの森で助けた\n小犬ですじゃ・・・・・・\n\nまだ、ケガは なおりきっておらんので\nさいしょにあずけた ドワーフの言うことを\nよく きいてくだされ・・・・・\n\nバロンには 不思議な力がありましてな・・・\n\nアイテム画面でバロンをつかうと\nめぐみの羽根と\n同じこうかが ありますのじゃ・・・・・・\n\nさぁ、バロン・・・いっておいで・・・",
-     "translation": "Oh! That's right... I remember now!...\nI'll leave this one with you...\n\nWell?\nDo you remember...?\n\nThis is the puppy you saved\nin the Dwarf Forest......\n\nIts injuries haven't fully healed yet,\nso listen carefully to what the dwarf\nwho first took care of it tells you.....\n\nBaron has a mysterious power...\n\nIf you use Baron on the item screen,\nhe has the same effect\nas the Megumi Wings......\n\nNow, Baron... off you go..."
+     "translation": "Oh! That's right... I remember now!...\nI'll leave this one with you...\n\nWell?\nDo you remember...?\n\nThis is the puppy you saved\nin the Dwarf Forest......\n\nIts injuries haven't fully healed yet,\nso listen carefully to what the dwarf\nwho first took care of it tells you.....\n\nBaron has a mysterious power...\n\nIf you use Baron on the item screen,\nhe has the same effect\nas the Megumi Feather......\n\nNow, Baron... off you go..."
     },
     {
      "index": 443,
      "original": "おおっ! そうじゃ・・・思い出したっ!・・・\nあなたに こいつを あずけておきますじゃ・・・\n\nこいつは バロンと言いましてな・・・・・・\nドワーフの森でケガをしていたので\nわたしがそだてて おりましたのじゃ・・・\n\nきっと 力になるハズじゃから・・・\n友達だと思って大事にしてやって下され・・・\n\nバロンには 不思議な力がありましてな・・・\n\nアイテム画面でバロンをつかうと\nめぐみの羽根と\n同じこうかが ありますのじゃ・・・・・・\n\nさぁ、バロン・・・いっておいで・・・",
-     "translation": "Oh! That's right... I remember now!...\nI'll leave this one with you...\n\nThis one is called Baron......\nHe was hurt in the Dwarf Forest,\nso I've been raising him...\n\nHe's sure to be a help to you...\nThink of him as a friend and treasure him...\n\nBaron has a mysterious power...\n\nIf you use Baron on the item screen,\nhe has the same effect\nas the Megumi Wings......\n\nNow, Baron... off you go..."
+     "translation": "Oh! That's right... I remember now!...\nI'll leave this one with you...\n\nThis one is called Baron......\nHe was hurt in the Dwarf Forest,\nso I've been raising him...\n\nHe's sure to be a help to you...\nThink of him as a friend and treasure him...\n\nBaron has a mysterious power...\n\nIf you use Baron on the item screen,\nhe has the same effect\nas the Megumi Feather......\n\nNow, Baron... off you go..."
     },
     {
      "index": 444,
@@ -33616,7 +33616,7 @@
     {
      "index": 10,
      "original": "バケツをそうびした",
-     "translation": "I equipped the bucket."
+     "translation": "Equipped the bucket"
     },
     {
      "index": 11,
@@ -33666,27 +33666,27 @@
     {
      "index": 20,
      "original": "ウッキーパラソルをそうびした",
-     "translation": "I equipped the Ukki Parasol."
+     "translation": "Equipped the Ukki Parasol"
     },
     {
      "index": 21,
      "original": "ウッドブーメランをそうびした",
-     "translation": "I equipped the Wood Boomerang."
+     "translation": "Equipped the Wood Boomerang"
     },
     {
      "index": 22,
      "original": "ストーンブーメランをそうびした",
-     "translation": "I equipped the Stone Boomerang."
+     "translation": "Equipped the Stone Boomerang"
     },
     {
      "index": 23,
      "original": "アイアンブーメランをそうびした",
-     "translation": "I equipped the Iron Boomerang."
+     "translation": "Equipped the Iron Boomerang"
     },
     {
      "index": 24,
      "original": "ぶっとびのパンツをそうびした",
-     "translation": "I put on the Dashing Pants."
+     "translation": "Put on the Blasting Pants"
     },
     {
      "index": 25,
@@ -33701,17 +33701,17 @@
     {
      "index": 27,
      "original": "グルドカをそうびした",
-     "translation": "I equipped Blackjack."
+     "translation": "Equipped Blackjack"
     },
     {
      "index": 28,
      "original": "いだてんのパンツをそうびした",
-     "translation": "I put on the Flash Pants."
+     "translation": "Put on the Idaten Pants"
     },
     {
      "index": 29,
      "original": "かっとびのパンツをそうびした",
-     "translation": "I put on the Jumping Pants."
+     "translation": "Put on the Dashing Pants"
     },
     {
      "index": 30,
@@ -33726,17 +33726,17 @@
     {
      "index": 32,
      "original": "ノーマルパンツをそうびした",
-     "translation": "I put on the Normal Pants."
+     "translation": "Put on the Normal Pants"
     },
     {
      "index": 33,
      "original": "グルピンをそうびした",
-     "translation": "I equipped Grapple."
+     "translation": "Equipped Grapple"
     },
     {
      "index": 34,
      "original": "ドカピンをそうびした",
-     "translation": "I equipped Grapple Jack."
+     "translation": "Equipped Grapple Jack"
     },
     {
      "index": 35,
@@ -34271,7 +34271,7 @@
     {
      "index": 141,
      "original": "サンタのパンツをつかった",
-     "translation": "Used the Santa Pants"
+     "translation": "Used Santa's Pants"
     },
     {
      "index": 142,
@@ -34596,12 +34596,12 @@
     {
      "index": 206,
      "original": "○△ーー○!!",
-     "translation": "○△ーー○!!"
+     "translation": "Whoa!!"
     },
     {
      "index": 207,
      "original": "う△ーー○!!",
-     "translation": "Uu△---○!!"
+     "translation": "Whoa!!"
     },
     {
      "index": 208,
@@ -34611,7 +34611,7 @@
     {
      "index": 209,
      "original": "◎○□□□・・・○○○◎△○○○●○○・・・",
-     "translation": "◎○□□□・・・○○○◎△○○○●○○・・・"
+     "translation": "Glub grup... glop grug grub gruu..."
     },
     {
      "index": 210,
@@ -34621,17 +34621,17 @@
     {
      "index": 211,
      "original": "コ○バ・・・\nわ○○○ない・・・",
-     "translation": "Lang○age...\nI do○'t u○○erstand..."
+     "translation": "Glop...\nglub grup..."
     },
     {
      "index": 212,
      "original": "◎のまえ●、◎◎\nいなくな△た・・・",
-     "translation": "The ◎ in front of ●, the ◎◎ disappeared…"
+     "translation": "Gruu glub, grub\ngnug glop..."
     },
     {
      "index": 213,
      "original": "な○とか ひ△しで\n◎●てきた・・・",
-     "translation": "Somehow, desperately,\nI ◎●d here..."
+     "translation": "Somehow, desperately,\nI escaped..."
     },
     {
      "index": 214,
@@ -35016,12 +35016,12 @@
     {
      "index": 290,
      "original": "○○○◎◎○◎◎・・・◎◎○○○\n●△○○・・・○○◎△○○?",
-     "translation": "○○○◎◎○◎◎・・・◎◎○○○●△○○・・・○○◎△○○?"
+     "translation": "Gnee gnug glop... gnee gnug\ngnu... gruf gnu?"
     },
     {
      "index": 291,
      "original": "○○○、□□□□○◎・・・○○、\n○△○○○○○○",
-     "translation": "○○○、□□□□○◎・・・○○、○△○○○○○○"
+     "translation": "Gnock, grug grub... gnu,\ngrub gruu glub"
     },
     {
      "index": 292,
@@ -35031,12 +35031,12 @@
     {
      "index": 293,
      "original": "た○へ○だ!た○へ○だぁ!",
-     "translation": "Oh n○! Oh n○!"
+     "translation": "Oh no! Oh no!"
     },
     {
      "index": 294,
      "original": "た○へ○だ!た○へ○だぁ!",
-     "translation": "Oh n○! Oh n○!"
+     "translation": "Oh no! Oh no!"
     },
     {
      "index": 295,
@@ -35051,22 +35051,22 @@
     {
      "index": 297,
      "original": "○○○、○△○○○・・・\n○○○○○△○○○●・・・",
-     "translation": "○○○, ○△○○○...\n○○○○○△○○○●..."
+     "translation": "Gnock, gnub gnock...\ngnug glop grug..."
     },
     {
      "index": 298,
      "original": "○○、○○○○□□□○○・・・",
-     "translation": "○○○○□□□○○・・・"
+     "translation": "Gruu, gruu glub grup..."
     },
     {
      "index": 299,
      "original": "○△、◎△○○○○●○△・・・",
-     "translation": "○△、◎△○○○○●○△・・・"
+     "translation": "Gnu, gnu gnub gnock..."
     },
     {
      "index": 300,
      "original": "◎○◎○○●○○○・・・",
-     "translation": "◎○◎○○●○○○・・・"
+     "translation": "Grug grub gruu..."
     },
     {
      "index": 301,
@@ -35081,67 +35081,67 @@
     {
      "index": 303,
      "original": "そ○の◎◎の◎◎・・・◎◎に\nつな○△てる・・・もう◎△たか?",
-     "translation": "The ○○ of the ○○... is connected to the ○○... Is it already the ○○?"
+     "translation": "Gruu glub grup... grup\ngnock gnee... gnug glop?"
     },
     {
      "index": 304,
      "original": "○○●・・・\n○○○○○",
-     "translation": "○○●・・・\n○○○○○"
+     "translation": "Glop...\ngnug glop"
     },
     {
      "index": 305,
      "original": "コ○バ・・・\nわ○○ない・・・",
-     "translation": "Lang○age...\nI do○'t u○○erstand..."
+     "translation": "Glop...\ngnug glop..."
     },
     {
      "index": 306,
      "original": "◎●、へ○な□□◎た\n・・・お○え◎たか?",
-     "translation": "◎●, did you ○e◎k?"
+     "translation": "In the forest, I saw a strange dog...\nDid you see it?"
     },
     {
      "index": 307,
      "original": "◎のまえ●、◎◎\nいなくな△た・・・",
-     "translation": "The ◎ in front of ●, the ◎◎ disappeared…"
+     "translation": "Gruu glub, grub\ngnug glop..."
     },
     {
      "index": 308,
      "original": "な○とか ひ△しで\n◎●てきた・・・",
-     "translation": "Somehow, desperately,\nI ◎●d here..."
+     "translation": "Somehow, desperately,\nI escaped..."
     },
     {
      "index": 309,
      "original": "○や、か○いい□□□だね・・・",
-     "translation": "○h, what a c○te □□□..."
+     "translation": "Gnug, gnug glop grug..."
     },
     {
      "index": 310,
      "original": "ね△、◎△て○いいでし△・・・",
-     "translation": "Hey, c○n I go...?"
+     "translation": "Hey, can I go now...?"
     },
     {
      "index": 311,
      "original": "◎の◎はあ●ないよ・・・",
-     "translation": "The ◎ of the ◎ doesn't have a ●..."
+     "translation": "Gnub gnock gnee..."
     },
     {
      "index": 312,
      "original": "わ○ら、○ても◎△て○",
-     "translation": "W○, ○ven ◎△ ○..."
+     "translation": "Gnug, gnub gnock"
     },
     {
      "index": 313,
      "original": "わ○ら、○ても◎△て○",
-     "translation": "W○, ○ven ◎△ ○..."
+     "translation": "Gnug, gnub gnock"
     },
     {
      "index": 314,
      "original": "な○まの○と・・・とても○ん◎い",
-     "translation": "Ab○ut my fri○nds... I'm very w○rried"
+     "translation": "About my friends...\nI'm very worried."
     },
     {
      "index": 315,
      "original": "な○まの○と・・・\nと○も○ん◎い",
-     "translation": "Ab○ut my fri○nds...\nI'm very w○rried"
+     "translation": "About my friends...\nI'm very worried."
     },
     {
      "index": 316,
@@ -35161,7 +35161,7 @@
     {
      "index": 319,
      "original": "こ○は、□□□□の◎・・・",
-     "translation": "This is □□□□'s ◎..."
+     "translation": "Gruu, gnu gnub..."
     },
     {
      "index": 320,
@@ -35296,17 +35296,17 @@
     {
      "index": 346,
      "original": "◎○□□□・・・○○○◎\n△○○○●○○・・・",
-     "translation": "◎○□□□・・・○○○◎△○○○●○○・・・"
+     "translation": "Grug grub... gnee\ngrub gruu..."
     },
     {
      "index": 347,
      "original": "わしらの◎◎、いなくな△た・・・\n◎は◎に◎ないほう●いい・・・",
-     "translation": "Our ◎◎, has disappeared...\n◎ is better than ◎..."
+     "translation": "Gnu gnub, gnock gnee...\ngrup gruf gnu gnub..."
     },
     {
      "index": 348,
      "original": "わしらの◎◎にはもう◎△たか?",
-     "translation": "Is our ◎◎ already ◎△?"
+     "translation": "Have you met our Elder yet?"
     },
     {
      "index": 349,
@@ -35456,12 +35456,12 @@
     {
      "index": 378,
      "original": "○●△○○ー○!",
-     "translation": "○●△○○ー○!"
+     "translation": "Gnub gnock! grub!"
     },
     {
      "index": 379,
      "original": "○●△○○ー○!",
-     "translation": "○●△○○ー○!"
+     "translation": "Gnub gnock! grub!"
     },
     {
      "index": 380,
@@ -35776,12 +35776,12 @@
     {
      "index": 442,
      "original": "おおっ! そうじゃ・・・思い出したっ!・・・\nあなたに こいつを あずけておきますじゃ・・・\n\nどうですかな?・・・・・・\nおぼえておりますかな・・・\n\nこいつは あなたがドワーフの森で助けた\n小犬ですじゃ・・・・・・\n\nまだ、ケガは なおりきっておらんので\nさいしょにあずけた ドワーフの言うことを\nよく きいてくだされ・・・・・\n\nバロンには 不思議な力がありましてな・・・\n\nアイテム画面でバロンをつかうと\nめぐみの羽根と\n同じこうかが ありますのじゃ・・・・・・\n\nさぁ、バロン・・・いっておいで・・・",
-     "translation": "Oh! That's right... I remember now!...\nI'll leave this one with you...\n\nWell?\nDo you remember...?\n\nThis is the puppy you saved\nin the Dwarf Forest......\n\nIts injuries haven't fully healed yet,\nso listen carefully to what the dwarf\nwho first took care of it tells you.....\n\nBaron has a mysterious power...\n\nIf you use Baron on the item screen,\nhe has the same effect\nas the Megumi Wings......\n\nNow, Baron... off you go..."
+     "translation": "Oh! That's right... I remember now!...\nI'll leave this one with you...\n\nWell?\nDo you remember...?\n\nThis is the puppy you saved\nin the Dwarf Forest......\n\nIts injuries haven't fully healed yet,\nso listen carefully to what the dwarf\nwho first took care of it tells you.....\n\nBaron has a mysterious power...\n\nIf you use Baron on the item screen,\nhe has the same effect\nas the Megumi Feather......\n\nNow, Baron... off you go..."
     },
     {
      "index": 443,
      "original": "おおっ! そうじゃ・・・思い出したっ!・・・\nあなたに こいつを あずけておきますじゃ・・・\n\nこいつは バロンと言いましてな・・・・・・\nドワーフの森でケガをしていたので\nわたしがそだてて おりましたのじゃ・・・\n\nきっと 力になるハズじゃから・・・\n友達だと思って大事にしてやって下され・・・\n\nバロンには 不思議な力がありましてな・・・\n\nアイテム画面でバロンをつかうと\nめぐみの羽根と\n同じこうかが ありますのじゃ・・・・・・\n\nさぁ、バロン・・・いっておいで・・・",
-     "translation": "Oh! That's right... I remember now!...\nI'll leave this one with you...\n\nThis one is called Baron......\nHe was hurt in the Dwarf Forest,\nso I've been raising him...\n\nHe's sure to be a help to you...\nThink of him as a friend and treasure him...\n\nBaron has a mysterious power...\n\nIf you use Baron on the item screen,\nhe has the same effect\nas the Megumi Wings......\n\nNow, Baron... off you go..."
+     "translation": "Oh! That's right... I remember now!...\nI'll leave this one with you...\n\nThis one is called Baron......\nHe was hurt in the Dwarf Forest,\nso I've been raising him...\n\nHe's sure to be a help to you...\nThink of him as a friend and treasure him...\n\nBaron has a mysterious power...\n\nIf you use Baron on the item screen,\nhe has the same effect\nas the Megumi Feather......\n\nNow, Baron... off you go..."
     },
     {
      "index": 444,
@@ -36085,7 +36085,7 @@
     {
      "index": 10,
      "original": "バケツをそうびした",
-     "translation": "I equipped the bucket."
+     "translation": "Equipped the bucket"
     },
     {
      "index": 11,
@@ -36135,27 +36135,27 @@
     {
      "index": 20,
      "original": "ウッキーパラソルをそうびした",
-     "translation": "I equipped the Ukki Parasol."
+     "translation": "Equipped the Ukki Parasol"
     },
     {
      "index": 21,
      "original": "ウッドブーメランをそうびした",
-     "translation": "I equipped the Wood Boomerang."
+     "translation": "Equipped the Wood Boomerang"
     },
     {
      "index": 22,
      "original": "ストーンブーメランをそうびした",
-     "translation": "I equipped the Stone Boomerang."
+     "translation": "Equipped the Stone Boomerang"
     },
     {
      "index": 23,
      "original": "アイアンブーメランをそうびした",
-     "translation": "I equipped the Iron Boomerang."
+     "translation": "Equipped the Iron Boomerang"
     },
     {
      "index": 24,
      "original": "ぶっとびのパンツをそうびした",
-     "translation": "I put on the Dashing Pants."
+     "translation": "Put on the Blasting Pants"
     },
     {
      "index": 25,
@@ -36170,17 +36170,17 @@
     {
      "index": 27,
      "original": "グルドカをそうびした",
-     "translation": "I equipped Blackjack."
+     "translation": "Equipped Blackjack"
     },
     {
      "index": 28,
      "original": "いだてんのパンツをそうびした",
-     "translation": "I put on the Flash Pants."
+     "translation": "Put on the Idaten Pants"
     },
     {
      "index": 29,
      "original": "かっとびのパンツをそうびした",
-     "translation": "I put on the Jumping Pants."
+     "translation": "Put on the Dashing Pants"
     },
     {
      "index": 30,
@@ -36195,17 +36195,17 @@
     {
      "index": 32,
      "original": "ノーマルパンツをそうびした",
-     "translation": "I put on the Normal Pants."
+     "translation": "Put on the Normal Pants"
     },
     {
      "index": 33,
      "original": "グルピンをそうびした",
-     "translation": "I equipped Grapple."
+     "translation": "Equipped Grapple"
     },
     {
      "index": 34,
      "original": "ドカピンをそうびした",
-     "translation": "I equipped Grapple Jack."
+     "translation": "Equipped Grapple Jack"
     },
     {
      "index": 35,
@@ -36740,7 +36740,7 @@
     {
      "index": 141,
      "original": "サンタのパンツをつかった",
-     "translation": "Used the Santa Pants"
+     "translation": "Used Santa's Pants"
     },
     {
      "index": 142,
@@ -37045,7 +37045,7 @@
     {
      "index": 202,
      "original": "かくれざと\n\nセーブしますか?\n  はい→△ いいえ→×",
-     "translation": "Hidden Village\n\nSave?\nYes → △  No → ×"
+     "translation": "Hidden Village\n\nSave?\n  Yes → △  No → ×"
     },
     {
      "index": 203,
@@ -37060,12 +37060,12 @@
     {
      "index": 205,
      "original": "○△ーー○!!",
-     "translation": "○△ーー○!!"
+     "translation": "Whoa!!"
     },
     {
      "index": 206,
      "original": "う△ーー○!!",
-     "translation": "Uu△---○!!"
+     "translation": "Whoa!!"
     },
     {
      "index": 207,
@@ -37075,7 +37075,7 @@
     {
      "index": 208,
      "original": "◎○□□□・・・○○○◎△○○○●○○・・・",
-     "translation": "◎○□□□・・・○○○◎△○○○●○○・・・"
+     "translation": "Glub grup... glop grug grub gruu..."
     },
     {
      "index": 209,
@@ -37085,17 +37085,17 @@
     {
      "index": 210,
      "original": "コ○バ・・・\nわ○○○ない・・・",
-     "translation": "Lang○age...\nI do○'t u○○erstand..."
+     "translation": "Glop...\nglub grup..."
     },
     {
      "index": 211,
      "original": "◎のまえ●、◎◎\nいなくな△た・・・",
-     "translation": "The ◎ in front of ●, the ◎◎ disappeared…"
+     "translation": "Gruu glub, grub\ngnug glop..."
     },
     {
      "index": 212,
      "original": "な○とか ひ△しで\n◎●てきた・・・",
-     "translation": "Somehow, desperately,\nI ◎●d here..."
+     "translation": "Somehow, desperately,\nI escaped..."
     },
     {
      "index": 213,
@@ -37480,12 +37480,12 @@
     {
      "index": 289,
      "original": "○○○◎◎○◎◎・・・◎◎○○○\n●△○○・・・○○◎△○○?",
-     "translation": "○○○◎◎○◎◎・・・◎◎○○○●△○○・・・○○◎△○○?"
+     "translation": "Gnee gnug glop... gnee gnug\ngnu... gruf gnu?"
     },
     {
      "index": 290,
      "original": "○○○、□□□□○◎・・・○○、\n○△○○○○○○",
-     "translation": "○○○、□□□□○◎・・・○○、○△○○○○○○"
+     "translation": "Gnock, grug grub... gnu,\ngrub gruu glub"
     },
     {
      "index": 291,
@@ -37495,12 +37495,12 @@
     {
      "index": 292,
      "original": "た○へ○だ!た○へ○だぁ!",
-     "translation": "Oh n○! Oh n○!"
+     "translation": "Oh no! Oh no!"
     },
     {
      "index": 293,
      "original": "た○へ○だ!た○へ○だぁ!",
-     "translation": "Oh n○! Oh n○!"
+     "translation": "Oh no! Oh no!"
     },
     {
      "index": 294,
@@ -37515,22 +37515,22 @@
     {
      "index": 296,
      "original": "○○○、○△○○○・・・\n○○○○○△○○○●・・・",
-     "translation": "○○○, ○△○○○...\n○○○○○△○○○●..."
+     "translation": "Gnock, gnub gnock...\ngnug glop grug..."
     },
     {
      "index": 297,
      "original": "○○、○○○○□□□○○・・・",
-     "translation": "○○○○□□□○○・・・"
+     "translation": "Gruu, gruu glub grup..."
     },
     {
      "index": 298,
      "original": "○△、◎△○○○○●○△・・・",
-     "translation": "○△、◎△○○○○●○△・・・"
+     "translation": "Gnu, gnu gnub gnock..."
     },
     {
      "index": 299,
      "original": "◎○◎○○●○○○・・・",
-     "translation": "◎○◎○○●○○○・・・"
+     "translation": "Grug grub gruu..."
     },
     {
      "index": 300,
@@ -37545,67 +37545,67 @@
     {
      "index": 302,
      "original": "そ○の◎◎の◎◎・・・◎◎に\nつな○△てる・・・もう◎△たか?",
-     "translation": "The ○○ of the ○○... is connected to the ○○... Is it already the ○○?"
+     "translation": "Gruu glub grup... grup\ngnock gnee... gnug glop?"
     },
     {
      "index": 303,
      "original": "○○●・・・\n○○○○○",
-     "translation": "○○●・・・\n○○○○○"
+     "translation": "Glop...\ngnug glop"
     },
     {
      "index": 304,
      "original": "コ○バ・・・\nわ○○ない・・・",
-     "translation": "Lang○age...\nI do○'t u○○erstand..."
+     "translation": "Glop...\ngnug glop..."
     },
     {
      "index": 305,
      "original": "◎●、へ○な□□◎た\n・・・お○え◎たか?",
-     "translation": "◎●, did you ○e◎k?"
+     "translation": "In the forest, I saw a strange dog...\nDid you see it?"
     },
     {
      "index": 306,
      "original": "◎のまえ●、◎◎\nいなくな△た・・・",
-     "translation": "The ◎ in front of ●, the ◎◎ disappeared…"
+     "translation": "Gruu glub, grub\ngnug glop..."
     },
     {
      "index": 307,
      "original": "な○とか ひ△しで\n◎●てきた・・・",
-     "translation": "Somehow, desperately,\nI ◎●d here..."
+     "translation": "Somehow, desperately,\nI escaped..."
     },
     {
      "index": 308,
      "original": "○や、か○いい□□□だね・・・",
-     "translation": "○h, what a c○te □□□..."
+     "translation": "Gnug, gnug glop grug..."
     },
     {
      "index": 309,
      "original": "ね△、◎△て○いいでし△・・・",
-     "translation": "Hey, c○n I go...?"
+     "translation": "Hey, can I go now...?"
     },
     {
      "index": 310,
      "original": "◎の◎はあ●ないよ・・・",
-     "translation": "The ◎ of the ◎ doesn't have a ●..."
+     "translation": "Gnub gnock gnee..."
     },
     {
      "index": 311,
      "original": "わ○ら、○ても◎△て○",
-     "translation": "W○, ○ven ◎△ ○..."
+     "translation": "Gnug, gnub gnock"
     },
     {
      "index": 312,
      "original": "わ○ら、○ても◎△て○",
-     "translation": "W○, ○ven ◎△ ○..."
+     "translation": "Gnug, gnub gnock"
     },
     {
      "index": 313,
      "original": "な○まの○と・・・とても○ん◎い",
-     "translation": "Ab○ut my fri○nds... I'm very w○rried"
+     "translation": "About my friends...\nI'm very worried."
     },
     {
      "index": 314,
      "original": "な○まの○と・・・\nと○も○ん◎い",
-     "translation": "Ab○ut my fri○nds...\nI'm very w○rried"
+     "translation": "About my friends...\nI'm very worried."
     },
     {
      "index": 315,
@@ -37625,7 +37625,7 @@
     {
      "index": 318,
      "original": "こ○は、□□□□の◎・・・",
-     "translation": "This is □□□□'s ◎..."
+     "translation": "Gruu, gnu gnub..."
     },
     {
      "index": 319,
@@ -37760,17 +37760,17 @@
     {
      "index": 345,
      "original": "◎○□□□・・・○○○◎\n△○○○●○○・・・",
-     "translation": "◎○□□□・・・○○○◎△○○○●○○・・・"
+     "translation": "Grug grub... gnee\ngrub gruu..."
     },
     {
      "index": 346,
      "original": "わしらの◎◎、いなくな△た・・・\n◎は◎に◎ないほう●いい・・・",
-     "translation": "Our ◎◎, has disappeared...\n◎ is better than ◎..."
+     "translation": "Gnu gnub, gnock gnee...\ngrup gruf gnu gnub..."
     },
     {
      "index": 347,
      "original": "わしらの◎◎にはもう◎△たか?",
-     "translation": "Is our ◎◎ already ◎△?"
+     "translation": "Have you met our Elder yet?"
     },
     {
      "index": 348,
@@ -37920,12 +37920,12 @@
     {
      "index": 377,
      "original": "○●△○○ー○!",
-     "translation": "○●△○○ー○!"
+     "translation": "Gnub gnock! grub!"
     },
     {
      "index": 378,
      "original": "○●△○○ー○!",
-     "translation": "○●△○○ー○!"
+     "translation": "Gnub gnock! grub!"
     },
     {
      "index": 379,
@@ -39456,7 +39456,7 @@
     {
      "index": 27,
      "original": "めぐみさまを復活させると\n何かがおこる",
-     "translation": "Revive Lady Megumi\nand something will happen"
+     "translation": "Revive the Megumi Fountain\nand something will happen"
     },
     {
      "index": 28,
@@ -39656,7 +39656,7 @@
     {
      "index": 67,
      "original": "らくがき岩の もじを かいどくする",
-     "translation": "Decipher the writing\non the Graffiti Rock"
+     "translation": "Decipher the writing\non the Doodle Rock"
     },
     {
      "index": 68,

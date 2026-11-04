@@ -16,6 +16,11 @@ def fonts():
         with Image.open(root / font['image']) as image:
             result[int(height)] = {char: image.crop(record['box']).convert('RGBA')
                                    for char, record in font['glyphs'].items()}
+    for font in result.values():
+        # The 16 pixel font of the game has one z, filed under Z and drawn like a small z. A letter that the font
+        # lacks would be borrowed from another size, so the one z the game has serves both cases.
+        if 'z' not in font and 'Z' in font:
+            font['z'] = font['Z']
     return result
 
 

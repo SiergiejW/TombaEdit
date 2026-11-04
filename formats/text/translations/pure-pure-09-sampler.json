@@ -30,7 +30,7 @@
   "ちずをつかった": "Used the Map",
   "はやさレベル+1をつかった": "Used Speed Level +1",
   "かっとびのパンツをつかった": "Used the Dashing Pants",
-  "いだてんのパンツをつかった": "Used the Lightning-Foot Pants",
+  "いだてんのパンツをつかった": "Used the Idaten Pants",
   "べんとうをつかった": "Used a lunch box",
   "おおもりべんとうをつかった": "Used a large lunch box",
   "ケモノダッシュをつかった": "Used Beast Dash",
@@ -72,8 +72,8 @@
   "恵みの広場\n\nセーブしますか?\n  はい→△ いいえ→×": "Megumi Plaza\n\nSave?\n  Yes → △ No → ×",
   "キノコの森\n\nセーブしますか?\n  はい→△ いいえ→×": "Mushroom Forest\n\nSave?\nYes → △  No → ×",
   "リーフスライダー\n\nセーブしますか?\n  はい→△ いいえ→×": "Leaf Slider\n\nSave?\nYes → △  No → ×",
-  "○△ーー○!!": "○△ーー○!!",
-  "う△ーー○!!": "Uu△---○!!",
+  "○△ーー○!!": "Whoa!!",
+  "う△ーー○!!": "Whoa!!",
   "うわーーっ!!": "Whoa!!",
   "いてぇーーーっ!!": "Ouch!!",
   "よぉ!びっくりしたかい?\n・・・オレは、カレハチョウを\n集めてるんだ・・・\n\nウワサによると、カレハチョウには\nふしぎな力があって・・・\n\n何匹か集めるとスゴイことが\nおこるらしいゼ・・・\n\n何がおこるか、もし見たいんだったら、\nつかまえた カレハチョウを\nこのムシカゴの中に入れてくれよ": "Hey! Did I startle you?\n...I'm collecting Leaf Butterflies...\n\nRumor has it Leaf Butterflies have\na mysterious power...\n\nIf you gather a few of them,\nsomething amazing is supposed to happen...\n\nIf you want to see what happens,\nput the Leaf Butterflies you've caught\nin this bug cage.",
@@ -113,26 +113,26 @@
   "ん?・・・うおおぉぉぉっ!\nそ、その あいしゅうにみちたカオ!・・・\n・・・そうか・・・\n\nさっきの笑がおと、いまの泣きがおをマスターして・・・\nふむふむ・・・\n・・・んーーーーーーっ\n\n見えた!!\nうん!ありがとう!! \n\nキミのおかげで何かつかめそうな気がする!\nおっと、こうしちゃいられない\n・・・今から とっくんだ!!": "Huh?... Whoooa!\nT-that face full of sorrow!...\n...I see...\n\nIf I master that laughing face from before and that crying face now...\nHm-hm...\n...Mmmmmm...\n\nI see it!!\nYes! Thank you!!\n\nThanks to you, I feel like I'm onto something!\nOops, no time to lose.\n...Time to start training!!",
   "おっと、わすれてた・・・\nさっき、長老、山の方へ入っていった・・・\n\n何でも、キミに用があるらしい・・・\nはやく行ったほうがいいよ": "Oops, I forgot...\nThe Elder just went off toward the mountain...\n\nHe seems to have business with you...\nYou'd better hurry.",
   "立ち入り禁止\nこの森には怪物がすんでいます。\n\nキケンですので立ち入らないで下さい\n赤ちゃん村しぜんかんりきょく": "No Entry\nA monster lives in this forest.\n\nIt is dangerous, so please keep out\nBaby Village Nature Management Bureau",
-  "おれ、花のナミダとりに来た・・・\n花のナミダ、恵みさまの復活にかかせない・・・\n\nでも・・・\nどうやってナミダ、集めるのかわからない・・・": "I came to get Flower Tears...\nFlower Tears are essential for reviving Lady Megumi...\n\nBut...\nI don't know how to collect the tears...",
+  "おれ、花のナミダとりに来た・・・\n花のナミダ、恵みさまの復活にかかせない・・・\n\nでも・・・\nどうやってナミダ、集めるのかわからない・・・": "I came to get Flower Tears...\nFlower Tears are essential for reviving the Megumi Fountain...\n\nBut...\nI don't know how to collect the tears...",
   "・・・こまった・・・": "...I'm in trouble...",
-  "○○○◎◎○◎◎・・・◎◎○○○\n●△○○・・・○○◎△○○?": "○○○◎◎○◎◎・・・◎◎○○○●△○○・・・○○◎△○○?",
+  "○○○◎◎○◎◎・・・◎◎○○○\n●△○○・・・○○◎△○○?": "Gnee gnug glop... gnee gnug\ngnu... gruf gnu?",
   "ここ、恵みの広場・・・": "This is Megumi Plaza...",
   "高見ヤグラの下のほう、\n木でできてるところ・・・\n\nこわれやすいから\n気をつけたほうがいい・・・": "The lower part of the Watch Tower,\nthe part made of wood...\n\nIt breaks easily,\nso you'd better be careful...",
-  "あの、まんなかにいるのが\n恵みコゾウさまたち・・・\nでも、うごかない・・・": "Those ones in the middle\nare the Megumi Boys...\nBut they don't move...",
+  "あの、まんなかにいるのが\n恵みコゾウさまたち・・・\nでも、うごかない・・・": "Those ones in the middle\nare the Megumi Statues...\nBut they don't move...",
   "ココロあらわれるこのポーズ\n・・・うつくしい・・・": "This pose that reveals the heart... beautiful...",
-  "恵みさまが復活し、\n動きはじめるとき・・・\n何かがおこるといわれてる・・・": "When Lady Megumi revives\nand begins to move...\nthey say something will happen...",
+  "恵みさまが復活し、\n動きはじめるとき・・・\n何かがおこるといわれてる・・・": "When the Megumi Fountain revives\nand begins to move...\nthey say something will happen...",
   "ここ、恵みの広場・・・\n魔ブタの魔法さえとければ、\nもっとキレイなところ・・・": "This is Megumi Plaza...\nIf only the Evil Pig's magic were broken,\nit would be a prettier place...",
   "キノコの森には\n怪物がすんでるというウワサ・・・\n気をつけたほうがいい・・・": "There's a rumor that a monster lives in the Mushroom Forest...\nYou should be careful...",
-  "恵みさま・・・\nやっぱり動かない・・・": "Lady Megumi...\nstill doesn't move...",
-  "そう言えば、恵みさまの\n動いてるところ・・・\nだれも見たことない・・・": "Come to think of it,\nnobody has ever seen\nLady Megumi moving...",
+  "恵みさま・・・\nやっぱり動かない・・・": "The Megumi Fountain...\nstill doesn't move...",
+  "そう言えば、恵みさまの\n動いてるところ・・・\nだれも見たことない・・・": "Come to think of it,\nnobody has ever seen\nthe Megumi Fountain moving...",
   "わし、きょうは村の\n地下ロウの見はり当番・・・\n\nあれ?これ、\nないしょだったっけ??": "Today I'm on guard duty at the village's\nunderground prison...\n\nHuh? Wasn't this a secret??",
   "この森も、昔はキレイな花が\nいっぱい咲いてた・・・\nこれもみんな、魔ブタのせい・・・": "This forest too used to be\nfull of beautiful flowers...\nIt's all the Evil Pigs' fault...",
   "魔ブタのかくれ家、\n目には見えないらしい・・・\n\nでも、入口は\nどこかにあるハズ・・・": "The Evil Pigs' hideout\napparently can't be seen...\n\nBut there must be an entrance\nsomewhere...",
   "ここは・・・もう知ってるよね・・・": "This is... you already know, right?",
   "バッカスの湖にある水は、\nぜんぶアルコール・・・\n\nよっぱらうから、\n気をつけたほうがいい・・・": "The water in Bacchus Lake\nis all alcohol...\n\nYou'll get drunk,\nso you'd better be careful...",
-  "恵みさまを復活させるには、\nなにかが必要らしい・・・\n\nえ〜と・・・\nどわすれした・・・": "It seems you need something\nto revive Lady Megumi...\n\nUm...\nI forgot...",
-  "ん?・・・\n恵みさまを復活させるもの?\n\n・・・そういえば、なにかの\nなみだが必要とか・・・": "Hm?...\nSomething to revive Lady Megumi?\n\n...Come to think of it,\nsome kind of tears are needed...",
-  "恵みコゾウさま、\n人気者・・・みんな、\nこの広場にあつまってくる": "The Megumi Boys are\npopular... everyone\ngathers in this plaza",
+  "恵みさまを復活させるには、\nなにかが必要らしい・・・\n\nえ〜と・・・\nどわすれした・・・": "It seems you need something\nto revive the Megumi Fountain...\n\nUm...\nI forgot...",
+  "ん?・・・\n恵みさまを復活させるもの?\n\n・・・そういえば、なにかの\nなみだが必要とか・・・": "Hm?...\nSomething to revive the Megumi Fountain?\n\n...Come to think of it,\nsome kind of tears are needed...",
+  "恵みコゾウさま、\n人気者・・・みんな、\nこの広場にあつまってくる": "The Megumi Statues are\npopular... everyone\ngathers in this plaza",
   "嵐の山にも魔ブタの魔法が\nかかっているらしい・・・\n封印ぶくろ、どこかにあるハズ・・・": "It seems the Evil Pigs' magic has been cast on Storm Mountain too...\nThere must be a Seal Bag somewhere...",
   "ときどき、森の地面の下から、\nものおとがきこえてくる・・・\nちょっとコワイ・・・": "Sometimes noises come from under the forest floor...\nIt's a little scary...",
   "わし、村の入口ちかくにある、\nへんならくがきと同じもの、\n怪物マンションで見つけた・・・": "Near the village entrance,\nI found the same kind of\nweird graffiti at Monster Mansion...",
@@ -173,17 +173,17 @@
   "水晶のじゅもん": "Crystal's Spell",
   "とびっきりの笑がお!": "The Best Smile Ever!",
   "とびっきりの泣きがお?": "The Best Crying Face Ever?",
-  "動かない恵みコゾウ": "The Motionless Megumi Kozo",
+  "動かない恵みコゾウ": "The Motionless Megumi Statues",
   "怪物?勝てるかな?": "A Monster? Can I Win?",
   "死神の巣をつぶせ": "Crush the Reaper's Nest",
   "森の地下迷宮": "Forest Underground Maze",
   "ドワーフの集落": "Dwarf Settlement",
   "ドワーフの集落の広場": "Dwarf Settlement Plaza",
-  "◎○□□□・・・○○○◎△○○○●○○・・・": "◎○□□□・・・○○○◎△○○○●○○・・・",
+  "◎○□□□・・・○○○◎△○○○●○○・・・": "Glub grup... glop grug grub gruu...",
   "わし、けっこうアタマいい\nおまえのコトバわかる・・・けど、\nおまえ、ドワーフのコトバ知らない・・・\n\nわしらのコトバ、ドワーフにかみつけば\nおぼえられる・・・\nいっかいじゃ ダメかもしれないけど・・・": "I'm pretty smart.\nI understand your language... but\nyou don't know the Dwarf language...\n\nIf you bite a dwarf,\nyou can learn our language...\nOnce might not be enough, though...",
-  "コ○バ・・・\nわ○○○ない・・・": "Lang○age...\nI do○'t u○○erstand...",
-  "◎のまえ●、◎◎\nいなくな△た・・・": "The ◎ in front of ●, the ◎◎ disappeared…",
-  "な○とか ひ△しで\n◎●てきた・・・": "Somehow, desperately,\nI ◎●d here...",
+  "コ○バ・・・\nわ○○○ない・・・": "Glop...\nglub grup...",
+  "◎のまえ●、◎◎\nいなくな△た・・・": "Gruu glub, grub\ngnug glop...",
+  "な○とか ひ△しで\n◎●てきた・・・": "Somehow, desperately,\nI escaped...",
   "目のまえで、なかま\nいなくなった・・・": "Right before my eyes, my friend\ndisappeared...",
   "なんとか ひっしで\nにげてきた・・・": "Somehow, desperately,\nI escaped...",
   "どうしちゃったのかねぇ\nいきなり 4人も いなくなったんだって?\n\nきっと あれだね\nまた コマブタたちが いたずらで\nかくしちまったんだろうねぇ・・・": "What could have happened?\nFour of them suddenly vanished, they say?\n\nIt must be that again\nThe Koma Buta must have hidden them\nas a prank...",
@@ -260,27 +260,27 @@
   "わく わく!・・・": "Ooh, exciting!...",
   "キレイだね・・・": "It's beautiful...",
   "・・・楽しみだね": "...I'm looking forward to it.",
-  "○○○、□□□□○◎・・・○○、\n○△○○○○○○": "○○○、□□□□○◎・・・○○、○△○○○○○○",
-  "た○へ○だ!た○へ○だぁ!": "Oh n○! Oh n○!",
+  "○○○、□□□□○◎・・・○○、\n○△○○○○○○": "Gnock, grug grub... gnu,\ngrub gruu glub",
+  "た○へ○だ!た○へ○だぁ!": "Oh no! Oh no!",
   "たいへんだ!たいへんだぁ!": "Oh no! Oh no!",
-  "○○○、○△○○○・・・\n○○○○○△○○○●・・・": "○○○, ○△○○○...\n○○○○○△○○○●...",
-  "○○、○○○○□□□○○・・・": "○○○○□□□○○・・・",
-  "○△、◎△○○○○●○△・・・": "○△、◎△○○○○●○△・・・",
-  "◎○◎○○●○○○・・・": "◎○◎○○●○○○・・・",
-  "そ○の◎◎の◎◎・・・◎◎に\nつな○△てる・・・もう◎△たか?": "The ○○ of the ○○... is connected to the ○○... Is it already the ○○?",
-  "○○●・・・\n○○○○○": "○○●・・・\n○○○○○",
-  "コ○バ・・・\nわ○○ない・・・": "Lang○age...\nI do○'t u○○erstand...",
-  "◎●、へ○な□□◎た\n・・・お○え◎たか?": "◎●, did you ○e◎k?",
-  "○や、か○いい□□□だね・・・": "○h, what a c○te □□□...",
-  "ね△、◎△て○いいでし△・・・": "Hey, c○n I go...?",
-  "◎の◎はあ●ないよ・・・": "The ◎ of the ◎ doesn't have a ●...",
-  "わ○ら、○ても◎△て○": "W○, ○ven ◎△ ○...",
-  "な○まの○と・・・とても○ん◎い": "Ab○ut my fri○nds... I'm very w○rried",
-  "な○まの○と・・・\nと○も○ん◎い": "Ab○ut my fri○nds...\nI'm very w○rried",
+  "○○○、○△○○○・・・\n○○○○○△○○○●・・・": "Gnock, gnub gnock...\ngnug glop grug...",
+  "○○、○○○○□□□○○・・・": "Gruu, gruu glub grup...",
+  "○△、◎△○○○○●○△・・・": "Gnu, gnu gnub gnock...",
+  "◎○◎○○●○○○・・・": "Grug grub gruu...",
+  "そ○の◎◎の◎◎・・・◎◎に\nつな○△てる・・・もう◎△たか?": "Gruu glub grup... grup\ngnock gnee... gnug glop?",
+  "○○●・・・\n○○○○○": "Glop...\ngnug glop",
+  "コ○バ・・・\nわ○○ない・・・": "Glop...\ngnug glop...",
+  "◎●、へ○な□□◎た\n・・・お○え◎たか?": "In the forest, I saw a strange dog...\nDid you see it?",
+  "○や、か○いい□□□だね・・・": "Gnug, gnug glop grug...",
+  "ね△、◎△て○いいでし△・・・": "Hey, can I go now...?",
+  "◎の◎はあ●ないよ・・・": "Gnub gnock gnee...",
+  "わ○ら、○ても◎△て○": "Gnug, gnub gnock",
+  "な○まの○と・・・とても○ん◎い": "About my friends...\nI'm very worried.",
+  "な○まの○と・・・\nと○も○ん◎い": "About my friends...\nI'm very worried.",
   "ねぇ、行ってもいいでしょ・・・": "Hey, can I go now...?",
   "森の中、とてもあぶない\n・・・ぜったいダメ!": "It's very dangerous in the forest\n...absolutely not!",
   "そこの右側の入口・・・\n長老の家につながってる\n\n・・・でも、今みんな\nいそがしい・・・": "The entrance on the right side over there...\nIt's connected to Elder's house.\n\n...But everyone's busy right now...",
-  "こ○は、□□□□の◎・・・": "This is □□□□'s ◎...",
+  "こ○は、□□□□の◎・・・": "Gruu, gnu gnub...",
   "おおっ! コトバ少し おぼえたか・・・\nでも、まだ かんぜんには わからない\n\n・・・あと、ひとりに かみつけば\nたぶんコトバおぼえられる・・・": "Oh! You've learned a little of our language...\nBut I still don't understand you completely.\n\n...If you bite one more,\nyou can probably learn the language...",
   "ここ、ドワーフの村\n・・・なかまいなくなって\nおおさわぎ・・・": "This is the Dwarf Village...\nour friends have gone missing,\nand it's a big uproar...",
   "たいへん!たいへん!\nなかま、いなくなった!\n\n森にある小屋はとじてあるから\nなかま きっと このもりの\nどこかに いるはず・・・": "Oh no! Oh no!\nOur friends are gone!\n\nThe hut in the forest is shut,\nso our friends must be\nsomewhere in this forest...",
@@ -307,9 +307,9 @@
   "高見ヤグラのぼうえんきょう、もう見たか?\nあそこのけしき、とてもキレイ・・・": "Have you seen the Watch Tower's telescope yet?\nThe view from there is really beautiful...",
   "このキカイこわれてる・・・\n\nたまに来る、赤い服をきたヤツなら\nなおせるかもしれない": "This machine is broken......\n\nSomeone who comes by sometimes, in red clothes,\nmight be able to fix it",
   "わし・・・見はり・・・\nちょっとたいへん・・・": "I... I'm a lookout...\nIt's a little difficult...",
-  "◎○□□□・・・○○○◎\n△○○○●○○・・・": "◎○□□□・・・○○○◎△○○○●○○・・・",
-  "わしらの◎◎、いなくな△た・・・\n◎は◎に◎ないほう●いい・・・": "Our ◎◎, has disappeared...\n◎ is better than ◎...",
-  "わしらの◎◎にはもう◎△たか?": "Is our ◎◎ already ◎△?",
+  "◎○□□□・・・○○○◎\n△○○○●○○・・・": "Grug grub... gnee\ngrub gruu...",
+  "わしらの◎◎、いなくな△た・・・\n◎は◎に◎ないほう●いい・・・": "Gnu gnub, gnock gnee...\ngrup gruf gnu gnub...",
+  "わしらの◎◎にはもう◎△たか?": "Have you met our Elder yet?",
   "わしらのなかま、いなくなった・・・\n今は森に出ないほうがいい・・・": "Our comrades have disappeared...\nIt's better not to go into the forest now...",
   "わしらの長老にはもう会ったか?": "Have you met our Elder yet?",
   "たき火といえば・・・\n・・・・・・ヤキイモだねぇ・・・\n\nそういえば、\n森の中でいいニオイがするんだけどねぇ・・・": "Speaking of bonfires...\n...it's baked sweet potatoes, isn't it...\n\nCome to think of it, there's a nice smell in the forest...",
@@ -431,7 +431,7 @@
     {
      "index": 20,
      "original": "いだてんのパンツをつかった",
-     "translation": "Used the Lightning-Foot Pants"
+     "translation": "Used the Idaten Pants"
     },
     {
      "index": 21,
@@ -641,12 +641,12 @@
     {
      "index": 62,
      "original": "○△ーー○!!",
-     "translation": "○△ーー○!!"
+     "translation": "Whoa!!"
     },
     {
      "index": 63,
      "original": "う△ーー○!!",
-     "translation": "Uu△---○!!"
+     "translation": "Whoa!!"
     },
     {
      "index": 64,
@@ -846,7 +846,7 @@
     {
      "index": 103,
      "original": "おれ、花のナミダとりに来た・・・\n花のナミダ、恵みさまの復活にかかせない・・・\n\nでも・・・\nどうやってナミダ、集めるのかわからない・・・",
-     "translation": "I came to get Flower Tears...\nFlower Tears are essential for reviving Lady Megumi...\n\nBut...\nI don't know how to collect the tears..."
+     "translation": "I came to get Flower Tears...\nFlower Tears are essential for reviving the Megumi Fountain...\n\nBut...\nI don't know how to collect the tears..."
     },
     {
      "index": 104,
@@ -856,7 +856,7 @@
     {
      "index": 105,
      "original": "○○○◎◎○◎◎・・・◎◎○○○\n●△○○・・・○○◎△○○?",
-     "translation": "○○○◎◎○◎◎・・・◎◎○○○●△○○・・・○○◎△○○?"
+     "translation": "Gnee gnug glop... gnee gnug\ngnu... gruf gnu?"
     },
     {
      "index": 106,
@@ -871,7 +871,7 @@
     {
      "index": 108,
      "original": "あの、まんなかにいるのが\n恵みコゾウさまたち・・・\nでも、うごかない・・・",
-     "translation": "Those ones in the middle\nare the Megumi Boys...\nBut they don't move..."
+     "translation": "Those ones in the middle\nare the Megumi Statues...\nBut they don't move..."
     },
     {
      "index": 109,
@@ -881,7 +881,7 @@
     {
      "index": 110,
      "original": "恵みさまが復活し、\n動きはじめるとき・・・\n何かがおこるといわれてる・・・",
-     "translation": "When Lady Megumi revives\nand begins to move...\nthey say something will happen..."
+     "translation": "When the Megumi Fountain revives\nand begins to move...\nthey say something will happen..."
     },
     {
      "index": 111,
@@ -896,12 +896,12 @@
     {
      "index": 113,
      "original": "恵みさま・・・\nやっぱり動かない・・・",
-     "translation": "Lady Megumi...\nstill doesn't move..."
+     "translation": "The Megumi Fountain...\nstill doesn't move..."
     },
     {
      "index": 114,
      "original": "そう言えば、恵みさまの\n動いてるところ・・・\nだれも見たことない・・・",
-     "translation": "Come to think of it,\nnobody has ever seen\nLady Megumi moving..."
+     "translation": "Come to think of it,\nnobody has ever seen\nthe Megumi Fountain moving..."
     },
     {
      "index": 115,
@@ -931,17 +931,17 @@
     {
      "index": 120,
      "original": "恵みさまを復活させるには、\nなにかが必要らしい・・・\n\nえ〜と・・・\nどわすれした・・・",
-     "translation": "It seems you need something\nto revive Lady Megumi...\n\nUm...\nI forgot..."
+     "translation": "It seems you need something\nto revive the Megumi Fountain...\n\nUm...\nI forgot..."
     },
     {
      "index": 121,
      "original": "ん?・・・\n恵みさまを復活させるもの?\n\n・・・そういえば、なにかの\nなみだが必要とか・・・",
-     "translation": "Hm?...\nSomething to revive Lady Megumi?\n\n...Come to think of it,\nsome kind of tears are needed..."
+     "translation": "Hm?...\nSomething to revive the Megumi Fountain?\n\n...Come to think of it,\nsome kind of tears are needed..."
     },
     {
      "index": 122,
      "original": "恵みコゾウさま、\n人気者・・・みんな、\nこの広場にあつまってくる",
-     "translation": "The Megumi Boys are\npopular... everyone\ngathers in this plaza"
+     "translation": "The Megumi Statues are\npopular... everyone\ngathers in this plaza"
     },
     {
      "index": 123,
@@ -1158,7 +1158,7 @@
     {
      "index": 27,
      "original": "動かない恵みコゾウ",
-     "translation": "The Motionless Megumi Kozo"
+     "translation": "The Motionless Megumi Statues"
     },
     {
      "index": 28,
@@ -1280,7 +1280,7 @@
     {
      "index": 20,
      "original": "いだてんのパンツをつかった",
-     "translation": "Used the Lightning-Foot Pants"
+     "translation": "Used the Idaten Pants"
     },
     {
      "index": 21,
@@ -1475,12 +1475,12 @@
     {
      "index": 59,
      "original": "○△ーー○!!",
-     "translation": "○△ーー○!!"
+     "translation": "Whoa!!"
     },
     {
      "index": 60,
      "original": "う△ーー○!!",
-     "translation": "Uu△---○!!"
+     "translation": "Whoa!!"
     },
     {
      "index": 61,
@@ -1490,7 +1490,7 @@
     {
      "index": 62,
      "original": "◎○□□□・・・○○○◎△○○○●○○・・・",
-     "translation": "◎○□□□・・・○○○◎△○○○●○○・・・"
+     "translation": "Glub grup... glop grug grub gruu..."
     },
     {
      "index": 63,
@@ -1500,17 +1500,17 @@
     {
      "index": 64,
      "original": "コ○バ・・・\nわ○○○ない・・・",
-     "translation": "Lang○age...\nI do○'t u○○erstand..."
+     "translation": "Glop...\nglub grup..."
     },
     {
      "index": 65,
      "original": "◎のまえ●、◎◎\nいなくな△た・・・",
-     "translation": "The ◎ in front of ●, the ◎◎ disappeared…"
+     "translation": "Gruu glub, grub\ngnug glop..."
     },
     {
      "index": 66,
      "original": "な○とか ひ△しで\n◎●てきた・・・",
-     "translation": "Somehow, desperately,\nI ◎●d here..."
+     "translation": "Somehow, desperately,\nI escaped..."
     },
     {
      "index": 67,
@@ -1895,12 +1895,12 @@
     {
      "index": 143,
      "original": "○○○◎◎○◎◎・・・◎◎○○○\n●△○○・・・○○◎△○○?",
-     "translation": "○○○◎◎○◎◎・・・◎◎○○○●△○○・・・○○◎△○○?"
+     "translation": "Gnee gnug glop... gnee gnug\ngnu... gruf gnu?"
     },
     {
      "index": 144,
      "original": "○○○、□□□□○◎・・・○○、\n○△○○○○○○",
-     "translation": "○○○、□□□□○◎・・・○○、○△○○○○○○"
+     "translation": "Gnock, grug grub... gnu,\ngrub gruu glub"
     },
     {
      "index": 145,
@@ -1910,12 +1910,12 @@
     {
      "index": 146,
      "original": "た○へ○だ!た○へ○だぁ!",
-     "translation": "Oh n○! Oh n○!"
+     "translation": "Oh no! Oh no!"
     },
     {
      "index": 147,
      "original": "た○へ○だ!た○へ○だぁ!",
-     "translation": "Oh n○! Oh n○!"
+     "translation": "Oh no! Oh no!"
     },
     {
      "index": 148,
@@ -1930,22 +1930,22 @@
     {
      "index": 150,
      "original": "○○○、○△○○○・・・\n○○○○○△○○○●・・・",
-     "translation": "○○○, ○△○○○...\n○○○○○△○○○●..."
+     "translation": "Gnock, gnub gnock...\ngnug glop grug..."
     },
     {
      "index": 151,
      "original": "○○、○○○○□□□○○・・・",
-     "translation": "○○○○□□□○○・・・"
+     "translation": "Gruu, gruu glub grup..."
     },
     {
      "index": 152,
      "original": "○△、◎△○○○○●○△・・・",
-     "translation": "○△、◎△○○○○●○△・・・"
+     "translation": "Gnu, gnu gnub gnock..."
     },
     {
      "index": 153,
      "original": "◎○◎○○●○○○・・・",
-     "translation": "◎○◎○○●○○○・・・"
+     "translation": "Grug grub gruu..."
     },
     {
      "index": 154,
@@ -1960,67 +1960,67 @@
     {
      "index": 156,
      "original": "そ○の◎◎の◎◎・・・◎◎に\nつな○△てる・・・もう◎△たか?",
-     "translation": "The ○○ of the ○○... is connected to the ○○... Is it already the ○○?"
+     "translation": "Gruu glub grup... grup\ngnock gnee... gnug glop?"
     },
     {
      "index": 157,
      "original": "○○●・・・\n○○○○○",
-     "translation": "○○●・・・\n○○○○○"
+     "translation": "Glop...\ngnug glop"
     },
     {
      "index": 158,
      "original": "コ○バ・・・\nわ○○ない・・・",
-     "translation": "Lang○age...\nI do○'t u○○erstand..."
+     "translation": "Glop...\ngnug glop..."
     },
     {
      "index": 159,
      "original": "◎●、へ○な□□◎た\n・・・お○え◎たか?",
-     "translation": "◎●, did you ○e◎k?"
+     "translation": "In the forest, I saw a strange dog...\nDid you see it?"
     },
     {
      "index": 160,
      "original": "◎のまえ●、◎◎\nいなくな△た・・・",
-     "translation": "The ◎ in front of ●, the ◎◎ disappeared…"
+     "translation": "Gruu glub, grub\ngnug glop..."
     },
     {
      "index": 161,
      "original": "な○とか ひ△しで\n◎●てきた・・・",
-     "translation": "Somehow, desperately,\nI ◎●d here..."
+     "translation": "Somehow, desperately,\nI escaped..."
     },
     {
      "index": 162,
      "original": "○や、か○いい□□□だね・・・",
-     "translation": "○h, what a c○te □□□..."
+     "translation": "Gnug, gnug glop grug..."
     },
     {
      "index": 163,
      "original": "ね△、◎△て○いいでし△・・・",
-     "translation": "Hey, c○n I go...?"
+     "translation": "Hey, can I go now...?"
     },
     {
      "index": 164,
      "original": "◎の◎はあ●ないよ・・・",
-     "translation": "The ◎ of the ◎ doesn't have a ●..."
+     "translation": "Gnub gnock gnee..."
     },
     {
      "index": 165,
      "original": "わ○ら、○ても◎△て○",
-     "translation": "W○, ○ven ◎△ ○..."
+     "translation": "Gnug, gnub gnock"
     },
     {
      "index": 166,
      "original": "わ○ら、○ても◎△て○",
-     "translation": "W○, ○ven ◎△ ○..."
+     "translation": "Gnug, gnub gnock"
     },
     {
      "index": 167,
      "original": "な○まの○と・・・とても○ん◎い",
-     "translation": "Ab○ut my fri○nds... I'm very w○rried"
+     "translation": "About my friends...\nI'm very worried."
     },
     {
      "index": 168,
      "original": "な○まの○と・・・\nと○も○ん◎い",
-     "translation": "Ab○ut my fri○nds...\nI'm very w○rried"
+     "translation": "About my friends...\nI'm very worried."
     },
     {
      "index": 169,
@@ -2040,7 +2040,7 @@
     {
      "index": 172,
      "original": "こ○は、□□□□の◎・・・",
-     "translation": "This is □□□□'s ◎..."
+     "translation": "Gruu, gnu gnub..."
     },
     {
      "index": 173,
@@ -2185,17 +2185,17 @@
     {
      "index": 201,
      "original": "◎○□□□・・・○○○◎\n△○○○●○○・・・",
-     "translation": "◎○□□□・・・○○○◎△○○○●○○・・・"
+     "translation": "Grug grub... gnee\ngrub gruu..."
     },
     {
      "index": 202,
      "original": "わしらの◎◎、いなくな△た・・・\n◎は◎に◎ないほう●いい・・・",
-     "translation": "Our ◎◎, has disappeared...\n◎ is better than ◎..."
+     "translation": "Gnu gnub, gnock gnee...\ngrup gruf gnu gnub..."
     },
     {
      "index": 203,
      "original": "わしらの◎◎にはもう◎△たか?",
-     "translation": "Is our ◎◎ already ◎△?"
+     "translation": "Have you met our Elder yet?"
     },
     {
      "index": 204,
@@ -2402,7 +2402,7 @@
     {
      "index": 27,
      "original": "動かない恵みコゾウ",
-     "translation": "The Motionless Megumi Kozo"
+     "translation": "The Motionless Megumi Statues"
     },
     {
      "index": 28,

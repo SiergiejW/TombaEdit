@@ -184,7 +184,7 @@
   "かくれていた とまっている\nエレベーター": "A hidden elevator\nthat has stopped",
   "うわさの宝を\n手に入れる": "Get the rumored treasure",
   "ひみつの じゅもんを\nおしえてもらう": "Be taught\na secret spell",
-  "恵みさまを復活させると\n何かがおこる": "Revive Lady Megumi\nand something will happen",
+  "恵みさまを復活させると\n何かがおこる": "Revive the Megumi Fountain\nand something will happen",
   "トビラが しまって\nでられない": "The door has shut\nand I can't get out",
   "かくされた封印ぶくろを\n手に入れる": "Get the hidden Seal Bag",
   "魔ブタを 封印ぶくろに封じてしまう": "Seal the Evil Pig in a Seal Bag",
@@ -224,7 +224,7 @@
   "サンタの きげんをとると\nあたらしいことを おしえてくれる": "Humor Santa\nand he'll teach you something new",
   "ナミダのビンは どこに・・・?": "Where is the Tear Bottle...?",
   "・・・・・・???": "・・・・・・???",
-  "らくがき岩の もじを かいどくする": "Decipher the writing\non the Graffiti Rock",
+  "らくがき岩の もじを かいどくする": "Decipher the writing\non the Doodle Rock",
   "動かなくなった時計台の\n時計を動かす": "Get the stopped clock\nof the Clock Tower running again",
   "きけんな 電気うなぎを つかまえる": "Catch the dangerous electric eel",
   "ぬすまれた 封印ぶくろを さがしだす": "Track down the stolen Seal Bag",
@@ -1877,7 +1877,7 @@
     {
      "index": 27,
      "original": "恵みさまを復活させると\n何かがおこる",
-     "translation": "Revive Lady Megumi\nand something will happen"
+     "translation": "Revive the Megumi Fountain\nand something will happen"
     },
     {
      "index": 28,
@@ -2077,7 +2077,7 @@
     {
      "index": 67,
      "original": "らくがき岩の もじを かいどくする",
-     "translation": "Decipher the writing\non the Graffiti Rock"
+     "translation": "Decipher the writing\non the Doodle Rock"
     },
     {
      "index": 68,
