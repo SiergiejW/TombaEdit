@@ -114,7 +114,7 @@ def view(project, jump=None, area=None):
     body.addLayout(bar)
     split = QSplitter()
     outline, text = QListWidget(), QTextBrowser()
-    text.setOpenExternalLinks(True)
+    text.setOpenLinks(False)       # every link goes through open_link: web pages, and the tomba:// links to the disc
     headings = []
     split.addWidget(outline)
     split.addWidget(text)
@@ -143,15 +143,80 @@ def view(project, jump=None, area=None):
             text.find(headings[index])
 
     outline.currentRowChanged.connect(section)
+    from PyQt6.QtCore import QTimer, QUrl
+    from PyQt6.QtGui import QDesktopServices, QImage
+    from formats.level import research_figures
+    try:
+        figures = research_figures.build(project)
+    except Exception as exc:        # a picture that cannot be made must never stop the report from opening
+        figures, note_text = [], f'Report pictures unavailable: {exc}'
+        note.setText(note.text() + '\n' + note_text)
+    by_key = {f.key: f for f in figures}
+    playing = {}                      # key -> [frame, milliseconds left]
+    STEP = 40
+
+    def picture(image):
+        image = image.convert('RGBA')
+        return QImage(image.tobytes(), image.width, image.height, 4 * image.width, QImage.Format.Format_RGBA8888).copy()
+
+    def show_frame(figure, number):
+        text.document().addResource(QTextDocument.ResourceType.ImageResource, QUrl(f'fig:{figure.key}'),
+                                    picture(figure.frames[number]))
+
+    for figure in figures:
+        show_frame(figure, 0)
+        if figure.delays:
+            playing[figure.key] = [0, figure.delays[0]]
+
+    def animate():
+        if not text.isVisible():
+            return
+        changed = False
+        for key, state in playing.items():
+            figure = by_key[key]
+            state[1] -= STEP
+            if state[1] <= 0:
+                state[0] = (state[0] + 1) % len(figure.frames)
+                state[1] = figure.delays[state[0]]
+                show_frame(figure, state[0])
+                changed = True
+        if changed:
+            text.viewport().update()
+    clock = QTimer(widget)
+    clock.timeout.connect(animate)
+    clock.start(STEP)
+
+    def open_link(url):
+        if url.scheme() != 'tomba':
+            QDesktopServices.openUrl(url)
+            return
+        target = url.path().lstrip('/')
+        if jump is None:
+            return
+        if url.host() == 'file':
+            jump('file', target)
+        elif url.host() == 'asset' and target in by_key and by_key[target].asset is not None:
+            jump('asset', by_key[target].asset)
+    text.anchorClicked.connect(open_link)
+
     def document_changed():
-        from PyQt6.QtCore import QUrl
         path,url = documents.currentData()
         try:
             report = path.read_text(encoding='utf8')
         except OSError as exc:
             report = f'Document unavailable: {exc}'
         text.document().setBaseUrl(QUrl(url or ''))
-        text.setMarkdown(report)
+        shown = report
+        if path.parent == REPORT.parent:
+            shown = research_figures.decorate(report, path.name, figures, project if jump else None)
+            if not jump:                                   # no tree to jump in: the pictures stay, the buttons go
+                shown = re.sub(r'\s+—\s+\[[^\]]+\]\(tomba://asset/[^)]*\)', '', shown)
+        text.setMarkdown(shown)
+        # Loading a document clears its resources: put the pictures back, then lay the text out again with their sizes.
+        for figure in figures:
+            show_frame(figure, playing.get(figure.key, [0])[0])
+        if figures:
+            text.document().markContentsDirty(0, text.document().characterCount())
         outline.clear()
         headings.clear()
         for line in report.splitlines():

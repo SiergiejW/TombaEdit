@@ -32,7 +32,7 @@ sys.path.insert(0, str(ROOT))
 
 FOLDER = ROOT / 'formats' / 'text' / 'translations'
 CACHE = ROOT / 'rom' / 'translator' / 'translation-cache-ja-glossary.json'   # the first runs' cache, without the glossary, is translation-cache-ja.json
-MANUAL = ROOT / 'tools' / 'manual_translations.json'   # lines (or whole messages) translated by hand
+MANUAL = ROOT / 'tools' / 'manual_translations.json'   # lines (or whole messages) corrected by Claude, an AI model, after reading the model's draft
 GPU_ERROR = 3                                 # the worker's exit code when the graphics card failed
 LEGACY = FOLDER / 'ja-CAT-Translate-7b.json'    # where the first runs kept everything: one file for all builds
 
@@ -172,7 +172,7 @@ def main():
     cache, model = load_cache(args.cache)
     model = model or Path(args.model).name
     if MANUAL.is_file():
-        # Cries and sound effects that a model turns into a runaway: written by hand, they replace what it said.
+        # Cries and sound effects that a model turns into a runaway: corrected texts replace what it said.
         cache.update(json.loads(MANUAL.read_text(encoding='utf8')))
     print(f'{len(cache)} translations in the cache', flush=True)
     discs, pending = [], {}

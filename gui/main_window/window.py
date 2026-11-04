@@ -1744,7 +1744,9 @@ class MainWindow(QMainWindow):
 
     def jump_file(self, path):
         self.search.clear()
-        item = self.file_items[path]
+        item = self.file_items.get(path)
+        if item is None:
+            return
         self.disc_tree.setCurrentItem(item)
         self.disc_tree.scrollToItem(item)
 
@@ -1775,7 +1777,13 @@ class MainWindow(QMainWindow):
 
     def jump_asset(self, asset):
         self.search.clear()
-        item = self.asset_items[(asset.ldar, asset.record_offset)]
+        item = self.asset_items.get((asset.ldar, asset.record_offset))
+        if item is None:
+            return
+        parent = item.parent()
+        while parent is not None:
+            parent.setExpanded(True)
+            parent = parent.parent()
         self.area_tree.setCurrentItem(item)
         self.area_tree.scrollToItem(item)
 
