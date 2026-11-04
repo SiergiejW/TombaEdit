@@ -20,7 +20,7 @@ build/port/tombi --frames 500                   # from the repo root; reads game
 #            --no-interp --interp ADDR --trace-interp
 #            --window [--viewer PATH]   SDL2 window + keyboard/controller (needs build/port/tombi-view)
 #            --save FRAME:PATH --load PATH   save states (same binary)
-#            --save-dir DIR   memory cards tombi_mc0.mcd / tombi_mc1.mcd (default: next to the disc image)
+#            --save-dir DIR   memory card tombi_mc0.mcd (card 1 only; default: next to the disc image)
 #            --menu FRAME:N   debug: open menu screen N during gameplay (4 = save screen, 5 = load screen)
 #            -v -v prints every pad read ("[pad] frame F: game reads MASK"), -v -v -v the player x,y every vblank
 build/port/tombi --frames 3600 --dump-frames shots --dump-every 100 \
@@ -148,9 +148,18 @@ build/port/tombi --window                    # title -> new game with the keyboa
 build/port/tombi --window --load s.state     # from a save state
 ```
 
-**Memory cards (M1, done): `shims/card.c`.** Two 128 KB raw card images, `tombi_mc0.mcd` and `tombi_mc1.mcd`
-(the layout every emulator reads: 16 blocks of 8 KB, block 0 = header + directory), kept in memory and written
-through to `--save-dir` (default: the directory of the disc image). A missing file starts as a formatted card.
+**Memory card (M1, done): `shims/card.c`.** One 128 KB raw card image, `tombi_mc0.mcd` (the layout every emulator
+reads: 16 blocks of 8 KB, block 0 = header + directory), kept in memory and written through to `--save-dir`
+(default: the directory of the disc image). A missing file starts as a formatted card. Only memory card 1 is
+emulated: port 2 (`bu10:`, chan 0x10) answers as an empty slot (`_card_info`/`_card_load`/`_card_clear` raise the
+BIOS "timeout" event of both card classes, every file call on it fails), so the load / save screens go straight to
+card 1 (checked headless: Continue lists card 1's saves, the save screen's block list and "New block"). Older
+versions emulated a second card, `tombi_mc1.mcd`: when that file holds Tombi! saves, the first start merges them into
+card 1 (all or nothing: free blocks, a name card 1 already has goes in as the first free slot `TOMBA-NN` with the
+title's slot digits rewritten, a save identical to card 1's is skipped), after copying both cards to
+`backup/tombi_mcN-YYYYMMDD-HHMMSS.mcd`, then moves the file to `tombi_mc1.mcd.old` and logs `memory card 2 (...)
+merged into card 1: N saves copied`; when they do not fit, both files stay untouched and a warning is logged at each
+start. (The copy is not a `rename()`: the game's BIOS `rename` stub takes that name in the port's link.)
 The save/load screen (`D0SPSUB2`) uses the BIOS card file system, so the shim provides the BIOS event table
 (`OpenEvent`/`TestEvent`/`DeliverEvent`, the card being the only event source), `_card_info`/`_card_load`/
 `_card_clear` that complete at once by raising the "I/O end" event of both the SwCARD and HwCARD classes, and
@@ -163,7 +172,9 @@ vblank for tests. Verified headless: a save written from the save screen
 1000:right,1050:cross,1450:cross:3`) lists it as "Lv.1 Village of All Beginnings".
 
 **Pacing: `--realtime`, `--hz 50|60`, `--show-fps`, `--stall FRAME:MS`.** One vblank every 1/hz s from the host
-clock (default 50, PAL; 60 gives NTSC timing: the game logic runs 20% faster, as on an NTSC console). `--window`
+clock (default 50, PAL; 60 gives NTSC timing: the game logic runs 20% faster, as on an NTSC console, which is the
+US/JP game's speed since PAL changed no game constant for 50 Hz: "60 Hz mode"; the picture stays the PAL
+320x256 one; `--picture ntsc` opts into the experimental USA 320x224 picture: "NTSC picture"). `--window`
 implies `--realtime` and honours `--hz`. The schedule is absolute (`port_vblank` in `shims/psyq.c`): vblank n is
 due at `epoch + n/hz`, waited for with `port_sleep_until_us` (Linux: `clock_nanosleep` `TIMER_ABSTIME` to 200 µs
 before the deadline, then a spin on `clock_gettime`; Windows: `timeBeginPeriod(1)` at start, then `Sleep(1)` is
@@ -278,7 +289,7 @@ Rules:
 
 | Assumption | Count | Handling |
 |---|---|---|
-| Pointers stored in 32-bit fields (structs, tables in retail data, `int` casts) | pervasive | **Phase 1 (now): a 32-bit host** (i386 Linux/Windows, armeabi-v7a Android), so pointers are 32 bits wide as on the PS1. **Phase 2: 64-bit.** Keep all game memory in a 4 GB arena at a fixed base and replace pointer fields with 32-bit offsets (`PSXPTR(T)` macros in the headers, as PSY-Z does with `OT_TYPE`), or build with `-mx32` / an ILP32 ABI where available. Android Play requires arm64, so phase 2 is needed for the store, not for sideloading. |
+| Pointers stored in 32-bit fields (structs, tables in retail data, `int` casts) | pervasive | **Phase 1 (now): a 32-bit host** (i386 Linux/Windows, armeabi-v7a Android), so pointers are 32 bits wide as on the PS1. **64-bit (done, Android arm64-v8a): the wasm2c build** ("64-bit builds: wasm2c" below): the game is compiled to wasm32, whose linear memory is the 32-bit address space, and translated back to C for the 64-bit host; no source change. (The alternatives, `PSXPTR(T)` offset macros in the headers as PSY-Z does with `OT_TYPE`, or an ILP32 ABI, were not needed.) |
 | Hard-coded RAM addresses (`0x80xxxxxx` literals) | 4998 literals (0x8013: 1582, 0x8001: 832, 0x8012: 463, 0x8011: 384 ...); the 1032 `0x803Cxxxx` are constants, not addresses | RAM is mapped at its PS1 address (`MAP_FIXED`), so the literals stay valid. This is free on 32-bit Linux. On Windows use `VirtualAlloc` at 0x80000000 with `/LARGEADDRESSAWARE`. On Android, mmap at a fixed address is allowed but can collide; reserve early in `JNI_OnLoad`. |
 | Scratchpad 0x1F800000 (`SPAD`, `TASK_C`, ...) | 913 literals plus named externs | Mapped at its address (16 KB including the I/O page, which is plain memory). |
 | KUSEG / KSEG1 aliases (`ptr & 0xFFFFFF`, OT links) | e.g. `compactOrderingTable` | `gen_port.py` rewrites the game's KUSEG pointer masks to the KSEG0 view (`port_kuseg_mask`, see "Windows build": the mirror at 0x10000 is only a fallback). The same RAM object is mapped three times (memfd). Addresses below 0x10000 (BIOS area) are impossible, which is why `initTasks` reads the TCB table through `port_bios_tcb_table()` (fixes.txt). |
@@ -343,15 +354,16 @@ Plan:
 | libapi / BIOS | events, threads (`OpenTh/ChangeTh` ×6), critical sections, `SysEnqIntRP`, `FlushCache` | Done (coroutines, VSync event). |
 | libc | `memcpy` 51, `memset` 22, `sprintf`, `printf`, `rand` | Done (`shims/libc.c`); with a real libc, map onto it. |
 
-## 3. Timing and 60 fps
+## 3. Timing and high frame rates
 
 The game runs its logic in tasks woken by `ThreadTableRun` once per main-loop pass. The pass waits on the
 VBlank counter (`0x1F8001E8 < 0x1F8001EA`), so on PAL it runs at 50 Hz or 25 Hz.
 
 1. **M1: correct pacing (done).** Run the main loop at 50 Hz (PAL) or 60 Hz (NTSC timing option) from a host timer
    (`--realtime --hz 50|60`), with input sampled per VBlank. The game logic stays untouched.
-2. **M5: interpolated rendering at the display rate.** Keep the simulation at its native tick and render extra
-   frames in between:
+2. **M5: interpolated rendering at the display rate (done as `--fps`, see "High frame rates" below; it went the
+   screen-space way of the last-but-two point, on recorded draw lists, not the matrix hooks).** Keep the simulation
+   at its native tick and render extra frames in between (the original plan):
    - Snapshot what the renderer needs after each logic tick. These are object positions and rotations (TObj
      position/velocity fields, `objectsOverlap`/`AnimAdvance` users), the camera/section scroll
      (`initSectionCamera` state), and the 2D layer offsets.
@@ -366,15 +378,15 @@ VBlank counter (`0x1F8001E8 < 0x1F8001EA`), so on PAL it runs at 50 Hz or 25 Hz.
    - Pause, menus and the boot logo run at the native rate.
 
    Doing this inside the renderer abstraction (§2.3 GL backend) keeps it out of `src/`.
-3. A "true 60 Hz logic" mode (halved per-tick constants) is not planned. It would change gameplay and touch
-   hundreds of functions.
+3. No separate "60 Hz logic" is needed: the PAL build kept the US game logic unchanged (no 50 Hz compensation; the
+   play-time clock is the one exception), so `--hz 60` is the NTSC speed. See "60 Hz mode" below.
 
 ## 4. Android
 
 - Use SDL2's `android-project` template (Gradle + NDK, `SDL_main`). `port/CMakeLists.txt` becomes an
   `add_library(main SHARED ...)` target. Rendering uses GLES 3, audio the SDL callback (AAudio/OpenSL inside SDL).
-- The ABI is **armeabi-v7a first**, because it keeps the 32-bit pointer model of phase 1. On 32-bit ARM Linux,
-  mapping 0x80000000 works when reserved early. arm64-v8a needs phase 2 (§2.1).
+- Two ABIs in one APK: **armeabi-v7a** keeps the 32-bit pointer model of phase 1 natively; **arm64-v8a** is the wasm2c
+  build ("64-bit builds: wasm2c"), required on 64-bit-only devices (Snapdragon 8 Gen 3 and newer, AYN Odin 2).
 - Replace the signal-based SIGSEGV trampoline with load-time pointer translation, and use the host libc
   instead of the freestanding runtime.
 - **Assets come from the user's own disc.** A first-run screen uses the Storage Access Framework to pick a
@@ -382,7 +394,14 @@ VBlank counter (`0x1F8001E8 < 0x1F8001EA`), so on PAL it runs at 50 Hz or 25 Hz.
   the overlays, and copied or indexed into app storage. The APK ships no game data, no Sony SDK code and no
   BIOS. All Psy-Q functionality is reimplemented in `port/`.
 
-### Status (M7, phase 1: armeabi-v7a)
+### Status (M7: armeabi-v7a native, arm64-v8a wasm2c)
+
+**arm64-v8a** (2026-11-03): the APK carries `lib/arm64-v8a` (libtombi.so = the wasm2c build of the same generated game
+C + `port2/wasm/host*.c` + `runtime/sdl.c`, libmain.so = loader.c built for arm64, libSDL2.so, libtombidisc.so) next to
+`lib/armeabi-v7a`; the workflow runs `port2/wasm/build.py --until w2c` (clang-18, wasi-libc, cached WABT) before Gradle
+and the CMake `arm64-v8a` branch compiles `build/wasm/w2c` with the NDK. Android picks arm64 where the device has it.
+Details, checks and open points in "64-bit builds: wasm2c" (M3 section). What follows describes the armeabi-v7a build;
+the launcher, Java side, data extraction, saves and arguments are shared by both.
 
 Built by `.github/workflows/android-apk.yml` (push to `port2/**` or manual): the runner's SDK/NDK, SDL2 2.30.11 from
 its release source tarball, Gradle project `port2/android` around `port2/CMakeLists.txt` (`if(ANDROID)` branch).
@@ -440,7 +459,7 @@ from the owner's disc (`GAME_FILES_URL`); the APK holds no game data files.
   app's entry: *¡A jugar!* starts `TombiActivity` (SDLActivity subclass, own `:game` process, exits with the game)
   with the chosen flags as `argv[1..]`, which `loader.c` puts after its defaults and before `files/args.txt` (still
   read, so it overrides). *Opciones* (SharedPreferences): `--lang` 0/5/6/7/8, `--aspect auto|4:3|16:9|21:9`,
-  `--cut-content`, `--debug-menu`, `--renderer soft|gl`, `--skip-intro`, `--hz 60`, `--fps60`, `--show-fps`, infinite
+  `--cut-content`, `--debug-menu`, `--renderer soft|gl`, `--skip-intro`, `--hz 60`, `--fps off|auto|60|90|120|144|unlimited` (*Gráficos*), `--show-fps`, infinite
   lives/health (the `tools/port_mods.py` pokes). *Disco*: the player picks their own disc image on the device
   (SAF `ACTION_OPEN_DOCUMENT`, `.bin`/`.iso`/`.chd` or `.cue`+`.bin`): read in place through the provider's file
   descriptor (`/proc/self/fd/N`; a `.chd` is recognised by its magic) or, for a stream-only provider, copied to the
@@ -448,6 +467,14 @@ from the owner's disc (`GAME_FILES_URL`); the APK holds no game data files.
   (phases *Copiando / Comprobando / Extrayendo*, files done / total, Cancel with B; a truncated image or an unreadable
   sector fails with the reason). *Borrar datos…* (in-page confirmation) deletes `files/data`, the patches and caches,
   the saves only when ticked.
+- **Launcher language.** *Opciones > Juego > Idioma del launcher*: Auto (the system's) / English / Español / Français /
+  Deutsch / Italiano / Nederlands / Português / Svenska / Dansk (`res/values-xx/strings.xml`), saved as `uilang`,
+  independent of the game language. Applied at once, without a restart: `LauncherActivity.getResources()` returns
+  resources made for that locale (`createConfigurationContext`), so every string, Toast and dialog follows it and the
+  rows are rebuilt on the next draw; no AppCompat needed (minSdk 23). Rows and buttons shrink a label that does not
+  fit (`drawFit`) instead of running past the pill. The PC launcher has the same nine languages (`tools/i18n.py`;
+  catalogs of fr/de/it/nl/pt/sv/da in `tools/port_launcher_lang.py`); names shared with the game (menus, places)
+  follow the game's own text in each language.
 - **Crash diagnosis without adb.** Everything goes to `tombi.log` in the app's **internal** files dir (`getFilesDir()`,
   the same path in both processes; Android 11+ hides `Android/data`): `TombiActivity` rotates it (`tombi.prev.log`),
   writes `[java]` lines (device, displays, arguments, uncaught exceptions, the UI thread's stack when it is blocked
@@ -469,7 +496,8 @@ from the owner's disc (`GAME_FILES_URL`); the APK holds no game data files.
   keystore), `ANDROID_KEYSTORE_PASSWORD`, `ANDROID_KEY_ALIAS`, `ANDROID_KEY_PASSWORD`; otherwise it stays debug-signed.
   Never commit a keystore.
 - **PC builds unchanged**: same i386 disassembly, title smoke frames byte-identical, `--test-null` ok.
-- Not done yet: running on a device, the GLES path of `gpu_gl.c`,  touch overlay, arm64 (phase 2).
+- Not done yet: touch overlay; the arm64-v8a libraries have not run on a device yet (built in CI, the host code
+  checked on x86-64 and under qemu-aarch64).
   Roadmap: `notes/roadmap.md` "Android".
 
 ## 5. Inventory
@@ -617,8 +645,8 @@ Estimates are for one experienced developer and assume the decomp keeps its curr
 | M3 | SYSTEM overlays | decompile (or non-matching C) O?PTSUB0, D?SPSUB*, G?OVER, I?NFO*; MDEC + STR movies or skip | 3–6 weeks |
 | M4 | All areas | per-area symbol prefixing + overlay dispatch, fix register-carried calls and other ABI issues found by playing every area; correctness audit vs. an emulator (RAM diff per frame on the same inputs: compare the native build to PCSX/Duckstation traces) | 3–5 weeks |
 | M5 | Sound | software SPU + libsnd on the console's tick, XA audio of the movies (**done** in `port2/`, "Audio" below) | 2–3 weeks |
-| M6 | GL renderer + enhancements | GLES3/GL3 backend, internal resolution, widescreen, PGXP-style precision, **interpolated 60 fps** | 3–4 weeks |
-| M7 | Android | SDL android project, armeabi-v7a (**APK builds in CI**, §4 "Status"; device testing pending), SAF disc import, touch controls; then the 64-bit pointer model for arm64 | 2 weeks (+3–4 weeks for 64-bit) |
+| M6 | GL renderer + enhancements | GLES3/GL3 backend, internal resolution, widescreen, PGXP-style precision, **interpolated high frame rates** (`--fps`, both renderers: done) | 3–4 weeks |
+| M7 | Android | SDL android project, armeabi-v7a (**APK builds in CI**, §4 "Status"), SAF disc import, touch controls; arm64-v8a through the wasm2c build (in the same APK since 2026-11-03) | 2 weeks (+3–4 weeks for 64-bit) |
 
 **Main blockers today:**
 
@@ -852,7 +880,7 @@ cmake -S port -B build/port-win -G Ninja -DCMAKE_TOOLCHAIN_FILE=$PWD/port/cmake/
       -DPORT_SDL2_MINGW=$PWD/SDL2-2.30.11/i686-w64-mingw32
 ninja -C build/port-win                                  # -> build/port-win/tombi.exe, tombi-view.exe (needs SDL2.dll next to it)
 wine build/port-win/tombi.exe --frames 600 --exe game/MAIN0.EXE --disc game/disc/Tombi.bin
-python3 tools/port_launcher.py                          # the launcher (Tk, tools/i18n.py); uses build/port-win/*.exe on Windows
+python3 tools/port_launcher.py                          # the launcher (Qt/PySide6, tools/i18n.py); uses build/port-win/*.exe on Windows
 ```
 
 - **Symbols.** The game is compiled with `-fno-leading-underscore -mno-ms-bitfields` so the generated tables (`syms.ld`,
@@ -999,26 +1027,74 @@ python3 tools/port_launcher.py                          # the launcher (Tk, tool
 
 ### The launcher (tools/port_launcher.py, tombi-port.exe)
 
-Tk window with the same style/i18n as tombi-gfx/tombi-text. *Play* tab: disc image (.bin/.cue/.iso/.chd; `EXE/MAIN0.EXE` is
+Qt (PySide6, Fusion style plus its own light / dark style sheet following the system colour scheme; `TOMBI_THEME=light|dark`
+forces one) window with the tools/i18n.py catalogs of tombi-gfx/tombi-text; `tools/test_port_launcher.py` checks the
+command lines it builds (headless, `QT_QPA_PLATFORM=offscreen`). *Play* tab: disc image (.bin/.cue/.iso/.chd; `EXE/MAIN0.EXE` is
 read from its ISO9660 directory into the launcher's folder and checked against the SCES-01331 sha1
 `bec8dc5f...`), save folder (`--save-dir`), window scale 1x/2x/3x, fullscreen, 50/60 Hz, "start a new game
 automatically", a *Text patch* (see "Text patches in `data/`"), a Play button (runs `tombi.exe --exe MAIN0.EXE --disc ... --window --viewer-arg --scale N ...` with the
 game's stderr in `tombi-port.log` next to the exe, shown in the window: the last 8 lines, with any earlier `[port]
 warning` / `FATAL` lines kept above them), a *Copy log* button (the whole log file to the clipboard, for a bug
 report) and the exact command line. *Mods* and
-*Controls* tabs: see "Mods". Settings are saved in `tombi-port.json` next to the exe. From a checkout it runs
+*Controls* tabs: see "Mods" and below. Settings are saved in `tombi-port.json` next to the exe. From a checkout it runs
 `build/port-win/tombi.exe` (Windows) or `build/port/tombi` (Linux); the PyInstaller exe carries `tombi.exe`,
 `tombi-view.exe` and `SDL2.dll` and unpacks them to its temporary folder on each run (PyInstaller onefile).
+
+*Graphics* tab: renderer, window scale, fullscreen, aspect, internal resolution, and *Mostrar FPS / Show FPS*
+(default off: `--show-fps`, the on-screen counter; `--log-fps 2` is always passed so the rate goes to the log).
+
+*Controls* tab (scrolled page, three cards, sized by the DPI scale so nothing is clipped at 100/125/150 %):
+- *Button icons*: a combobox "Iconos de botones en los textos" — Auto (from the controller, no flag) / PlayStation /
+  Xbox / Nintendo / Generic / Custom (`--prompts STYLE`; Custom also `--prompt-colors`, edited with *Personalizar
+  botones…*, enabled only for Custom). The AYN Thor styles (`thor`, `thor-black`, `thor-white`) are Android only and
+  not offered on PC; a saved PC setting holding one reads as Auto. The custom editor's presets still include the Thor
+  palettes (just colours).
+- *Keyboard*: a table of the 14 PS1 buttons with their keys (defaults = `runtime/sdl.c` `keymap`: arrows, X ✕, D ○,
+  Z □, S △, Q L1, W R1, A L2, E R2, Return Start, Backspace / Right Shift Select). Click a key, press the new one
+  (Esc cancels); a key bound to two buttons is flagged in red; *Restore defaults*. Only the keys that differ from the
+  defaults are passed, as `--keys btn=Key,...` (so an untouched Select keeps Right Shift too).
+- *Controller*: the PS1 pad photo with a leader line from each button to the controller button that drives it
+  (clicking a button on the photo selects its row), a table of comboboxes (SDL GameController names: `a b x y`,
+  `leftshoulder rightshoulder lefttrigger righttrigger`, `start back guide`, `dpup...`, `leftstick`, stick
+  directions `leftx-`..., or none), a clash warning and *Restore defaults* (= `cbind_defaults()`). Only the
+  differences are passed, as `--pad-map btn=src,...` (`btn=` unbinds). Below: the DualShock switch and the vibration
+  intensity combobox (`--dualshock`, `--rumble N`).
+
+The PC launcher does not pass `--launcher-exit` (see below): the Quit Game / back-to-launcher entries are for
+handhelds; on PC the original pause menu is shown and the player just closes the game window (the launcher still
+re-enables Play and raises its window when the game exits).
 
 **Save import / export ("cross save").** *Importar partida… / Exportar partida…* in both launchers (PC: buttons under
 the save folder; Android: right column of *Opciones*). They work on the card the game uses, `tombi_mc0.mcd` (PC: the
 save folder, else next to the disc image / `data/`; Android: `files/saves/`), a raw 128 KB image identical on both
 platforms and readable by DuckStation/ePSXe (raw `.mcd`/`.mcr`). Import accepts whole cards (raw
-`.mcd/.mcr/.mc/.srm/.ddf/.ps/.bin` starting with `MC`, DexDrive `.gme`, `.vgs/.mem`), which replace the card (old file
-kept as `.bak`, timestamped if one exists), and single saves (`.mcs/.ps1/.mcb`, PS3 `.psv`), inserted into free blocks
-with new directory frames (link chain, XOR checksum); a non-Tombi product code only warns. Export writes the whole card
-(default `tombi.mcd`); the PC launcher can also export one save as `.mcs`. Logic: `tools/save_import.py` (PC, also a
-CLI) and `SaveImport.java` (Android); the launchers only, never while the game runs.
+`.mcd/.mcr/.mc/.srm/.ddf/.ps/.bin` starting with `MC`, DexDrive `.gme`, `.vgs/.mem`), which replace the card, and
+single saves (`.mcs/.ps1/.mcb`, PS3 `.psv`), inserted into free blocks with new directory frames (link chain, XOR
+checksum); a non-Tombi product code only warns. A single save whose name (`BESCES-01331TOMBA-00`...) is already on the
+card asks *"Ya hay una partida «Ranura 00 · Ciudad Baco · 1:23 h» en la tarjeta. ¿Reemplazarla? … O guárdala en otra
+ranura: Ranura 01."* (slot, the place Continue loads and the play time when the save's GAME block checks out; PS1
+saves store no date; in Spanish the place is the improved translation's Map screen name of the save's area and
+section, the same as the second screen's, otherwise an English area name): *Reemplazar* frees the old save's blocks
+and writes the new one there first (any block count; nothing is written if it does not fit), *Guardar en otra
+ranura* (only when the card has room and a free slot number: the save goes in as the first free
+`BESCES-01331TOMBA-NN`, with the slot digits of its title rewritten too, so the game's load screen lists it in that
+slot) or *Cancelar*. Every write first copies the card to `backup/tombi_mc0-YYYYMMDD-HHMMSS.mcd` next to it (the last
+5 kept).
+Export writes the whole card (default `tombi.mcd`); the PC launcher can also export one save as `.mcs`. Logic:
+`tools/save_import.py` (PC, also a CLI: `import FILE CARD [--overwrite | --new-slot]`; tests `tools/test_save_import.py`) and
+`SaveImport.java` (Android); the launchers only, never while the game runs. The Android launcher's dialogs (this one,
+the results, the translation import) and the game's "back to the launcher?" question are `SelvaDialog.java`, drawn
+in the launcher's style (Lilita One / Nunito, pill buttons; D-pad + A, B = cancel, touch) instead of AlertDialogs.
+
+**Edit save (PC launcher only).** *Editar partida… / Edit save…*, next to Import / Export, opens the save editor
+([SAVE_EDITOR.md](SAVE_EDITOR.md), `tools/tombi_save_editor.py`) as a window of the launcher's own process on that same
+`tombi_mc0.mcd` (`App.edit_save` -> `tombi_save_editor.host_in_qt`: the launcher's own QApplication, the editor a top-level
+window transient for the launcher's, with its style sheet on itself only so each window keeps its look). In the launcher's interface language (the
+editor has the same nine). Refused while the game runs; while the editor is open *Play* is refused (the game would
+write the card the editor holds) and a save attempt while the game runs is refused in the editor too. *Save* writes the
+card back in place after copying the old one to `tombi_mc0.mcd.YYYYmmdd-HHMMSS.bak`; the launcher's settings are not
+touched. Closing the launcher closes the editor first (asking about unsaved edits). `tombi-port.exe` bundles
+PySide6-Essentials (the launcher itself is Qt), the editor and its fonts (`port2-exe.yml`, the Windows and the Linux build).
 
 ## Mods (tools/port_mods.py)
 
@@ -1030,14 +1106,14 @@ confirmed with Circle at 1300 (the values of the room sweep). Addresses: `GAME` 
 | Mod | Port options | Notes |
 |---|---|---|
 | Skip intro logos/movies (default off) | `--skip-movies` | the movies play by default (`port2/`); `--play-movies` is accepted and does nothing |
-| 60 Hz | `--hz 60` | NTSC pacing (`--hz 50` otherwise) |
+| 60 Hz | `--hz 60` | NTSC pacing (`--hz 50` otherwise); the picture stays PAL 320x256 (`--picture ntsc`: the experimental USA 320x224 layout) |
 | Area select | `--poke 900:1F8001B4:1 --poke 1250:8009C960:A:2 --poke 1250:8009C962:S:2 --pad-script 1000:start,1300:circle:3` | area/section pickers from `ROOM_COUNTS` (names from README); rooms of `DOOR_ROOMS` are not offered |
 | Start with N AP | `--poke 1100:8009C96C:N:4` | `GAME.playerAP` (drawHudAP) |
 | Start with N lives | `--poke 1100:8009C980:N:1` | `GAME.playerLives` (drawHudLives) |
 | Infinite lives | `--poke-every 50:8009C980:63:1` | new option: `--poke-every INTERVAL:ADDR:VALUE[:SIZE]` writes every INTERVAL vblanks |
 | Infinite vitality | `--poke-every 1:8009C970:4:1` | `GAME.playerHealth`, 4 = full (initGameConfig) |
 | Unlock all events | `--poke 1100:8009CDA4:FF:1x130` | new `SIZExCOUNT` suffix of `--poke`: COUNT consecutive values; event flag bytes 0x8009CDA4 + id (notes/names.md "Event links"), 0xFF = completed |
-| Custom keys | `--viewer-arg --keys --viewer-arg up=Up,cross=X,...` | *Controls* tab: one SDL key name per PS1 button |
+| Custom keys | `--keys up=Up,cross=X,...` | *Controls* tab, Keyboard card: only the keys changed from the defaults |
 | Button prompts (PlayStation / Xbox / Keyboard) | `--patch-tex prompts-SET.tbtx` | see below |
 
 **Button prompts.** `tools/prompt_glyphs.py` draws our own glyph sets with Pillow (no third-party icon pack):
@@ -1067,17 +1143,17 @@ glyphs (the message strings embed them as glyph codes), which are not identified
 `port2/shims/prompts.c`: the four face-button glyphs ✕ ○ □ △ are the same 12 x 16 4 bpp bitmaps in all 369 WFM3 banks
 (every language), so `loadMessageGlyph` (PORT2 block) hands each glyph and its glyph cache slot to `port_prompt_glyph`,
 which recognises them by the FNV-1a of their pixels and returns one drawn by code. No game pixels are shipped. Every
-style is drawn (PlayStation too): the disc sits on rows 4..15 of the glyph, 2 px lower than the game's own (rows
-2..13, centred on the capitals), so it lines up with the lowercase text. What is drawn is the *physical* button that
+style is drawn (PlayStation too): the disc sits on rows 3..14 of the glyph, 1 px lower than the game's own (rows
+2..13, centred on the capitals), so it sits on the text line (2 px looked too low on device). What is drawn is the *physical* button that
 gives that PS1 button with the current mapping: `runtime/sdl.c` derives it from the controller bindings (`--pad-map`
 included), Android passes `--prompt-map cross=a,...` from PadMap. Styles (`--prompts
 auto|playstation|xbox|nintendo|thor|generic`): PlayStation shapes; Xbox A/B/X/Y in the Xbox colours (green, red,
 blue, yellow) on the dark disc; Nintendo = the letters by position (south B, east A, west Y, north X) in cream on
-the dark disc, like a Switch Pro pad; Thor ("AYN Thor / Retroid" in the launchers) = the same letters, white, on the
+the dark disc, like a Switch Pro pad; Thor ("AYN Thor (arcoíris)" in the launchers, `--prompts thor`) = the same letters, white, on the
 SNES-coloured discs of those handhelds (X deep blue, Y dark green, A red, B yellow); generic = a diamond with the
 button's position lit. Auto: SDL's controller type on the PC (PS3/4/5 -> PlayStation, Xbox/Luna/Stadia/Shield ->
 Xbox, Switch Pro/Joy-Con -> Nintendo, other -> generic, no controller -> PlayStation); on Android the controller name
-(Xbox, DualShock/DualSense, "odin"/"ayn"/"thor"/"retroid" -> Thor, Nintendo/Pro Controller/Joy-Con -> Nintendo).
+(Xbox, DualShock/DualSense, "odin"/"ayn"/"thor"/"retroid" -> Thor with black buttons, Nintendo/Pro Controller/Joy-Con -> Nintendo).
 *Colours:* PlayStation, Nintendo and generic use the font CLUT's own indices (0 transparent, 1..5 ink, 6 dark disc,
 7 blue, 8 green, 9 pink, 10 red, 11..13 khaki rim, 14/15 cream). Xbox and Thor need colours it lacks, so they use a
 port-only 16-colour CLUT (`port_prompt_clut`: the font CLUT's transparent, grey, disc, rim and cream entries kept, the
@@ -1090,6 +1166,69 @@ names (with SDL's default label mapping a Switch pad's SDL "A" is its labelled A
 L1/R1/START/SELECT and the d-pad arrows in the texts are words / arrows and stay. Debug: `--test-message FRAME:K:L`
 opens `showMessageBox(K, L)` (AREA00: 4:4 / 4:5 / 4:6 / 4:9 are the "□/✕/○/△ to run" hints).
 
+*Thor colour variants.* The AYN Thor comes with three button variants: black buttons with white letters, white
+buttons with grey letters, and SNES-coloured ("rainbow") ones. `--prompts thor-black` (also `thor_black`), `thor-white`
+(`thor_white`) and `thor` (`thor-rainbow`) draw the same Thor letters and positions on a near-black disc (port CLUT row
+7), an off-white disc with mid-grey letters (row 8: shadow = the disc 30 % toward black, soft edge 35 % toward the
+grey) or the SNES colours; launchers: "AYN Thor (negro / blanco / arcoíris)", en "black / white / rainbow". Android's
+auto style picks `thor-black` for odin / ayn / thor / retroid pads: neither the controller name nor `Build.MODEL` tells
+the variant, so black is the default and the others a manual choice. Android treats all three as label-mapped pads (A
+east, B south). The Android `PROMPTS` list appends `thor-black`, `thor-white`, so saved indices keep their meaning.
+
+*Custom buttons (`--prompts custom`).* `--prompt-colors a=RRGGBB:RRGGBB,b=...,x=...,y=...,sym=xbox|nintendo|ps`
+gives each face button by position (a south, b east, x west, y north, as `--prompt-map`) a disc and a letter colour
+and picks the symbols (Xbox letters A B X Y, Nintendo / Thor letters B A Y X, PlayStation shapes ✕ ○ □ △, all by
+position); `prompts.c` builds port CLUT rows 9..12 from them at start-up (shadow = disc 30 % toward black, soft edge =
+disc 35 % toward the letter) and draws the custom glyphs like the Thor ones (same letters, placement, `letter_fx`), in
+the message boxes and the menu icons. Launchers: Android *Opciones → Controles → Personalizar botones…*: a page with
+*Partir de* (presets: Thor negro / blanco / arcoíris, Xbox, Nintendo, PlayStation, GameCube, SNES (América), SNES PAL /
+Super Famicom, Famicom, Pastel), *Símbolos*, one row per button and disc / letter (left / right step through a
+24-swatch palette; A or a tap opens an editor with R G B and H S V rows and the swatch grid, touch or pad) and a live
+preview drawn with the game's algorithm (`pcGlyph`, a Java copy of it, at integer scale); any change sets *Iconos de
+botones* to *Personalizado* (appended to `PROMPTS`) and the launcher passes `--prompt-colors`. Android maps the pad by
+labels for `custom` when the pad itself is a Thor / Nintendo one. PC launcher: *Personalizado* in the prompt styles and
+a *Personalizar botones…* dialog (presets, symbols, `QColorDialog` per disc / letter, a preview drawn with QPainter;
+`tools/prompt_custom.py` holds the presets and the same glyph algorithm, checked pixel-exact against a game frame). The
+PlayStation shapes (PS style where the source icon is not on the page, custom with `sym=ps`) come from one function,
+`ps_shape()`, in the message boxes and every menu icon slot: same 8 x 8 ring, 6 x 6 cross / square, 8 x 7 triangle,
+placed on the 12 px disc exactly as in the message glyph; a slot whose disc is under 12 px gets the same shapes in a
+hollow 6 x 6 box. The OpenGL renderer builds its port-CLUT lookup (`pclut()`) as a binary search: the former chain of
+208 ifs gave one flat colour for rows 9..12 on Mesa llvmpipe (custom glyphs drawn as solid blocks). The
+named styles are unchanged.
+
+*Letter rendering (Xbox, Nintendo, Thor; message glyphs and menu icons alike).* The 6 x 8 letters keep their place
+and get a 1 px drop shadow down-right (a disc pixel at +1,+1 of a letter pixel: the fill 30 % toward black) and a soft
+edge (disc pixels still equal to the fill and 4-adjacent to the letter: the fill 35 % toward the letter colour: white
+on Thor, the letter's own colour on the dark Xbox / Nintendo disc), letters on top (`letter_fx`). The extra colours
+come from **several port CLUT rows**: `PORT_CLUT_ROWS` = 13 rows of 16 in `port_prompt_clut`, CLUT id `0xFFFF - row`
+(row 0 the original table: generic / PlayStation fallback shapes; 1 Xbox; 2 Nintendo and every shoulder label; 3..6
+Thor one per button: disc, shadow, soft edge, white; 7 Thor with black buttons, 8 Thor with white buttons, 9..12 custom, filled at start-up). `gpu.c` maps such an id to `GpuTex.cy = PORT_CLUT_Y`,
+`cx = 16 * row`; the soft texel fetch reads `port_prompt_clut[cx + i]`, the GL shader's `pclut(tp.x + idx)` has all 208
+entries compiled in (the shader is built after the arguments are read, so the custom rows are in it). The message glyph cache slots and the patched menu rects remember their row.
+
+*Menu icons (title, options, button config, adjust screen, save / load).* Outside the message boxes the game draws its
+button icons as sprites from texture pages it uploads with `LoadImage`: the title's "PRESS START or ✕ BUTTON" (page
+384,0, a 16 x 16 ✕ at u 0 v 128), the options / adjust screen / button config screens of O0PTSUB0 ("✕ Button:CHANGE
+OPTION", "○ Button:EXIT", the pad diamond of *CONFIG MENU*: page 512,0, ○ □ △ ✕ in 16 x 16 at u 0..63 v 144 and in
+12 x 16 at u 64..111), and the save / load screens, in game (`openMenuScreen(4/5)`) and from the title's Load ("✕
+Button:Select / ○ Button:Cancel": page 256,0, ○ □ △ ✕ in 12 x 12 at u 56..103 v 232). `prompts.c` keeps a table of
+these 13 rects (VRAM words) with the FNV-1a of their texels; `gpu.c` calls `port_prompt_vram_upload` after every
+`LoadImage` / GP0 upload (the host VRAM copy is fresh there, so no GL read-back), and an icon whose texels match is
+saved and overwritten in VRAM by the glyph of the physical button (`mi_draw`: the disc in the original icon's bounding
+box, 1 px lower where the rect has room, the same letters / colours as the message glyphs). PlayStation style copies the
+game's own icon of the source button from the same row (so with the default mapping nothing is written at all; the
+title page has only ✕, so a remapped title icon is drawn as a shape). The other styles are drawn in the port CLUT:
+`gpu.c` gives every 4 bpp polygon / sprite whose texel box lies inside a patched rect the port CLUT
+(`port_prompt_tex_clut`), whatever function drew it. A style or mapping change (controller hot-plug) re-draws the
+patched rects on their next draw; an upload over a rect forgets it until the next upload that matches. Checked
+headless (soft renderer; the GL renderer on the config screen) in all five styles and with a remapped PlayStation pad: title, options, config, adjust screen,
+in-game save, title load. *Not covered / unverified:* the item / event / status / map sub-screens (D0SPSUB*) show no
+button icons in the screens reached (status, event, map; the item screen was not reached headless); the game over and
+I0NFO screens use message boxes (covered by the glyph path) but were not reached; other languages: the hashes were
+taken from the English (PAL default) pages, a page whose icon texels differ is left unpatched (no harm); the GL renderer
+path is the same `gpu.c` code but was not rendered here. The second-screen panel (`runtime/panel*.c`) draws no PS
+button symbols. Text that names a button in words (START, SELECT, L1...) is left as it is.
+
 **DualShock (`--dualshock`, launchers: "Mando DualShock (analógico)", default off).** The original game supports the
 analog pad: `setAnalogPadMode` switches a DualShock to analog, `readPadPort` keeps the left stick for pad type 7
 (0x73), `playerDecodePadInput` turns it into three walking speeds and `setVelXFromPadLR` / `playerUpdateSpeedFromPad`
@@ -1099,6 +1238,48 @@ grabbed, bitten, etc. With the option `shims/pad.c` reports 0x73 with the host's
 90 %) and a held d-pad as the stick's end (in analog mode the game rebuilds the d-pad bits from the axes), and sends the
 actuator bytes to `SDL_GameControllerRumble` (PC) or the controller's / device's vibrator (Android). Without it the pad is
 the digital one as before (Android keeps its left-stick-as-d-pad default; with the option the stick is analog instead).
+
+**Vibration intensity (`--rumble N`, launchers: "Intensidad de vibración" next to the DualShock option).** 0..200 %
+(default 100, 0 = off) scales both motors in `runtime/sdl.c` (clamped to full): on the PC the small motor's 0xFFFF and
+the big motor's level for `SDL_GameControllerRumble`; on Android the levels passed to `TombiActivity.rumble` (small
+motor = 160 at 100 %), whose device vibrator uses `VibrationEffect.createOneShot` with that amplitude on API 26+ (on/off
+before). The Android launcher steps 0/25/50/75/100/125/150/200 % ("Apagada"/"N %") and buzzes once at the new strength;
+the PC launcher has the same choices in a combobox.
+
+**Back to the launcher (`--launcher-exit`, passed by the Android launcher only; `runtime/launcher_exit.c`).** The retail
+"EXIT GAME" / "SALIR" only goes back to the title. With the flag the Start pause menu gets a 4th entry under LOAD in
+every language: "Back to Launcher", "RETOUR AU LAUNCHER", "ZUM LAUNCHER", "TORNA AL LAUNCHER", "NAAR LAUNCHER",
+"VOLVER AL LAUNCHER", "VOLTAR AO LAUNCHER", "TILL LAUNCHERN", "TIL LAUNCHEREN", with the game's own Yes / No box and
+the question "Return to the launcher?", "Retour au launcher?", "Zurück zum Launcher?", "Tornare al launcher?", "Terug
+naar launcher?", "¿Volver al launcher?", "Voltar ao launcher?", "Till launchern?", "Til launcheren?" (pause state
+`1F8003CD` = 4, port only, beside the retail 2 = quit and 3 = load; `port/fixes.txt` rules on `updatePauseMenu` /
+`drawPauseMenu`). The menu frame grows 16 px down and, like the Spanish question boxes, as wide as the text (border
+tiles moved, interior tiles stretched); the highlight bar covers the entry. The first entry, PAUSE (it resumes the game), reads "Continue" / "CONTINUAR" / "CONTINUER" / "WEITER" /
+"CONTINUA" / "VERDER" / "FORTSäTT" (as the Swedish disc writes HäMTA) / "FORTSÆT" with the flag.
+
+The pause font is a strip of 8x16 glyphs per language (`SYSTEM/A{n+1}0003.GAM`, v 144, addressed by MAINn's UV table)
+holding only the letters that language's menus use. A letter of the current strip is drawn by the game (its code); any
+other gets a code `0x40 +` index of a glyph built at run time from the user's disc and drawn as flat TILE runs in the
+strip's own CLUT (`AREA00/CLUT01.GAM`, row 483 at x 352): the same letter from another language's strip (the nine
+strips together have A-W, Y, Z and a-x but q), or for ü the 'u' with the marks of the Swedish 'ä', for W the 'M'
+upside down, for a missing small letter the capital at the x-height of 'x'. No game pixels are in the repository.
+
+The title carousel gets the entry's words in capitals right of OPTIONS (after DEBUG with `--title-debug`; the carousel
+turns a little further for long words); Cross / Start opens the same question in a Yes / No box drawn in TILEs (the
+HUD page with the pause frame is not in VRAM on the title; left / right choose, Circle cancels, the attract-mode
+countdown is held while it is open). Choosing Yes saves nothing: on the PC the game exits with status 0 and
+`tools/port_launcher.py`, which waits for the process, re-enables Play and raises its window; on Android
+`TombiActivity.quitToLauncher()` (JNI, from the game thread) finishes the activity, whose `onDestroy` sends SDL_QUIT,
+which the game's event pump turns into `port_quit(0)`: the `:game` process ends (it cannot run the game twice) and
+LauncherActivity, under it in the task, shows again. Android Back (key or gesture; not a controller's Back, which is
+the pad's Select) opens a "¿Volver al launcher?" / "Return to the launcher?" dialog (Yes: the same finish).
+
+Crash card: every intentional end (the menu entries, the Back dialog, the activity finishing) writes the `clean`
+marker and sets `port_clean_exit` / `TombiActivity.nativeCleanExit`, so `android/loader.c` logs but does not mark a
+fault or exit status during the teardown, and `CrashLog.crashedLastRun` ignores the other markers. A `running` marker
+left over counts as a crash only when the game was in the foreground (`background` marker from `onStop`): a swipe-away
+or low-memory kill of the backgrounded game is not reported. Going back to the title in the game does not end the
+process and touches no marker.
 
 Checked on Linux: the pokes of a new game (AP 5000, 9 lives, both `--poke-every`, the 130 event bytes) run 400 vblanks
 without a fault; a 1500-frame run with the title's Start stalls at vblank ~443 in this checkout (`sleepTask` loop after
@@ -1326,6 +1507,13 @@ What the cross build needed (`port2/CMakeLists.txt` `if(WIN32)`, `port2/cmake/mi
   PS1 button's defaults; the triggers are L2 / R2 by default, past half way), `--patch-tex FILE` (button prompts), `--show-fps [1|2]`,
   `--test-null` (fault-handler self-test: exit code 0 when both emulations work on this host). `--poke`,
   `--poke-every`, `--pad-script`, `--menu` were already there.
+- **`--show-fps [1|2]`** (the launchers' "Show FPS" / "Mostrar FPS") draws an on-screen counter in the top-left corner
+  of the game picture (inside it, so also right with `--widescreen` / `--aspect`): white 3x5 digits on a
+  semi-transparent dark box, drawn at window resolution after the frame (integer scale from the picture height, 2..8),
+  updated twice a second (`runtime/fps_overlay.c`; drawn by `runtime/sdl.c` for `--renderer soft`, `shims/gpu_gl.c` for
+  OpenGL / GL ES on Android). It shows the frames actually presented per second, `50 FPS`, or presented / vblank (game
+  logic) rate when they differ, `25/50 FPS`. Main window only (not the second-screen panel), and not in `--dump-frames`
+  PNGs (those are the PS1 frame). The once-a-second `[port] fps:` log line (and the `2` histogram) stays.
 - **Build id.** `port/cmake/build_id.cmake` writes `gen/build_id.c`; the first log line is
   `[port2] build <sha>[+] <date>` (`+` = modified tree).
 
@@ -1751,7 +1939,7 @@ Setloc-outside-the-disc check is unchanged.
 **Options.** `--data DIR` selects the folder (a missing `manifest.txt` is fatal with the hint to run
 `extract_data.py`); `--disc IMAGE` reads the image as before. With neither, the port tries `data/manifest.txt`
 in the current folder, then `data/` next to the executable (from `argv[0]`), then the old default
-`game/disc/Tombi.bin`. The memory cards go next to the data folder (its parent: the exe's folder or the cwd)
+`game/disc/Tombi.bin`. The memory card goes next to the data folder (its parent: the exe's folder or the cwd)
 when there is no `--save-dir` and no disc. Usage line: `tombi2 [--data DIR | --disc Tombi.bin|.cue|.iso] ...`.
 
 **Verification.** Extracted from `game/disc/Tombi.bin`, the standard test
@@ -1806,6 +1994,43 @@ Command line: `python3 tools/data_patch.py apply data PATCH.tombipatch.json [--d
 folder, and the standard test (`--data --lang 5`, 3600 frames) shows the patched AREA00 dialogue; the moved files
 (AREA02/10/18/19) were not reached in a run.
 
+### Free-form event titles (`spawnEventTitle`, `port_title_layout` in `shims/psyq.c`)
+
+On the console an event title (the flying letter tiles, CFNT999 text N) gets one tile per record of its layout list
+(`u8 0, s8 col, s8 row, u8 flags` in the overlays, `tools/title_layout.py`), and the "completed" banner (CFNT999 #0)
+is made from two tables of the executable (K glyph ids and K positions). The lists are fixed-size overlay data, so a
+translation could never be longer than the original title, and every per-area copy of a list must match it. The port
+lays the tiles out itself (PORT2 block of `src/spawnEventTitle.c`; the objects, their fields, animation and timing are
+the original's, the original loops are not reached):
+
+* **Title:** the letters of the text. A title longer than its list carries a *layout tail* after its letters
+  (written by `tools/text_core.py` for every edited title: `0xFFF1`, then one word per letter after the first: the
+  spaces before it, `0x100` = line break; `wfm_py.title_tail` / `split_title_tail`, and `words_to_text` reads it back
+  as spaces and `{NL}`). The console takes one letter per record of its list and never reads past them, so the tail
+  costs it nothing. Lines are centred, a letter 20 px, a space 10 px, lines 28 px apart going up from the origin; a
+  line wider than 310 px (the widest original line, *Fruta deliciosa*) wraps at its last space. A title without a tail (the disc's own) keeps its list,
+  minus the hidden records (row >= 40: the surplus of a shorter title, which are no letters).
+* **Banner** (`completed = 1`): CFNT999 #0 when it carries a tail, else the executable's table (`port_title_e0/ec` of
+  the loaded MAINn, `runtime/lang.c`) without its hidden entries (y = 400); always one baseline (y 0), centred. As many
+  tiles as the longer of title and banner: a tile with no title letter is the original's padding tile (type 2, starts
+  at the origin), one with no banner letter leaves the screen. Fixed by this: MAIN0's code padded the banner to only 6
+  tiles (`cnt < 6`, K of English), so with the Spanish table (K 11) `¡SUPERADO!` lost its last letters after every
+  short title (`¡SUPERAD` after *¡Sonríe!*, `¡SUPERADO` after *Llorica*), and the tiles that came from the hidden row
+  40 had not settled when their glide ended (`D`/`O` a few px low). Also fixed: AREA04's own copy of the list of
+  *Pantalón de Charles* has the 13 records of the English one-line title (retail data), which drew `Pantalon deCha`;
+  with the tail the text decides.
+* Widescreen: the tiles still start past the wide frame's edge (`port_ws_cull + 160`), as before.
+* `--title FRAME:ID:done` (debug) spawns the title as `setEventComplete` does (title, then the banner);
+  `-v` logs `event title: N letters (free-form), banner K letters, T tiles`.
+
+The text tools: a patch with `"freeTitles": true` (es_mejorada) may have titles longer than their lists
+(`Project.free_titles`): `check_text_patch.py` lists them as *console ISO* warnings (the console's lists and banner
+tables get the first letters of the text, laid out as the text says; the port shows the whole text). Without the flag
+the old limits stay errors. The title list copies are matched one list per place (`title_layout.copies`: two titles of
+the same length could both claim one subset list, AREA00/X500.BIN #86 / #107), and every copy of an edited title is
+rewritten even when the I?NFO list already had the spacing (X500's *El adivino rojo* is on two lines).
+Verified headless (AREA02 s0, whose I0NFO table has every event): scratchpad `event_titles_fixed.png`.
+
 ### CHD images (`tools/chd.py`)
 
 The launcher and `extract_data.py` also take a MAME CHD (v5) CD image: `chd.ChdFile` decompresses track 1 on the fly
@@ -1824,8 +2049,12 @@ regeneration.
 ### Languages: `--lang N` (`port2/runtime/lang.c`)
 
 **The disc.** `SCES_013.31` is a language menu that boots one of `EXE/MAIN0.EXE` (English), `MAIN5` (Español),
-`MAIN6` (Português), `MAIN7` (Svenska), `MAIN8` (Dansk) (`MAIN1..4` are on the disc too, not in the menu:
-`--lang 1..4` accepts them). Every MAINn is the same program linked once with that language's data, so its code
+`MAIN6` (Português), `MAIN7` (Svenska), `MAIN8` (Dansk). `MAIN1..4` (Français, Deutsch, Italiano, Nederlands) are on
+the disc too, not in its menu: `--lang 1..4` plays them, and both launchers list all nine. The other PAL disc,
+SCES-01330 ("Language set 1", boot menu EN/FR/DE/IT/NL), is byte-identical to SCES-01331 of the same revision except
+SYSTEM.CNF and the boot file name (checked on Rev.1, 2026-11-04), so the port needs no second disc for those
+languages. The panel's own chrome (tab names, planks) stays English for 1..4; the names it shows come from that
+language's `D<n>SPSUB*` files. Every MAINn is the same program linked once with that language's data, so its code
 and data move: MAIN5 is linked 0x18 bytes earlier from `0x8004D824` on (its `printInfoMessage` is 24 bytes
 shorter) and 0x28 bytes later after its event-title tables (`0x80080330..`, 0x40 bytes bigger); its overlays
 (`X5NN`, `O5PTSUB0`, `D5SPSUB*`, `I5NFO*`, `G5OVER`) are linked at `0x800E8050` instead of `0x800E8028` (the
@@ -2103,6 +2332,34 @@ q->a = ...`, y at +0x14 before a at +0x10) whose child `d94` is NULL; "X000+off"
 (`port_sym_near` reports areamap entries by the area's name). See the gdb notes in the commit for what the
 headless probes found.
 
+#### Svenska / Dansk Select screen: the twin that is two sectors longer than the read
+
+`--lang 7` / `--lang 8` crashed opening Select → Items (`D0SPSUB_subScreenDrawSprite+0x11` under
+`subScreenDrawTabs`) after `--lang: file 39: twin 168236 bytes, language 164336, read 165888: not composed`.
+The language's sub-screen overlay is *shorter* than its MAIN0 twin by whole sectors (D7SPSUB 164336 bytes = 81
+sectors, D8SPSUB 166356 = 82, D0SPSUB 168236 = 83), so the twin was refused as longer than the read and the
+language's overlay ran raw. Three fixes, all `--lang`-only:
+
+1. `port_lang_overlay_loaded` copies the twin whole as long as it fits the overlay region (refused only past the
+   region + one sector, or a language file longer than the read + one sector) and returns the bytes it composed;
+   `CdRead` relocates that many (the twin's length when longer than the read).
+2. A WFM3 bank left composed (the language's could not be put in place) that *measures longer than MAIN0's*
+   in place gets MAIN0's bank back (`twin_bank`): D8SPSUB's second bank (`D_800F7B78` = `D_1F8003A4`, 21336 bytes)
+   measured 71308 as a mix, so the relocator skipped every word after it as glyph codes (`D0SPSUB loaded: 0
+   function, 9 data pointers relocated`) and the tab sprite tables stayed retail addresses. The C reads banks
+   through `port_lang_item` (Bn), so the in-place copy only steers the relocator.
+3. `queueLoadList` places a list's next file at `base + record size`, the language's size: the Map tab's data
+   (the SYSTEM list: D?SPSUB, then the map) landed over the composed twin's last 3900 / 1880 bytes and
+   `drawObjectSpriteScaled` faulted. `port_lang_rel_size` (`port/fixes.txt`) answers the twin's size for a file
+   at the overlay start whose twin is longer, so the map loads at `0x80111154` as in English.
+
+The file tables of MAIN1..8 against MAIN0 (twin with more sectors than the language's file): MAIN7 17 files
+(39, 45, 50, 346, 377, 411, 472, 522, 591, 661, 772, 834, 857, 948, 1035, 1096, 1117), MAIN8 10, MAIN3 3, MAIN5 3
+(411, 772, 1096), MAIN1/2/4/6 none. Checked headless with `--lang 1..4, 7, 8` (debug select AREA01: Select →
+Items / Events / Status / Map, the Triangle item screen with a message, AREA02/04/06/09/13 with Select and
+Triangle): no `not composed`, no fault, no new stub (AREA06's `X006_area6ScriptOp` stub is there in English too;
+AREA17 section 0 crashes in every language, see above). English, Spanish and Portuguese frames are unchanged.
+
 ### Pointer audit and room sweep (`port2/tools/audit_pointers.py`, `port2/tools/sweep_areas.py`)
 
 Two tools check what open point 1 is about: the retail code pointers the game jumps through.
@@ -2129,11 +2386,28 @@ table row per room; `--out DIR` keeps `sweep_AA_SS.log` (cut at 4 MB while the p
 killed: a fault report that re-entered the exit path wrote 1 GB and filled the disk). Paths must be absolute
 or relative to the repo (the rooms run with `cwd` = repo root).
 
-Sweep of the current build: **95 of 96 rooms clean, 96 rooms enter their area** (before the fixes below: 64 clean,
-87 entered; the build before that: "69 ok", not comparable, 52 of those rooms never left the title). The one
-finding, AREA01 section 1, is a watchdog line (`no game progress for 3 s` at frame 2462, every task yielding
-from the same place) that appears under four parallel jobs and not when the room runs alone: a wall-clock
-measure under load, listed here until the watchdog counts vblanks instead.
+Sweep of the current build (Linux i386, `--jobs 4`, after the AREA06 2 fix below): **93 of 96 rooms clean, 96 rooms
+enter their area**; AREA06 section 2 runs its 3600 frames clean at `--hz 50` and `--hz 60`. The three findings:
+AREA06 sections 0 and 1 call the stub `X006_area6ScriptOp` once (frame 1424: `src/x006/a06AddModelsBySection.c`
+defines `area6ScriptOp`, the csv names 0x801167A0 `a06AddModelsBySection`, so the generator finds no native code
+for it; not a fault, still open), and AREA10 section 3 has a watchdog line (`no game progress for 3 s` at frame
+2915) under four parallel jobs, the wall-clock measure under load that AREA01 section 1 showed in the sweep before
+(listed until the watchdog counts vblanks instead). An earlier sweep: 95 of 96 clean (before the fixes below: 64
+clean, 87 entered; the build before that: "69 ok", not comparable, 52 of those rooms never left the title).
+
+- **AREA06 2 (`processObjectCollisions+0x28` fault at 0x00061682 and `call to 801194ac: no native code in X006`,
+  frame 2804, both frame rates).** Neither is the cause. `emit_data` makes a run of MAIN0 region words that holds
+  a word at no overlay's function start into data, but only skipped the thunk: the next test still turned a word of
+  the run into a native function when one starts at that address. `D_8007DE38`, the per-area item -> message index
+  tables `printInfoMessage` reads, holds `0x801228BC` for AREA06 (X006 data; X000's `playerInitAreaHook` starts
+  there in every area), so the table became `&playerInitAreaHook`. When the scene sequence of section 2 gives Tombi
+  an item (`X006_updateSceneSequence -> addItemToInventory -> printInfoMessage`) the game read host code as the
+  message index, walked garbage text (`loadMessageGlyph: glyph 2311 of bank 0 out of range`) and `drawMessageGlyph`
+  ran its slot past the 128 entries of `MESSAGE_GLYPHS` into `PLAYER` (`PLAYER.anim` = 0x61680, the fault) and the
+  unlayered pool (an object's type byte became 6, whose MAIN0 handler `D_8007BF34[6]` = 0x801194AC is X002's
+  `updateLightsOutDarkness` and the middle of `motocrossBikeJumpStepB` in X006). Found with gdb watchpoints on
+  `PLAYER.anim` and the pool's type bytes. A word of a data run is now data, never a thunk or a native function
+  (`gen2.py` `emit_data`); `audit_pointers.py` `walk_main0` applies the same rule.
 
 What the 32 rooms with findings had, and the root cause of each (all fixed in the generator or the runtime,
 never in generated output):
@@ -2237,9 +2511,353 @@ culls, not in the GTE: the projection keeps its scale, so nothing is stretched; 
   hook picks the blocks around the camera X each frame (nothing streams from CD).  For the hooks that only select
   (areas 0, 1, 2, 3, 7; the others also animate palettes or keep counters) it is run again with the camera X moved
   2*pad+40 each way and the extra blocks are merged into the list (cap 88), so the edges no longer pop in.  Drawing only.
+- **Event titles** (`spawnEventTitle`, `l8Type01MoveStep`, `#ifdef PORT2`): the title tiles start at screen x 340
+  (just past 4:3, inside the wide frame, where they popped into view) and left at x 480 (inside 21:9 / 32:9).  They
+  now start `pad + 160` further right (the tiles sit up to ~150 either side of the title's x) and leave once past `320 + pad`; the fly-in speed is derived from the distance over
+  the same 30 frames, so they land on the same frame.
+- **Sub-screens** (Select screens Objetos / Eventos / Estado / Mapa, memory card, options, button config, screen
+  adjust).  The Select screens (`subScreenDrawTabs`, D0SPSUB / D0SPSUB3, `#ifdef PORT2`) call `port_ws_layout(left cut,
+  right cut, below)` each frame; while it is set, `shims/gpu.c` spreads the textured primitives of the frame
+  (`ws_layout_place`): pieces left of frame column 0x50 (the stone column, leaf buttons, first tab) move to the wide
+  left edge, frame-chrome pieces right of 0x11A (the wooden bar's right end) to the wide right edge, and a chrome piece
+  (a textured quad, i.e. the wooden bars, or a sprite with the stone CLUT 0x7812) that crosses a cut is repeated outwards
+  over the strip it opened, clipped to that strip, so the bars and stone walls run the full width, tiled from the
+  game's own pieces; everything else stays put and the pink content area just gets wider.  Below the bar (frame
+  line 0x30) the map is left alone (its 3D view already fills the wide plane), and the status page widens its boxes
+  (CLUT 0x79D2): left corners and edges to the wide left edge, right ones to the right edge, the middles tiled over the
+  strips; its content moves half a strip towards its side (so it stays centred in the two upper boxes) and, in the
+  full-width boxes from line 144 down, a whole strip left (left-aligned text keeps its margin).  Checked on the
+  software and OpenGL renderers at 16:9 and 21:9.  The memory card logo
+  wallpaper (`memCardDrawBackground`) and the options checkerboard (`optionsDrawFrame`, also button config and screen
+  adjust) are drawn again a screen to each side (the drawing area clips them).
+- **Spanish improved translation labels** (`runtime/subscreen_es.c`, hooked on every VRAM upload in `gpu.c`): with
+  `--lang 5` (Spanish graphics on: not with `--no-gfx-es`) and a MAIN5.EXE whose pause list holds "Objetos"
+  (es_mejorada: a `--text-patch` in memory or, as the PC launcher does it, written into data/; the check used to read
+  only the in-memory patch, so the launcher's Select and Triangle screens kept "Elmto."), the sub-screen texture's
+  "Elmto." tab and "Usar elmto" leaf become "Objetos" / "Usar objeto", composed in VRAM from the original artist's
+  letters only, cut at run time from the pages of the other languages on the same disc (SYSTEM/A<n>0301.000, n =
+  --lang + 1): the tab's O b j e from the Swedish "Objekt", t o from "Elmto.", s from "Estado"; the leaf's b j from
+  the Swedish "Obj", e from "ordenar", t o from "elmto".  A letter carries its shaded edge (the texels near it that
+  differ from the plank / leaf behind the text, a picture recovered from the languages with no letter there); the old
+  text gives way to that picture, the new word keeps the original steps between letters that were neighbours and sits
+  on the old baseline, centred.  The glyph table (both fonts, every letter of the five PAL languages, coordinates only)
+  is `tools/subscreen_glyphs.json`, generated with `tools/subscreen_glyphs.py` (also `--atlas`: a PNG of every glyph
+  cut from your disc, for inspection) into `runtime/subscreen_glyphs.h`; the texture and each source label are
+  recognised by an FNV hash of its rect (any other data is left alone).  "Inventario" was not used: it does not fit the 64-px tab nor the leaf.
+
+  **Free text in those fonts (2026-11-04).** `--subscreen-labels item=..,event=..,status=..,exit=..,map=..,use=..|..,view=..,sort=..`
+  rewrites any of the eight labels (the five tabs, the three leaf buttons; `|` breaks the leaf's two lines) with
+  `--lang 5`, UTF-8. The glyph table now takes letters from all nine language pages (38 tab letters, 30 leaf
+  letters), and the alphabet is completed by our own hand-drawn letters in the same style
+  (`tools/subscreen_extra_glyphs.py`: tab D G J L N P R T U X Y Z h q z, leaf C D F H I J K L M N P Q R W X Y Z f p
+  q x y z; ours, not the disc's, so they can live in the repo), the tab ones painted with the shaded edge the disc's
+  letters carry (the modal edge texel index of the disc letters: `sub_edge[]` in the generated header), the leaf
+  ones plain white like the disc's. á é í ó ú ñ
+  and their capitals are the base letter plus an acute / tilde mark above it (the dot of i / j dropped). Neighbours
+  of one source word keep their original step; other pairs step by the ink width plus one. A letter no font has
+  leaves every label as the disc writes it (logged). Without the option the item tab and the use leaf still follow
+  the improved translation's "Objetos". `tools/subscreen_font.py --data data -o DIR` builds the same lettering as
+  two TrueType fonts (Tombi Plank, Tombi Leaf; pixel outlines, ink only) on the owner's machine from their disc.
+  Our letters also cover the digits, punctuation and the keyboard's symbols, the grave / diaeresis / cedilla marks
+  (à è ì ò ù, ä ë ï ö ü, ç and capitals), and replace the disc's leaf U / u (turned 8 degrees left: `REPLACE`);
+  marks above the leaf's u / U sit a few texels right (`MARK_SHIFT`). 130 characters per font.
 
 Launcher: Play tab, "Imagen" 16:9 / 21:9 / 32:9.  Remaining: some far backdrop layers still end near the 4:3 edges (sky
 colour in the top corners in AREA00), and any screen-space cull not matching the patterns above is untouched.
+
+### High frame rates: `--fps N|auto|unlimited` (both renderers, PC and Android)
+
+The game logic keeps advancing once per vblank (50 Hz PAL; `--hz 60` = NTSC speed), so audio, physics and every timer
+are unchanged; only the *presents* get their own clock: `--fps auto` = the display's refresh rate (60 if unknown or
+headless), `--fps 60|90|120|144|N` = that many per second, `--fps unlimited` = as fast as they go with vsync off. 50 or
+less, or `off`, is the old one-present-per-vblank path (the default). `--fps60` (the earlier experimental OpenGL-only
+switch) is now `--fps auto`. Launchers: PC *Graphics* page, card *Frame rate* (50 (original) / Auto / 60 / 90 / 120 /
+144 / Unlimited); Android *Opciones → Gráficos → Frame rate* (same list; the old *60 fps* switch reads as Auto). The
+code is `port2/shims/hfr.inc` (included by `gpu.c`) plus the snapshot / work-target helpers at the end of `gpu_gl.c`.
+
+How it works:
+- **Recording.** While `--fps` is on, every operation the GP0 decoder hands to the backend is also appended to the
+  record of the current vblank, renderer-independent: polygons as whole packets (3 or 4 vertices), sprites, lines,
+  fills, VRAM copies, host uploads *with their pixels*, the `--widescreen` wide-plane fills / copies / uploads, each
+  with the GP0 state (drawing area, offset, blend mode, mask, texture window, plane) it was drawn with. A record starts
+  with a snapshot of VRAM and the wide plane: software, a copy of `vram[]`/`wvram[]` (1 MB, 3 MB with widescreen);
+  OpenGL, a GPU copy of the VRAM texture (and wide plane) per record slot. Four slots are kept.
+- **Which frame is on display.** The game flips right after the vblank (`FlipFrame`: `PutDispEnv` + `DrawOTag`), so the
+  pairing runs at the first present after it: the newest closed record that drew into the displayed area is the
+  displayed frame C; when it changes, it is paired with the frame displayed before it, P.
+- **Identity.** A primitive is "the same one" in P and C when its signature matches: kind, vertex count, flags, blend
+  mode, plane, texture page and CLUT, and the texture coordinates of every vertex (a sprite: also its size). Positions
+  are compared relative to the origin of each one's drawing area, so the two halves of the double buffer line up. The
+  game's C moves GTE results through ordinary memory before they reach a packet, so a tag on the GTE output would not
+  survive to the GPU (and models are instanced); the texture coordinates of a face are fixed by its model and are the
+  stable part. Untextured primitives match by kind/flags and position alone.
+- **Pairing** (about 50 µs a frame), in rounds of increasing distance so the closest candidate always wins: (1) same
+  signature at the same place (scenery that did not move, the HUD, text); (2) same signature within 2, 6, 16, 40
+  pixels, each vertex its own delta (3D faces turn and scale); (3) animated sprites (texture coordinates changed: a new
+  animation frame) by page / CLUT / kind and a similar size within 4, 24 pixels, moved by their centre. Primitives
+  whose texels were rewritten between P and C (a background streamed into a ring of texture columns as the camera
+  moves, as Baccus village does: the same u/v then shows a different picture) only match in place; when they moved,
+  they take the motion most of the other moved primitives share (the camera's). A primitive with no partner (it
+  appeared this frame) is drawn where it is now; one that disappeared is not drawn.
+- **No blend** for a frame where fewer than a quarter of the primitives found a partner (scene change, room load),
+  where more primitives jumped further than any round allows than moved (camera cut, a teleport of everything), where
+  nothing moved (no replay needed), for 24-bit frames (the movies), a blank display, while the `--debug-menu` overlay
+  is drawn, and when the display size or plane changed. The presents then show the frame as the game drew it.
+- **Replay.** A present at alpha (0 = P, 1 = C) replays C on its snapshot, each vertex at C + (P − C)·(1 − alpha), with
+  the textures, colours, uploads and everything else from C. Software: into a work copy that `vram`/`wvram` (now
+  pointers) are pointed at; OpenGL: into work targets that stand in for the VRAM texture / wide plane while the replay
+  runs. Either way the normal present path (`present_window`, the frame dumps) then shows it, so widescreen, the 4:3 /
+  square fit, `--show-fps` and the 24-bit path need nothing special. With `--internal-res` > 1 the OpenGL backend keeps
+  the sub-pixel part of the interpolated positions (`port_gpu_subpx`), so a camera moving 1 px per frame still glides
+  in half / quarter pixels; the software renderer and 1x work in whole pixels.
+- **Clock.** `port_vblank` (psyq.c) calls `port_hfr_wait` instead of its pacing sleep: presents at the chosen rate until
+  the next vblank is due, alpha from the time since the displayed frame came up over the time its predecessor was shown
+  (one vblank at full rate; up to 3 when the game draws at 25 or 16.7 fps). The vblank comes first: an interpolated
+  present starts only when what a replay and a swap take (running mean + 2 × mean deviation of each, as TCP estimates a
+  round trip, plus ~1 ms) ends before the vblank is due, and on OpenGL only when the GPU has finished the previous one.
+  The replay's GPU time is measured with a fence (`glFenceSync` / `glClientWaitSync`, GL 3.2 / ARB_sync / GLES 3; no
+  `glFinish`, no readback); the swap of a replay the GPU has not finished by the deadline is not made (the frame is
+  dropped) rather than the swap waiting for it. Every vblank still gets one present: when no blend fits, the newest frame
+  as drawn (alpha 1, as without `--fps`), and nothing after it before the vblank (a blend would step back). A slow GPU
+  thus falls back to the 50/60 Hz presents, never a slower game. Up to v0.0.14 the first present of each vblank was
+  always a blend and only the replay's CPU submission time was counted: with a GPU-bound replay (an AMD integrated GPU
+  at `--internal-res 4`, the swap blocking on the GPU queue) the logic ran at 40-50 vblanks/s, with bimodal intervals
+  (many < 14 ms, many 25-45 ms). Also on OpenGL, when the work targets already hold the snapshot being replayed (every
+  present after the first of a frame), only the rectangles the record writes (its drawing areas, fill / copy / upload
+  destinations) are copied back from it instead of the whole VRAM (32 MB at 4x; the display area is about a seventh).
+  Headless (no `--realtime`) runs use a virtual clock at the `--fps` rate. One logic frame of display latency is
+  inherent (the blend runs between the last two finished frames), the same as the old present-at-vblank path.
+- **The second-screen panel** (`--second-screen`) is its own window drawn from its own vblank hook: unaffected.
+
+Measured (this VM: Xeon 2.8 GHz, Mesa llvmpipe for OpenGL, i.e. the GPU work is on the CPU too; AREA00 scrolling):
+pairing 50-60 µs per new frame; a replay costs about what drawing the frame costs: software 5-9 ms (the frame itself
+takes 7-9 ms here), OpenGL on llvmpipe 2.5-4.7 ms (on a real GPU this is the CPU cost of re-submitting ~500 primitives,
+a fraction of a millisecond). Windowed under Xvfb at `--fps 120`: OpenGL 111-115 presents/s, 50.0 vblanks/s; software
+~50 presents/s (one in-between frame per vblank: the rasteriser is the limit on this VM; the game speed stays 50.0).
+The software rasteriser's edge functions were made incremental 32-bit (exactly the same pixels: 68 frame dumps of the
+AREA00 run byte-identical to master) and the run got ~25 % faster, which helps both paths.
+
+Smoothness, headless at `--fps 120` (2.4 presents per vblank), mean absolute difference between consecutive presents
+(cv = its coefficient of variation: 0 = perfectly even motion; "repeats" = presents identical to the one before):
+
+| scene | 50 fps shown at 120 Hz | `--fps 120` |
+|---|---|---|
+| AREA00 side-scrolling, walking right (soft and GL) | repeats 59 %, cv 1.20 | repeats 0 %, cv 0.32 |
+| AREA02 s3 top-down tunnel, walking | repeats 59 %, cv 1.22 | repeats 0 %, cv 0.69 |
+| AREA05 s0 Baccus village (3D, prerendered streamed background), walking diagonally, software 1x | repeats 59 %, cv 1.21 | repeats 21 %, cv 1.07 (the camera moves ~1 px a frame: no whole-pixel position in between) |
+| the same, OpenGL `--internal-res 2` | (same) | repeats 0 %, cv 0.34 |
+| AREA03 s0 dialogue with the event title flying in | repeats 59 %, cv 1.60 | repeats 0 %, cv 0.73 |
+| item menu, message box text | static: presented as drawn (the cursor move is blended) | |
+| synthetic camera cut (`PORT_HFR_TEST_CUT=3270:120`: every polygon from vblank 3270 on moved 120 px) | | detected, not blended: one jump, then blending resumes |
+| room load (debug select, AREA03 s0 loading screen → room) | | detected as scene changes, not blended |
+| boot logos / 24-bit frames | | presented as drawn (0 interpolated) |
+
+Test hooks: `--dump-presents DIR[:FROM:TO]` writes every present of vblanks FROM..TO (at the internal resolution on
+OpenGL with `--internal-res` > 1); `-v` prints each present's alpha, `-v -v` each pairing (static / moved / animated /
+with the camera / new / jumped); the exit line `[fps] ...` sums presents, costs and the pairing shares; `--show-fps`
+adds presents/s, the replay cost, the vblanks where no blend fitted, the dropped replays and the expected replay / swap
+times to the fps line. `PORT_HFR_NOBLEND=1` makes the same presents without the blend
+(for comparisons) and `PORT_HFR_TEST_CUT=FRAME:DX` moves every polygon by DX from FRAME on (a camera cut).
+
+Known limitations:
+- Screen-space blending: a polygon is moved linearly between its two projected positions; fast rotations close to
+  the camera bend slightly in between (true for any screen-space method; the game gives no pre-projection data that
+  survives to the GPU). Motion under one pixel per frame cannot be split at 1x (software renderer, or OpenGL at 1x).
+- Identity by texture coordinates: identical faces near each other (repeated tiles, several copies of a model) are
+  disambiguated only by distance; a fast object (> 40 px a frame) or one that changes texture page is drawn
+  unblended where it is now; an animated sprite changing size by more than a third is treated as new.
+- With the software renderer every in-between present re-rasterises the frame: it needs a CPU where a frame takes well
+  under 1000 / fps ms (here ~1 in-between frame per vblank). OpenGL is the renderer to use for 90-144 Hz.
+- OpenGL memory: four snapshots of the VRAM texture (and wide plane) at the internal resolution: 32 MB at 1x
+  (+wide 64 MB), 4x that at 2x internal resolution. A record that grows past 400,000 operations is not used.
+- One logic frame of latency (as before); render-to-texture effects are replayed from the newest frame, not blended.
+
+Recommendation: keep the default at 50 (off) for now and offer Auto as the suggested choice for OpenGL; the PC and
+Android launchers both default to 50.
+
+### 60 Hz mode: `--hz 60` plays at the NTSC (US/JP) speed
+
+**Result: the PAL build changed nothing in the game logic for 50 Hz.** Speeds, accelerations, gravity, jump tables,
+frame counters, timers, animation script durations, camera speeds, the sequencer's tick and the music are the US
+build's, frame for frame. A PAL console simply runs that logic 50 times a second instead of 60 (5/6 of the US speed,
+music excepted: see below), so the PAL game running at 60 vblanks a second *is* the US game's timing. The only PAL
+change tied to the frame rate is the play-time clock, which `--hz 60` corrects (below). Everything else that differs
+is the 256-line PAL picture, text, and a handful of later bug fixes, which the 60 Hz mode keeps.
+
+**How it was checked.**
+- **Code, function by function** (`tools/ntsc_diff.py US_FS`, the USA disc extracted with `tools/isoext.py`): every PAL
+  function with a size (main0, X000..X019, D0SPSUB*, I0NFO*, O0PTSUB0, G0OVER: 3,529 distinct functions, 8,580 with
+  the X000 code every area overlay repeats) is looked up in the matching USA file by masked words (`tools/xmatch.py`
+  masking). 3,330 have a masked twin; in a twin only relocations may differ, and the tool lists every other changed
+  immediate (li, slti/sltiu/andi/xori, shift amounts, small lui, addiu on a non-address register, division magic
+  numbers): 25 twins have one. The 199 without a twin are aligned against the USA bytes between their neighbours' twins
+  and diffed instruction by instruction (43 differ only by relocations once aligned). Every listed difference was read;
+  the full list is below.
+- **No run-time PAL branch.** The game never reads the video mode: `GetVideoMode`'s variable (0x800981A0) is read only
+  by libgpu/libsnd (`SetDefDrawEnv`, `PutDispEnv`, `SsSetTickMode`), no game code tests it, so a PAL scaling that would
+  look the same in both builds does not exist.
+- **Data** (`objdata`/gap comparison of every data object of MAIN0 and the overlays against the USA files, pointers
+  masked; `tools/usa_compare.py` for the disc's load-list blocks): the animation scripts, object/handler tables, jump
+  and speed tables, the shared X000 data block (one colour word differs) are byte-identical. What differs: sprite
+  frame ids of the item descriptors (+5 frames in the PAL banks), text layout tables (the two-line letter positions of
+  the PAL names), the X004 item-follow offsets (dx/dy only, the 7-frame durations are equal), 256-line coordinates.
+  On the disc, the 88 SOUND files (all SEQ and WVD) and the MOVIE streams are identical; the APD placement blocks
+  that differ move objects down by 24 / 52 lines (the taller PAL screen) or reorder two AREA04 records; two WHM
+  collision blocks (AREA09 s1, AREA14) differ (level fixes).
+- **The USA executable run side by side** (`tools/ntsc_check.py US_FS game_usa/tomba_us.bin OUT`): tools/psxemu
+  boots SCUS_942.36 from the USA disc with the PAL HLE names moved to their USA addresses (twins), and plays the
+  jumpcheck script (new game, opening dialogue, standing / running / Cross-held jump) next to MAIN0.EXE. Both reach
+  the title at frame 905/906 and give the same arcs frame for frame (only the emulator's one-frame sampling glitches
+  differ), and the port at `--hz 60` (`--skip-movies`, same script) gives the same arcs (identical to the USA run
+  for the two standing jumps; the other two differ only where the emulator's sampling glitches).
+- **50 vs 60 in the port.** The port's logic does not depend on the rate: every one of the 96 debug-select rooms run
+  for 3,600 frames with the sweep pad script (walk, jump, attack, run+jump, up/down) at `--hz 50` and `--hz 60` gives
+  the same per-frame player trace (`-v -v -v`, 0 differing frames in 345,600), and so do long random-input runs (below).
+  Audio, the CD stream and the sequencer keep real time (they are clocked by `port_hz` or by audio samples), as on a
+  console.
+
+| Quantity | PAL console / port `--hz 50` | Port `--hz 60` | US (NTSC, 59.94 Hz), from its code / its run | Match |
+|---|---|---|---|---|
+| Standing jump (AREA00, jumpcheck) | 42 px, 37 frames = 0.740 s | 42 px, 37 frames = 0.617 s | 42 px, 37 frames = 0.617 s (emulated SCUS_942.36) | yes |
+| Running jump | 98 px forward, 42 px high, 37 frames = 0.740 s | same frames = 0.617 s | same frames = 0.617 s | yes |
+| Jump with Cross held (onto the first tree) | 65 px, 19 frames = 0.38 s | 0.317 s | 0.317 s | yes |
+| Walk / run start (Right from standing) | 55 px in 40 frames, then 2 px/frame = 100 px/s | 120 px/s | 119.9 px/s (same per-frame profile) | yes |
+| Gravity, jump tables, anim durations | per-frame tables identical to US | ×1.2 per second vs PAL | US per-frame values | yes |
+| Race lap / best time (X006 `drawRaceHudLapTime`, `drawRaceHudBestTime`, `updateRaceMessageSprite`) | frames / 60 in both builds: the PAL clock shows 50/60 = 0.83 of real time | real time | real time (×0.999) | yes |
+| Play-time clock (`GAME.totalTimePlayed`) | PAL divides by 50 / 3000 / 180000: real time | counter advances 500 per 600 vblanks (measured), PAL divisors: real time | US divides by 60 / 3600 / 216000: real time | yes |
+| Music tempo (S_AR000: 87 bpm, step 116 tenth-ticks per tick) | 60.00 Hz root-counter tick (`SS_TICK60` on PAL): 87 bpm, 1.2 sequencer ticks per game frame | 87 bpm, 1 tick per frame | VSync tick at 59.94 Hz: 86.9 bpm, 1 tick per frame | yes (0.1 %) |
+| FMV | same STR files, 150 sectors/s | same | same | yes |
+| Frame rate | 50 | 60.00 | 59.94 | 0.1 % (deliberate) |
+
+**What differs PAL vs NTSC (the complete list from `tools/ntsc_diff.py` and the data comparison).**
+- *Frame-rate related:* only the play-time clock: `memCardDrawPlayTime` (D0SPSUB2), D0SPSUB2 `func_800E999C` (the save
+  list) and X013 `updateSceneSequence` (the ending's statistics) divide the frame counter by 50·60 / 50·3600 where the
+  US divides by 60·60 / 60·3600. Not compensated in PAL: the race clock (frames / 60 in PAL too, so it runs slow at 50 Hz).
+- *256-line picture:* screen centre and projection (`initGraphics` 128→112 in US, `computeCameraMatrix` /
+  `drawObjectModelCameraFixed` / X006 `setupCameraMatrixFromObj` / X009 `scrollFollowRotatingPlane` 128 vs 120, the camera
+  clamps of `updateCameraFollow` / `cameraClampAroundTarget` / `cameraModeHandler6` / `ObjCheckHeadCollision`
+  −92/−144 vs −84/−136, `resetCameraScratchDefaults` / `initGameConfig`), HUD and menus (`drawHud`, `drawRaceHud`
+  240→208, `drawScreenFade`, `drawLoadingSprites`, `printEventMessage`, `printInfoMessage`, the pause, title, options and
+  sub-screen layouts, `drawLetterboxOverlay`, the backdrop / parallax sprites +0x180 / +0x40 on y in X000/1/4/6/9/10/14),
+  movie height 0x110 vs 0x100 (`moviePlayerTask`, plus a decode timeout loop), the APD y offsets.
+- *Text and languages:* the PAL item list (one column of 10, `subScreenMoveGridCursor*`, `subScreenItemListStep`, ...),
+  the memory-card and options screens, the letter layout tables, MAIN0's language tables.
+- *Logic fixes in the later PAL build (kept):* `updatePlayer` (one extra state test), `playerHandleHazardContact` (one
+  AREA03/07 respawn point 0x44A,-0x414 vs 0x458,-0x3AC), `updateLeafButterflyByArea` (area 1 vs 3),
+  `tryStartItemInteraction`, `collidePlayerWithCat5Object(s)` and `processObjectCollisions` (extra checks),
+  `cameraEventScrollHandler` (a flag cleared), `l8Type01MoveStep` / `updateL8Type01Object` (the item model flying to the
+  HUD: ease 1/4 vs 1/8 per frame and the step order), X002 `spawnPigGateSceneNpcs`, X004 `updateArea4ItemObj`, X009
+  `jellyfishSwimB` / `jellyfishSink` (same work, other order), X011 bonsugee researcher talks, X013 scene code, I0NFO2
+  `topdownMapObjHandler`, I0NFO3 `tunnelClampPlayerToGates`, the WHM fixes. These are content, not timing: the 60 Hz
+  mode plays them as PAL has them.
+- *Libraries:* libpad / multitap (`_pad*`, `PadGetState`, ...), the memory-card BIOS stubs, `_padSendCmdByte`; irrelevant
+  to the port.
+
+**What `--hz 60` does.** It paces the vblank at 60.00 Hz (`shims/psyq.c`); the game, the CD stream and the audio need
+nothing else. The play time stays in 1/50 s: `port_play_time_tick` (`shims/psyq.c`, called under `#ifdef PORT2` from the
+five places that count it: `gameplayMainHandler`, `areaMode2Handler`, `areaMode4Handler`, `areaMode5Handler`,
+`areaMode6Handler`) skips every sixth increment at 60 Hz, so the save
+screen, the ending and the second screen show real time and a save keeps the same units whichever rate it was played
+at (checked: +600 per 600 vblanks at 50 Hz, +500 at 60 Hz). The rate is 60.00, not 59.94: on a 60 Hz display that is
+one present per refresh, and the 0.1 % (one frame in 16.7 s, and the same on the music) is below anything a player
+can notice. The launchers' *60 Hz (NTSC speed)* switch is this mode.
+
+**Long runs.** Random pad scripts (walk, run, jump, attack, Circle, L1/R1, up/down; seeded) of 20,000 frames (5.5
+minutes at 60 Hz) from the debug select into 12 rooms, at 50 and at 60 Hz, `-v -v -v` traces compared frame by frame:
+
+| Start room (rooms the run reached) | Frames compared | Differing | Play time 50 Hz / 60 Hz (1/50 s) | Ratio |
+|---|---|---|---|---|
+| 0:0 village (0:0 1:0 1:1) | 20,000 | 0 | 17560 / 14634 | 0.8334 |
+| 0:2 (0:0 0:2 1:0 1:2) | 20,000 | 0 | 17802 / 14835 | 0.8333 |
+| 1:1 side-scrolling (1:0 1:1 2:0 3:0 3:1 4:0 4:1) | 20,000 | 0 | 15903 / 13253 | 0.8334 |
+| 5:0 top-down town | 20,000 | 0 | 18271 / 15226 | 0.8333 |
+| 6:0 race track | 20,000 | 0 | 18275 / 15230 | 0.8334 |
+| 9:2 water (8:2 9:1 9:2 9:5) | 20,000 | 0 | 17783 / 14820 | 0.8334 |
+| 10:4 jungle (10:4 9:2..9:5) | 20,000 | 0 | 16780 / 13984 | 0.8334 |
+| 13:1 (13:0 13:1) | 20,000 | 0 | 17944 / 14954 | 0.8334 |
+| 14:3 | 20,000 | 0 | 8689 / 7241 | 0.8334 |
+| 17:2 (17:2 17:4) | 20,000 | 0 | 17872 / 14894 | 0.8334 |
+| 19:1 (16:4 17:1 17:2 18:1 19:1) | 20,000 | 0 | 16393 / 13661 | 0.8333 |
+| 4:5 (debug select into 5:5, 6:5, 7:5) | 3,079 | 0 | - | - |
+
+Ratio 5/6 = real time kept in 1/50 s. The 4:5 run ends with the same fault at both rates (`queueLoadList`, after the
+random L1/R1 presses of the debug mode moved the selection to area 7, which has no data); the only other log lines
+are the wall-clock "no game progress for 3 s" watchdog warnings in static scenes of headless runs, at one rate or the
+other, on frames that are identical. The sweep's AREA06 section 2 fault (frame 2804, `processObjectCollisions`, a
+call to X006 0x801194AC with no native code) is also the same at both rates: a port bug of its own, not timing.
+
+**Open.** Nothing in the game logic. A real NTSC console's 59.94 Hz is not reproduced (see above). The PAL-only logic
+fixes are kept on purpose. The picture follows the USA build: see "NTSC picture" below.
+
+#### NTSC picture: `--picture ntsc` draws the USA game's 320x224 screen
+
+**Status: experimental, opt-in.** It was the default with `--hz 60` in 0.0.16 / 0.0.17 and was taken back: the
+top-down areas (AREA02, AREA05...) draw the backgrounds, static objects and characters out of step (sprites above
+the ground, duplicated background rows) and the movies flicker.
+
+**Why.** The PAL build draws 256 lines (320x256, screen centre y 128) where the USA build draws 224 (320x224, centre
+y 112), and a PAL TV stretches its 256 lines over the same 4:3 screen an NTSC TV fills with about 240: the same
+46-pixel Tombi is 46/256 of the picture height on PAL and 46/240 on NTSC, so the PAL game looks 6.7 % squashed
+("más retaco"), and every 2D element was moved down for the taller screen. Up to now the port showed the PAL 256-line
+picture at 4:3 in both modes. With `--hz 60` (or `--picture ntsc` at any rate; `--picture pal` keeps the old picture)
+the port now uses the USA build's value everywhere the PAL build changed it for the 256-line screen, through
+`PORT_NTSC(pal, us)` (`port2/include/port_prelude.h`, `port_ntsc` set in `runtime/main.c`) in `port/fixes.txt`
+(section "NTSC picture", each line names the USA function), plus `src/wip/d0spsub_func_800EFD6C.c` (the Status page
+draft) and `runtime/titlebg.c`. The console build is unchanged (port-only substitutions; the wip draft is not built).
+
+| What | PAL | USA / `--picture ntsc` |
+|---|---|---|
+| Draw / display areas (`initDisplay`), logo screens (`initWideDisplayEnv`) | 320x256, 640x512 | 320x224, 640x480 |
+| Screen centre (`initGraphics` geometry offset) | 160, 128 | 160, 112 |
+| Camera: view 128 / 120 lines above the camera point (`computeCameraMatrix`, `drawObjectModelCameraFixed`, scratch 0xF2 in `resetCameraScratchDefaults` / `initGameConfig`, X006 `setupCameraMatrixFromObj`, X009 `scrollFollowRotatingPlane`) | 128 | 120 |
+| How far above the camera's top Tombi may go (`cameraClampAroundTarget`, `updateCameraFollow`, `cameraModeHandler6`, `ObjCheckHeadCollision`) | 0x90 / 0x5C | 0x88 / 0x54 |
+| HUD lives row (`drawHud`, X006 `drawRaceHud`) | 240 | 208 |
+| Fade rectangle (`drawScreenFade`), pause dim (`drawPauseMenu`) | 256 | 240 |
+| Pause menu text / highlight / frame (`drawPauseMenu` and its tables) | | 16 lines up |
+| Info message rows (`printInfoMessage`), event message (`printEventMessage`), "Now Loading" (`drawLoadingSprites`) | 212, 160, 160 | 180, 144, 128 |
+| Cut-scene overlay (`drawLetterboxOverlay`) | +24 lines, black bars at 0 and 240 | no offset, no bars |
+| Backdrop / parallax sprites (X000 `updateA00FarBackdropEast`, X001, X004 `updateStormBackdrop`, X006, X009, X010, X014) | +24 (+16) lines at spawn, X006/X010/X014 follow scratch 0x186 | no offset, scratch 0x17A (X004: the USA vertical parallax shift) |
+| Title (`titleLogoDraw`, `loopTitleScreen`, carousel) | black band over the top 8 lines, landscape at 8, rows 160/208, carousel 184 | no band, landscape at 0, rows 144/192, carousel 168 (arrows 166) |
+| Options / screen adjust / button config (O0PTSUB0 drawers) | | 16 lines up |
+| Sub-screen: Status page (`func_800EFD6C`, notes, "Next N" labels), map area / room names | | 16 lines up; names 216/232 -> 184/200 |
+| Sub-screen item / event lists (D0SPSUB Select, D0SPSUB3 Triangle item screen: `subScreenItemListStep`, `subScreenDrawItemGrid` / `Names`, `subScreenMoveGridCursor`, event list...; slot tables patched as the menu opens, `port_ntsc_subscreen` in `runtime/ntsc.c`) | 10 rows a page (the 10th at 216 / 224), footer / arrows at 248, list backdrop at 128 | 8 rows a page, footer / arrows at 216, backdrop at 112 (the USA DSPSUB / DSPSUB3 tables); the port's event-page counter in the left column at 184, its arrows at 168 |
+| Movies (`moviePlayerTask`) | VRAM rows 272.. | rows 256.. |
+
+The window shows the 224 lines as 224 of the 240 lines of a 4:3 NTSC screen (`port_window_fit`, `runtime/sdl.c`: a
+224-line frame is 320 wide, the window opens at 320x240 times the scale, with 8-line borders as on an NTSC TV); the
+OpenGL blit, `--widescreen` (426x224 at 16:9), `--fps` and `--internal-res` take the frame size as it is. Not changed
+(no visible effect or no USA counterpart): the off-screen culls (`y < 256` -> `y < 224` in the model / sprite
+drawers), the memory card screens (top-anchored, they fit), the PAL
+top-down map strips, the logo screens' background grey, the sub-screen map's scroll position (the map settles
+lower than in the USA run; not traced yet).
+
+**Disc data.** The PAL disc also moved object placements: 126 distinct APD placement records (load-record kinds
+0x80..0x86, 21 blocks in 13 areas; mostly backdrop and scenery objects, 24 lines lower; AREA00 section 0-2 ones 44 /
+52) differ from the USA disc's only in their y word. `tools/ntsc_apd.py US_FS USA.bin -o port2/runtime/ntsc_apd.inc`
+lists them (numbers only: area, the eight PAL words, the USA y) and `port2/runtime/ntsc.c` gives a record the USA y
+when `spawnObjectFromRecord` spawns from it and it still holds exactly those PAL words. Checked: the candles of the
+elder's house (AREA00 section 3) are 10 px lower than in the USA run without it, within 1 px with it. AREA04
+sections 0/1 are left as they are (PAL reorders two records and adds three: content, not the screen). The player
+trace of the `tools/ntsc_check.py --port-script` run is identical with `--picture ntsc` and `--picture pal`.
+
+**Checked against the USA executable** (tools/psxemu running SCUS_942.36 from the USA disc, the same pad script as
+the port at `--hz 60`, frames aligned on Tombi's opening drop): the village opening frames are the same picture
+(best vertical offset 0 px; the remaining per-pixel differences are the emulator's undithered rasteriser), the first
+dialogue box, the Select popup, the Items page, the Status page and the map names line up, and Tombi standing is
+46 px tall (hair tip y 154 to the feet y 199) in both. The title matches the USA layout (the logo and landscape are
+the PAL art).
+
+**Timing of the opening scene.** Anchored on Tombi's first falling frame (port frame 1153 of the
+`--pad-script 1000:start:4` run, emulator frame 133 after START), the USA run and the port at `--hz 60` agree at
+every offset (`tools/psxemu` draws one frame ahead of the state it logs at times, so +-1): the picture fades in
+from +0 to about +20 with the straw-hat villager already up on his chimney, Tombi lands at +51 in both (y -52), the
+first dialogue box opens at +59/+60, its text runs at the same pace. The PAL logic of this scene is the USA logic
+frame for frame, and the room's objects only start once its CD loads are done: the port loads the room in 130
+frames, a real drive takes longer, but that shifts the scene as a whole, not the villager against Tombi. A JP
+(SLPS-01144) run was not possible (tools/psxemu has no HLE map for that executable), so a difference between JP and
+the USA/PAL builds in this scene is not ruled out. The music is the same in real time at 50 and 60 Hz (116 of 116
+note-ons of the title theme on the same sample offsets, `-v -v` logs): libsnd's `SsSetTickMode(SS_TICK60)` ticks
+the sequencer 60 times a second on both consoles (PAL: root counter 2; NTSC: VSync, 59.94), so PAL Tombi! never had slower music.
 
 ### HD (plan; phase 1 prototyped): `--internal-res N`
 
@@ -2357,6 +2975,49 @@ but `updateL4Type1AObject` keeps that box to see it close; natively it got NULL,
 step after its text (its close code, and the events 0x25/0x2E/0x31 it starts, never ran). port/fixes.txt now makes the
 port's `showMessageBox` return the box.
 
+### `--noclip`: walk anywhere in the tunnels (port only, research)
+
+`--noclip` turns off everything that stops or moves the player in the top-down tunnel engine (I0NFO3, AREA02 section 3):
+wall tiles (`tunnelCollideMapTile`), the one-way gates (`tunnelClampPlayerToGates`), pushes from actors and objects
+(`tunnelResolveNpcContact`), the slide zones (`tunnelCheckSlideZone`), the trigger tiles (`tunnelCheckTileTrigger`, so no
+tunnel events start) and the five exits (`tunnelSectionStep`). The camera follows as usual. The hooks are `#ifdef PORT2`
+in those files; the console build is unchanged. The player is still clamped to x 90..1750 by the engine; y is not
+clamped (the map covers y -0x540..0). Square makes the walk faster (2.5 px a frame). Example, a full serpentine sweep
+from the debug select:
+```
+build/port2/tombi2 --headless --noclip --skip-movies --frames 11100 -v --poke 900:1F8001B4:1 \
+    --poke 1250:8009C960:2:2 --poke 1250:8009C962:3:2 \
+    --pad-script 1000:start,1300:circle:3,1600:down+square:140,1750:left+square:370,2130:right+square:675,2815:up+square:48,...
+```
+(used for the B301.000 glyph sheet check, docs/CUT_CONTENT.md). It has no effect outside the I0NFO3 rooms.
+
+### `--crawler-patrol`: the caterpillar's unused route (port only, research)
+
+`--crawler-patrol` makes the green caterpillar of AREA01 s2 (Wobbly Wharf, X001 `updateSegmentedCrawler`) run the unreferenced
+`segmentedCrawlerWander` instead of `segmentedCrawlerMove`. With the flag the caterpillar goes down, runs right to h 0x551, turns, runs left to h 0x118,
+turns to face right and stops for good. Retail loops between the two limits on two lanes. The hook is two lines of
+`port/fixes.txt`, and the game is unchanged without the flag. Background, renders and a GIF: docs/CUT_CONTENT.md "Unused patrol routes".
+```
+build/port2/tombi2 --window --crawler-patrol --skip-movies --poke 900:1F8001B4:1 --poke 1250:8009C960:1:2 \
+    --poke 1250:8009C962:2:2 --pad-script 1000:start,1300:circle:3
+```
+The first caterpillar appears about 12 s after the room loads, in the canopy above the bridge. It walks above the normal view, so the debug
+menu's Fly line helps to follow it.
+
+### `--log-anim [FILE]` and `--log-anim-force CAT:TYPE,...`: animation-script logger (port only, research)
+
+`--log-anim` watches the animation-script pointer of the game objects (TObj +0x24) after every main-pool update and in the animation helpers
+(`AnimLoadDuration`, `AnimJump`, `AnimAdvance`, `AnimAdvanceWithBox`, `tickAnimationFixedRate`), and the frame every visible object draws
+(`drawObject`). A pointer inside one of the unreferenced scripts of docs/CUT_CONTENT.md "Unreferenced animation scripts" prints `[anim] HIT`;
+the first update of each object prints `[anim] OBJ` (slot address and position, for `--poke`). At exit every distinct script address and frame
+per overlay / room / category / type goes to FILE (or to the log). `--log-anim-force CAT:TYPE,...` (implies `--log-anim`) also cycles every
+object of those types through b04 1..3 x step 0..11, one combination every 110 frames, to run each branch of its update switch: the forced
+states can do anything, research only. Code: `port2/runtime/animlog.c`, hooks in `port/fixes.txt`; the game is unchanged without the flags.
+```
+build/port2/tombi2 --headless --skip-movies --frames 5800 --poke 900:1F8001B4:1 --poke 1250:8009C960:9:2 --poke 1250:8009C962:0:2 \
+    --pad-script 1000:start,1300:circle:3 --log-anim-force 2:21 --log-anim jelly.txt
+```
+
 ### Debug menu: `--debug-menu` (port only, opt-in)
 
 An in-game debug menu for testing (`port2/runtime/debugmenu.c`). Off by default; `--debug-menu` turns it on
@@ -2382,7 +3043,7 @@ buttons held when it closes are kept from the game until released.
 
 Launcher modifiers that are safe live, and are in the menu: infinite vitality, infinite lives, AP, all events,
 `--cut-content` (next room). Not live (boot-time only): `--skip-intro`, `--hz`, the area select / title DEBUG
-entry, `--lang`, `--widescreen`, `--renderer`, `--fps60`, `--internal-res`.
+entry, `--lang`, `--widescreen`, `--renderer`, `--fps`, `--internal-res`.
 
 Hooks, all inert without the flag: `shims/pad.c` (input), `shims/gpu.c` `port_gpu_vblank` (the overlay: GP0-02
 style fills into the displayed frame before the present and the dump, so it shows on both renderers, in
@@ -2428,12 +3089,36 @@ canvas pixels per picture pixel (or the mean of whole n x n blocks when zoomed o
   character code: each is named by the SHA-1 of its image through `runtime/panel_charmap.h` (hashes only, generated from
   `tools/wfm_charmap.json` by `port2/tools/gen_panel_charmap.py`). No colon glyph exists: two dots, as the game does.
 - Event browser (tab *Eventos*): every event with its icon and title, filters En curso / Hechos / Pendientes (not started:
-  dimmed icon, "? ? ?"), a detail page with where (area / room names, the map graph with the event's icon on the room),
-  who / what starts it and the state. Places come from `runtime/panel_eventmap.h` (ids and coordinates only, generated by
+  dimmed icon, "? ? ?") and a detail page (below). Places come from `runtime/panel_eventmap.h` (ids and coordinates only, generated by
   `port2/tools/gen_panel_events.py` from `tools/objects.py` room lists and the `setEventStarted` / `setEventComplete` call
   sites of `src/`; coverage per event in `docs/EVENTS_MAP.md`); unknown ones show *ubicación desconocida*.
+  No text is cut with "...": a list row's title and place wrap (the place's next lines under its first letter, the
+  room on its own line after "area -"), so rows are 30 px plus 16 a title line and 10 a place line more.
+  Scrolling (2026-11-03; the events lists, the items grid and the Barón / *Alas de caridad* destinations share one
+  scroller, `Scroll` in panel.c): the list is one strip of rows offset in canvas pixels; a finger drags it pixel for
+  pixel once it has moved 8 px (less is a tap: select / open; a still 0.6 s press pins), the release flings it with the
+  speed measured over the last frames drawn and a friction of 0.95 per vblank (time based: the same glide at the
+  panel's 30 fps and at 60), clamped at both ends; a touch on a moving list only stops it. Rows are cut cleanly at the
+  window's edges, a thin indicator (yellow thumb) sits on the right edge, no paging strips. The D-pad / keys move the
+  selection and the strip scrolls just enough to keep it visible; *1 de N* stays. While a list moves the panel is
+  drawn every vblank instead of every other one. Headless: `--panel-input drag@X0@Y0@X1@Y1[@N]` is a swipe with a move
+  every vblank for N (8) vblanks then the release, e.g. `3060:tabr,3062:left,3200:drag@200@280@200@160@10` flings
+  *Pendientes* (dump every 2 frames to see it glide and stop).
+  Detail page (2026-11-03, laid out like the Items page's showcase): a top window with the event's icon at 3x (2x for
+  the 24 px ones) on stone in a frame, the title in the 16 px font (wrapped) and under it the state (*En curso* /
+  *Completado* / *Pendiente*, coloured), the red pin when it is tracked and *Oculto* when hidden; *Dónde*: the place
+  plate (*Aquí* / *Esta zona* / *Otra zona*, as in the list) on its own line, the area (8 px) and the room (16 px) on
+  lines of their own, wrapped, and *Ver en el mapa* when the Map tab can show its marker (the event is placed in the
+  room Tomba is in, or a section sharing its model): it switches to the Map tab at zoom 2 or closer, centred on the
+  marker, which hops for 4 s (the Map tab only draws the loaded room, so events elsewhere have no such plank);
+  *Quién*: who gives it (`panel_givers.h`) unless that only repeats the title (`Lágrimas de flor`), else *Pista*: what
+  starts it (a chest, an item, someone / something in the place); no window when there is neither (pending events
+  show neither), and *Dónde* takes the width. At the bottom three planks twice as high: *Volver* (small), *Seguir* /
+  *Dejar de seguir*, *Ocultar* / *Mostrar* (the pair in one label style: the 24 px letters when both fit, else the
+  16 px font doubled, else 16 px). On the PC one muted line with the keys (Backspace, P, H) when it fits one line;
+  none on Android. The route graph and Tomba's face are gone from it.
   Hiding: *Ocultar* (the selected event; *Mostrar* when it is hidden), a long press (0.6 s) on its row, `H` in the PC
-  panel window, `--panel-input hide`; hidden events leave the lists, the Map tab's *En curso* box and the map markers
+  panel window, `--panel-input hide`; hidden events leave the lists, the Status tab's next goal and the map markers
   until *Ocultos: sí* (`V`, `showhidden`) lists them again, dimmed and marked *Oculto*. Kept in `panel_hidden.txt` next
   to the memory cards (`--save-dir`; Android `files/saves`), the event ids on one line. Event 0 *La pulsera del abuelo*
   is started by the intro and completed only by the ending's scene sequence (AREA13 s1, type 0x56, X013 op 7 arg 0,
@@ -2441,8 +3126,9 @@ canvas pixels per picture pixel (or the mean of whole n x n blocks when zoomed o
   Input: touch on
   Android (`nativePanelTouch` from the Presentation's view, canvas pixels), mouse in the PC window, keys typed in the PC
   panel window (arrows, Enter, Backspace, Q / E tabs; they do not reach the game); `--panel-input FRAME:ACTION,...`
-  (up down left right ok back tabl tabr zoomout zoomin hide showhidden, `tap@X@Y`, `hold@X@Y` a long press) for headless tests.
-- Map tab (*Lateral* / *Cenital*, `runtime/panel_side.inc` + `panel_topdown.inc`), chosen by section:
+  (up down left right ok back tabl tabr zoomout zoomin hide showhidden pin, `tap@X@Y`, `hold@X@Y` a long press,
+  `drag@X0@Y0@X1@Y1[@N]` a swipe over N vblanks) for headless tests.
+- Map tab (*Mapa* / *Cenital*, `runtime/panel_side.inc` + `panel_topdown.inc`), chosen by section:
   - Side view (every side-scrolling section): the room model the game has loaded (`WMD_DATA[0]`, scratch 0x1F800330;
     tools/room.py format) rasterised orthographically in C as the GPU draws it: texels / CLUTs / pages from a VRAM
     snapshot taken when the model is read, vertex colours modulating them (0x80 = 1.0, Gouraud), raw packets unlit,
@@ -2458,10 +3144,35 @@ canvas pixels per picture pixel (or the mean of whole n x n blocks when zoomed o
     world units, top-down 320 px across), geometric in between; zoomed levels follow Tomba, drag / arrows pan, OK
     re-centres. Buttons `- / +` drawn in the plank style with the sub-screen's own "<L1" / "R1>" glyphs
     (SYSTEM/A10301 u 56 / 80, v 206), "Zoom n/N"; keys PageDown / PageUp or - / + in the PC panel window;
-    `--panel-input` actions `zoomout` / `zoomin`.
+    `--panel-input` actions `zoomout` / `zoomin`. Continuous zoom between level 1 and the last: a two-finger pinch on
+    the Android second screen (`nativePanelPinch`, centred on the fingers' midpoint), the mouse wheel in the PC panel
+    window (at the cursor), `--panel-input pinch@PERCENT@X@Y`; `- / +` then step to the next level out / in.
+  - Textures: the VRAM snapshot is checked every 25 frames (outside loading screens) over the pages / CLUTs the
+    model samples and refreshed when they changed (sections stream their textures into the same slots: a stale
+    snapshot drew another section's ground as blue noise).
+  - Picture cache (2026-11-03): the side view is no longer rasterised per frame. The panel runs on the game thread
+    (`port_gpu_vblank`; the wasm2c module has no threads), and each moved view cost a full raster: 5-9 ms per panel
+    frame when following Tomba / dragging, 16-30 ms at the middle zoom, on top of ~4 ms of chrome, every other vblank:
+    the "petardeo" on the AYN Thor. Now the room is drawn once per zoom into tiles of 64 x 64 view pixels and every
+    view is composed from them over the far background (~0.4 ms), the markers on top. Tiles are built on the game
+    thread in slices of at most 1.5 ms a vblank (resumable between polygons): the view's tiles nearest its centre
+    first, then a margin (half a view across, a quarter down), then the rest of the room while the cache is under
+    3/4 of 24 MB (least recently used tiles go past 24 MB; AREA01 s0 at the closest zoom: 1293 tiles, 10.5 MB, about
+    160 ms of slices on the PC). A tile not built yet shows the far background; after a zoom change the previous
+    picture (and its markers) stays until the new view's tiles are there, at most 2 s. Same picture as the live
+    raster: an image (model x world units per pixel) is anchored at the first view origin it was shown at and each
+    tile is that view's raster clipped to the tile, so the snapped zoom levels are pixel for pixel the old output at
+    any pan (checked on the PC against the old build, AREA01 s0 / AREA00 s0, panned at all three levels, i386 and
+    wasm2c); only the continuous pinch scales (not pixel perfect anyway) differ, at ~1 % of the pixels on texel and
+    polygon edges (float rounding of a translated origin). Texture refresh: tiles are keyed by the snapshot's
+    generation, so a refresh rebuilds the view's tiles while the previous ones stay on screen (checked by forcing a
+    refresh every 100 frames: same images). Not on disk: the textures come from live VRAM and the rebuild is cheap
+    and sliced. The page header (stone, tabs: ~2.5 ms of pa_spr) is drawn once per title / tab names / canvas
+    size and copied afterwards (every tab), and the map window draws only its rim (the view covers the inside). `--log-fps` / `--show-fps` print a `[panel] ms/render` line every 50 panel frames
+    (mean / max, views composed, tiles built and the build slices' time per vblank).
   - Markers: the events panel_eventmap.h places in the section (and the sections sharing its model), icons at 2x
     outlined (pending ones as a silhouette); Tomba's face at 2x at PLAYER x / y, flipped to the side he faces (PLAYER
-    +0xA6: 0 left, 2 right). Views under 200 canvas pixels high (the Map tab's graph, the event page) draw them at 1x.
+    +0xA6: 0 left, 2 right). Views under 200 canvas pixels high (the event page's graph) draw them at 1x.
   - Pixel perfect zoom: each level's scale is snapped to whole canvas pixels per world unit (1 / m) or whole world units
     per pixel (n; level 1 rounds up so the whole map fits): AREA05's picture (864 x 608) at 3 / 2 / 1 picture pixels per
     canvas pixel.
@@ -2491,6 +3202,31 @@ canvas pixels per picture pixel (or the mean of whole n x n blocks when zoomed o
   3060:tabr,3065:tabr,3070:tabr,3150:right,3160:ok,3300:right,3310:ok,3400:right,3403:right,3406:right,3420:ok`
   equips the wooden boomerang (HUD icon, *Equipada Bumerang madera*), puts on the jumping pants and eats a lunchbox
   (vitality 1 -> 4). Without `--second-screen` / `--dump-panel` nothing runs (frames byte-identical).
+  Layout (2026-11-03, chosen among seven rendered trials): on the left a showcase of the selected item: its icon at 4x
+  (`PA_X4`) in a stone frame, name, category, the description in the 16 px font, one status line (the last action's
+  result for a while, else why it cannot be used now: shown once), *Ordenar* and the action plank (*Usar* / *Equipar* /
+  *Poner* / *Quitar* / *Volar*) twice a plank high (`plank_h`: the 24-row plank cut in three, its plain middle rows
+  tiled, nothing scaled), its label in the 24 px event-title letters when they have every letter (checked with
+  `pa_has_glyphs`; shaded when the item cannot be used), else the 16 px font pixel doubled (`pa_text_scaled`). On the
+  right every item, 3 per row, as its icon at 3x on stone (outlined; an in-use tick and the count on a red plate in the
+  HUD's digits), the selected one on a cream plate in the game's blinking yellow frame. The grid scrolls continuously:
+  drag / fling with inertia (the shared scroller, see the event browser), the thin scroll indicator on its right edge,
+  and the D-pad / keys move the cursor with the grid following it. Headless: `--panel-input
+  3060:tabr,3065:tabr,3070:tabr,3200:drag@290@300@290@150` scrolls it (the dump at 3300 shows the flung view); the
+  other tabs' dumps are byte-identical to the previous build.
+- Status tab (*Estado*, `runtime/panel_status.inc`; 2026-11-03, chosen among four rendered layouts, replacing the page
+  with the area's route graph): a 2 x 2 dashboard of cream windows. *Vitalidad*: the HUD's fruit at 2x, lives, AP.
+  *Equipado*: the weapon and the pants / suit (icons at 2x with names) and the accessories in use, as the item menu's
+  in-use marks read them (`it_in_use`). *Progreso*: events completed of the pause menu's list (the count in the HUD's
+  digits at 3x and a bar), regions revealed, items carried, play time. *Objetivo* (*Siguiendo* when tracked): the
+  first in-progress event in nearest-first order: icon, title, its place plate, where, who / what starts it.
+- Place plates (Status and the *En curso* list of the event tab): *Aquí* (green: the room Tomba is in), *Esta zona*
+  (orange: another room of this area, the room's name shown), *Otra zona* (brown: area - room), *Cualquiera* (used
+  from the item menu). The *En curso* list is sorted nearest first: tracked, this room (by distance to Tomba's x),
+  this area, other areas, anywhere, unknown, the grandfather's bracelet last; the other filters keep the menu's order.
+- 8 px font accents: the game draws its acute accents in the light edge shades (they vanished on the cream windows),
+  its i-acute is smeared and u-acute is missing; at load the acute letters get a solid 2-row stroke, i-acute is the i
+  with the accent in place of its dot, u-acute the u one row lower as the game's other accented letters.
 - Without the files (another disc version) the panel still runs with flat colours and no glyphs, and logs which file failed.
 - `--hud-bottom` (Android launcher: *HUD en la pantalla inferior*, default on when a secondary display exists; it is
   passed only with the second screen): while the panel is on (PC / headless: always; Android: while the Presentation polls
@@ -2509,12 +3245,11 @@ canvas pixels per picture pixel (or the mean of whole n x n blocks when zoomed o
 
 - Header: the area and room names of the game's own map screen (`MAP_AREA_NAMES[link.c]`, `MAP_ROOM_NAMES[link.c][link.d]`
   of the room's `MAP_LINKS` entry, `MAP_ROOM_LINK[area][section]`; AREA14 by section) and the play time.
-- Layout: the wooden title bar (area name), three tabs (Mapa / Eventos / Lateral), pink page in a stone border, cream windows.
-- Status: the HUD's vitality fruit (segments = vitality / max, the number in the middle), lives, AP, play time, events seen.
-- Events in progress: SCRIPT_FLAGS 1..0xFE of ids 0..0x81 with their icons and names (`EVENT_NAME_STRINGS`).
-- Map: the game's map graph seen from above (x, z of `MAP_NODES`), the routes (`MAP_AREA_ROUTES`) of each region the player
-  has revealed (`D_8009D2C4[region]`) plus the current one, the room's link in pink with a marker on its middle (where
-  `subScreenMapInitMarker` puts the pause map's marker). Not drawn: the pause map's 3D terrain model, its icons.
+- Layout: the wooden title bar (area name), three tabs (Estado / Eventos / Mapa (Cenital in top-down sections)), pink page in a stone border, cream windows.
+- Status: see *Status tab* above (vitality, equipment, progress, next goal).
+- Map graph (the event page's *Dónde*): the game's map graph seen from above (x, z of `MAP_NODES`), the routes
+  (`MAP_AREA_ROUTES`) of each region the player has revealed (`D_8009D2C4[region]`) plus the current one, the event's
+  room marked. Not drawn: the pause map's 3D terrain model, its icons.
 - The tables come from the user's disc at start: `SYSTEM/D0SPSUB.BIN` for the graph (MAIN0 addresses), `SYSTEM/DnSPSUB.BIN`
   (n = `--lang`) for the names: that file is linked elsewhere, so each pointer table is the run of overlay pointers of the
   same length nearest to MAIN0's (checked on all nine languages). Strings: the sub-screen glyph ids (`tools/subscreen_text.py`).
@@ -2549,9 +3284,9 @@ canvas pixels per picture pixel (or the mean of whole n x n blocks when zoomed o
 3. The Psy-Q stubs hit at boot are down to `SetFogNear` (the SPU-init / tick-mode / reverb setters are
    `sound.c`'s now); `ScaleMatrix` is native since the room sweep (AREA00 section 5 draws with it); the other
    unreached ones stay stubs.
-4. 64-bit build: the OT links are 24-bit addresses, so the image must stay below 16 MB (`-Ttext-segment` /
-   `--image-base` + `port_check_layout`); a later phase replaces `port_otlink/port_otaddr` with an index into a
-   primitive arena and widens the pointer-holding words of the image.
+4. 64-bit build: done through wasm2c ("64-bit builds: wasm2c" below): the OT links stay 24-bit offsets because the
+   data image lies in the first 16 MB of the module's linear memory (`port_check_layout`; gen2 keeps the scratchpad and
+   I/O arrays in .data there).
 6. Windows: tested under wine only (frames identical, window shows the game); the first real-Windows run
    (build 2c9db85) booted and played AREA00 and hung silently at frame ~3300 while walking (no fault report,
    no exit; wine runs 4000 frames). The build after it carries the watchdog (above), re-reads the main thread's
@@ -2587,57 +3322,106 @@ canvas pixels per picture pixel (or the mean of whole n x n blocks when zoomed o
    `src/` (wip excluded), `include/`, `notes/*.csv` or `config/*.yaml` is newer than `build/full/*.full.ld`
    (`PORT_STALE_FULL=warn` turns it into a warning) and names the file and the command to run.
 
-### wasm32 spike: a 64-bit host with a 32-bit guest address space (`port2/wasm/`)
+### 64-bit builds: wasm2c (`port2/wasm/`; Android arm64-v8a)
 
 The game's structs and the retail data hold 32-bit pointers (2.1), so a native 64-bit build breaks layouts. The
-spike keeps the pointers 32-bit the way N64Recomp keeps a 32-bit guest: the same generated game C + runtime are
+64-bit build keeps the pointers 32-bit the way N64Recomp keeps a 32-bit guest: the same generated game C + runtime are
 compiled for **wasm32** (clang `--target=wasm32-wasi`, wasi-libc), translated back to portable C with **wasm2c**
-(WABT, pinned tag 1.0.36, cloned and built by the script) and compiled natively for x86-64 with a small host.
+(WABT, pinned tag 1.0.36, cloned and built by the script) and compiled natively with a small host. The module's
+linear memory is the game's 32-bit address space; every game pointer is a 32-bit offset into it, as on the PS1 and in
+the i386 / armeabi-v7a builds. This is what the APK's **arm64-v8a** libraries are (64-bit-only devices: Snapdragon 8
+Gen 3 and newer, the AYN Odin 2 ...); armeabi-v7a stays the native 32-bit build, both ABIs ship in one APK.
 
-    python3 port2/wasm/build.py -j 4          # -> build/wasm/tombi2w (x86-64, headless only); --from STEP resumes
+    python3 port2/wasm/build.py -j 4          # -> build/wasm/tombi2w (x86-64 Linux: SDL2 window, GL or soft, audio; or --headless)
+    python3 port2/wasm/build.py --until w2c   # -> build/wasm/w2c: module + wasm2c runtime, what the arm64-v8a CMake branch compiles
+    python3 port2/wasm/build.py --from native --headless-host --cc CC --native-flags "-O2 -static" --exe tombi2w-a64
+                                              # the same host without SDL/GL (headless_stubs.py), e.g. for qemu-aarch64
     build/wasm/tombi2w --headless --frames 1500 --dump-frames out --pad-script 1000:start
 
 Pipeline (`build.py`): `gen2.py sources` with `PORT2_ARCH=wasm` (the clang K&R fix-ups of the Android build) -> every
-game/runtime file to LLVM bitcode -> `gen2.py link` (llvm-nm; C dispatch thunks `gen/thunks.c` instead of
-`thunks.S`; wasi-libc's symbol list) -> `llvm-link` into one module -> `apply_aliases.py` (wasm-ld takes no linker
-script: `syms.ld`'s function aliases become renames, its region offsets GlobalAliases into `port_ram`) -> wasm-ld ->
-wasm2c (`--num-outputs`) -> `patch_w2c.py` -> native cc with `host.c`.
+game/runtime file (and libchdr) to LLVM bitcode -> `gen2.py link` (llvm-nm; C dispatch thunks `gen/thunks.c` instead of
+`thunks.S`; wasi-libc's symbol list; the GL imports of `gl_wasm.h` are not stubbed) -> `llvm-link` into one module ->
+`apply_aliases.py` (wasm-ld takes no linker script: `syms.ld`'s function aliases become renames, its region offsets
+GlobalAliases into `port_ram`; drops `signext` / `zeroext` / `noundef`, warns about void functions whose value is used)
+-> wasm-ld (linear memory 128 MB, growing to 1 GB) -> wasm2c (`--num-outputs 8`) -> `patch_w2c.py` -> native cc with
+the host files.
 
-How the hard parts were answered:
-- **Coroutines** (runtime/threads.c): no asyncify. wasm2c's output runs on the native C stack, so the BIOS-thread
-  switch is a host import (`port.ctx_switch`): `host.c` swaps native stacks with ucontext and the module's
-  `__stack_pointer` global (each coroutine's shadow stack is the top of its `stacks[]` slot). Zero cost in the game code.
-- **Null page** (lowmem.c's SIGSEGV emulation): wasm-ld `--global-base=65536` leaves nothing real below 64 KB and
-  `patch_w2c.py` makes `MEM_ADDR` add `port_ram`'s linear address to any effective address below 0x10000 (one
-  predictable branch per access). Same semantics as the i386 handler (the access hits the same byte of the BIOS area).
-- **Division by zero / INT_MIN/-1**: the wasm2c `DIV_S/REM_S/DIV_U/REM_U` macros give the R3000 results instead of trapping.
-- **Prototype mismatches** (K&R, calls with other arities, function pointers cast between types): one LLVM module,
-  so LLVM's FixFunctionBitcasts adapts what it can; the ~330 `*_bitcast_invalid` trap stubs it leaves are rewritten
-  by `patch_w2c.py` to call the function through the stub's own type, and `call_indirect`'s type check is dropped:
-  the native ABI (x86-64 SysV, AAPCS64: integer arguments in registers) tolerates the arity mismatch as i386 did.
-- **libc**: wasi-libc; `host.c` serves the WASI preview1 subset it imports (fd/path/clock/poll/proc_exit) onto POSIX,
-  one preopen "/" plus PWD so relative paths work. `wasm/wasm_compat.h` (force-included into the runtime) and
-  `wasm/rt_wasm.c` (stubs for lowmem.c, watchdog.c, sdl.c, gpu_gl.c) keep the shared runtime files unchanged except
-  two `#ifdef __wasm__` blocks (threads.c, psyq.c's memcpy prototype).
+The host (`host.c`, `host_sdl.c`, `host_gl.c`; one source for x86-64 Linux and arm64 Android):
+- **Coroutines** (runtime/threads.c): wasm2c's output runs on the native C stack, so the BIOS-thread switch is a host
+  import (`port.ctx_switch`): `host.c` swaps native stacks with a few lines of asm per architecture (x86-64 and AArch64:
+  callee-saved registers, x19-x29/lr/d8-d15 on arm64; bionic has no ucontext) and the module's `__stack_pointer` global
+  (each coroutine's shadow stack is the top of its `stacks[]` slot). Zero cost in the game code. `port_host_call` runs
+  SDL (JNI on Android) on the main native stack below its suspended frames, the contract of the 32-bit builds.
+- **SDL**: `runtime/sdl.c` is compiled for the host, unchanged except three `#ifndef PORT2_WASM_HOST` around its variable
+  definitions: `sdl_bridge.h` (force-included) turns every runtime variable it shares with the game (`bridge_vars.h`:
+  `port_renderer`, `port_widescreen`, `port_window*`, the prompt and pad variables, `port_frame` ...) into a load/store
+  through a pointer into linear memory, so its Android code (nativePadState / nativePadStick, rumble through Java,
+  controller mapping) runs as in the armeabi-v7a build. Its entry points are wasm imports of module `port`
+  (`wasm_compat.h`); the runtime functions it calls (log, fatal, quit, the panel's input, the fps overlay) are module
+  exports (`rt_wasm.c`). The **audio callback** (SDL's thread) pulls the mixer through a second instance that shares the
+  memory and the function table but has its own `__stack_pointer` (`patch_w2c.py` makes `call_indirect` pass the calling
+  instance); the game thread holds the device lock around its mixer calls as before.
+- **OpenGL / GLES**: `shims/gpu_gl.c` stays in the module; every GL call is an import (`gl_wasm.h`) that `host_gl.c`
+  serves with the entry points SDL_GL_GetProcAddress gives for the context sdl.c made (pointers are linear addresses, a
+  GLsync a handle). Internal resolution, widescreen, `--fps`/HFR fences, texture packs, prompts and overlays are the same
+  code as on the 32-bit builds.
+- **Android**: `port_main` is exported natively; `android/loader.c` (arm64) `dlopen`s libtombi.so without the low
+  reservation and reads `port_frame` / `port_exit_status` / `port_clean_exit` through `port_wasm_var_ptr`. The launcher's
+  "back to launcher" (`TombiActivity.quitToLauncher`) and the second-screen panel's JNI (`nativePanelFrame` ...) are on
+  the host side of the bridge (`host_sdl.c`); the panel's touches/keys are queued and handed to the module at its next
+  frame.
+- **Null page**: wasm-ld `--global-base=65536` leaves nothing real below 64 KB and `patch_w2c.py` makes `MEM_ADDR` add
+  `port_ram`'s linear address to any effective address below 0x10000 (one predictable branch per access). **Division by
+  zero / INT_MIN/-1**: the wasm2c `DIV_S/REM_S/DIV_U/REM_U` macros give the R3000 results. Out-of-bounds accesses hit
+  wasm2c's guard pages; no signal handler is installed (`WASM_RT_SKIP_SIGNAL_RECOVERY`), so a fault reaches the
+  loader's crash report as on the 32-bit build.
+- **Prototype mismatches** (K&R, calls with other arities, function pointers cast between types): one LLVM module, so
+  FixFunctionBitcasts adapts what it can; the ~330 `*_bitcast_invalid` trap stubs it leaves are rewritten by
+  `patch_w2c.py` to call the function through the stub's own type, and `call_indirect`'s type check is dropped.
+- **libc**: wasi-libc; `host.c` serves the WASI preview1 subset it imports onto POSIX (one preopen "/" plus PWD).
 
-Result (2026-10-31, x86-64, gcc -O2): the smoke run reaches the same state as the i386 build and **150 of 150 dumped
-frames are byte-identical** (and the logs match line for line); a 6000-frame run with
-`1000:start,1300:start,1600:cross` reaches AREA00 gameplay, but it is not identical to the i386 build from the same
-tree: every frame matches up to 1631, frame 1632 differs in 14 pixels of the "Now Loading" logo (the size pulse,
-`NEG_SIN_TABLE[s]` in drawNowLoadingSprite: the loading screen ran a different number of times), and the player's
-state differs later (both builds are deterministic run to run). Unexplained yet; suspects: a busy-wait the two
-compilers schedule differently around the CD/X000 load, ABI differences the wasm32 build exposes (clang's callee
-trusts the caller's extension of `short`/`char` arguments where i386 gcc re-extends; the forwarded
-`bitcast_invalid` calls pass unextended words; FixFunctionBitcasts passes undef/0 for missing arguments where i386
-read stack garbage), uninitialised locals, and `long long` alignment in structs (8 in wasm32 as on MIPS, 4 on i386).
-Headless speed: ~170 fps vs ~160 fps for the i386 build (uncapped, soft renderer) — the wasm2c path is not slower.
-Build: ~2.5 min bitcode + link, ~3 min native compile of the 23 MB of wasm2c C.
+**The "frame 1632 divergence" of the spike and what made the builds identical.** Three causes, none in the wasm2c
+translation itself:
+1. *x87 excess precision in the i386 build* (the 1632 one): the software rasteriser's attribute gradients
+   (`shims/gpu.c`, float) rounded differently with the x87's 80-bit intermediates; a few texels per frame of scaled or
+   textured primitives (the pulsing NOW LOADING logo first) moved. The runtime now uses SSE2 on i386 (`-msse2
+   -mfpmath=sse`) and no build contracts multiply-adds (`-ffp-contract=off`); the game state was never affected.
+2. *A void function whose value is used*: `showMessageBoxDirect` / `showMessageBoxDirectTimed` are matched as void but
+   the console's `$v0` still holds openMessageBox's box, which `scriptOpShowMessageBox` (o->d90) and the I0NFO scenes
+   keep. i386 had it by luck (eax), the wasm build got 0 and AREA01's room went on differently (port/fixes.txt now
+   returns it, as for showMessageBox; `apply_aliases.py` lists any other such function: none left).
+3. Defensive, no visible effect in the runs: game C with `-ftrivial-auto-var-init=zero` (an uninitialised local is 0,
+   not LLVM undef: `scriptOpShowMessageBox`'s case 8 reads half of an uninitialised V6), and no `signext` / `zeroext` /
+   `noundef` (the callee re-extends short / char arguments as gcc does).
+4. *A short return read as int* (found on the AYN Thor, fixed 2026-11-03): with every `signext` dropped, a function
+   defined as returning `s16` handed back its raw 32-bit lane, and a caller whose prototype says `int` used it as is.
+   `getScrollOffsetX` computes `r - 0x14` as `r + 0xFFEC`; `a00LinkAreaModelBlocks` (`extern int`) added that to the
+   camera x, so whenever the AREA00 camera turned (Tombi grabbing the bending branch past the stone pillar, sec 0)
+   its block range was past the end and the frame had no scenery models: sky, sprites and objects only, for ~10
+   frames at a time. `apply_aliases.py` now keeps the return `signext` / `zeroext` of each *definition* (74): the
+   callee extends as the R3000, gcc and ARM do; call sites still lose theirs. The i386 / armeabi-v7a builds never
+   had it.
 
-Not done (next steps): the SDL host shim (window/audio/pad as imports: sdl.c's ~15 entry points, the frame and the
-audio buffer are linear-memory pointers; ~1 day); the GL renderer (gpu_gl.c's calls as imports, or a host-side
-backend reading VRAM from linear memory; 1-2 days); arm64 Android (bionic has no ucontext: a 20-line AArch64
-switch in host.c, plus the SDL shim above; then an `arm64-v8a` Gradle/CMake variant compiling `build/wasm/w2c` +
-host; ~1-2 days); CMake integration instead of `build.py`; the save-state and watchdog paths (untested).
+**Checked** (2026-11-03): x86-64 wasm2c build vs i386 build, byte-identical dumped frames: the standard 6000-frame run
+`1000:start,1300:start,1600:cross` into AREA00 gameplay 240/240 (every 25th frame); the room sweep's pad script from the
+debug select in 17 rooms (areas 0 1 2 3 4 5 6 8 9 10 11 13 14 16 17 18 19) 72/72 each; GL window under xvfb (llvmpipe)
+24/24; soft window 22/22; `--renderer gl --internal-res 2 --widescreen 16:9 --lang 5 --fps 100 --show-fps
+--second-screen --dump-panel` 52/52 (game + panel); `--disc IMAGE.chd` 15/15. The AArch64 host (the same host.c,
+clang `--target=aarch64-linux-gnu`, headless, run under qemu-aarch64): 6000-frame run 240/240 and AREA01 / AREA10
+72/72 identical to the i386 build. Audio: through SDL's disk driver both builds' callbacks produce the same samples
+(identical for the first 324 MB of output, after which the device-paced interleaving differs). CI (android-apk.yml)
+builds the wasm2c step and an APK with lib/arm64-v8a and lib/armeabi-v7a (libtombi, libmain, libSDL2, libtombidisc
+each; arm64 libtombi.so ~14.5 MB). Not yet run on an Android device.
+Headless speed: ~170 fps vs ~160 fps for the i386 build (uncapped, soft renderer). Build: ~1 min bitcode, ~3-4 min
+native compile of the ~48 MB of wasm2c C.
+
+**A 64-bit PC build is now cheap**: `build/wasm/tombi2w` already is a working x86-64 Linux binary (SDL2 window, GL,
+audio, pad); a Windows x64 one would need host.c's WASI layer on the Windows API (or mingw's POSIX subset) and the x64
+switch for the Microsoft ABI (rdi/rsi/xmm6-15 callee-saved), not done.
+
+Not done (next): running the arm64 APK on a device (the JNI paths of `host_sdl.c` and sdl.c's Android code are compiled
+in CI only); CMake integration instead of `build.py` for the PC; the save-state and watchdog paths (stubs in
+`rt_wasm.c`: no `--save/--load`, no watchdog thread; the Android loader has its own watchdog).
 
 ## Standalone (no launcher) mode
 
@@ -2655,7 +3439,7 @@ a PC. Everything the PC launcher (`tools/port_launcher.py`, `tools/port_mods.py`
 | rebuilt cut towns (`civ_rebuild.py`, `civ_test_data.py`) | `civ_cache/maps`, `civ_cache/wfm`, `--civ-maps/--civ-wfm` | **not native yet** (only for the "Cut content" town buttons / `--civ-route`); same approach as `.tpatch` would work for the WFM banks, the maps need the generator in C |
 | button-prompt glyphs (`prompt_glyphs.py`, mod) | `prompts-*.tbtx` + `--patch-tex` | not native (optional mod) |
 | mods (`port_mods.py`) | flags only: `--skip-intro`, `--hz`, `--poke`, `--poke-every`, `--pad-script`, `--title-debug`, `--debug-menu`, `--civ-*` | already flags: any launcher can pass them |
-| window options | `--window --scale --renderer --aspect --internal-res --fps60 --lang --save-dir --texture-pack --fullscreen --show-fps` | already flags |
+| window options | `--window --scale --renderer --aspect --internal-res --fps --lang --save-dir --texture-pack --fullscreen --show-fps` | already flags |
 
 **CHD images.** `port2/shims/cd_chd.c` opens the `.chd` with libchdr, reads the CHT2 (or CHTR) track metadata and
 maps disc LBA n to CHD frame n of track 1 (plus its stored pregap when PGTYPE is `V...`); later tracks follow at their
@@ -2698,3 +3482,35 @@ identical; en_cut_content: 4/4). Frames of the opening dialogue, `--disc` + `--t
 **Android.** CI copies `patches/*.tombipatch.json` and `*.tpatch` into `assets/patches/`; the Selva launcher extracts
 them to `files/patches/` and passes `--disc`, `--text-patch files/patches/es_mejorada.tombipatch.json` (Spanish +
 toggle), `--patch-dir files/patches` (English + cut content), `--lang N`.
+
+### Your own translation file
+
+A player's translation made with the translation editor (`tools/text_editor.py`, `tombi-text`) is a `*.tombipatch.json`
+(our text only) plus the `.tpatch` compiled from it (`tools/tpatch_build.py`; the editor runs it from the player's own
+disc: `tpatch_build.build_from_disc` reads only the Form 1 files a text patch needs into a temporary folder,
+`slim_extract`, and `data_patch.apply(partial=True)`; the result is byte-identical to the build from a full `data/`:
+es_mejorada 626971 bytes, `cmp` equal, about 4 minutes for a whole translation). Fixed names, next to the game's executable:
+
+* `translation.tpatch` (or `translation.tombipatch.json`, which uses its `translation.tpatch` twin and refuses it when
+  compiled from another version of the JSON). `tombi2` looks in the current folder, then in the folder of its own
+  executable (`argv[0]`), and loads the first one found **before** every `--text-patch` (`runtime/main.c`
+  `open_translation_file`). `--no-translation-file` skips the search.
+* Priority: `shims/tpatch.c` gives each rebuilt file to the first patch that provides it; a later patch that rebuilds
+  any file already provided is skipped whole (`[tpatch] X skipped: FILE is already provided by translation.tpatch
+  (loaded first)`): half of two patches would mix WFMs with another patch's `MAINn.EXE` file tables. So the player's
+  translation wins over the improved translation that a launcher passes with `--text-patch`, in any language.
+  Check: `tools/test_translation_tool.py` (`PortTranslationFile`).
+* PC launcher: *Import translation…* (the *Text patch* card) copies the chosen `*.tombipatch.json` (and its `.tpatch`
+  twin when it sits beside it) or a `.tpatch` to those names next to `tombi-port` (the folder tombi2 runs in), and
+  selects the new choice *Your translation*; a translation file that appears or changes there is selected by itself
+  (it wins over the bundled improved translation until the player picks something else). With `data/`, the launcher
+  applies the JSON to `data/` like any text patch (`data_patch`) and passes `--no-translation-file`; with only the
+  `.tpatch`, or without `data/`, `data/` stays original and `tombi2` loads the file itself. Every other choice passes
+  `--no-translation-file`. The card says which translation is active.
+* Android: *Options → Data → Import translation…* (SAF `ACTION_OPEN_DOCUMENT`) checks the `TPCH` magic and copies the
+  file to `files/translation.tpatch` (a `.tombipatch.json` is refused with a hint: it must be compiled first);
+  `buildArgs` passes it as the first `--text-patch` (before es_mejorada, which tombi2 then skips). *Remove translation*
+  deletes it.
+* Verified (Linux, `--disc Tombi.bin --lang 5 --text-patch patches/es_mejorada.tombipatch.json`, the editor's
+  installed `translation.tpatch` next to `build/port2/tombi2`, AREA00/MFNT000S #128 changed): the opening dialogue
+  shows the edited line ("¡Hola, Tombi pelirrosa!"); with `--no-translation-file` it shows es_mejorada's.

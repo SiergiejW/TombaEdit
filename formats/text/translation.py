@@ -250,28 +250,62 @@ class CatTranslator:
         if text in self.cache:
             self.cache.move_to_end(text)
             return self.cache[text]
-        prompt = 'Translate the following Japanese text into English.\n\n' + text
-        if self.seq2seq:
-            inputs = self.tokenizer(text, return_tensors='pt')
-        elif getattr(self.tokenizer, 'chat_template', None):
-            inputs = self.tokenizer.apply_chat_template([dict(role='user', content=prompt)],
-                        add_generation_prompt=True, return_tensors='pt', return_dict=True)
-        else:
-            inputs = self.tokenizer(prompt, return_tensors='pt')    # a model with no chat template: plain prompt
-        if inputs['input_ids'].shape[1] > 4096:
-            raise TranslationError('Select a shorter dialogue entry (up to 4096 input tokens).')
-        # Language models take no segment ids, which some tokenizers add all the same.
-        inputs = {key: value.to(self.model.device) for key, value in inputs.items() if key != 'token_type_ids'}
-        pad =self.tokenizer.pad_token_id if self.tokenizer.pad_token_id is not None else self.tokenizer.eos_token_id
-        with self.torch.inference_mode():
-            result = self.model.generate(**inputs, max_new_tokens=1024, do_sample=False, use_cache=True,
-                                         pad_token_id=pad, **self.options)
-        start = 0 if self.seq2seq else inputs['input_ids'].shape[1]
-        value = self.tokenizer.decode(result[0, start:], skip_special_tokens=True).strip()
+        from formats.text import glossary
+        # The model is told what game this is and how its names are said in English (formats/text/glossary_ja.json);
+        # a model that repeats that instead of translating is asked again without it.
+        # The names of the glossary are written into the sentence in English, in the plain request the model was
+        # trained on. An answer that is no translation (it talks about the task, leaves the Japanese, runs on) is
+        # asked for again with the message as it is, and then with the game's context and the names listed.
+        value = ''
+        for mode in ('inline', 'plain', 'glossary'):
+            answer = glossary.clean(self.generate(text, mode), text)
+            if answer and not glossary.ran_away(text, answer) and not glossary.untranslated(text, answer):
+                value = answer
+                break
+            value = value or answer      # nothing better: the first answer there was
         self.cache[text] = value
         if len(self.cache) > 1024:
             self.cache.popitem(last=False)
         return value
+
+    def generate(self, text, mode='inline'):
+        """One try at the translation. mode: 'inline' (the glossary's names written into the sentence, with the
+        context), 'glossary' (the names listed beside it) or 'plain' (the message and nothing else)."""
+        from formats.text import glossary
+        user = glossary.user(text, inline=mode == 'inline')
+        context = {'inline': '', 'glossary': glossary.system(text), 'plain': ''}[mode]
+        if self.seq2seq:
+            inputs = self.tokenizer(glossary.normalise(text), return_tensors='pt')
+        elif getattr(self.tokenizer, 'chat_template', None):
+            messages = [dict(role='user', content=user)]
+            if context:
+                messages.insert(0, dict(role='system', content=context))
+            inputs = self.tokenizer.apply_chat_template(messages, add_generation_prompt=True, return_tensors='pt',
+                                                        return_dict=True)
+        else:
+            inputs = self.tokenizer((context + '\n\n' if context else '') + user, return_tensors='pt')
+        if inputs['input_ids'].shape[1] > 4096:
+            raise TranslationError('Select a shorter dialogue entry (up to 4096 input tokens).')
+        # Language models take no segment ids, which some tokenizers add all the same.
+        inputs = {key: value.to(self.model.device) for key, value in inputs.items() if key != 'token_type_ids'}
+        pad = self.tokenizer.pad_token_id if self.tokenizer.pad_token_id is not None else self.tokenizer.eos_token_id
+        extra = {}
+        if not self.seq2seq:
+            # The answer is as many boxes as the message: a model that goes on after them is stopped there, and
+            # one that loses its way is stopped by the limit, which is not much more than the message needs.
+            from transformers import StoppingCriteria, StoppingCriteriaList
+            torch, tokenizer, start, boxes = self.torch, self.tokenizer, inputs['input_ids'].shape[1], glossary.pages(text)
+
+            class AfterBoxes(StoppingCriteria):
+                def __call__(self, input_ids, scores, **kwargs):
+                    done = tokenizer.decode(input_ids[0, start:], skip_special_tokens=True).count('\n\n') >= boxes
+                    return torch.full((input_ids.shape[0],), done, dtype=torch.bool, device=input_ids.device)
+            extra['stopping_criteria'] = StoppingCriteriaList([AfterBoxes()])
+        with self.torch.inference_mode():
+            result = self.model.generate(**inputs, max_new_tokens=min(1024, max(80, 3 * len(text) + 48)), do_sample=False,
+                                         use_cache=True, pad_token_id=pad, **extra, **self.options)
+        start = 0 if self.seq2seq else inputs['input_ids'].shape[1]
+        return self.tokenizer.decode(result[0, start:], skip_special_tokens=True).strip()
 
 
 _lock = threading.Lock()

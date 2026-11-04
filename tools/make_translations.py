@@ -3,7 +3,7 @@
     python tools/make_translations.py "rom/Ore! Tomba (Japan).cue" "rom/PrePre Vol. 8 (Japan).cue" ...
 
 Every message of every text bank of each disc that has no translation yet goes to the model (CAT-Translate 7b by
-default). What the model has said is kept in a local cache (rom/translator/translation-cache-ja.json, which is not
+default). What the model has said is kept in a local cache (rom/translator/translation-cache-ja-glossary.json, which is not
 part of the program) after every few messages, so a run can be stopped and started again where it stopped.
 Messages that still show an unknown glyph as [gNNN] are left alone: they are translated once the glyph is read.
 
@@ -16,6 +16,7 @@ The model runs from rom/translator, with the portable runtime found there (CUDA 
 exists.
 """
 import argparse
+import json
 import re
 import sys
 import time
@@ -30,8 +31,9 @@ for stream in (sys.stdout, sys.stderr):
 sys.path.insert(0, str(ROOT))
 
 FOLDER = ROOT / 'formats' / 'text' / 'translations'
-CACHE = ROOT / 'rom' / 'translator' / 'translation-cache-ja.json'
-GPU_ERROR = 3                                   # the worker's exit code when the graphics card failed
+CACHE = ROOT / 'rom' / 'translator' / 'translation-cache-ja-glossary.json'   # the first runs' cache, without the glossary, is translation-cache-ja.json
+MANUAL = ROOT / 'tools' / 'manual_translations.json'   # lines (or whole messages) translated by hand
+GPU_ERROR = 3                                 # the worker's exit code when the graphics card failed
 LEGACY = FOLDER / 'ja-CAT-Translate-7b.json'    # where the first runs kept everything: one file for all builds
 
 
@@ -74,8 +76,9 @@ def translatable_texts(banks):
 
 def degenerate(source, translation):
     """True when the model ran away: a very long answer, or one letter or one phrase repeated over and over."""
-    return (len(translation) > 6 * max(len(source), 6) + 40 or re.search(r'(.)\1{11,}', translation.replace('.', '')) is not None
-            or re.search(r'(.{3,24}?)\1{5,}', translation) is not None)
+    spoken = translation.replace('.', '')       # a message of dots (a pause) is not a runaway
+    return (len(translation) > 6 * max(len(source), 6) + 40 or re.search(r'(.)\1{11,}', spoken) is not None
+            or re.search(r'(.{3,24}?)\1{5,}', spoken) is not None)
 
 
 def symbols_only(text):
@@ -136,6 +139,7 @@ def write_builds(discs, cache, model, folder):
                                         for i, text in entries]))
         total = sum(len(b['messages']) for b in banks)
         data = dict(format=1, language='ja', build=name, model=model,
+                    method='the lines of a sentence joined, the names of formats/text/glossary_ja.json written into the sentence in English',
                     builds={name: len(file['order'])}, messages=total, translated=len(file['order']),
                     entries=file['order'], banks=banks)
         path = folder / f'{slug(name)}.json'
@@ -167,6 +171,9 @@ def main():
 
     cache, model = load_cache(args.cache)
     model = model or Path(args.model).name
+    if MANUAL.is_file():
+        # Cries and sound effects that a model turns into a runaway: written by hand, they replace what it said.
+        cache.update(json.loads(MANUAL.read_text(encoding='utf8')))
     print(f'{len(cache)} translations in the cache', flush=True)
     discs, pending = [], {}
     for disc in args.discs:
@@ -204,7 +211,6 @@ def main():
         # not live in one process on Windows. A graphics-card error ends that process (it cannot go on after
         # one); the cache keeps what was done, and a new process takes up the rest. A message that fails right
         # after a fresh start is left out.
-        import json
         import subprocess
         import tempfile
         left_out = []

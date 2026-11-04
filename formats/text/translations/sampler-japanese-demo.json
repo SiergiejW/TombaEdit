@@ -3,125 +3,126 @@
  "language": "ja",
  "build": "Sampler: Japanese demo",
  "model": "CAT-Translate-7b",
+ "method": "the lines of a sentence joined, the names of formats/text/glossary_ja.json written into the sentence in English",
  "builds": {
   "Sampler: Japanese demo": 480
  },
  "messages": 685,
  "translated": 480,
  "entries": {
-  "カギがかかっている": "The key is locked.",
-  "ヒヨコをつかった": "I used a chick.",
-  "カエルをつかった": "Used a frog.",
-  "バナナをつかった": "I used a banana.",
-  "あばれ竜巻をつかった": "I used a rampaging tornado.",
-  "100年のカギをつかった": "I used the key of 100 years.",
-  "100年の鍵をつかった": "I used the key from 100 years ago.",
-  "めぐみの羽根をつかった": "I used Megumi's feather.",
-  "かみつき草の花をつかった": "I used the flowers of the biting grass.",
-  "マゴブタをつかった": "I used a pig.",
-  "ケモノダッシュ": "Kemono Dash",
+  "カギがかかっている": "It's locked.",
+  "ヒヨコをつかった": "Used a chick",
+  "カエルをつかった": "Used a frog",
+  "バナナをつかった": "Used a banana",
+  "あばれ竜巻をつかった": "Used the Rampaging Tornado",
+  "100年のカギをつかった": "Used the 100-Year Key",
+  "100年の鍵をつかった": "Used the 100-Year Key",
+  "めぐみの羽根をつかった": "Used the Megumi Feather",
+  "かみつき草の花をつかった": "Used the Biting Grass Flower",
+  "マゴブタをつかった": "Used Mago Buta",
+  "ケモノダッシュ": "Beast Dash",
   "カエルがにげた": "The frog ran away.",
-  "ライフゲージかくだい": "Life Gauge Kakudai",
-  "奥のカベには ↑と×ボタンで とびつくことができ、\nそのまま上に上がると 奥のラインを歩けるよ\n手前にもどりたいときはその逆だよ": "You can jump onto the wall at the back using the ↑ and × buttons,\nand if you go up from there, you can walk along the back line.\nTo return to the front, do the opposite.",
-  "木の枝にぶら下がったときは→で回転\nどんどん速くなる。ジャンプしたい\n方向と×ボタンで飛び出す!": "When hanging from a tree branch → rotate\nIt gets faster and faster. I want to jump.\nUse direction and the × button to jump out!",
-  "○ボタンをおしつづけると、\nより強力な攻撃ができる": "If you continue pressing the ○ button,\nyou can perform a more powerful attack.",
+  "ライフゲージかくだい": "Life Gauge expanded",
+  "奥のカベには ↑と×ボタンで とびつくことができ、\nそのまま上に上がると 奥のラインを歩けるよ\n手前にもどりたいときはその逆だよ": "You can jump onto the wall in the back with ↑ and the × button, and if you keep going up you can walk along the back line. To come back to the front, do the opposite.",
+  "木の枝にぶら下がったときは→で回転\nどんどん速くなる。ジャンプしたい\n方向と×ボタンで飛び出す!": "When you hang from a tree branch, press → to spin. You go faster and faster. Press the direction you want to jump and the × button to launch yourself off!",
+  "○ボタンをおしつづけると、\nより強力な攻撃ができる": "Hold down the ○ button for a more powerful attack.",
   "人と話すときは ○ボタン": "When talking to people, press the ○ button.",
-  "ここがセーブポイントです。\n↑で奥を向いているときに\n○を押せばセーブができます": "This is the save point.\nWhen facing backward with ↑,\npressing ○ will save.",
+  "ここがセーブポイントです。\n↑で奥を向いているときに\n○を押せばセーブができます": "This is a save point. Face into the screen with ↑ and press ○ to save.",
   "ポスト あけるな!": "Don't open the mailbox!",
-  "始まりの村": "The Beginning Village",
-  "始まりの森": "The Beginning Forest",
-  "100年老人の小屋": "The 100-Year-Old Man's Cabin",
-  "ふるいけ": "sieve",
-  "この土地は はじめてか?\n\nオレは前に ここに住んでたんだけど、\nなんか ようすがかわっちまってよォ\n\nなんかわからんが、しりたいことがあるなら\nこの先の ずーっと上の小屋に住んでる\n\n100年老人というジィさんに\n会ってきいてみろよ\n\nでも、このあたりもあぶなくなったから\n気ィつけていけよ\n\nあっ そうだ! たてふだは見てけよ\n見るときは ↑と○ボタンだぜ\n\n・・・じゃあな!": "Is this land new to you?\n\nI used to live here before,\nbut things have changed a lot since then.\n\nI don't know what it is, but if you want to know something,\nthere's a cabin way up ahead.\n\nMeet the 100-year-old old man and ask him.\n\nBut things around here have gotten dangerous,\nso be careful.\n\nOh, right! Look at the foot pedals.\nWhen looking, use the ↑ and ○ buttons.\n\n...See ya!",
-  "よぉ、にィちゃんも\nこの先に行きたいのかい?\n\nそりゃぁムリだ・・・\nこの先はキリで まっ白だぜ\n\nキリがなくなりゃぁ\n行けるんだけどな・・・": "Hey, Niichan too,\ndo you want to go further?\n\nThat's impossible...\nBeyond this point, it's completely white.\n\nIf the Kiri runs out,\nyou can go, though...",
-  "まぁーきくところによると あばれ竜巻 があれば\n何とかなるみたいだけど・・・\nじっさい どこにあるんだよ、そんなもん・・・\n\nオレは あきらめた!\nにぃちゃんも考えた方がいいぜ・・・\n\nあばよ!": "Well, according to what I heard, if there's a violent tornado,\nit seems like we can manage somehow...\nBut seriously, where on earth is something like that...?\n\nI've given up!\nYou should think about it too, big brother...\n\nGoodbye!",
-  "ちょっと まてよ": "Wait a minute.",
-  "ウワッ!やめろョ": "Whoa! Stop it!",
-  "オレは今、ハラがへってて イライラしてんだ\n何か たべるもん ないか?・・・\nなけりゃ またあとにしてくれョ": "I'm hungry right now and I'm getting irritated.\nIs there anything I can eat?...\nIf not, please save it for later.",
-  "オ〜〜〜ッ!\nなんだ それくれるのか?\n\nサンキュー! たすかったゼ\nもう ハラがへって、うごけなかったんだ\n\nオレ サンタ ってんだ、よろしくな": "Ohhhh!\nWhat? You're giving me that?\n\nThanks! That saved me.\nI was so hungry I couldn't move.\n\nI'm Santa—nice to meet you.",
-  "そうだ!!\nとっておきの技をおしえてやるョ\n\nいいか?": "That's right!!\nI'll teach you my secret technique!\n\nIs that okay?",
-  "×ボタンを押しながら走るとスピードが速くなる、\n人よんで ケモノダッシュっていう技だゼ": "Pressing the X button while running makes your speed increase—it's called \"Kemono Dash,\" a technique used by humans.",
-  "おぼえたか?\n×ボタンを押しながらだぞ・・・・・・\nじゃぁオレはいくゼ\n\nあばよ!": "Did you remember?\nWhile pressing the X button...\nWell then, I'm off!\n\nGoodbye!",
-  "サンキュ": "Thank you.",
-  "バイバイ・・・": "Bye-bye...",
-  "・・・あらら・・・もう見つかっちゃった!\n\nかくれてたんだけど よくわかったな・・・": "...Oh dear... I've already been found!\n\nI was hiding, but you figured it out so well...",
-  "よし! いいことおしえてやるよ\n\nこの小屋のウラをまっすぐ奥に行くと ふるいけ、\nそして、この小屋の先を上に行くと\n100年老人っていう ジィさんが住んでるんだ": "Alright! I'll tell you something good.\n\nIf you go straight to the back of this hut, there's a gate,\nAnd if you go up past this hut,\nThere's an old man called the 100-year-old living there.",
-  "え?・・・オイラかい?・・・・・・\nそんなことより まず行ってみろよ、\nウソじゃないから・・・\n\nそのあとで また会おうや": "Huh?... Is that me?...\nRather than that, first go and see it,\nIt's not a lie...\n\nAfter that, let's meet again.",
-  "えっ?!もう行ったのか?・・・そうか・・・": "Huh?! Already gone?... I see...",
-  "100年老人には会ったのかい?\n\n会ったら また会おうや": "Have you met the 100-year-old?\n\nIf you do, let's meet again.",
-  "ふるいけ には行ったかい?\n\n行ったら また会おうや": "Did you go to Furuike?\n\nIf you did, let's meet again.",
-  "どうだい、ウソじゃなかっただろ\n\nじまんじゃないけどオイラいろいろ しってんだ": "How about it, it wasn't a lie, right?\n\nIt's not a joke, but I know a lot.",
-  "・・・あぁ、オイラかい?\n\nオイラ、ヤン かくれ里のヤンていうんだ・・・": "...Ah, me?\n\nI'm Yan, from the Hidden Village...",
-  "いつも かくれてるんだけど、\nだれも見つけられないんだ・・・\n\nまた見つけられたら そのときも\nいいことおしえてやるよ!\n・・・見つけることができたらな": "I always hide,\nbut no one can find me...\n\nIf I can be found again,\nI'll tell you something good then too!\n...If I can be found.",
-  "う〜ん・・・なんだか楽しくなってきたな・・・\nがんばって見つけてくれよ\n\nじゃあな!": "Hmm... I'm starting to feel like I'm having fun now...\nPlease do your best to find it!\n\nSee ya!",
-  "この先に行く気か?\n\nでも・・・おまえ泳げるんかィ?": "Are you going to go ahead?\n\nBut… can you swim?",
-  "いかん、いかん\n\n今はカメさんに たすけてもらったが\n次からそうはいかん\n\nそこのトビラの先は\n泳げないと行けんのだから・・・\n\n悪いことはいわん、\n今はやめた方がいい・・・\n\nいつか 泳げるようになってから行くんだナ\n\nおっ そうだ!\nおまえ ハラへってないかィ?\n\nこれ もってけよ!": "No, no.\n\nI got help from the turtle this time,\nbut I can't do that again next time.\n\nBeyond that door,\nyou can't go unless you can swim...\n\nDon't say bad things,\nit's better to stop now...\n\nI'll go when I can swim someday.\n\nOh, right!\nAre you hungry?\n\nTake this!",
-  "じゃあなボウズ 気ィつけて行けや": "See ya, loser. Be careful.",
-  "・・・うーん・・・こまったのォ・・・\n\nどーしたもんかのォ・・・\n\nんっ?": "...Hmm... I'm in trouble...\n\nWhat should I do...?\n\nHmm?",
-  "なんじゃ?・・・\nわしが100年老人じゃが・・・何か用かな?": "What is it?...\nI am a 100-year-old old man... Is there something you need?",
-  "すまんが、ちょっと\n考えごとをしておってな・・・・・・\n\n・・・おお そうじゃ!!\nちょっと おまえさん、たのまれてくれんか?\nたのみというのはのォ・・・\n\nおまえさんも ここへ来るとき 見たと思うが、\n赤いトリのコッカのやつめ、\n\nよそからタマゴを盗んできては、\nああやって自分のものにしておってな・・・\n\nあのままでは\n中のヒナが かわいそうなんじゃ・・・\n\nそこでおまえさん、このへんにあるタマゴの中にいる\nヒナを全部 集めてくれんか?": "Sorry, I'm just thinking about something...\n\n...Oh, that's right!\nHey, would you do me a favor?\nWhat I mean by \"favor\" is...\n\nYou probably saw it when you came here,\nthat red-breasted chick,\n\nstealing eggs from other places\nand then making them his own...\n\nIf things continue like this,\nthe chicks inside will be pitiful...\n\nSo, could you gather all the chicks\ninside the eggs around here?",
-  "しんぱいじゃからな・・・\nたのんだぞ": "I'm worried...\nI'm counting on you.",
-  "なんじゃ、もう 集まっとるのか?\n\nん〜〜〜っ・・・\nじゃが まだ残っとるようじゃのォ・・・\n\nすまんがもう一度 行ってくれんか?": "What? Are they already gathering?\n\nHmm~~~...\nBut it seems like there's still some left...\n\nSorry, could you go again?",
-  "集めてくれたのか?・・・\nん〜〜〜っ・・・\n\nじゃが まだ残っとるようじゃのォ・・・\nすまんがもう一度 行ってくれんか?": "Did you collect them?...\nHmmmmm...\n\nBut it seems there's still some left...\nSorry, but could you go again?",
-  "なんじゃ、もう 集まっとるのか・・・\nおおぉぉぉっ!しかも全部集まっとるではないか!\n・・・・・・で、中身はどこじゃ?": "What? Already gathered...?\nOhhhhh! And they're all gathered!\n...And where are the contents?",
-  "おー・まい・がっ!!\n\nハラの中に入れとったのか!?\n\nまぁ、しかし 消化はされとらんようじゃし、\nよしとするかのォ\n\nいやぁ、何はともあれ ごくろうじゃった\n・・・これで わしも安心じゃわい\n\nんっ?・・・・・・そうじゃそうじゃ\nわしに何か用が あったようじゃな\n\n・・・・・・ほう・・・・・・\nコマブタに おジィさんの形見のうでわを\nとられたのか・・・\n\nそれで コマブタたちのことを\nききたいんじゃな・・・\n\nんっ わかった・・・\nじつはのォ・・・・・・・・・・・・\n\n・・・と 言いたいところじゃが\n今回のバージョンは ここまでじゃ\nん〜〜っ ざんねんじゃのぅ・・・\n\nこのつづきは、ぜひ せいひんばんで\n楽しんでくだされ・・・\n\nイベント、アクション、もりだくさんじゃから\nきっと 気にいる はずじゃ・・・\nこのあとのムービーを 見ていくがよい・・・\n\n・・・・・・勇気ある少年よ\nぼうけんは 始まったばかりじゃ\nせいひんばんで まっておるぞ・・・": "Oh my god!!\n\nDid you put it in the stomach!?\n\nWell, but it doesn't seem to be digested,\nso I'll leave it at that.\n\nWell, anyway, it was exhausting.\n...With this, I'm relieved too.\n\nHmm?...That's right, that's right.\nIt seems like there was something you wanted from me.\n\n...Hmm...\nDid Komabuta take the memento arm of Ojiisan?\n\nAnd you want to ask about Komabuta and the others...\n\nHmm, I understand...\nActually...\n\n...I want to say that, but\nThis version ends here.\nHmm~ That's disappointing...\n\nPlease enjoy the rest on the product page...\n\nThere are plenty of events and actions, so\nI'm sure you'll like it...\nPlease watch the following movies...\n\n...Bravery boy\nThe adventure has just begun\nI'm waiting for you on the product page...",
-  "集めてくれたのか?\n\n・・・おぉっ!! 全部集まったようじゃな\n・・・・・・で、中身はどこじゃ?": "Did you gather them?\n\n...Oh! It looks like everything's been collected.\n...And where are the contents?",
-  "わしが話してやれる事はここまでじゃ・・・\n\nもしおまえさんがこの先の方を進むのなら、\nわしの仲間をさがしてみるといい、\nきっと力になってくれるはずじゃ・・・": "This is as far as I can go in telling you...\n\nIf you're going to move forward from here,\nyou should try looking for my companions,\nand I'm sure they'll be able to help you...",
-  "もちろん、わしの力になれることじゃったら\n何でも協力してやるからの・・・\n\n・・・そうじゃ、\n\nわしは物の めききには自信があるから、\n使い方のわからない物を手に入れたら\nわしのところに持ってくるといい・・・": "Of course, if there's anything I can do to help,\nI'll cooperate with you...\n\n...That's right,\n\nI have confidence in my abilities, so\nif you get something you don't know how to use,\nbring it to me...",
-  "おや?ないのぉ・・・\nおまえさんに100年のすずを\nやろうとおもったんじゃが・・・\n\nどこかで無くしてしまったようじゃな・・・\n\nもし、それらしい物をみつけたら\n持ってきておくれ・・・\n\nそのかわり、おまえさんには・・・\nホレ、これをやろう・・・100年のカギじゃ": "Oh? It's gone...\nI was going to give you a hundred years of tin...\n\nIt seems like you lost it somewhere...\n\nIf you find something like it,\nbring it to me...\n\nIn exchange, I'll give you this... Here, take this—it's a hundred-year key.",
-  "これで、ここにあるのとおなじ宝箱なら\nあけることができるようになったはずじゃ・・・\nん〜ラッキーじゃのぉ・・・": "With this, you should now be able to open the same treasure chests as the ones here...\nHmm, what luck!",
-  "それと・・・魔ブタをさがすには、\n封印ぶくろ と呼ばれるモノが必要じゃ・・・\n\nそれがないと、\nかくれ場所が目に見えんようになっとるんじゃ・・・": "And... to find the Demon Pig, you need something called a Seal Pouch...\n\nWithout it,\nthe hiding place becomes invisible...",
-  "封印ぶくろのことは、この先の森に住む\nドワーフの長老にきいてみるといい・・・\nもっとくわしくおしえてくれるはずじゃ。": "As for the sealed bag, you should ask the elder of the dwarves who live in the forest ahead...\nHe should be able to tell you more about it.",
-  "なんじゃ、わからない物があるなら見せてごらん・・・": "What? If there's something you don't understand, show it to me...",
-  "・・・おおっ、これはまさしく100年のすず!\nよく見つけたのぉ・・・\n\nこれをつかえばいつでも、\nここに戻って来ることができるはずじゃ・・・": "...Oh wow, this is exactly 100 years of Suzu!\nYou found it well...\n\nIf you use this, you should be able to come back here anytime...",
-  "ジィちゃんの形見": "Grandpa's keepsake.",
-  "100年老人との出会い": "Encounter with a 100-Year-Old Man",
-  "霧を吹き飛ばせ!": "Blow away the fog!",
+  "始まりの村": "Village of Beginnings",
+  "始まりの森": "Forest of Beginnings",
+  "100年老人の小屋": "100-Year-Old Man's Hut",
+  "ふるいけ": "Old Pond",
+  "この土地は はじめてか?\n\nオレは前に ここに住んでたんだけど、\nなんか ようすがかわっちまってよォ\n\nなんかわからんが、しりたいことがあるなら\nこの先の ずーっと上の小屋に住んでる\n\n100年老人というジィさんに\n会ってきいてみろよ\n\nでも、このあたりもあぶなくなったから\n気ィつけていけよ\n\nあっ そうだ! たてふだは見てけよ\n見るときは ↑と○ボタンだぜ\n\n・・・じゃあな!": "Is this your first time on this land?\n\nI used to live here, but things seem to have changed somehow.\n\nI don't know what's going on, but if there's something you want to know, there's a cabin way up ahead —\n\nan old man called the 100-Year-Old Man lives there. Go meet him and ask.\n\nBut it's gotten dangerous around here too, so be careful.\n\nOh, right! Be sure to read the signpost. Press ↑ and the ○ button to read it.\n\n...See you!",
+  "よぉ、にィちゃんも\nこの先に行きたいのかい?\n\nそりゃぁムリだ・・・\nこの先はキリで まっ白だぜ\n\nキリがなくなりゃぁ\n行けるんだけどな・・・": "Hey, you want to go on up ahead too, pal?\n\nThat's impossible... It's pure white with fog up there.\n\nIf the fog cleared you could go, but...",
+  "まぁーきくところによると あばれ竜巻 があれば\n何とかなるみたいだけど・・・\nじっさい どこにあるんだよ、そんなもん・・・\n\nオレは あきらめた!\nにぃちゃんも考えた方がいいぜ・・・\n\nあばよ!": "From what I hear, if you had a Rampaging Tornado you could manage somehow...\nBut where on earth would a thing like that be...?\n\nI gave up!\nYou'd better think about it too, pal...\n\nSo long!",
+  "ちょっと まてよ": "Hold on a second.",
+  "ウワッ!やめろョ": "Whoa! Cut it out!",
+  "オレは今、ハラがへってて イライラしてんだ\n何か たべるもん ないか?・・・\nなけりゃ またあとにしてくれョ": "I'm starving and in a foul mood right now.\nGot anything to eat?...\nIf not, come back later.",
+  "オ〜〜〜ッ!\nなんだ それくれるのか?\n\nサンキュー! たすかったゼ\nもう ハラがへって、うごけなかったんだ\n\nオレ サンタ ってんだ、よろしくな": "Ohhh!\nWhat, you're giving me that?\n\nThanks! You saved me!\nI was so hungry I couldn't move.\n\nI'm Santa. Nice to meet you.",
+  "そうだ!!\nとっておきの技をおしえてやるョ\n\nいいか?": "That's it!!\nI'll teach you a special move.\n\nReady?",
+  "□ボタンを押しながら走るとスピードが速くなる、\n人よんで ケモノダッシュっていう技だゼ": "Run while holding the □ button and you go faster.\nIt's a move people call the Beast Dash.",
+  "おぼえたか?\n□ボタンを押しながらだぞ・・・・・・\nじゃぁオレはいくゼ\n\nあばよ!": "Got it?\nRemember, hold the □ button......\nWell, I'm off.\n\nSo long!",
+  "サンキュ": "Thank you!",
+  "バイバイ・・・": "Goodbye...",
+  "・・・あらら・・・もう見つかっちゃった!\n\nかくれてたんだけど よくわかったな・・・": "...Aw... you found me already!\n\nI was hiding, and you still figured it out...",
+  "よし! いいことおしえてやるよ\n\nこの小屋のウラをまっすぐ奥に行くと ふるいけ、\nそして、この小屋の先を上に行くと\n100年老人っていう ジィさんが住んでるんだ": "Alright! I'll tell you something good.\n\nGo straight back behind this hut and you'll come to the Old Pond,\nand if you go up past this hut,\nan old man called the 100-Year-Old Man lives there.",
+  "え?・・・オイラかい?・・・・・・\nそんなことより まず行ってみろよ、\nウソじゃないから・・・\n\nそのあとで また会おうや": "Huh? ...Me?...\nNever mind that, go and see for yourself first,\nI'm not lying...\n\nWe'll meet again after that.",
+  "えっ?!もう行ったのか?・・・そうか・・・": "What?! You've already been there?... I see...",
+  "100年老人には会ったのかい?\n\n会ったら また会おうや": "Have you met the 100-Year-Old Man?\n\nOnce you have, come see me again.",
+  "ふるいけ には行ったかい?\n\n行ったら また会おうや": "Have you been to the Old Pond?\n\nOnce you have, come see me again.",
+  "どうだい、ウソじゃなかっただろ\n\nじまんじゃないけどオイラいろいろ しってんだ": "See, I wasn't lying, was I?\n\nNot to brag, but I know all kinds of things.",
+  "・・・あぁ、オイラかい?\n\nオイラ、ヤン かくれ里のヤンていうんだ・・・": "...Oh, me?\n\nI'm Yan. Yan of the Hidden Village...",
+  "いつも かくれてるんだけど、\nだれも見つけられないんだ・・・\n\nまた見つけられたら そのときも\nいいことおしえてやるよ!\n・・・見つけることができたらな": "I'm always hiding, but nobody can ever find me...\n\nIf you find me again, I'll tell you something good then too!\n...If you can find me, that is.",
+  "う〜ん・・・なんだか楽しくなってきたな・・・\nがんばって見つけてくれよ\n\nじゃあな!": "Hmm... this is starting to be fun...\nDo your best to find me!\n\nSee ya!",
+  "この先に行く気か?\n\nでも・・・おまえ泳げるんかィ?": "You're thinking of going on ahead?\n\nBut... can you swim?",
+  "いかん、いかん\n\n今はカメさんに たすけてもらったが\n次からそうはいかん\n\nそこのトビラの先は\n泳げないと行けんのだから・・・\n\n悪いことはいわん、\n今はやめた方がいい・・・\n\nいつか 泳げるようになってから行くんだナ\n\nおっ そうだ!\nおまえ ハラへってないかィ?\n\nこれ もってけよ!": "No, no.\n\nA turtle helped you this time, but it won't go like that next time.\n\nYou can't go past that door unless you can swim, so...\n\nI'm not saying this to be mean, but you'd better not go now...\n\nGo when you've learned to swim someday, all right?\n\nOh, right!\nAren't you hungry?\n\nTake this!",
+  "じゃあなボウズ 気ィつけて行けや": "See you, kid. Be careful out there.",
+  "・・・うーん・・・こまったのォ・・・\n\nどーしたもんかのォ・・・\n\nんっ?": "...Hmm... what a problem...\n\nWhatever shall I do...\n\nOh?",
+  "なんじゃ?・・・\nわしが100年老人じゃが・・・何か用かな?": "What is it?...\nI'm the 100-Year-Old Man... Do you need something?",
+  "すまんが、ちょっと\n考えごとをしておってな・・・・・・\n\n・・・おお そうじゃ!!\nちょっと おまえさん、たのまれてくれんか?\nたのみというのはのォ・・・\n\nおまえさんも ここへ来るとき 見たと思うが、\n赤いトリのコッカのやつめ、\n\nよそからタマゴを盗んできては、\nああやって自分のものにしておってな・・・\n\nあのままでは\n中のヒナが かわいそうなんじゃ・・・\n\nそこでおまえさん、このへんにあるタマゴの中にいる\nヒナを全部 集めてくれんか?": "Sorry, I was lost in thought...\n\n...Oh, that's right!!\nWould you do me a favor?\nThe favor is, you see...\n\nYou must have seen it on your way here —\nthat red bird, Kokka...\n\nIt steals eggs from other places\nand keeps them as its own...\n\nLeft like that,\nthe chicks inside will suffer...\n\nSo, would you gather all the chicks from the eggs around here?",
+  "しんぱいじゃからな・・・\nたのんだぞ": "I'm worried about them...\nI'm counting on you.",
+  "なんじゃ、もう 集まっとるのか?\n\nん〜〜〜っ・・・\nじゃが まだ残っとるようじゃのォ・・・\n\nすまんがもう一度 行ってくれんか?": "What, you've already collected them?\n\nHmmmm...\nBut it seems some are still left...\n\nSorry, but could you go once more?",
+  "集めてくれたのか?・・・\nん〜〜〜っ・・・\n\nじゃが まだ残っとるようじゃのォ・・・\nすまんがもう一度 行ってくれんか?": "Did you collect them?...\nHmmmmmmm...\n\nBut it seems there are still some left...\nSorry, but could you go again?",
+  "なんじゃ、もう 集まっとるのか・・・\nおおぉぉぉっ!しかも全部集まっとるではないか!\n・・・・・・で、中身はどこじゃ?": "What, they've already been gathered...?\nOh my! And you even got all of them!\n......But where are the chicks?",
+  "おー・まい・がっ!!\n\nハラの中に入れとったのか!?\n\nまぁ、しかし 消化はされとらんようじゃし、\nよしとするかのォ\n\nいやぁ、何はともあれ ごくろうじゃった\n・・・これで わしも安心じゃわい\n\nんっ?・・・・・・そうじゃそうじゃ\nわしに何か用が あったようじゃな\n\n・・・・・・ほう・・・・・・\nコマブタに おジィさんの形見のうでわを\nとられたのか・・・\n\nそれで コマブタたちのことを\nききたいんじゃな・・・\n\nんっ わかった・・・\nじつはのォ・・・・・・・・・・・・\n\n・・・と 言いたいところじゃが\n今回のバージョンは ここまでじゃ\nん〜〜っ ざんねんじゃのぅ・・・\n\nこのつづきは、ぜひ せいひんばんで\n楽しんでくだされ・・・\n\nイベント、アクション、もりだくさんじゃから\nきっと 気にいる はずじゃ・・・\nこのあとのムービーを 見ていくがよい・・・\n\n・・・・・・勇気ある少年よ\nぼうけんは 始まったばかりじゃ\nせいひんばんで まっておるぞ・・・": "Oh, my gaaad!!\n\nYou had it in your belly!?\n\nWell, it doesn't seem to have been digested,\nso I'll let it pass...\n\nAnyway, thanks for your trouble\n...Now I can rest easy\n\nHm?......Oh, right, right\nYou seemed to need something from me\n\n......Oh?......\nThe Koma Buta took your grandfather's keepsake bracelet...\n\nSo you want to ask about\nthe Koma Buta...\n\nHm, I see...\nThe truth is, you see............\n\n...I'd like to say more, but\nthis version ends here\nHmmm, what a shame...\n\nBe sure to enjoy the rest\nin the final version...\n\nThere are plenty of events and action,\nso I'm sure you'll like it...\nGo ahead and watch the movie that follows...\n\n......Brave boy,\nyour adventure has only just begun\nI'll be waiting in the final version...",
+  "集めてくれたのか?\n\n・・・おぉっ!! 全部集まったようじゃな\n・・・・・・で、中身はどこじゃ?": "Did you collect them?\n\n...Oh!! It seems you've gathered them all.\n......But where are the chicks?",
+  "わしが話してやれる事はここまでじゃ・・・\n\nもしおまえさんがこの先の道を進むのなら、\nわしの仲間をさがしてみるといい、\nきっと力になってくれるはずじゃ・・・": "That's as far as I can tell you...\n\nIf you go on down the road ahead,\ntry looking for my friends.\nThey're sure to help you...",
+  "もちろん、わしの力になれることじゃったら\n何でも協力してやるからの・・・\n\n・・・そうじゃ、\n\nわしは物の めききには自信があるから、\n使い道のわからない物を手に入れたら\nわしのところに持ってくるといい・・・": "Of course, anything I can do to help,\nI'll gladly lend a hand...\n\n...That's right,\n\nI have a good eye for things,\nso if you get something\nyou don't know how to use,\nbring it to me...",
+  "おや?ないのぉ・・・\nおまえさんに100年のすずを\nやろうとおもったんじゃが・・・\n\nどこかで無くしてしまったようじゃな・・・\n\nもし、それらしい物をみつけたら\n持ってきておくれ・・・\n\nそのかわり、おまえさんには・・・\nホレ、これをやろう・・・100年のカギじゃ": "Oh? It's gone...\nI meant to give you the 100-Year Bell,\nbut...\n\nIt seems I lost it somewhere...\n\nIf you find something that looks like it,\nbring it to me...\n\nIn exchange, I'll give you this...\nHere, take this — the 100-Year Key.",
+  "これで、ここにあるのとおなじ宝箱なら\nあけることができるようになったはずじゃ・・・\nん〜ラッキーじゃのぉ・・・": "With this, you should now be able to open treasure chests just like the ones here...\nHmm, what luck...",
+  "それと・・・魔ブタをさがすには、\n封印ぶくろ と呼ばれるモノが必要じゃ・・・\n\nそれがないと、\nかくれ場所が目に見えんようになっとるんじゃ・・・": "And... to find the Evil Pigs,\nyou'll need something called a Seal Bag...\n\nWithout it,\ntheir hiding places can't be seen...",
+  "封印ぶくろのことは、この先の森に住む\nドワーフの長老にきいてみるといい・・・\nもっとくわしくおしえてくれるはずじゃ。": "As for the Seal Bag, ask the Dwarf Elder\nwho lives in the forest ahead...\nHe should be able to tell you more.",
+  "なんじゃ、わからない物があるなら見せてごらん・・・": "What's this? If there's something you don't understand, show it to me...",
+  "・・・おおっ、これはまさしく100年のすず!\nよく見つけたのぉ・・・\n\nこれをつかえばいつでも、\nここに戻って来ることができるはずじゃ・・・": "...Oh, this is indeed the 100-Year Bell!\nWell done finding it...\n\nIf you use this,\nyou should be able to come back here any time...",
+  "ジィちゃんの形見": "Grandpa's Keepsake",
+  "100年老人との出会い": "Encounter with the 100-Year-Old Man",
+  "霧を吹き飛ばせ!": "Blow away the mist!",
   "カエル水にかえる": "The frog returns to the water.",
   "モトクロスコース": "Motocross Course",
   "キミ、だあれ?": "Who are you?",
   "大きな水たまり?": "A large puddle?",
   "かくれ里のヤン": "Yan of the Hidden Village",
   "オイラ泳げない…": "I can't swim...",
-  "コッカタマゴの中身": "The contents of a cockerel egg.",
-  "100年老人の話": "The Story of a 100-Year-Old Man",
+  "コッカタマゴの中身": "The contents of Kokka's egg.",
+  "100年老人の話": "The 100-Year-Old Man's Story",
   "ドワーフの長老": "Dwarf Elder",
-  "サンタの好きなもの…": "Santa's favorite things...",
-  "小さなブタ…マゴブタ?": "A small pig... Magobuta?",
-  "かみつき草の花": "The flowers of the biting grass.",
-  "うまれたてのヒヨコ": "A newborn chick.",
-  "かえり道をわすれたカエル": "The frog who forgot its way home.",
-  "かえられなくなった\nドワーフのこども": "I can't be changed anymore.\nDwarf child.",
-  "ハラペコな おなかに\nおいしいバナナ": "A hungry stomach\ndelicious banana",
-  "何でもふき飛ばす\n強力なたつまき": "Blows everything away\nA powerful gale",
-  "100年老人の小屋へ\nいつでも もどれる": "To the 100-year-old man's cabin,\nI can always return.",
-  "ある宝箱に合うと\nひらく事ができる": "When it fits into a treasure chest,\nyou can open it.",
-  "一度行った場所へ\nいつでも 行ける": "To a place I once went,\nI can always go.",
-  "かみつき草にさいた\nめずらしい花": "I planted it in the grass.\nA rare flower.",
-  "気持ちをしずめてくれる": "It calms my feelings.",
-  "もれない バケツ": "A bucket that doesn't leak.",
-  "遠くの景色が\n見られる": "You can see the distant scenery.",
-  "とてもきれいな\nからの小ビン": "A very beautiful small bottle from.",
-  "涙のつまった小ビン": "A small bottle filled with tears.",
-  "あしをケガしたこいぬ": "A puppy with an injured leg.",
-  "ホカホカ できたての\nやきいも": "Hot and freshly baked yakiimo.",
-  "枯れ葉の羽を持つ\n伝説のチョウチョ": "A butterfly with wings of withered leaves,\na legendary butterfly.",
-  "ヤミを てらす\nタイマツ": "Illuminating darkness\nThai mat",
-  "水がたっぷり\n入ったバケツ": "A bucket filled with plenty of water.",
-  "なにも うつさないカガミ": "A mirror that doesn't reflect anything.",
-  "たかい所から\nユラユラおりられる": "From a high place,\nyou can sway down.",
-  "木でできた かるい\nブーメラン": "Lightweight boomerang made of wood.",
-  "イシでできた おもい\nブーメラン": "A boomerang made of stone.",
-  "コウテツでできた 強力な\nブーメラン": "A powerful boomerang made of kouetsu.",
-  "魔ブタを封じこめる\nたいせつな ふくろ": "Sealing the demon pig\nA precious pouch",
-  "せかいを 見わたす\nべんりな地図": "A convenient map that covers the world.",
-  "ふるびた つぼ": "An old pot.",
-  "すべてを けちらす\n強力な ぶき": "Scatter everything\nPowerful weapon",
-  "動きが はやくなる\nべんりな パンツ": "Movement becomes faster.\nConvenient pants.",
-  "動きが 最速になる\nすばらしい パンツ": "Movement becomes fastest\nWonderful pants",
-  "バイタリティが すこし\nかいふくする": "Vitality will slightly recover.",
-  "バイタリティ すべてかいふく\n\nおなかいっぱい!": "Vitality All Recovery",
-  "はじめから はいている\nパンツ": "I've been wearing them from the beginning.\nPants.",
+  "サンタの好きなもの…": "Santa's Favorite Thing...",
+  "小さなブタ…マゴブタ?": "Small pig... Mago Buta?",
+  "かみつき草の花": "Biting Grass Flower",
+  "うまれたてのヒヨコ": "A newborn chick",
+  "かえり道をわすれたカエル": "A frog that has forgotten\nits way home",
+  "かえられなくなった\nドワーフのこども": "A Dwarf child\nwho can't get home",
+  "ハラペコな おなかに\nおいしいバナナ": "A delicious banana\nfor a hungry belly",
+  "何でもふき飛ばす\n強力なたつまき": "A powerful tornado\nthat blows everything away",
+  "100年老人の小屋へ\nいつでも もどれる": "You can return to the\n100-Year-Old Man's hut any time",
+  "ある宝箱に使うと\nひらく事ができる": "Use it on a certain treasure chest\nand it will open",
+  "一度行った場所へ\nいつでも 行ける": "You can go any time\nto a place you've been",
+  "かみつき草にさいた\nめずらしい花": "A rare flower\nthat bloomed on the biting grass",
+  "気持ちをしずめてくれる": "Calms your feelings",
+  "もれない バケツ": "A bucket that doesn't leak",
+  "遠くの景色が\n見られる": "You can see the\ndistant scenery",
+  "とてもきれいな\nからの小ビン": "A very pretty\nempty little bottle",
+  "涙のつまった小ビン": "A little bottle filled with tears",
+  "あしをケガしたこいぬ": "A puppy with an injured leg",
+  "ホカホカ できたての\nやきいも": "Piping hot, freshly made\nbaked sweet potato",
+  "枯れ葉の羽を持つ\n伝説のチョウチョ": "A legendary butterfly\nwith dead-leaf wings",
+  "ヤミを てらす\nタイマツ": "Lights up the darkness:\na torch",
+  "水がたっぷり\n入ったバケツ": "A bucket filled\nwith lots of water",
+  "なにも うつさないカガミ": "A mirror that reflects nothing",
+  "たかい所から\nユラユラおりられる": "You can float gently down\nfrom high places",
+  "木でできた かるい\nブーメラン": "A light boomerang\nmade of wood",
+  "イシでできた おもい\nブーメラン": "A heavy boomerang\nmade of stone",
+  "コウテツでできた 強力な\nブーメラン": "A powerful boomerang\nmade of steel",
+  "魔ブタを封じこめる\nたいせつな ふくろ": "An important bag\nthat seals away Evil Pigs",
+  "せかいを 見わたす\nべんりな地図": "A handy map\nthat shows the whole world",
+  "ふるびた つぼ": "An old pot",
+  "すべてを けちらす\n強力な ぶき": "A powerful weapon\nthat scatters everything",
+  "動きが はやくなる\nべんりな パンツ": "Handy pants\nthat make you move faster",
+  "動きが 最速になる\nすばらしい パンツ": "Wonderful pants\nthat make you move fastest",
+  "バイタリティが すこし\nかいふくする": "Restores a little\nvitality",
+  "バイタリティ すべてかいふく\n\nおなかいっぱい!": "Restores all Vitality\n\nFull belly!",
+  "はじめから はいている\nパンツ": "The pants you've worn\nfrom the start",
   "アイテム033": "Item 033",
   "アイテム034": "Item 034",
   "アイテム035": "Item 035",
@@ -290,29 +291,29 @@
   "アイテム198": "Item 198",
   "アイテム199": "Item 199",
   "アイテム200": "Item 200",
-  "コマブタにとられた うでわを\nもとめて たびだつ": "I'm going to retrieve the arm taken by the pig.",
-  "ものしりな100年老人に\n会いに行く": "I'm going to meet a knowledgeable 100-year-old.",
-  "行く手をはばむ\nきりを はらす": "blocking the way,\ncutting through.",
-  "カエルを つかまえた": "I caught a frog.",
-  "およげないと ダメらしい": "It seems like I can't do it unless I run.",
-  "まどから のぞいている人と\n話しをした": "I talked to the person peeking through the window.",
-  "おおきな みずたまり\nの話を きいた": "I heard a story about a big puddle.",
-  "かくれていた人の\nなまえを しった": "I learned the name of the person who was hiding.",
-  "泳げない自分に気づいた": "I realized I couldn't swim.",
-  "たまごの なかみを\nあつめる": "Gather the contents of the egg.",
-  "魔ブタが出たときの\n話を きいた": "I heard the story when the demon pig appeared.",
+  "コマブタにとられた うでわを\nもとめて たびだつ": "Setting off to get back the bracelet\nthe Koma Buta took",
+  "ものしりな100年老人に\n会いに行く": "Going to meet the all-knowing\n100-Year-Old Man",
+  "行く手をはばむ\nきりを はらす": "Clear the fog\nblocking the way ahead",
+  "カエルを つかまえた": "Caught a frog",
+  "およげないと ダメらしい": "Looks like you can't do it if you can't swim",
+  "まどから のぞいている人と\n話しをした": "Talked with the person\npeeking out the window",
+  "おおきな みずたまり\nの話を きいた": "Heard the story\nof the big puddle",
+  "かくれていた人の\nなまえを しった": "Learned the name\nof the person who was hiding",
+  "泳げない自分に気づいた": "Realized I can't swim",
+  "たまごの なかみを\nあつめる": "Collect what's\ninside the eggs",
+  "魔ブタが出たときの\n話を きいた": "Heard the story\nof when the Evil Pigs appeared",
   "イベント012": "Event 012",
   "ドワーフの長老に会う": "Meet the Dwarf Elder",
-  "ドワーフのことばを おぼえる": "Learn the Dwarven language.",
-  "森でまいごになった\nこどもを さがす": "Lost in the forest\nSearching for a child",
+  "ドワーフのことばを おぼえる": "Learn the Dwarf language",
+  "森でまいごになった\nこどもを さがす": "Find the child who got lost\nin the forest",
   "イベント016": "Event 016",
   "イベント017": "Event 017",
-  "森でいなくなった ドワーフたちを さがす": "Search for the dwarves who disappeared in the forest.",
+  "森でいなくなった ドワーフたちを さがす": "Find the Dwarves\nwho went missing in the forest",
   "イベント020": "Event 020",
-  "ドワーフたちのケンカを やめさせる": "Stop the dwarves from fighting.",
-  "地下のオオドロボウと話しをする": "Talk to the Oodorobou in the basement.",
+  "ドワーフたちのケンカを やめさせる": "Stop the Dwarves' fighting",
+  "地下のオオドロボウと話しをする": "Talk with the Great Thief\nunderground",
   "イベント023": "Event 023",
-  "ケガをした小鳥を\nたすける": "Help the injured little bird.",
+  "ケガをした小犬を\nたすける": "Help the injured puppy",
   "イベント025": "Event 025",
   "イベント026": "Event 026",
   "イベント027": "Event 027",
@@ -455,7 +456,7 @@
   "イベント164": "Event 164",
   "イベント165": "Event 165",
   "イベント166": "Event 166",
-  "サルのサンタは おなかが すいているようだ\nなにか たべものを さがしてこようか?": "The monkey Santa seems hungry. Shall I go look for something to eat?",
+  "サルのサンタは おなかが すいているようだ\nなにか たべものを さがしてこようか?": "Santa the monkey seems hungry\nShall I go look for some food?",
   "イベント168": "Event 168",
   "イベント169": "Event 169",
   "イベント170": "Event 170",
@@ -499,57 +500,57 @@
     {
      "index": 0,
      "original": "カギがかかっている",
-     "translation": "The key is locked."
+     "translation": "It's locked."
     },
     {
      "index": 1,
      "original": "ヒヨコをつかった",
-     "translation": "I used a chick."
+     "translation": "Used a chick"
     },
     {
      "index": 2,
      "original": "カエルをつかった",
-     "translation": "Used a frog."
+     "translation": "Used a frog"
     },
     {
      "index": 3,
      "original": "バナナをつかった",
-     "translation": "I used a banana."
+     "translation": "Used a banana"
     },
     {
      "index": 4,
      "original": "あばれ竜巻をつかった",
-     "translation": "I used a rampaging tornado."
+     "translation": "Used the Rampaging Tornado"
     },
     {
      "index": 5,
      "original": "100年のカギをつかった",
-     "translation": "I used the key of 100 years."
+     "translation": "Used the 100-Year Key"
     },
     {
      "index": 6,
      "original": "100年の鍵をつかった",
-     "translation": "I used the key from 100 years ago."
+     "translation": "Used the 100-Year Key"
     },
     {
      "index": 7,
      "original": "めぐみの羽根をつかった",
-     "translation": "I used Megumi's feather."
+     "translation": "Used the Megumi Feather"
     },
     {
      "index": 8,
      "original": "かみつき草の花をつかった",
-     "translation": "I used the flowers of the biting grass."
+     "translation": "Used the Biting Grass Flower"
     },
     {
      "index": 9,
      "original": "マゴブタをつかった",
-     "translation": "I used a pig."
+     "translation": "Used Mago Buta"
     },
     {
      "index": 10,
      "original": "ケモノダッシュ",
-     "translation": "Kemono Dash"
+     "translation": "Beast Dash"
     },
     {
      "index": 11,
@@ -564,22 +565,22 @@
     {
      "index": 13,
      "original": "ライフゲージかくだい",
-     "translation": "Life Gauge Kakudai"
+     "translation": "Life Gauge expanded"
     },
     {
      "index": 14,
      "original": "奥のカベには ↑と×ボタンで とびつくことができ、\nそのまま上に上がると 奥のラインを歩けるよ\n手前にもどりたいときはその逆だよ",
-     "translation": "You can jump onto the wall at the back using the ↑ and × buttons,\nand if you go up from there, you can walk along the back line.\nTo return to the front, do the opposite."
+     "translation": "You can jump onto the wall in the back with ↑ and the × button, and if you keep going up you can walk along the back line. To come back to the front, do the opposite."
     },
     {
      "index": 15,
      "original": "木の枝にぶら下がったときは→で回転\nどんどん速くなる。ジャンプしたい\n方向と×ボタンで飛び出す!",
-     "translation": "When hanging from a tree branch → rotate\nIt gets faster and faster. I want to jump.\nUse direction and the × button to jump out!"
+     "translation": "When you hang from a tree branch, press → to spin. You go faster and faster. Press the direction you want to jump and the × button to launch yourself off!"
     },
     {
      "index": 16,
      "original": "○ボタンをおしつづけると、\nより強力な攻撃ができる",
-     "translation": "If you continue pressing the ○ button,\nyou can perform a more powerful attack."
+     "translation": "Hold down the ○ button for a more powerful attack."
     },
     {
      "index": 17,
@@ -589,7 +590,7 @@
     {
      "index": 18,
      "original": "ここがセーブポイントです。\n↑で奥を向いているときに\n○を押せばセーブができます",
-     "translation": "This is the save point.\nWhen facing backward with ↑,\npressing ○ will save."
+     "translation": "This is a save point. Face into the screen with ↑ and press ○ to save."
     },
     {
      "index": 19,
@@ -599,232 +600,232 @@
     {
      "index": 20,
      "original": "始まりの村",
-     "translation": "The Beginning Village"
+     "translation": "Village of Beginnings"
     },
     {
      "index": 21,
      "original": "始まりの森",
-     "translation": "The Beginning Forest"
+     "translation": "Forest of Beginnings"
     },
     {
      "index": 22,
      "original": "100年老人の小屋",
-     "translation": "The 100-Year-Old Man's Cabin"
+     "translation": "100-Year-Old Man's Hut"
     },
     {
      "index": 23,
      "original": "ふるいけ",
-     "translation": "sieve"
+     "translation": "Old Pond"
     },
     {
      "index": 24,
      "original": "この土地は はじめてか?\n\nオレは前に ここに住んでたんだけど、\nなんか ようすがかわっちまってよォ\n\nなんかわからんが、しりたいことがあるなら\nこの先の ずーっと上の小屋に住んでる\n\n100年老人というジィさんに\n会ってきいてみろよ\n\nでも、このあたりもあぶなくなったから\n気ィつけていけよ\n\nあっ そうだ! たてふだは見てけよ\n見るときは ↑と○ボタンだぜ\n\n・・・じゃあな!",
-     "translation": "Is this land new to you?\n\nI used to live here before,\nbut things have changed a lot since then.\n\nI don't know what it is, but if you want to know something,\nthere's a cabin way up ahead.\n\nMeet the 100-year-old old man and ask him.\n\nBut things around here have gotten dangerous,\nso be careful.\n\nOh, right! Look at the foot pedals.\nWhen looking, use the ↑ and ○ buttons.\n\n...See ya!"
+     "translation": "Is this your first time on this land?\n\nI used to live here, but things seem to have changed somehow.\n\nI don't know what's going on, but if there's something you want to know, there's a cabin way up ahead —\n\nan old man called the 100-Year-Old Man lives there. Go meet him and ask.\n\nBut it's gotten dangerous around here too, so be careful.\n\nOh, right! Be sure to read the signpost. Press ↑ and the ○ button to read it.\n\n...See you!"
     },
     {
      "index": 25,
      "original": "よぉ、にィちゃんも\nこの先に行きたいのかい?\n\nそりゃぁムリだ・・・\nこの先はキリで まっ白だぜ\n\nキリがなくなりゃぁ\n行けるんだけどな・・・",
-     "translation": "Hey, Niichan too,\ndo you want to go further?\n\nThat's impossible...\nBeyond this point, it's completely white.\n\nIf the Kiri runs out,\nyou can go, though..."
+     "translation": "Hey, you want to go on up ahead too, pal?\n\nThat's impossible... It's pure white with fog up there.\n\nIf the fog cleared you could go, but..."
     },
     {
      "index": 26,
      "original": "まぁーきくところによると あばれ竜巻 があれば\n何とかなるみたいだけど・・・\nじっさい どこにあるんだよ、そんなもん・・・\n\nオレは あきらめた!\nにぃちゃんも考えた方がいいぜ・・・\n\nあばよ!",
-     "translation": "Well, according to what I heard, if there's a violent tornado,\nit seems like we can manage somehow...\nBut seriously, where on earth is something like that...?\n\nI've given up!\nYou should think about it too, big brother...\n\nGoodbye!"
+     "translation": "From what I hear, if you had a Rampaging Tornado you could manage somehow...\nBut where on earth would a thing like that be...?\n\nI gave up!\nYou'd better think about it too, pal...\n\nSo long!"
     },
     {
      "index": 27,
      "original": "ちょっと まてよ",
-     "translation": "Wait a minute."
+     "translation": "Hold on a second."
     },
     {
      "index": 28,
      "original": "ウワッ!やめろョ",
-     "translation": "Whoa! Stop it!"
+     "translation": "Whoa! Cut it out!"
     },
     {
      "index": 29,
      "original": "オレは今、ハラがへってて イライラしてんだ\n何か たべるもん ないか?・・・\nなけりゃ またあとにしてくれョ",
-     "translation": "I'm hungry right now and I'm getting irritated.\nIs there anything I can eat?...\nIf not, please save it for later."
+     "translation": "I'm starving and in a foul mood right now.\nGot anything to eat?...\nIf not, come back later."
     },
     {
      "index": 30,
      "original": "オ〜〜〜ッ!\nなんだ それくれるのか?\n\nサンキュー! たすかったゼ\nもう ハラがへって、うごけなかったんだ\n\nオレ サンタ ってんだ、よろしくな",
-     "translation": "Ohhhh!\nWhat? You're giving me that?\n\nThanks! That saved me.\nI was so hungry I couldn't move.\n\nI'm Santa—nice to meet you."
+     "translation": "Ohhh!\nWhat, you're giving me that?\n\nThanks! You saved me!\nI was so hungry I couldn't move.\n\nI'm Santa. Nice to meet you."
     },
     {
      "index": 31,
      "original": "そうだ!!\nとっておきの技をおしえてやるョ\n\nいいか?",
-     "translation": "That's right!!\nI'll teach you my secret technique!\n\nIs that okay?"
+     "translation": "That's it!!\nI'll teach you a special move.\n\nReady?"
     },
     {
      "index": 32,
-     "original": "×ボタンを押しながら走るとスピードが速くなる、\n人よんで ケモノダッシュっていう技だゼ",
-     "translation": "Pressing the X button while running makes your speed increase—it's called \"Kemono Dash,\" a technique used by humans."
+     "original": "□ボタンを押しながら走るとスピードが速くなる、\n人よんで ケモノダッシュっていう技だゼ",
+     "translation": "Run while holding the □ button and you go faster.\nIt's a move people call the Beast Dash."
     },
     {
      "index": 33,
-     "original": "おぼえたか?\n×ボタンを押しながらだぞ・・・・・・\nじゃぁオレはいくゼ\n\nあばよ!",
-     "translation": "Did you remember?\nWhile pressing the X button...\nWell then, I'm off!\n\nGoodbye!"
+     "original": "おぼえたか?\n□ボタンを押しながらだぞ・・・・・・\nじゃぁオレはいくゼ\n\nあばよ!",
+     "translation": "Got it?\nRemember, hold the □ button......\nWell, I'm off.\n\nSo long!"
     },
     {
      "index": 34,
      "original": "サンキュ",
-     "translation": "Thank you."
+     "translation": "Thank you!"
     },
     {
      "index": 35,
      "original": "バイバイ・・・",
-     "translation": "Bye-bye..."
+     "translation": "Goodbye..."
     },
     {
      "index": 36,
      "original": "・・・あらら・・・もう見つかっちゃった!\n\nかくれてたんだけど よくわかったな・・・",
-     "translation": "...Oh dear... I've already been found!\n\nI was hiding, but you figured it out so well..."
+     "translation": "...Aw... you found me already!\n\nI was hiding, and you still figured it out..."
     },
     {
      "index": 37,
      "original": "よし! いいことおしえてやるよ\n\nこの小屋のウラをまっすぐ奥に行くと ふるいけ、\nそして、この小屋の先を上に行くと\n100年老人っていう ジィさんが住んでるんだ",
-     "translation": "Alright! I'll tell you something good.\n\nIf you go straight to the back of this hut, there's a gate,\nAnd if you go up past this hut,\nThere's an old man called the 100-year-old living there."
+     "translation": "Alright! I'll tell you something good.\n\nGo straight back behind this hut and you'll come to the Old Pond,\nand if you go up past this hut,\nan old man called the 100-Year-Old Man lives there."
     },
     {
      "index": 38,
      "original": "え?・・・オイラかい?・・・・・・\nそんなことより まず行ってみろよ、\nウソじゃないから・・・\n\nそのあとで また会おうや",
-     "translation": "Huh?... Is that me?...\nRather than that, first go and see it,\nIt's not a lie...\n\nAfter that, let's meet again."
+     "translation": "Huh? ...Me?...\nNever mind that, go and see for yourself first,\nI'm not lying...\n\nWe'll meet again after that."
     },
     {
      "index": 39,
      "original": "えっ?!もう行ったのか?・・・そうか・・・",
-     "translation": "Huh?! Already gone?... I see..."
+     "translation": "What?! You've already been there?... I see..."
     },
     {
      "index": 40,
      "original": "100年老人には会ったのかい?\n\n会ったら また会おうや",
-     "translation": "Have you met the 100-year-old?\n\nIf you do, let's meet again."
+     "translation": "Have you met the 100-Year-Old Man?\n\nOnce you have, come see me again."
     },
     {
      "index": 41,
      "original": "ふるいけ には行ったかい?\n\n行ったら また会おうや",
-     "translation": "Did you go to Furuike?\n\nIf you did, let's meet again."
+     "translation": "Have you been to the Old Pond?\n\nOnce you have, come see me again."
     },
     {
      "index": 42,
      "original": "どうだい、ウソじゃなかっただろ\n\nじまんじゃないけどオイラいろいろ しってんだ",
-     "translation": "How about it, it wasn't a lie, right?\n\nIt's not a joke, but I know a lot."
+     "translation": "See, I wasn't lying, was I?\n\nNot to brag, but I know all kinds of things."
     },
     {
      "index": 43,
      "original": "・・・あぁ、オイラかい?\n\nオイラ、ヤン かくれ里のヤンていうんだ・・・",
-     "translation": "...Ah, me?\n\nI'm Yan, from the Hidden Village..."
+     "translation": "...Oh, me?\n\nI'm Yan. Yan of the Hidden Village..."
     },
     {
      "index": 44,
      "original": "いつも かくれてるんだけど、\nだれも見つけられないんだ・・・\n\nまた見つけられたら そのときも\nいいことおしえてやるよ!\n・・・見つけることができたらな",
-     "translation": "I always hide,\nbut no one can find me...\n\nIf I can be found again,\nI'll tell you something good then too!\n...If I can be found."
+     "translation": "I'm always hiding, but nobody can ever find me...\n\nIf you find me again, I'll tell you something good then too!\n...If you can find me, that is."
     },
     {
      "index": 45,
      "original": "う〜ん・・・なんだか楽しくなってきたな・・・\nがんばって見つけてくれよ\n\nじゃあな!",
-     "translation": "Hmm... I'm starting to feel like I'm having fun now...\nPlease do your best to find it!\n\nSee ya!"
+     "translation": "Hmm... this is starting to be fun...\nDo your best to find me!\n\nSee ya!"
     },
     {
      "index": 46,
      "original": "この先に行く気か?\n\nでも・・・おまえ泳げるんかィ?",
-     "translation": "Are you going to go ahead?\n\nBut… can you swim?"
+     "translation": "You're thinking of going on ahead?\n\nBut... can you swim?"
     },
     {
      "index": 47,
      "original": "いかん、いかん\n\n今はカメさんに たすけてもらったが\n次からそうはいかん\n\nそこのトビラの先は\n泳げないと行けんのだから・・・\n\n悪いことはいわん、\n今はやめた方がいい・・・\n\nいつか 泳げるようになってから行くんだナ\n\nおっ そうだ!\nおまえ ハラへってないかィ?\n\nこれ もってけよ!",
-     "translation": "No, no.\n\nI got help from the turtle this time,\nbut I can't do that again next time.\n\nBeyond that door,\nyou can't go unless you can swim...\n\nDon't say bad things,\nit's better to stop now...\n\nI'll go when I can swim someday.\n\nOh, right!\nAre you hungry?\n\nTake this!"
+     "translation": "No, no.\n\nA turtle helped you this time, but it won't go like that next time.\n\nYou can't go past that door unless you can swim, so...\n\nI'm not saying this to be mean, but you'd better not go now...\n\nGo when you've learned to swim someday, all right?\n\nOh, right!\nAren't you hungry?\n\nTake this!"
     },
     {
      "index": 48,
      "original": "じゃあなボウズ 気ィつけて行けや",
-     "translation": "See ya, loser. Be careful."
+     "translation": "See you, kid. Be careful out there."
     },
     {
      "index": 49,
      "original": "・・・うーん・・・こまったのォ・・・\n\nどーしたもんかのォ・・・\n\nんっ?",
-     "translation": "...Hmm... I'm in trouble...\n\nWhat should I do...?\n\nHmm?"
+     "translation": "...Hmm... what a problem...\n\nWhatever shall I do...\n\nOh?"
     },
     {
      "index": 50,
      "original": "なんじゃ?・・・\nわしが100年老人じゃが・・・何か用かな?",
-     "translation": "What is it?...\nI am a 100-year-old old man... Is there something you need?"
+     "translation": "What is it?...\nI'm the 100-Year-Old Man... Do you need something?"
     },
     {
      "index": 51,
      "original": "すまんが、ちょっと\n考えごとをしておってな・・・・・・\n\n・・・おお そうじゃ!!\nちょっと おまえさん、たのまれてくれんか?\nたのみというのはのォ・・・\n\nおまえさんも ここへ来るとき 見たと思うが、\n赤いトリのコッカのやつめ、\n\nよそからタマゴを盗んできては、\nああやって自分のものにしておってな・・・\n\nあのままでは\n中のヒナが かわいそうなんじゃ・・・\n\nそこでおまえさん、このへんにあるタマゴの中にいる\nヒナを全部 集めてくれんか?",
-     "translation": "Sorry, I'm just thinking about something...\n\n...Oh, that's right!\nHey, would you do me a favor?\nWhat I mean by \"favor\" is...\n\nYou probably saw it when you came here,\nthat red-breasted chick,\n\nstealing eggs from other places\nand then making them his own...\n\nIf things continue like this,\nthe chicks inside will be pitiful...\n\nSo, could you gather all the chicks\ninside the eggs around here?"
+     "translation": "Sorry, I was lost in thought...\n\n...Oh, that's right!!\nWould you do me a favor?\nThe favor is, you see...\n\nYou must have seen it on your way here —\nthat red bird, Kokka...\n\nIt steals eggs from other places\nand keeps them as its own...\n\nLeft like that,\nthe chicks inside will suffer...\n\nSo, would you gather all the chicks from the eggs around here?"
     },
     {
      "index": 52,
      "original": "しんぱいじゃからな・・・\nたのんだぞ",
-     "translation": "I'm worried...\nI'm counting on you."
+     "translation": "I'm worried about them...\nI'm counting on you."
     },
     {
      "index": 53,
      "original": "なんじゃ、もう 集まっとるのか?\n\nん〜〜〜っ・・・\nじゃが まだ残っとるようじゃのォ・・・\n\nすまんがもう一度 行ってくれんか?",
-     "translation": "What? Are they already gathering?\n\nHmm~~~...\nBut it seems like there's still some left...\n\nSorry, could you go again?"
+     "translation": "What, you've already collected them?\n\nHmmmm...\nBut it seems some are still left...\n\nSorry, but could you go once more?"
     },
     {
      "index": 54,
      "original": "集めてくれたのか?・・・\nん〜〜〜っ・・・\n\nじゃが まだ残っとるようじゃのォ・・・\nすまんがもう一度 行ってくれんか?",
-     "translation": "Did you collect them?...\nHmmmmm...\n\nBut it seems there's still some left...\nSorry, but could you go again?"
+     "translation": "Did you collect them?...\nHmmmmmmm...\n\nBut it seems there are still some left...\nSorry, but could you go again?"
     },
     {
      "index": 55,
      "original": "なんじゃ、もう 集まっとるのか・・・\nおおぉぉぉっ!しかも全部集まっとるではないか!\n・・・・・・で、中身はどこじゃ?",
-     "translation": "What? Already gathered...?\nOhhhhh! And they're all gathered!\n...And where are the contents?"
+     "translation": "What, they've already been gathered...?\nOh my! And you even got all of them!\n......But where are the chicks?"
     },
     {
      "index": 56,
      "original": "おー・まい・がっ!!\n\nハラの中に入れとったのか!?\n\nまぁ、しかし 消化はされとらんようじゃし、\nよしとするかのォ\n\nいやぁ、何はともあれ ごくろうじゃった\n・・・これで わしも安心じゃわい\n\nんっ?・・・・・・そうじゃそうじゃ\nわしに何か用が あったようじゃな\n\n・・・・・・ほう・・・・・・\nコマブタに おジィさんの形見のうでわを\nとられたのか・・・\n\nそれで コマブタたちのことを\nききたいんじゃな・・・\n\nんっ わかった・・・\nじつはのォ・・・・・・・・・・・・\n\n・・・と 言いたいところじゃが\n今回のバージョンは ここまでじゃ\nん〜〜っ ざんねんじゃのぅ・・・\n\nこのつづきは、ぜひ せいひんばんで\n楽しんでくだされ・・・\n\nイベント、アクション、もりだくさんじゃから\nきっと 気にいる はずじゃ・・・\nこのあとのムービーを 見ていくがよい・・・\n\n・・・・・・勇気ある少年よ\nぼうけんは 始まったばかりじゃ\nせいひんばんで まっておるぞ・・・",
-     "translation": "Oh my god!!\n\nDid you put it in the stomach!?\n\nWell, but it doesn't seem to be digested,\nso I'll leave it at that.\n\nWell, anyway, it was exhausting.\n...With this, I'm relieved too.\n\nHmm?...That's right, that's right.\nIt seems like there was something you wanted from me.\n\n...Hmm...\nDid Komabuta take the memento arm of Ojiisan?\n\nAnd you want to ask about Komabuta and the others...\n\nHmm, I understand...\nActually...\n\n...I want to say that, but\nThis version ends here.\nHmm~ That's disappointing...\n\nPlease enjoy the rest on the product page...\n\nThere are plenty of events and actions, so\nI'm sure you'll like it...\nPlease watch the following movies...\n\n...Bravery boy\nThe adventure has just begun\nI'm waiting for you on the product page..."
+     "translation": "Oh, my gaaad!!\n\nYou had it in your belly!?\n\nWell, it doesn't seem to have been digested,\nso I'll let it pass...\n\nAnyway, thanks for your trouble\n...Now I can rest easy\n\nHm?......Oh, right, right\nYou seemed to need something from me\n\n......Oh?......\nThe Koma Buta took your grandfather's keepsake bracelet...\n\nSo you want to ask about\nthe Koma Buta...\n\nHm, I see...\nThe truth is, you see............\n\n...I'd like to say more, but\nthis version ends here\nHmmm, what a shame...\n\nBe sure to enjoy the rest\nin the final version...\n\nThere are plenty of events and action,\nso I'm sure you'll like it...\nGo ahead and watch the movie that follows...\n\n......Brave boy,\nyour adventure has only just begun\nI'll be waiting in the final version..."
     },
     {
      "index": 57,
      "original": "集めてくれたのか?\n\n・・・おぉっ!! 全部集まったようじゃな\n・・・・・・で、中身はどこじゃ?",
-     "translation": "Did you gather them?\n\n...Oh! It looks like everything's been collected.\n...And where are the contents?"
+     "translation": "Did you collect them?\n\n...Oh!! It seems you've gathered them all.\n......But where are the chicks?"
     },
     {
      "index": 58,
-     "original": "わしが話してやれる事はここまでじゃ・・・\n\nもしおまえさんがこの先の方を進むのなら、\nわしの仲間をさがしてみるといい、\nきっと力になってくれるはずじゃ・・・",
-     "translation": "This is as far as I can go in telling you...\n\nIf you're going to move forward from here,\nyou should try looking for my companions,\nand I'm sure they'll be able to help you..."
+     "original": "わしが話してやれる事はここまでじゃ・・・\n\nもしおまえさんがこの先の道を進むのなら、\nわしの仲間をさがしてみるといい、\nきっと力になってくれるはずじゃ・・・",
+     "translation": "That's as far as I can tell you...\n\nIf you go on down the road ahead,\ntry looking for my friends.\nThey're sure to help you..."
     },
     {
      "index": 59,
-     "original": "もちろん、わしの力になれることじゃったら\n何でも協力してやるからの・・・\n\n・・・そうじゃ、\n\nわしは物の めききには自信があるから、\n使い方のわからない物を手に入れたら\nわしのところに持ってくるといい・・・",
-     "translation": "Of course, if there's anything I can do to help,\nI'll cooperate with you...\n\n...That's right,\n\nI have confidence in my abilities, so\nif you get something you don't know how to use,\nbring it to me..."
+     "original": "もちろん、わしの力になれることじゃったら\n何でも協力してやるからの・・・\n\n・・・そうじゃ、\n\nわしは物の めききには自信があるから、\n使い道のわからない物を手に入れたら\nわしのところに持ってくるといい・・・",
+     "translation": "Of course, anything I can do to help,\nI'll gladly lend a hand...\n\n...That's right,\n\nI have a good eye for things,\nso if you get something\nyou don't know how to use,\nbring it to me..."
     },
     {
      "index": 60,
      "original": "おや?ないのぉ・・・\nおまえさんに100年のすずを\nやろうとおもったんじゃが・・・\n\nどこかで無くしてしまったようじゃな・・・\n\nもし、それらしい物をみつけたら\n持ってきておくれ・・・\n\nそのかわり、おまえさんには・・・\nホレ、これをやろう・・・100年のカギじゃ",
-     "translation": "Oh? It's gone...\nI was going to give you a hundred years of tin...\n\nIt seems like you lost it somewhere...\n\nIf you find something like it,\nbring it to me...\n\nIn exchange, I'll give you this... Here, take this—it's a hundred-year key."
+     "translation": "Oh? It's gone...\nI meant to give you the 100-Year Bell,\nbut...\n\nIt seems I lost it somewhere...\n\nIf you find something that looks like it,\nbring it to me...\n\nIn exchange, I'll give you this...\nHere, take this — the 100-Year Key."
     },
     {
      "index": 61,
      "original": "これで、ここにあるのとおなじ宝箱なら\nあけることができるようになったはずじゃ・・・\nん〜ラッキーじゃのぉ・・・",
-     "translation": "With this, you should now be able to open the same treasure chests as the ones here...\nHmm, what luck!"
+     "translation": "With this, you should now be able to open treasure chests just like the ones here...\nHmm, what luck..."
     },
     {
      "index": 62,
      "original": "それと・・・魔ブタをさがすには、\n封印ぶくろ と呼ばれるモノが必要じゃ・・・\n\nそれがないと、\nかくれ場所が目に見えんようになっとるんじゃ・・・",
-     "translation": "And... to find the Demon Pig, you need something called a Seal Pouch...\n\nWithout it,\nthe hiding place becomes invisible..."
+     "translation": "And... to find the Evil Pigs,\nyou'll need something called a Seal Bag...\n\nWithout it,\ntheir hiding places can't be seen..."
     },
     {
      "index": 63,
      "original": "封印ぶくろのことは、この先の森に住む\nドワーフの長老にきいてみるといい・・・\nもっとくわしくおしえてくれるはずじゃ。",
-     "translation": "As for the sealed bag, you should ask the elder of the dwarves who live in the forest ahead...\nHe should be able to tell you more about it."
+     "translation": "As for the Seal Bag, ask the Dwarf Elder\nwho lives in the forest ahead...\nHe should be able to tell you more."
     },
     {
      "index": 64,
      "original": "なんじゃ、わからない物があるなら見せてごらん・・・",
-     "translation": "What? If there's something you don't understand, show it to me..."
+     "translation": "What's this? If there's something you don't understand, show it to me..."
     },
     {
      "index": 65,
      "original": "・・・おおっ、これはまさしく100年のすず!\nよく見つけたのぉ・・・\n\nこれをつかえばいつでも、\nここに戻って来ることができるはずじゃ・・・",
-     "translation": "...Oh wow, this is exactly 100 years of Suzu!\nYou found it well...\n\nIf you use this, you should be able to come back here anytime..."
+     "translation": "...Oh, this is indeed the 100-Year Bell!\nWell done finding it...\n\nIf you use this,\nyou should be able to come back here any time..."
     }
    ]
   },
@@ -841,17 +842,17 @@
     {
      "index": 1,
      "original": "ジィちゃんの形見",
-     "translation": "Grandpa's keepsake."
+     "translation": "Grandpa's Keepsake"
     },
     {
      "index": 2,
      "original": "100年老人との出会い",
-     "translation": "Encounter with a 100-Year-Old Man"
+     "translation": "Encounter with the 100-Year-Old Man"
     },
     {
      "index": 3,
      "original": "霧を吹き飛ばせ!",
-     "translation": "Blow away the fog!"
+     "translation": "Blow away the mist!"
     },
     {
      "index": 4,
@@ -886,12 +887,12 @@
     {
      "index": 10,
      "original": "コッカタマゴの中身",
-     "translation": "The contents of a cockerel egg."
+     "translation": "The contents of Kokka's egg."
     },
     {
      "index": 11,
      "original": "100年老人の話",
-     "translation": "The Story of a 100-Year-Old Man"
+     "translation": "The 100-Year-Old Man's Story"
     },
     {
      "index": 12,
@@ -906,17 +907,17 @@
     {
      "index": 14,
      "original": "サンタの好きなもの…",
-     "translation": "Santa's favorite things..."
+     "translation": "Santa's Favorite Thing..."
     },
     {
      "index": 15,
      "original": "小さなブタ…マゴブタ?",
-     "translation": "A small pig... Magobuta?"
+     "translation": "Small pig... Mago Buta?"
     },
     {
      "index": 16,
      "original": "かみつき草の花",
-     "translation": "The flowers of the biting grass."
+     "translation": "Biting Grass Flower"
     }
    ]
   },
@@ -928,167 +929,167 @@
     {
      "index": 0,
      "original": "うまれたてのヒヨコ",
-     "translation": "A newborn chick."
+     "translation": "A newborn chick"
     },
     {
      "index": 1,
      "original": "かえり道をわすれたカエル",
-     "translation": "The frog who forgot its way home."
+     "translation": "A frog that has forgotten\nits way home"
     },
     {
      "index": 2,
      "original": "かえられなくなった\nドワーフのこども",
-     "translation": "I can't be changed anymore.\nDwarf child."
+     "translation": "A Dwarf child\nwho can't get home"
     },
     {
      "index": 3,
      "original": "ハラペコな おなかに\nおいしいバナナ",
-     "translation": "A hungry stomach\ndelicious banana"
+     "translation": "A delicious banana\nfor a hungry belly"
     },
     {
      "index": 4,
      "original": "何でもふき飛ばす\n強力なたつまき",
-     "translation": "Blows everything away\nA powerful gale"
+     "translation": "A powerful tornado\nthat blows everything away"
     },
     {
      "index": 5,
      "original": "100年老人の小屋へ\nいつでも もどれる",
-     "translation": "To the 100-year-old man's cabin,\nI can always return."
+     "translation": "You can return to the\n100-Year-Old Man's hut any time"
     },
     {
      "index": 6,
-     "original": "ある宝箱に合うと\nひらく事ができる",
-     "translation": "When it fits into a treasure chest,\nyou can open it."
+     "original": "ある宝箱に使うと\nひらく事ができる",
+     "translation": "Use it on a certain treasure chest\nand it will open"
     },
     {
      "index": 7,
      "original": "一度行った場所へ\nいつでも 行ける",
-     "translation": "To a place I once went,\nI can always go."
+     "translation": "You can go any time\nto a place you've been"
     },
     {
      "index": 8,
      "original": "かみつき草にさいた\nめずらしい花",
-     "translation": "I planted it in the grass.\nA rare flower."
+     "translation": "A rare flower\nthat bloomed on the biting grass"
     },
     {
      "index": 9,
      "original": "気持ちをしずめてくれる",
-     "translation": "It calms my feelings."
+     "translation": "Calms your feelings"
     },
     {
      "index": 10,
      "original": "もれない バケツ",
-     "translation": "A bucket that doesn't leak."
+     "translation": "A bucket that doesn't leak"
     },
     {
      "index": 11,
      "original": "遠くの景色が\n見られる",
-     "translation": "You can see the distant scenery."
+     "translation": "You can see the\ndistant scenery"
     },
     {
      "index": 12,
      "original": "とてもきれいな\nからの小ビン",
-     "translation": "A very beautiful small bottle from."
+     "translation": "A very pretty\nempty little bottle"
     },
     {
      "index": 13,
      "original": "涙のつまった小ビン",
-     "translation": "A small bottle filled with tears."
+     "translation": "A little bottle filled with tears"
     },
     {
      "index": 14,
      "original": "あしをケガしたこいぬ",
-     "translation": "A puppy with an injured leg."
+     "translation": "A puppy with an injured leg"
     },
     {
      "index": 15,
      "original": "ホカホカ できたての\nやきいも",
-     "translation": "Hot and freshly baked yakiimo."
+     "translation": "Piping hot, freshly made\nbaked sweet potato"
     },
     {
      "index": 16,
      "original": "枯れ葉の羽を持つ\n伝説のチョウチョ",
-     "translation": "A butterfly with wings of withered leaves,\na legendary butterfly."
+     "translation": "A legendary butterfly\nwith dead-leaf wings"
     },
     {
      "index": 17,
      "original": "ヤミを てらす\nタイマツ",
-     "translation": "Illuminating darkness\nThai mat"
+     "translation": "Lights up the darkness:\na torch"
     },
     {
      "index": 18,
      "original": "水がたっぷり\n入ったバケツ",
-     "translation": "A bucket filled with plenty of water."
+     "translation": "A bucket filled\nwith lots of water"
     },
     {
      "index": 19,
      "original": "なにも うつさないカガミ",
-     "translation": "A mirror that doesn't reflect anything."
+     "translation": "A mirror that reflects nothing"
     },
     {
      "index": 20,
      "original": "たかい所から\nユラユラおりられる",
-     "translation": "From a high place,\nyou can sway down."
+     "translation": "You can float gently down\nfrom high places"
     },
     {
      "index": 21,
      "original": "木でできた かるい\nブーメラン",
-     "translation": "Lightweight boomerang made of wood."
+     "translation": "A light boomerang\nmade of wood"
     },
     {
      "index": 22,
      "original": "イシでできた おもい\nブーメラン",
-     "translation": "A boomerang made of stone."
+     "translation": "A heavy boomerang\nmade of stone"
     },
     {
      "index": 23,
      "original": "コウテツでできた 強力な\nブーメラン",
-     "translation": "A powerful boomerang made of kouetsu."
+     "translation": "A powerful boomerang\nmade of steel"
     },
     {
      "index": 24,
      "original": "魔ブタを封じこめる\nたいせつな ふくろ",
-     "translation": "Sealing the demon pig\nA precious pouch"
+     "translation": "An important bag\nthat seals away Evil Pigs"
     },
     {
      "index": 25,
      "original": "せかいを 見わたす\nべんりな地図",
-     "translation": "A convenient map that covers the world."
+     "translation": "A handy map\nthat shows the whole world"
     },
     {
      "index": 26,
      "original": "ふるびた つぼ",
-     "translation": "An old pot."
+     "translation": "An old pot"
     },
     {
      "index": 27,
      "original": "すべてを けちらす\n強力な ぶき",
-     "translation": "Scatter everything\nPowerful weapon"
+     "translation": "A powerful weapon\nthat scatters everything"
     },
     {
      "index": 28,
      "original": "動きが はやくなる\nべんりな パンツ",
-     "translation": "Movement becomes faster.\nConvenient pants."
+     "translation": "Handy pants\nthat make you move faster"
     },
     {
      "index": 29,
      "original": "動きが 最速になる\nすばらしい パンツ",
-     "translation": "Movement becomes fastest\nWonderful pants"
+     "translation": "Wonderful pants\nthat make you move fastest"
     },
     {
      "index": 30,
      "original": "バイタリティが すこし\nかいふくする",
-     "translation": "Vitality will slightly recover."
+     "translation": "Restores a little\nvitality"
     },
     {
      "index": 31,
      "original": "バイタリティ すべてかいふく\n\nおなかいっぱい!",
-     "translation": "Vitality All Recovery"
+     "translation": "Restores all Vitality\n\nFull belly!"
     },
     {
      "index": 32,
      "original": "はじめから はいている\nパンツ",
-     "translation": "I've been wearing them from the beginning.\nPants."
+     "translation": "The pants you've worn\nfrom the start"
     },
     {
      "index": 33,
@@ -1940,57 +1941,57 @@
     {
      "index": 0,
      "original": "コマブタにとられた うでわを\nもとめて たびだつ",
-     "translation": "I'm going to retrieve the arm taken by the pig."
+     "translation": "Setting off to get back the bracelet\nthe Koma Buta took"
     },
     {
      "index": 1,
      "original": "ものしりな100年老人に\n会いに行く",
-     "translation": "I'm going to meet a knowledgeable 100-year-old."
+     "translation": "Going to meet the all-knowing\n100-Year-Old Man"
     },
     {
      "index": 2,
      "original": "行く手をはばむ\nきりを はらす",
-     "translation": "blocking the way,\ncutting through."
+     "translation": "Clear the fog\nblocking the way ahead"
     },
     {
      "index": 3,
      "original": "カエルを つかまえた",
-     "translation": "I caught a frog."
+     "translation": "Caught a frog"
     },
     {
      "index": 4,
      "original": "およげないと ダメらしい",
-     "translation": "It seems like I can't do it unless I run."
+     "translation": "Looks like you can't do it if you can't swim"
     },
     {
      "index": 5,
      "original": "まどから のぞいている人と\n話しをした",
-     "translation": "I talked to the person peeking through the window."
+     "translation": "Talked with the person\npeeking out the window"
     },
     {
      "index": 6,
      "original": "おおきな みずたまり\nの話を きいた",
-     "translation": "I heard a story about a big puddle."
+     "translation": "Heard the story\nof the big puddle"
     },
     {
      "index": 7,
      "original": "かくれていた人の\nなまえを しった",
-     "translation": "I learned the name of the person who was hiding."
+     "translation": "Learned the name\nof the person who was hiding"
     },
     {
      "index": 8,
      "original": "泳げない自分に気づいた",
-     "translation": "I realized I couldn't swim."
+     "translation": "Realized I can't swim"
     },
     {
      "index": 9,
      "original": "たまごの なかみを\nあつめる",
-     "translation": "Gather the contents of the egg."
+     "translation": "Collect what's\ninside the eggs"
     },
     {
      "index": 10,
      "original": "魔ブタが出たときの\n話を きいた",
-     "translation": "I heard the story when the demon pig appeared."
+     "translation": "Heard the story\nof when the Evil Pigs appeared"
     },
     {
      "index": 11,
@@ -2005,12 +2006,12 @@
     {
      "index": 13,
      "original": "ドワーフのことばを おぼえる",
-     "translation": "Learn the Dwarven language."
+     "translation": "Learn the Dwarf language"
     },
     {
      "index": 14,
      "original": "森でまいごになった\nこどもを さがす",
-     "translation": "Lost in the forest\nSearching for a child"
+     "translation": "Find the child who got lost\nin the forest"
     },
     {
      "index": 15,
@@ -2025,7 +2026,7 @@
     {
      "index": 17,
      "original": "森でいなくなった ドワーフたちを さがす",
-     "translation": "Search for the dwarves who disappeared in the forest."
+     "translation": "Find the Dwarves\nwho went missing in the forest"
     },
     {
      "index": 18,
@@ -2040,12 +2041,12 @@
     {
      "index": 20,
      "original": "ドワーフたちのケンカを やめさせる",
-     "translation": "Stop the dwarves from fighting."
+     "translation": "Stop the Dwarves' fighting"
     },
     {
      "index": 21,
      "original": "地下のオオドロボウと話しをする",
-     "translation": "Talk to the Oodorobou in the basement."
+     "translation": "Talk with the Great Thief\nunderground"
     },
     {
      "index": 22,
@@ -2054,8 +2055,8 @@
     },
     {
      "index": 23,
-     "original": "ケガをした小鳥を\nたすける",
-     "translation": "Help the injured little bird."
+     "original": "ケガをした小犬を\nたすける",
+     "translation": "Help the injured puppy"
     },
     {
      "index": 24,
@@ -2770,7 +2771,7 @@
     {
      "index": 166,
      "original": "サルのサンタは おなかが すいているようだ\nなにか たべものを さがしてこようか?",
-     "translation": "The monkey Santa seems hungry. Shall I go look for something to eat?"
+     "translation": "Santa the monkey seems hungry\nShall I go look for some food?"
     },
     {
      "index": 167,
@@ -2947,167 +2948,167 @@
     {
      "index": 0,
      "original": "うまれたてのヒヨコ",
-     "translation": "A newborn chick."
+     "translation": "A newborn chick"
     },
     {
      "index": 1,
      "original": "かえり道をわすれたカエル",
-     "translation": "The frog who forgot its way home."
+     "translation": "A frog that has forgotten\nits way home"
     },
     {
      "index": 2,
      "original": "かえられなくなった\nドワーフのこども",
-     "translation": "I can't be changed anymore.\nDwarf child."
+     "translation": "A Dwarf child\nwho can't get home"
     },
     {
      "index": 3,
      "original": "ハラペコな おなかに\nおいしいバナナ",
-     "translation": "A hungry stomach\ndelicious banana"
+     "translation": "A delicious banana\nfor a hungry belly"
     },
     {
      "index": 4,
      "original": "何でもふき飛ばす\n強力なたつまき",
-     "translation": "Blows everything away\nA powerful gale"
+     "translation": "A powerful tornado\nthat blows everything away"
     },
     {
      "index": 5,
      "original": "100年老人の小屋へ\nいつでも もどれる",
-     "translation": "To the 100-year-old man's cabin,\nI can always return."
+     "translation": "You can return to the\n100-Year-Old Man's hut any time"
     },
     {
      "index": 6,
-     "original": "ある宝箱に合うと\nひらく事ができる",
-     "translation": "When it fits into a treasure chest,\nyou can open it."
+     "original": "ある宝箱に使うと\nひらく事ができる",
+     "translation": "Use it on a certain treasure chest\nand it will open"
     },
     {
      "index": 7,
      "original": "一度行った場所へ\nいつでも 行ける",
-     "translation": "To a place I once went,\nI can always go."
+     "translation": "You can go any time\nto a place you've been"
     },
     {
      "index": 8,
      "original": "かみつき草にさいた\nめずらしい花",
-     "translation": "I planted it in the grass.\nA rare flower."
+     "translation": "A rare flower\nthat bloomed on the biting grass"
     },
     {
      "index": 9,
      "original": "気持ちをしずめてくれる",
-     "translation": "It calms my feelings."
+     "translation": "Calms your feelings"
     },
     {
      "index": 10,
      "original": "もれない バケツ",
-     "translation": "A bucket that doesn't leak."
+     "translation": "A bucket that doesn't leak"
     },
     {
      "index": 11,
      "original": "遠くの景色が\n見られる",
-     "translation": "You can see the distant scenery."
+     "translation": "You can see the\ndistant scenery"
     },
     {
      "index": 12,
      "original": "とてもきれいな\nからの小ビン",
-     "translation": "A very beautiful small bottle from."
+     "translation": "A very pretty\nempty little bottle"
     },
     {
      "index": 13,
      "original": "涙のつまった小ビン",
-     "translation": "A small bottle filled with tears."
+     "translation": "A little bottle filled with tears"
     },
     {
      "index": 14,
      "original": "あしをケガしたこいぬ",
-     "translation": "A puppy with an injured leg."
+     "translation": "A puppy with an injured leg"
     },
     {
      "index": 15,
      "original": "ホカホカ できたての\nやきいも",
-     "translation": "Hot and freshly baked yakiimo."
+     "translation": "Piping hot, freshly made\nbaked sweet potato"
     },
     {
      "index": 16,
      "original": "枯れ葉の羽を持つ\n伝説のチョウチョ",
-     "translation": "A butterfly with wings of withered leaves,\na legendary butterfly."
+     "translation": "A legendary butterfly\nwith dead-leaf wings"
     },
     {
      "index": 17,
      "original": "ヤミを てらす\nタイマツ",
-     "translation": "Illuminating darkness\nThai mat"
+     "translation": "Lights up the darkness:\na torch"
     },
     {
      "index": 18,
      "original": "水がたっぷり\n入ったバケツ",
-     "translation": "A bucket filled with plenty of water."
+     "translation": "A bucket filled\nwith lots of water"
     },
     {
      "index": 19,
      "original": "なにも うつさないカガミ",
-     "translation": "A mirror that doesn't reflect anything."
+     "translation": "A mirror that reflects nothing"
     },
     {
      "index": 20,
      "original": "たかい所から\nユラユラおりられる",
-     "translation": "From a high place,\nyou can sway down."
+     "translation": "You can float gently down\nfrom high places"
     },
     {
      "index": 21,
      "original": "木でできた かるい\nブーメラン",
-     "translation": "Lightweight boomerang made of wood."
+     "translation": "A light boomerang\nmade of wood"
     },
     {
      "index": 22,
      "original": "イシでできた おもい\nブーメラン",
-     "translation": "A boomerang made of stone."
+     "translation": "A heavy boomerang\nmade of stone"
     },
     {
      "index": 23,
      "original": "コウテツでできた 強力な\nブーメラン",
-     "translation": "A powerful boomerang made of kouetsu."
+     "translation": "A powerful boomerang\nmade of steel"
     },
     {
      "index": 24,
      "original": "魔ブタを封じこめる\nたいせつな ふくろ",
-     "translation": "Sealing the demon pig\nA precious pouch"
+     "translation": "An important bag\nthat seals away Evil Pigs"
     },
     {
      "index": 25,
      "original": "せかいを 見わたす\nべんりな地図",
-     "translation": "A convenient map that covers the world."
+     "translation": "A handy map\nthat shows the whole world"
     },
     {
      "index": 26,
      "original": "ふるびた つぼ",
-     "translation": "An old pot."
+     "translation": "An old pot"
     },
     {
      "index": 27,
      "original": "すべてを けちらす\n強力な ぶき",
-     "translation": "Scatter everything\nPowerful weapon"
+     "translation": "A powerful weapon\nthat scatters everything"
     },
     {
      "index": 28,
      "original": "動きが はやくなる\nべんりな パンツ",
-     "translation": "Movement becomes faster.\nConvenient pants."
+     "translation": "Handy pants\nthat make you move faster"
     },
     {
      "index": 29,
      "original": "動きが 最速になる\nすばらしい パンツ",
-     "translation": "Movement becomes fastest\nWonderful pants"
+     "translation": "Wonderful pants\nthat make you move fastest"
     },
     {
      "index": 30,
      "original": "バイタリティが すこし\nかいふくする",
-     "translation": "Vitality will slightly recover."
+     "translation": "Restores a little\nvitality"
     },
     {
      "index": 31,
      "original": "バイタリティ すべてかいふく\n\nおなかいっぱい!",
-     "translation": "Vitality All Recovery"
+     "translation": "Restores all Vitality\n\nFull belly!"
     },
     {
      "index": 32,
      "original": "はじめから はいている\nパンツ",
-     "translation": "I've been wearing them from the beginning.\nPants."
+     "translation": "The pants you've worn\nfrom the start"
     },
     {
      "index": 33,

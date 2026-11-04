@@ -116,8 +116,12 @@ The Japanese release draws its text in three bitmap sizes: 12 x 12 for running t
 `formats/text/glyphs_jp.json` (shape key to character), read from the bitmaps and checked against the
 words around them where the reading was in doubt. The file holds 732 such shapes. Over all 51 banks of the disc, with
 the ones inside overlays, every entry that has text decodes completely (7,598) and every glyph slot (10,897) has a
-character. A glyph with no character shows as `[gNNN]`, its number in the bank; the few left are on other discs
-(PrePre Vol. 8's tile-cut "Thank You" and "Bye-Bye", and symbol lines of the Dengeki disc).
+character. Look-alike kanji were the likeliest misreadings (材 and 村, 全 and 代, 合 and 張, 道 and 辺): a word that makes no sense
+is the sign, and the same words in the US release's lined-up text settle it.
+A glyph with no character shows as `[gNNN]`, its number in the bank. Only PrePre Vol. 8 has any left: four Dwarf-language
+symbols (glyph slots 197, 199, 19A and 19B of the alternate font, used by its entries 05:00 and 05:01) whose artwork
+is blank on the disc itself, so there is no shape to read. The disc's tile-cut "Thank You" and "Bye-Bye" lettering is
+decoded as whole runs (see below), and the Dengeki disc has none left.
 
 A WFM1 glyph word carries more in its top bits. A kana that is voiced is
 two words: the kana with 1000 set, then the mark (dakuten or handakuten)

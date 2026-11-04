@@ -75,7 +75,7 @@ The `8000` terminal bit matters. Original JP **`AnimLoadDuration` (`80020DE4`)**
 
 There is **no loop pointer** after this script. Replaying it as a looping animation is an editor/presentation choice. A missing owner could also have restarted it, but no such eel owner was identified in this pass.
 
-The checked upstream [CUT_CONTENT.md](https://github.com/afsenovilla/Tombi-Decomp/blob/44e814a6268f294f889ee77f5aad319f88e82a50/docs/CUT_CONTENT.md), under the Jungle survey, says no chief, eel or drum sprite was found. **The eel part of that negative conclusion is too broad for this JP dump.** This finding does not establish the chief's graphics or a distinct large drum graphic.
+The earlier upstream snapshot said no chief, eel or drum sprite was found. The [current upstream Jungle survey](https://github.com/afsenovilla/Tombi-Decomp/blob/master/docs/CUT_CONTENT.md) corrects its chief and eel findings and acknowledges this project's eel analysis. It reports no separate drum sprite.
 
 ## Electric eel: the item binding is missing, not just its placement
 
@@ -136,6 +136,206 @@ These messages are in **`AREA10/A003.GAM`, WFM +`BA94`**, entries equal to the i
 
 This also prevents cross-version naming errors: the inspected enum calls slot131 `ITEM_OVENBAKEDMUSHROOM` and slot147 `ITEM_TRASHCAN`, while these JP use messages explicitly describe a map and coal. For slots133/134, “1UP” and “Gauge MAX +1” are confirmed **residual message wording**, not confirmed implemented rewards. Which gauge, its limits and its intended acquisition remain unresolved.
 
+## Masakari Chief — sprites, judgement dialogue and nearby text
+
+**Upstream update and JP verification, 4 November 2026:** Alberto identifies the chief in PAL AREA10 SPR slot 7 (kind `37`): frame 31 and frames 47–58, excluding frame 53, which is a mis-cut atlas block. JP Jungle group 1 has the corresponding bank, `AREA10/D005.GAM` +`2B814` (159 frames, SHA-1 `e3dc39e7c1eed97e3fbc487d0d69d2557cbaa787`). The parsed definitions of frames 31 and 47–58 match PAL exactly, including the excluded frame 53; the full SPR banks are not identical.
+
+The relevant 64-word-wide VRAM texture page at `(192,0)` also matches byte for byte: compare columns 128–191 of PAL system group 57 `SYSTEM/A05700.000` (decoded 256 × 256 words, SHA-1 `294ae2058045f1710c9f01e4e99de3a66d164143`) and JP group 57 `SYSTEM/A00138.000` (decoded 192 × 256 words, SHA-1 `f48629510d5b7838647d23b6d90d21e616ec8cdc`). The sprite part page is 2 with base 1, yielding page 3. This establishes the JP texture and frame definitions, not actor reachability. The research viewer provides **Preview JP Chief** and an SPR bank shortcut. The preview uses JP's populated CLUT `780A` and displays the candidate composite frames; upstream notes that the runtime palette differs, so its displayed colours are provisional.
+
+Upstream also now identifies five Doodle Rock plaques and reports that two appear as 3D decorations in Dwarf Forest and the Haunted Mansion. The other plaque placements require separate checks. See the [current cut-content research](https://github.com/afsenovilla/Tombi-Decomp/blob/master/docs/CUT_CONTENT.md).
+
+The supplied Folkin animation list reports six poses/actions: idle, talking, walking, seated idle, seated talking and standing up. The supplied main article reports chief graphics loaded near Old Tree Hill and names additional talking, seated talking, walking and sitting-down animations. The actual image files were not supplied. Alberto has since identified the PAL frames as described above; their JP retail texture upload and frame definitions are verified above; the intended runtime palette and actor selector remain unverified.
+
+The supplied rough notes associate the chief with judging violence against the Masakari, a drum and a missing spear. The retained dialogue supports a judgement and mentions a drum; it does not establish a kill threshold, a working fortune calculation, a drum crafting transaction or an item reward. The Navy Pig Bag attribution remains speculation.
+
+### JP retail dialogue
+
+Source: `AREA10/A003.GAM`, decoded WFM +`BA94`, SHA-1 `233a07817e1b1d903219130c8ae168220b93ac84`. Group 2 starts at entry177. Entries188–195 are lines11–18. Their attribution to the chief follows the supplied community identification and their content; the text does not name its speaker. English below is a research translation, not an official JP retail translation. The `??` in entry192 is preserved from the current glyph decoding; the count must not be guessed.
+
+#### Entry 188, group 2 line 11 — Chief dialogue candidate
+Decoded WFM +`8298`; decoded GAM +`13D2C`.
+
+Japanese:
+
+```text
+おおうっ!!・・・おまえっ!
+オレたちのなかまっ!
+・・・ひとりもキズつけなかったっ!
+```
+
+English:
+
+Oh!! You! You did not hurt a single one of our companions!
+
+#### Entry 189, group 2 line 12 — Chief dialogue candidate
+Decoded WFM +`8308`; decoded GAM +`13D9C`.
+
+Japanese:
+
+```text
+おまえ えらいっ!
+・・・えらいなっ!
+・・・えらいぞっ!
+
+フンガのタイコがあれば、
+おどりたい気分だっ!!
+・・・・・・あ、
+
+・・・これヒミツ
+・・・わすれろっ!!
+```
+
+English:
+
+You are admirable! Really admirable! If I had a Funga Drum, I would feel like dancing! ...Ah. That is a secret. Forget it!
+
+#### Entry 190, group 2 line 13 — Chief dialogue candidate
+Decoded WFM +`83E2`; decoded GAM +`13E76`.
+
+Japanese:
+
+```text
+おまえっ!
+・・・かえってよしっ!!
+```
+
+English:
+
+You! You may leave!
+
+#### Entry 191, group 2 line 14 — Chief dialogue candidate
+Decoded WFM +`841E`; decoded GAM +`13EB2`.
+
+Japanese:
+
+```text
+◆◆◆★!!
+・・・◆◆◆★!
+
+★★◆◆◆◆◆◆★!
+・・・◆◆◆◆★◆◆◆◆◆★!
+```
+
+English:
+
+Masakari speech; meaning not independently deciphered.
+
+#### Entry 192, group 2 line 15 — Chief dialogue candidate
+Decoded WFM +`848E`; decoded GAM +`13F22`.
+
+Japanese:
+
+```text
+おまえっ!
+・・・??人の なかまっ!
+・・・キズつけたっ!!
+
+とても、ゆるせないっ!
+・・・しか〜しっ!
+すこしチャンスをやるっ!
+
+これからっ!
+おまえのっ!
+
+いままでの行いっ!
+うらなうっ!
+
+もし、よいことしてればっ!
+そのぶんだけっ!
+
+なかまキズつけたことっ!
+とくべつ ゆるすっ!!
+
+・・・フンガァァァーッ!
+・・・ホンガァァァーッ!
+・・・ハイッ!ハイッ!ハイッ!!
+```
+
+English:
+
+You hurt ?? of our companions! I cannot forgive that! However, I will give you a chance. I will divine your past deeds. If you have done good things, I will make a special exception and forgive you accordingly! Funga! Honga! Hai! Hai! Hai!
+
+#### Entry 193, group 2 line 16 — Chief dialogue candidate
+Decoded WFM +`8648`; decoded GAM +`140DC`.
+
+Japanese:
+
+```text
+おおうっ!!
+・・・おまえっ!
+
+・・・けっこうイイヤツ!
+とくべつに ゆるすっ!
+```
+
+English:
+
+Oh! You are quite a good person! I will forgive you this once!
+
+#### Entry 194, group 2 line 17 — Chief dialogue candidate
+Decoded WFM +`86B6`; decoded GAM +`1414A`.
+
+Japanese:
+
+```text
+おおうっ!!
+・・・おまえっ!
+
+・・・やっぱり ゆるせないっ!
+・・・フンガァーーーッ!!
+```
+
+English:
+
+Oh! After all, I cannot forgive you! Fungaaa!
+
+#### Entry 195, group 2 line 18 — Chief dialogue candidate
+Decoded WFM +`8730`; decoded GAM +`141C4`.
+
+Japanese:
+
+```text
+◆◆◆★!
+・・・??△◆ ◆◆◆★!
+
+・・・★◆◆◆◆★!!
+◆◆◆、◆◆◆◆◆★!
+
+・・・◆◆〜◆★!
+◆◆◆★★★★◆◆◆★!
+```
+
+English:
+
+Masakari speech; meaning not independently deciphered.
+
+#### Entry 214, group 2 line 37 — Nearby swimming retry; speaker is the swimming teacher, not the chief
+Decoded WFM +`97C8`; decoded GAM +`1525C`.
+
+Japanese:
+
+```text
+やぁ!
+さっきは たいへんだったな・・・
+めげずに がんばるかい?
+
+ヤル気があるんだったら
+川に飛びこみなよ・・・
+何度でもつきあってやるからさ!
+```
+
+English:
+
+Hey! That was rough earlier. Will you keep trying? If you are willing, jump into the river. I will help you as many times as it takes!
+
+### Display references and limits
+
+The existing JP text-usage profile marks entries188–195 **dynamic**, because it conservatively attributes the computed group-2 call at `80126A58` to the whole group. The relevant six halfwords at `8012D96C` contain 27–32, corresponding to swimming-instruction entries204–209 for the six ordinary control configurations. The JP X10 direct-call analysis found no resolved call selecting chief lines11–18. This narrows one source of uncertainty; it does not exclude all indirect, data-driven or unexamined paths, so these remain unused candidates rather than proven unreachable.
+
+Neighbouring parrot/Tree of Knowledge text has direct JP calls: `8012A10C` selects line4; `8012A35C` selects lines5–7; `8012A650` selects lines8–10; and `8012A7B0` selects line10. The swimming introduction selects line19 at `80126064` and lines20–21 at `801260D0`. Their proximity to the chief block does not make them unused. Entry214 / line37 is included as a separate swimming-teacher candidate: no resolved X10 direct call to line37 was found in this bounded scan; its complete game-state reachability remains unproven.
+
+Related retained event titles include JP event59, “The Chief’s Request?”, event60, “Learn the Language II”, and event61, “The Masakari Secret”; title or hint data alone does not prove a working chief scene. Chief spear item140 uses descriptor `80077A18` and X10 animation cell `8012DECC`, while its menu condition is false; see the Funga materials table below.
+
 ## Funga materials and the drum's actual sprite alias
 
 The following are **native world-item routes**, tested with X10 loaded where the overlay scripts can be read. A route does not prove that its expected pixels, placement, reward or crafting scene is present.
@@ -186,19 +386,54 @@ This ledger keeps the remaining material visible without promoting a pasted gues
 | Eel event74; chief/language/secrets59–61; Doodle Rocks67; Green Fortune Teller89 | Retained titles, hints/icons and selected text are baseline leads. This pass adds the eel art/script chain, not new quest start/complete callers. The large pasted unused-event table is not evidence that all related graphics or dialogue are unreachable. |
 | Event icon mismatches | Check event ID→frame mapping and regional SPR tables; the checked upstream report already distinguishes intended reuse from some community “wrong icon” interpretations. Do not remap icons just from the pasted names. |
 | Pufferfish and Hermit Crab/Whelk animations | Still open. JP Trick Village SPR banks were inspected with multiple page bases, but no defensible frame/CLUT/handler identification was completed. This is not evidence that the art is absent. Need a local reference image or texture/part correlation, then animation and spawn references. |
-| Masakari chief graphics; extra NPC animations; early Yan | Still open for native frame/page/CLUT/selector ownership. The new eel rendering does not establish these identities. A character using some frames does not make all its other frames unused. |
+| Masakari chief graphics; extra NPC animations; early Yan | The chief candidate frames and texture page also match JP retail; the intended runtime palette and selector ownership remain open. Other NPC animations and early Yan still need independent identification. |
 | Silver/gold berries, question bubbles, full16HP meter, final pig gate | Baseline or unverified graphics leads. Upstream reports the berry reward as2HP for nonzero variants, unlike the pasted1HP claim; that discrepancy needs a dedicated JP reward trace before assigning a JP number. Bubble shape alone does not establish retail use. |
 | Growing flowers in the Elder's Hut | JP AREA02/D109.GAM +`1B88` and AREA19/D109.GAM +`BF0` share a34-frame SPR, SHA-1 `6d07e313d86089d7db0583e87f99a26c82ca39a3`; records27–32 survive. Parts alone do not recover the art. The exact intended page/palette and progression caller remain open here; the upstream PAL “empty pixels” result is not automatically a JP art result. |
 | GoGoCart cacti/signs and extra track; Mansion metal sign; Doodle Rock sprites; Small Room masks; Factory boulder/house mask; Castle blown door | Preserve as separate geometry/texture/placement leads. The cacti/signs and Factory mask are already baseline subjects. This pass has not assigned new native object IDs or unreachable masks to the others. |
 | Drowning, Rain Essence and eel sounds | No audio attached in the supplied text, and no remote media opened. Sample-bank IDs and live callers still need identification. Generic hurt sound calls above are not a recovered eel sound. |
 | Demo item pictures, early AP door/rock, Pure8 events | Outside this **JP retail** evidence scope unless the same bytes or a concrete retail reference is found. Demo event names must not be treated as JP runtime quests. |
 
+## Graffiti Rocks — upstream research checked 4 November 2026
+
+Alberto's [current cut-content research](https://github.com/afsenovilla/Tombi-Decomp/blob/master/docs/CUT_CONTENT.md) identifies five dot-and-bar plaque textures as the values **2, 5, 18, 139 and 59**, interpreted in base 20. He reports that the **2** is placed as a decorative model in AREA01/07 and the **5** in AREA04/12. The remaining texture finds have no identified placement in his model/SPR scan. The JP disc also has the **59** texture on several AREA10 room pages. These are texture and placement findings; they do not establish a functional puzzle in retail.
+
+The Japanese digger's hint at **AREA02/A003.GAM**, WFM +`6CA8`, entry **433**, discusses a contraption guarding the treasure vault and six graffiti rocks. The adjacent live scene skips the hint according to the upstream selector analysis. The Stone villager's related entries are **AREA16/A003.GAM**, WFM +`6CA8`, entries **188–189**; entry189 describes dots, bars and base 20. These entries are accessible as complete text in the research viewer's **Graffiti Rocks · research** tab. Static selection evidence and missing implementations remain separate from proof of every possible game-state path.
+
+The upstream document was read on 4 November. A subsequent history check retrieved revision `7f2cd4fe048b06cdefa1f686c3eb669494acb651`, and the editor's bundled reference snapshot was updated to that exact revision.
+
+The adjacent AREA02 tunnel sheet `B301.000` is described upstream as a **10 × 3 grid of 24 × 24 pixel cells**, at page 13, `u 0..239`, `v 72..143`. The first row contains numerals, the second ten pictorial symbols, and part of the third a two-bar numeral. The investigation found no retail backdrop polygon sampling this sheet and no identified tile-placement path. The research viewer can open the JP `AREA02/B301.000` asset directly; interpreting the sheet as a reconstruction of the missing puzzle remains an inference.
+
+Other upstream findings dated 2 November are now accessible from **Recent upstream findings** in the viewer:
+
+* The Flower Tower interior is AREA13 section 0. The gate checks for 1,000,000 AP and the event state; upstream identifies the JP threshold instruction at X01 `80116238` and the room reward as the Sacred Fish. The tower itself is not an extra cut area.
+* An older caterpillar route is reported unreferenced in JP X01 at `80131DB8`; its live counterpart loops, while the older route stops after a one-way circuit. A separate unreferenced Flower Tears seeker's walk-off is reported at X09 `80127CD4`, and a Seven Friends fly-up exit at X02 `801182E4`. These are upstream code-reference findings, not restored gameplay.
+* The JP debug printer is MAIN `80021E5C`; its resident 8 × 8 font pixels are in `SYSTEM/A00000.GAM`, and its four CLUT rows begin at VRAM `(368,496)`. JP uses it for ending statistics and some game-over/loading text. The viewer can open that texture directly. Font data and messages are not evidence of an unused quest.
+
+## Upstream week review — 28 October through 4 November 2026
+
+The separate research checkout was compared at **`7f2cd4fe048b06cdefa1f686c3eb669494acb651`** (4 November, 14:37 UTC). Git reports **1,183 commits including merges**, of which **944 are non-merge commits**, since 28 October 00:00 Warsaw time. Their complete subjects and dates are available locally in `work/upstream-week-20261104-all-commits.tsv`; regenerate with `git -C work/upstream-week-20261104 log --since="2026-10-28 00:00:00 +0100" --no-merges --format="%h %ad %s" --date=iso-strict 7f2cd4fe`. The bundled reference manifest contains 12 exact, hash-checked upstream files at this revision. Counting subjects is an inventory, not a claim that every patch was individually reproduced.
+
+| Upstream work | TombaEdit assessment / change |
+| --- | --- |
+| JP executable and area-code matching, including player, collision, inventory and rendering functions | The pinned JP research describes 82.38% matched code. This improves source evidence; it does not mean the editor itself has gained every game function or a playable port. Existing build addresses remain scoped to their executable hashes. |
+| Civilization-town evidence, residents and scene behaviour | The complete current upstream Civilization report is included in the reference selector. Existing town plans, dialogue and manual graphics controls remain available; upstream port reconstructions are labelled as such in the source. |
+| Jungle chief, eel, material and unreferenced dialogue | The chief-bank shortcut, JP sprite preview and complete local dialogue research are available above. Candidate frame definitions and texture pixels match PAL; the runtime palette remains unconfirmed. |
+| Graffiti Rocks and tunnel glyph sheet | New research tab lists the five plaque values and opens all three relevant JP dialogue entries and the JP tunnel texture. Placement claims are attributed to the upstream PAL/US/JP analysis; the missing gameplay remains unimplemented. |
+| Flower Tower, JP debug text and unreferenced patrol/exit routines | New findings tab gives the relevant JP addresses and opens the system font texture. These are inspection aids, not runtime modifications. |
+| Event locations and save-event numbering | New searchable PAL event-location table covers 192 IDs through `0xBF`; the upstream save format corrects the older assumption that the pause menu uses only IDs `0..0x81`. JP location equivalence is not assumed. |
+| Packed load-list pieces after WHM, SPR and other first records | TombaEdit now aligns each continuation to four bytes, following upstream `b3380b95`. Existing load-list layouts were compared on six local retail/demo/sampler discs and were unchanged. A synthetic odd-size piece exercises the newly handled case. |
+| Translation editor, `.tpatch` writing, sub-screen item-name/label editing | Alberto's separate translation/port tooling gained these features. They have **not** been imported as a complete new disc-writing workflow into TombaEdit. Do not assume editing a WFM preview writes those other text formats or applies a `.tpatch`. |
+| Memory-card editor and save import/export | Alberto added a separate save editor, slot import/export and item-name/icon work. TombaEdit does **not** gain a memory-card editor from this reference sync. `docs/SAVE_FORMAT.md` and `docs/SAVE_EDITOR.md` are included as research references. |
+| Native port launcher, controller prompts, audio, window and Android changes | These belong to Alberto's runnable port and launcher; they do not automatically apply to this disc-inspection editor. |
+
+This review covers the available commit inventory and the relevant research/format/editor changes identified above. A complete implementation of the upstream translation-patch and save-editor applications remains separate work; no claim is made that all 944 commits were ported.
+
 ## Next investigations with the clearest payoff
 
 1. **Find an eel owner, not another icon export.** Trace Jungle handler tables, bounded subtype indices, code-generated actors and WSS object creation against `8012DEB8`/frames33–35. Record any actual collision and inventory-add calls. Keep a swimming loop or glove test marked as authored unless a native caller supplies it.
 2. **Trace JP stat-slot consumers.** Start from items133/134 in DSPSUB and pending-item handling, looking for health/lives/gauge writes. Their recovered messages justify this search but do not answer it.
 3. **Separate the two drum identities at the inventory layer.** Check icons, names and item125's real consumer independently from the proven shared world sprite. Reconstruct material transactions only after locating native give/remove/complete operations.
-4. **Identify the unverified creatures from actual texels.** For pufferfish, crab and chief, pin a local visual reference to one uploaded page and CLUT before naming a bank's frames or declaring them unused.
+4. **Identify the unverified creatures from actual texels.** For pufferfish and crab, pin a local visual reference to an uploaded page and CLUT before naming frames; for the chief, identify the intended runtime palette and selector.
 5. **Study Rain Essence's surviving destination code.** Use JP X03 plus DSPSUB condition16 to trace what happens after menu acceptance. Test any sound/cutscene claim against a real call and a named sample or event state.
 
 The editor exposes this file in **JP retail research → Research and sources → TombaEdit: JP unused content beyond cut villages**. Findings are research context; this change does not silently mark every item, event, animation or text entry as confirmed unused.

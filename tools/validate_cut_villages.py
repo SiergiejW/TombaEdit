@@ -27,7 +27,7 @@ def main():
     points = [struct.unpack_from('<hh',overlay,0x801018CC-exe.build.overlay+i*4) for i in range(7)]
     assert tuple(p for p in points if p != (-999,-999)) == STOPS
     reference = reference_manifest()
-    assert len(reference['files']) == 9 and any(f['path']=='LICENSE' for f in reference['files'])
+    assert len(reference['files']) == 12 and any(f['path']=='LICENSE' for f in reference['files'])
     readers = dialogue_routines(overlay, exe.build.overlay, exe.word, WINDOWS[exe.build.name])
     assert {n: (address, len(cases)) for n, (address, cases) in readers.items()} == {
         13: (0x800F3000, 11), 14: (0x800F41FC, 16), 15: (0x800F5488, 16)}
@@ -73,14 +73,15 @@ def main():
         widget.show()
         app.processEvents()
         research_tabs = widget.findChild(QTabWidget)
-        assert research_tabs.count() == 4
+        assert research_tabs.count() == 7
         assert research_tabs.tabText(1) == 'Community palettes, residents and props'
-        search = widget.findChild(QLineEdit)
+        search = next(field for field in widget.findChildren(QLineEdit)
+                      if field.placeholderText().startswith('Find in the complete research report'))
         search.setText('0x801047F4')
         search.returnPressed.emit()
         assert widget.findChild(QTextBrowser).textCursor().selectedText() == '0x801047F4'
         documents = widget.findChild(QComboBox)
-        assert documents.count() == 11
+        assert documents.count() == 14
         documents.setCurrentIndex(1)
         assert 'Electric eel: graphics and script survive together' in widget.findChild(QTextBrowser).toPlainText()
         search.setText('8012DEB8')
@@ -107,7 +108,8 @@ def main():
         plan.show()
         app.processEvents()
         dialogue_table = next(t for t in plan.findChildren(QTableWidget) if t.columnCount() == 7)
-        assert 'fixed the stone clock tower' in dialogue_table.item(0, 6).text()
+        translated = dialogue_table.item(0, 6).text().lower()
+        assert 'clock tower' in translated and 'fixed' in translated
         assert dialogue_table.rowHeight(0) >= dialogue_table.fontMetrics().height() * 4
         assert (dialogue_table.horizontalHeader().sectionPosition(6) + dialogue_table.columnWidth(6)
                 <= dialogue_table.viewport().width() + 2)

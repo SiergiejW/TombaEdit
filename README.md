@@ -36,8 +36,12 @@ python tools/make_translations.py "rom/Ore! Tomba (Japan).cue" "rom/PrePre Vol. 
 ```
 
 It skips any disc that cannot be read and runs the model from `rom/translator` (CUDA PyTorch and bitsandbytes in
-`rom/translator/runtime`, if present). What the model says is kept in a local cache
-(`rom/translator/translation-cache-ja.json`), and each build gets a file of its own,
+`rom/translator/runtime`, if present). The game's names are written in English into the sentence the model reads
+(`formats/text/glossary_ja.json`: the Witch, Evil Pig, Koma Buta, Seal Bag, the items and places), so the model
+does not turn 魔王 into a demon king; the lines of a sentence that the game broke to fit its box are joined before
+the model reads them, and a blank line, a new box, stays a blank line in the answer. The English release of the game was used to make the glossary and
+to check readings, never as the translation: the English is a translation of the Japanese. What the model says is
+kept in a local cache (`rom/translator/translation-cache-ja-glossary.json`), and each build gets a file of its own,
 `formats/text/translations/<build>.json` (for example `japanese-retail.json`, `japanese-demo.json`,
 `prepre-vol-8.json`): its messages in the order of the disc with their English under `entries`, and the same
 messages bank by bank under `banks` (bank, file, offset, entry index, original, translation), so that two builds can
@@ -888,6 +892,11 @@ and its contributors (MIT licence) supplied the understanding of the object
 lists, allocators, draw routines, town renderers and animation steps used
 here, and its R3000A and GTE interpreter, which `psx/mips` carries with its
 licence.
+
+The readings of the Japanese release's glyphs were checked against a spreadsheet of readings made by hand by
+members of the Tomba Club community: Dada (fluent in Japanese and English), vervalkon (reverse engineering) and Folkin
+(research). It settled, among others, that the villain's glyph is 女 (the
+witch, 魔女) and not 王, that Baron is a puppy (小犬), and the closed doors (閉じた).
 
 ## Tests
 

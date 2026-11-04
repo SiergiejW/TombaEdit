@@ -191,7 +191,10 @@ def parse_ldar(data, path, catalog):
         size = rect[2] * rect[3] * 2 if rect else a
         group.assets.append(Asset(path, group.index, pos, file_id, code, ram, source,
                                   offset, size, rect, not bool(fid)))
-        offset += size
+        # The loader aligns each packed piece before the next continuation.
+        # A new source resets offset to zero, so this only affects pieces of
+        # the same container. See Tombi-Decomp tools/room.py list_piece.
+        offset = (offset + size + 3) & ~3
     if group.assets or len(pointers) != len(groups):
         raise FormatError(f"{path}: group/footer count mismatch")
     base = pointers[0]

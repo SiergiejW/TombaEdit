@@ -18,6 +18,9 @@ DOCUMENTS = (
     ('Format documentation', 'docs/FORMATS.md'),
     ('Engine format research', 'notes/formats.md'),
     ('Events and unused-content research', 'notes/secrets.md'),
+    ('Event locations (PAL research)', 'docs/EVENTS_MAP.md'),
+    ('Memory card save format', 'docs/SAVE_FORMAT.md'),
+    ('Upstream save editor', 'docs/SAVE_EDITOR.md'),
     ('Native port and authored reconstruction', 'docs/PORT.md'),
     ('Upstream license', 'LICENSE'),
 )
@@ -44,7 +47,7 @@ def main():
     manifest = dict(repository='https://github.com/afsenovilla/Tombi-Decomp',revision=revision,
                     checked_date=args.checked_date,scope='Cut-village and related retail/build/format/port research; not a game-code import',
                     files=files)
-    (destination/'manifest.json').write_text(json.dumps(manifest,indent=2)+'\n',encoding='utf8')
+    (destination/'manifest.json').write_bytes((json.dumps(manifest,indent=2)+'\n').encode('utf8'))
     print(f'Synchronized {len(files)} exact reference files at {revision}')
 
 

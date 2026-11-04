@@ -1,6 +1,7 @@
 """Retail evidence browser; live data is gated by the audited JP fingerprints."""
 import hashlib
 import json
+import re
 from pathlib import Path
 import struct
 
@@ -76,7 +77,8 @@ def view(project, jump=None, area=None):
     from PyQt6.QtGui import QTextCursor, QTextDocument
     from PyQt6.QtWidgets import (QWidget, QVBoxLayout, QHBoxLayout, QLabel, QLineEdit,
                                 QPushButton, QSplitter, QListWidget, QTextBrowser,
-                                QTabWidget, QTableWidget, QTableWidgetItem, QComboBox)
+                                QTabWidget, QTableWidget, QTableWidgetItem, QComboBox,
+                                QDialog, QMessageBox)
     widget = QWidget()
     layout = QVBoxLayout(widget)
     try:
@@ -161,6 +163,71 @@ def view(project, jump=None, area=None):
         status.clear()
     documents.currentIndexChanged.connect(document_changed)
     document_changed()
+    chief = QPushButton('Masakari Chief dialogue and sprites')
+    chief.setToolTip('Open the JP Chief research, including the complete recovered dialogue.')
+    def show_chief():
+        documents.setCurrentIndex(1)
+        index = next((i for i, heading in enumerate(headings) if heading.startswith('Masakari Chief —')), -1)
+        if index >= 0:
+            outline.setCurrentRow(index)
+    chief.clicked.connect(show_chief)
+    bar.addWidget(chief)
+    if jump:
+        from formats.level.scene import loaded_resources
+        jungle = project.ldars.get('SYS/LDAR10.BIN', [])
+        chief_bank = loaded_resources(project, 'SYS/LDAR10.BIN', 1).get(('SPR', 7)) if len(jungle) > 1 else None
+        if chief_bank is not None:
+            inspect_chief = QPushButton('Open Chief sprite bank')
+            inspect_chief.setToolTip('Open Jungle SPR slot 7. JP chief frame definitions and texture pixels match PAL; the intended runtime palette is unconfirmed.')
+            inspect_chief.clicked.connect(lambda checked=False: jump('asset', chief_bank))
+            bar.addWidget(inspect_chief)
+            preview_chief = QPushButton('Preview JP Chief')
+            preview_chief.setToolTip('Preview the recovered JP texture and candidate frames with a stored palette; the runtime palette is not established.')
+            def show_chief_preview():
+                try:
+                    import numpy as np
+                    from psx.graphics import sprite_frames, render_sprite
+                    from gui.widgets.image_view import ImageView
+                    if not supported(project):
+                        raise ValueError('This preview requires the audited Japanese retail executable.')
+                    bank = project.asset_data(chief_bank)
+                    group = project.ldars['SYS/LDSYS.BIN'][57]
+                    page = next(a for a in group.assets if a.kind == 'GRPX')
+                    pixels = project.asset_data(page)
+                    if (hashlib.sha1(bank).hexdigest() != 'e3dc39e7c1eed97e3fbc487d0d69d2557cbaa787' or
+                            hashlib.sha1(pixels).hexdigest() != 'f48629510d5b7838647d23b6d90d21e616ec8cdc'):
+                        raise ValueError('The sprite bank or system texture differs from the audited JP retail data.')
+                    frames = sprite_frames(bank)
+                    vram = project.vram('SYS/LDAR10.BIN', 1).copy()
+                    vram[0:256, 64:256] = np.frombuffer(pixels, '<u2').reshape(256, 192)
+                    dialog = QDialog(widget)
+                    dialog.setAttribute(Qt.WidgetAttribute.WA_DeleteOnClose)
+                    dialog.setWindowTitle('JP Masakari Chief — recovered sprite candidates')
+                    dialog.resize(620, 650)
+                    content = QVBoxLayout(dialog)
+                    explanation = QLabel('JP sprite definitions and texture pixels match the PAL candidates. '
+                                         'This preview uses stored CLUT 780A; the intended runtime palette is unknown. '
+                                         'Frame 53 is an unrelated mis-cut atlas block.')
+                    explanation.setWordWrap(True)
+                    content.addWidget(explanation)
+                    choices = QComboBox()
+                    for frame in (31, 47, 48, 49, 50, 51, 52, 54, 55, 56, 57, 58):
+                        choices.addItem(f'Frame {frame}', frame)
+                    content.addWidget(choices)
+                    picture = ImageView()
+                    picture.zoom.setCurrentIndex(0)
+                    content.addWidget(picture, 1)
+                    def update_preview():
+                        frame = choices.currentData()
+                        picture.export_name = f'JP Chief frame {frame} - CLUT 780A'
+                        picture.set_image(render_sprite(frames[frame], vram, tpage=1, clut=0x780a), subject='chief')
+                    choices.currentIndexChanged.connect(update_preview)
+                    update_preview()
+                    dialog.show()
+                except (KeyError, IndexError, StopIteration, ValueError, OSError) as exc:
+                    QMessageBox.warning(widget, 'Chief preview unavailable', str(exc))
+            preview_chief.clicked.connect(show_chief_preview)
+            bar.addWidget(preview_chief)
     search.returnPressed.connect(find)
     next_button.clicked.connect(lambda: find(False))
     previous.clicked.connect(lambda: find(True))
@@ -246,6 +313,96 @@ def view(project, jump=None, area=None):
                  ('800FE22C', '800FE3D8', '800FE504', '800FE668'))]
     tabs.addTab(table(['Iron Town mechanism', 'World trigger x, y (inclusive)', 'Behavior', 'JP source address'], rows),
                 'Iron Town · lifts and passages · audited JP')
+    rocks = QWidget()
+    rocks_layout = QVBoxLayout(rocks)
+    rock_note = QLabel('Graffiti Rock research from Tombi-Decomp. Two plaques have documented retail placements; '
+                       'the other texture finds and their intended puzzle are research evidence. '
+                       'The JP text buttons open the complete original entries.')
+    rock_note.setWordWrap(True)
+    rocks_layout.addWidget(rock_note)
+    rocks_layout.addWidget(table(['Plaque value', 'Reported area / texture', 'Retail placement'], [
+        ('2', 'AREA01 / AREA07 forest', 'Placed as a decorative model'),
+        ('5', 'AREA04 / AREA12 Haunted Mansion', 'Placed as a decorative model'),
+        ('18', 'AREA03 mountain / caves', 'Texture found; placement not identified'),
+        ('139', 'AREA10 jungle', 'Texture found; placement not identified'),
+        ('59', 'AREA11; also JP AREA10 room pages', 'Texture found; placement not identified'),
+    ]))
+    if jump:
+        rock_links = QHBoxLayout()
+        def open_rock_text(area, entry):
+            from formats.text.export import collect
+            source = f'AREA{area:02d}/A003.GAM'
+            bank = next((b for b in collect(project, area=area)
+                         if b.source == source and b.offset == 0x6CA8 and entry < len(b.wfm.dialogues)), None)
+            if bank is not None:
+                jump('text', (bank.wfm, bank.source, bank.offset, bank.name, entry))
+        for label, area_number, entry in (('Digger: hidden hint · #433', 2, 433),
+                                          ('Stone villager: rock · #188', 16, 188),
+                                          ('Stone villager: numerals · #189', 16, 189)):
+            button = QPushButton(label)
+            button.clicked.connect(lambda checked=False, a=area_number, e=entry: open_rock_text(a, e))
+            rock_links.addWidget(button)
+        forest = project.ldars.get('SYS/LDAR02.BIN', [])
+        glyph = next((a for a in (forest[4].assets if len(forest) > 4 else ())
+                      if a.source and a.source.path == 'AREA02/B301.000'), None)
+        if glyph is not None:
+            button = QPushButton('Open tunnel glyph sheet')
+            button.setToolTip('Upstream identifies a 10 × 3 grid of 24-pixel cells at page 13, u 0–239, v 72–143.')
+            button.clicked.connect(lambda checked=False: jump('asset', glyph))
+            rock_links.addWidget(button)
+        rocks_layout.addLayout(rock_links)
+    tabs.addTab(rocks, 'Graffiti Rocks · research')
+    recent = QWidget()
+    recent_layout = QVBoxLayout(recent)
+    recent_note = QLabel('Recent Tombi-Decomp findings: regional addresses and unreferenced-code conclusions '
+                         'are attributed to upstream research. Open the research report for details and limits.')
+    recent_note.setWordWrap(True)
+    recent_layout.addWidget(recent_note)
+    recent_layout.addWidget(table(['Finding', 'JP location', 'Research result'], [
+        ('Flower Tower gate', 'X01 80116238', 'Million-AP threshold; tower interior is AREA13 section 0'),
+        ('Caterpillar patrol', 'X01 80131DB8', 'Older one-way route; no identified retail caller'),
+        ('Flower Tears seeker', 'X09 80127CD4', 'Unreferenced walk-off routine'),
+        ('Seven Friends', 'X02 801182E4', 'Unreferenced fly-up exit routine'),
+        ('Debug font', 'MAIN 80021E5C', '8 × 8 font used by JP ending and game-over text'),
+    ]))
+    if jump:
+        system = project.ldars.get('SYS/LDSYS.BIN', [])
+        font = next((a for a in (system[0].assets if system else ())
+                     if a.source and a.source.path == 'SYSTEM/A00000.GAM'), None)
+        if font is not None:
+            button = QPushButton('Open system font texture')
+            button.setToolTip('The 8 × 8 debug font is on the resident system texture; palette rows begin at VRAM (368, 496).')
+            button.clicked.connect(lambda checked=False: jump('asset', font))
+            recent_layout.addWidget(button)
+    tabs.addTab(recent, 'Recent upstream findings')
+    if manifest and any(item['path'] == 'docs/EVENTS_MAP.md' for item in manifest['files']):
+        event_page = QWidget()
+        event_layout = QVBoxLayout(event_page)
+        event_note = QLabel('Upstream PAL event-location research, including script and shared-overlay references. '
+                            'Locations and unknown entries are research leads; JP equivalence is not assumed.')
+        event_note.setWordWrap(True)
+        event_layout.addWidget(event_note)
+        event_filter = QLineEdit()
+        event_filter.setPlaceholderText('Filter by event ID, area, section, source or description')
+        event_layout.addWidget(event_filter)
+        event_rows = []
+        for line in (REFERENCES/'docs'/'EVENTS_MAP.md').read_text(encoding='utf8').splitlines():
+            if not re.match(r'^\|\s*\d+\s*\(0x[0-9A-Fa-f]+\)', line):
+                continue
+            cells = [part.strip() for part in line.strip().strip('|').split('|', 3)]
+            if len(cells) == 4:
+                event_rows.append(cells)
+        event_table = table(['Event ID', 'Location', 'Kind', 'Evidence'], event_rows)
+        for row in range(event_table.rowCount()):
+            for column in range(event_table.columnCount()):
+                event_table.item(row, column).setToolTip(event_table.item(row, column).text())
+        event_layout.addWidget(event_table)
+        def filter_events(value):
+            needle = value.casefold().strip()
+            for row, cells in enumerate(event_rows):
+                event_table.setRowHidden(row, bool(needle) and needle not in ' '.join(cells).casefold())
+        event_filter.textChanged.connect(filter_events)
+        tabs.addTab(event_page, 'Event locations · PAL reference')
     if jump:
         towns = QHBoxLayout()
         for number, name in ((11, 'Lumberjack Town'), (16, 'Stonetown'), (17, 'Iron Town'), (18, 'Reunited town')):

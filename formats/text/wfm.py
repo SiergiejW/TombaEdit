@@ -20,6 +20,9 @@ GLYPH_DICTIONARY.update(json.loads(Path(__file__).with_name('glyphs_jp.json').re
 EXACT_GLYPHS = json.loads(Path(__file__).with_name('glyphs_us.json').read_text('utf8'))
 CANONICAL = {value: value for value in letters.values()}
 
+# Shape keys whose glyphs are told apart by their exact pixels (see Wfm.__init__).
+COLOURED = {'9ebad4288ebef9235dc7d4bd'}
+
 # Characters given to glyphs in the application: shape key -> character.
 # They come before the built-in dictionaries, so a wrong guess can be put
 # right, and they are what names the glyphs of a font nobody has read yet.
@@ -180,7 +183,10 @@ class Wfm:
             # of its glyphs has the same lit pixels; those are told apart
             # by their exact pixels instead.
             solid = all(a and (r or g or b) for r, g, b, a in im.getdata())
-            self.keys.append(key if solid else glyph_key(im))
+            shape = glyph_key(im)
+            # The button tiles of the Japanese release are one lit tile that differs in the palette indices
+            # of the symbol only, so by their lit pixels the cross, triangle and square are the same glyph.
+            self.keys.append(key if solid or shape in COLOURED else shape)
             self.characters.append(None)
             self.glyph_headers.append((pal, width, height, unused))
         self.recognise()

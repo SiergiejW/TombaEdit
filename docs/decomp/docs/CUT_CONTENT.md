@@ -39,7 +39,7 @@ logo.
 | AREA00 hint signs per button config | MFNT000 k1 dx 8,10,14,15,21,22 and 24..29: variants of hints PAL already shows; `D_80079E8C..EB0[BUTTON_CONFIG_INDEX]` never selects them. | Nothing new to show: the same advice exists. Not worth it. |
 | Dwarf woodcutter lines (AREA02/19) | MFNT020 (2,54..56) "Dwarves... good at cutting trees", "you want a tree cut down?"; no WSS literal/variable reaches dx 54-56. Unused event 18 "The Dwarves' Help" ("Ask the lumberjack dwarf for some wood"). | A WSS script change (AREA15/02xx.WSS op 0x85) and a dwarf actor that offers it; medium. |
 | AREA02 group 3/4/6 lines ("We're being pushed back!", "Big brother... hurry!") | MFNT020 (3,5..6), (4,0..2), (6,16); X002 calls only k 2, 3 (dx 0-4), 7, 9. | No scene to hang them on: medium-hard. |
-| Unused items (47; 21 with a JP description) | `scratchpad`-built list `unused_items_jp.txt`: e.g. Rain Essence (52), Torn Map halves (57/58), Rubber Gloves (59), Iron (61), Letter (90), Wood (91), Shovel (97), Electric Eel (108), Black Water (109), five Candies (110-114), Funga Leather/Tree/Sap (119/122/123), Small Drum (137), Chief's Spear (140), Coal (147). Name = MFNT id+3, description = D0SPSUB block 0 id+4 (PAL English "···???"). | Giving them is one `addItemToInventory`, but nothing uses them; most belong to the cut Civilization / Masakari chains. Only a viewer would be honest. The JP descriptions could go into a text patch. |
+| Unused items (47; 21 with a JP description) | `scratchpad`-built list `unused_items_jp.txt`: e.g. Rain Essence (52), Torn Map halves (57/58), Rubber Gloves (59), Iron (61), Letter (90), Wood (91), Shovel (97), Electric Eel (108), Black Water (109), five Candies (110-114), Funga Leather/Tree/Sap (119/122/123), Small Drum (137), Chief's Spear (140), Coal (147). Name = D0SPSUB `ITEM_NAME_STRINGS[id]` (MFNT id+3 only for ids < 10), description = D0SPSUB block 0 id+4 (PAL English "···???"). | Giving them is one `addItemToInventory`, but nothing uses them; most belong to the cut Civilization / Masakari chains. Only a viewer would be honest. The JP descriptions could go into a text patch. |
 | Unused events (68; 26 with JP info) | `unused_events_jp.txt`: e.g. 6 "A Big Puddle?" (PrePre8's strip has あれま大きな水たまり: the same idea, now confirmed in two builds), 18 Dwarves' Help, 45 AP Slot Machine, 52 "Now I Can't Cross...", 59-61 Masakari chain, 74 Catch the Electric Eel, 76 Black Water, 77 Civilization Machine, 83 Iron Car. No `setEventStarted/Complete` with those ids anywhere. | Each needs its own trigger and goal; none has code. Medium-hard each; only the titles/descriptions are cheap (text patch). |
 | Event titles left 0xFF in PAL | JP per-area tables (`tools/event_titles.py`, notes/secrets.md) title 25 of them: 76 = PAL #90 "The Black Water", 83 = PAL #126 "The Rusty Steel Car" (the two unreferenced PAL strings), cut-town 0x61 動かない時計台 "The clock tower that won't move", 0x63 材料はどこだ！？ "Where's the material?!", 0x62 "Unbreakable gear?", plus 6, 18, 45, 52, 59-61, 67, 74, 89, 94-96, 98, 100, 138-140, 184, 186. Beta 980203 = PAL table. | Table patch: 76/83 reuse existing strings (cheap); others need new English strings. |
 | Port: titles for the 0xFF events | Done in the port with `--cut-content`: 76->#90, 83->#126 and 22 titles translated from JP (list in notes/secrets.md; tools/port_event_titles.py). USA and beta 980203 have the PAL table. | Sub-screen event list not changed. |
@@ -59,6 +59,7 @@ logo.
 |---|---|
 | Civilization towns (AREA11/16/17/18 top-down sections) | Owned by docs/CIVILIZATION.md (`--civ-test`): code in I0NFO2 is complete, but the sections' load lists are empty and their map / SPR / palette files are on no disc. 63 lines (class B*). |
 | Growing golden flower frames (AREA02 SPR 0x3B f27-32) | The rectangles they point at are empty in PAL VRAM: the art is not on the disc. |
+| Tunnel glyph sheet: Maya-style numerals 1-9 (dots and bars), shell/eye 0, "=" 10, ten boxed 24x24 symbols (sun, bird, moon, framed star, bow, crossed arrows, gear, ring of small rings, grid, mound) | `AREA02/B301.000` (GRPX 256x256 words at VRAM (768,0), AREA02 section 3 = top-down tunnels), 4 bpp at (832,72) 240x72 (page 13, u 0..239, v 72..143), CLUT `AREA02/CLUT04` row 22 col 7 = (240,502), word 0x7D8F. Same pixels in US and PAL (identical file) and JP (different file, same block); not in any `SYSTEM/` reload copy, not in the PrePre8 data, beta disc not checked (not local). No static reference found: the CLUT word occurs nowhere in AREA02 code/data, and no part of the tunnel SPR banks (D305) samples v 72..143. **Checked in the port: never drawn.** `--dump-draws` over 13 headless runs from the debug select into AREA02 section 3 (walks covering player x 982..1677, y -80..-729 of the tunnel network, the exit into AREA01 section 3, and `D_800A60A3` poked to 1/3/4 to force the alternative backdrop sets of `tunnelSelectBackdropPieces`): 5508 distinct textured primitives in section 3, none sample page 13 at v 72..143 (page-13 use there is only v 0..56 and 146..158) and none use CLUT (240,502). `tunnelSelectBackdropPieces` (I0NFO3) only picks backdrop piece pointers (table entries 0..20 by camera x, or entry 0x5C/0x60 for `D_800A60A3`), so it cannot reach the block by itself. **Full sweep with `--noclip`** (port debug flag, docs/PORT.md): five headless serpentine walks over the whole section (player x 90..1750, the clamp of the section, i.e. past the x<0x99 exits; y -157..-1567, past the map's -0x540 and the lowest exit at -0x4FE; rows 118 px apart, camera x 199..1400+ so all 21 backdrop strips, camera y down from its top clamp -52), one per backdrop value `D_800A60A3` = 0..4 forced inside `tunnelSelectBackdropPieces` (a `--poke-every` of 0x800A60A3 does not stick: the hook read 0 every frame, so the earlier 1/3/4 runs most likely drew the default set): 2318 distinct textured primitives with the default set (0 and 4), 202 with 1/2 (entry 0x5C), 212 with 3 (entry 0x60); page 13 again only at v 0..55 and 146..157, no CLUT (240,502). With `--noclip` the trigger tiles and exits are off, so tunnel event scenes are not part of this sweep (the earlier 13 runs covered the reachable ones). **Backdrop data decoded:** the RAM block `tunnelSelectBackdropPieces` reads (0x1DC40 bytes, header of 24 piece offsets 0x64..0x1DC40) is a list of textured polys (CLUT word, tpage word, colour+GP0 code 0x24/0x2C, then x,y,z,u,v per vertex): 882 polys, tpages 0x0C/0x0D/0x0E/0x4D, 16 CLUTs (0x784E..0x7DCF), none 0x7D8F; page 13 only at v 0..31 and 144..159. **Static re-check:** 0x7D8F as a 16-bit word is absent from MAIN0 and every overlay except one false hit (X010 0x37608 is `j 0x8011F63C`); the tpage-13 4 bpp + UV pattern (hi 0x000D/2D/4D/6D, v 72..143, u<240) and GP0 0xE1 page-13 words hit only MIPS instructions in MAIN0/X001/X006; the AREA02 file hits (B001/B101/B200 GRPX pixels, D004/D304 compressed streams) are not references. No reference found. Unused art of a cut symbol/number puzzle; layout, code and the Japanese hint text (a cut "graffiti floor" contraption with dot-and-bar base-20 numerals): see "Tunnel glyph sheet (AREA02/B301): layout, code and text" below. |
 | JP-only text of class D tied to Civilization (MFNT110/170/180: raft maker, generator, coal, Dr. Gantetsu, new town) | Their scenes are the cut top-down towns. |
 | PrePre8 dialogue script | Found 2026-10-30 in TOMBA.EXE (u16 glyph indices, `tools/prepre8_text.py`): area-0 tutorial/Yan/100-year-old-man script and a forest/dwarf script (lost dwarf child, Baron named by a dwarf nurse, trapped thief). Forest kanji page missing. See docs/PREPRE8.md. |
 
@@ -138,7 +139,25 @@ AREA10 (overlay `X010`, text `MFNT100*`, JP `X10` + `AREA10/A003.GAM`) is the wh
 - Also in the bank, unreferenced: group 5 dx 15 ("you look tired, you need energy"),
   group 1 save prompts (data-driven, not cut). JP #171 ポテンシャルが　たりない ("not enough potential") is empty in PAL.
 - **Sprites:** AREA10 SPR tables have 37 candidate frames, all Tomba's own swim/fight poses (code-driven, false positives).
-  JP AREA10 SPR 0x33 has 3 frames not in PAL (f41, f42, f45: plain coloured bars, no art). No chief, eel or drum sprite.
+  JP AREA10 SPR 0x33 has 3 frames not in PAL (f41, f42, f45: plain coloured bars, no art). No separate drum sprite found. **Correction: the Funga chief does have a sprite.** AREA10 load lists 1 and 5 carry SPR table 0x37 (`SPR_DATA[7]`, from `SYS/LD0SYS.BIN`); its frames 31 and 47-58 (53 is a mis-cut atlas block) are the chief: big flame-like headdress, cape, sitting / standing-up / talking / walking poses, 56x64 px. The pixels live on the SYS reload page `SYSTEM/A05700.000` (SYS load list 57, loaded together with `X010.BIN`; the Funga villagers of frames 59+ share it). The extractor shows them with CLUT 0x780A (brown/yellow); the real palette is set at run time (a community rip shows a blue body, red cape and orange robe). No X010 code reads `SPR_DATA[7]` (no `lw 0x2E4`, no AREA10 handler in `tools/animobj.py` uses table 0x37) and no X010 animation script runs only those frames, so the art is loaded but never drawn (PAL; JP/beta not checked). **Correction: the eel was too broad.** An unreferenced 3-frame
+  script survives: JP X10 cell 0x8012DEB8 → 0x8012E0E0 = frames 33, 34, 35 of SPR slot 3, 8 ticks each, the last
+  one held (0x8008), no loop; PAL X010 has the same 24 bytes at 0x80131F1C (cell 0x80131CE8). SiergiejW decoded the
+  frames as a 32x16 eel with its own palette (texture in `AREA10/B003.GAM`); we checked the script and its lack of
+  pointers in both builds, not the pixels (SiergiejW, TombaEdit docs/jp-retail-unused-research.md).
+- **Items vs the eel (JP SLPS, same on PAL where checked):** item 108 (Electric Eel) picks world descriptor 0 (table
+  0x80077BE4 → pointers 0x80077CAC; descriptor 0 = the generic berry frame), like 59 Rubber Gloves, 109 Black Water and
+  119 Funga Leather; none of the 97 descriptors points at the eel cell. Its menu condition is list 22 (PAL D0SPSUB
+  `D_800FECE8[108]` = 22 → 0x800FF3E8: AREA18 s2, player H 128..192), the same as Black Water: a place to use it, not
+  a spawn point. Funga Drum 125 (descriptor 94) and Small Drum 137 (61) share the anim cell 0x80011E8C (one sprite)
+  and differ only in the box (`08 10 08 10` vs `0C 0C 0C 0C`); the drum's menu condition is list 41. Wood 91,
+  Funga Tree 122, Funga Sap 123 and Chief's Spear 140 have their own descriptors (75, 73, 72, 74) (SiergiejW, TombaEdit docs/jp-retail-unused-research.md).
+- **JP item-use lines name two placeholders:** in the JP item-use block (AREA10 A003 #n = item n) #133 is
+  １ＵＰをつかった and #134 ゲージＭＡＸ　＋１をつかった (the two "Chick" slots: 1UP and gauge max +1), #131 地下迷宮の地図
+  (underground maze map), #147 石炭 (coal); #77-#86 (Math Bead 11.., Number Balls) say エラーです. All have menu list 0
+  (never usable); only 77 has a world descriptor (89). Text only, no effect code was found (SiergiejW, TombaEdit docs/jp-retail-unused-research.md).
+- **The shock reaction is PAL-only:** PAL X010 `playerStepHurtKnockback` (0x800FD358) sets animation 0x50 for
+  hurt reason 3 (+0xD1); the JP routine (X10 0x800FCE48, 1,492 bytes) never reads +0xD1 and always loads animation 0x39
+  (`li a2, 0x39` at 0x800FD01C) (SiergiejW, TombaEdit docs/jp-retail-unused-research.md).
 - **Not checked:** a full dead-function list of X010 (the naive pointer scan is too noisy), placed-object subtypes per room.
 
 ## Folkin's rough notes — verification (non-Civilization claims)
@@ -149,14 +168,14 @@ These are the rest, checked only where it was cheap. **Unverified** means we did
 | Claim | Verdict | Evidence |
 |---|---|---|
 | Green Fortune Teller completely cut | **partly** | Event 89 has its own icon (frame 227, "green fortune teller", see Event icons) but is not in `SUBSCREEN_EVENT_ORDER` and no code starts it. Retail has "The Red Fortune Teller" (CFNT #69) and "The Blue Fortune Teller" (#125). The unused item 90 is a letter "addressed to the three sisters". No sprite checked. |
-| Funga Chief completely cut; punishment, drum and spear events | **partly** | Unused items: Funga Leather / Tree / Sap (119/122/123, JP "drum material"), Small Drum (137) and Chief's Spear (140). Their use-check lists are `subScreenCondFalse` (D0SPSUB `D_800FECE8`) and no code gives them. No chief sprite found. The chief's **judgement dialogue does exist** (AREA10 `MFNT100S` group 2 dx 11-18, unreferenced; see "Jungle (AREA10)" below). |
+| Funga Chief completely cut; punishment, drum and spear events | **partly** | Unused items: Funga Leather / Tree / Sap (119/122/123, JP "drum material"), Small Drum (137) and Chief's Spear (140). Their use-check lists are `subScreenCondFalse` (D0SPSUB `D_800FECE8`) and no code gives them. The chief's **sprite survives** unused (AREA10 SPR 0x37 frames 31, 47-58, page `SYSTEM/A05700.000`; see "Jungle (AREA10)"). The chief's **judgement dialogue does exist** (AREA10 `MFNT100S` group 2 dx 11-18, unreferenced; see "Jungle (AREA10)" below). |
 | Old Lumberjack Town Man completely cut | **confirmed** | His top-down frames are on `SYSTEM/A06100` (AREA11 subtype 0 extra frames 30..50, AREA11/CLUT02 row 36). They belong to the cut AREA11 s0 "Lumberjack Town" ([CIVILIZATION.md](CIVILIZATION.md)). |
 | Puffer Fish, Whelk completely cut | unverified | |
 | Masakari language learned by biting | **partly** | JP title of event 60 is コトバを吸いとろう！Ⅱ "Suck up the words! II" (JP AREA10 table), and the cut chief lines come in pairs: translated text plus a ◆★ gibberish copy (JP #191/#195, PAL `?????`). No code: 59-61 have no start/complete/read in X010 (see "Jungle (AREA10)"). |
 | Navy Evil Pig Bag from the chief | unverified | |
 | GoGoCar cacti and an extra track piece | **partly** | The cacti are confirmed (see "GoGoCart cacti / sign" above). The track piece was not checked. |
 | Haunted Mansion metal sign model | unverified | |
-| Doodle Rock textures/sprites in the Underground Forest | unverified | |
+| Doodle Rock textures/sprites in the Underground Forest | **confirmed (corrected)** | The graffiti rocks exist: five distinct dot-and-bar plaques (2, 5, 18, 139, 59) on room texture pages, two of them placed in retail as 3D decor models (Dwarf Forest AREA01 s1/s3 = 2, Haunted Mansion AREA04 s0/s1 = 5). See "Graffiti rocks (らくがき岩): the plaques exist". |
 | Growing flower sprites, cursed and uncursed | **partly** | AREA02 SPR 0x3B frames 27-32 exist, but the VRAM they point at is empty on PAL (see Lost). |
 | Iron door in the Iron Castle | **partly** | Event 100 "Iron Keyhole" has an icon (frame 209), is not in the menu order, and nothing starts it. No door sprite checked. |
 | Weird plant in the Masakari Jungle VRAM | **not found** | AREA10 4 bpp pages of all 10 load lists rendered (tools/vram.py + find_unused_gfx.py): the unsampled regions are palms, reeds, flowers and wall textures used by backdrops/models, plus the known withdrawn B002 page. No isolated plant sprite. No palette, so a small plant could be missed. |
@@ -247,3 +266,404 @@ Source: [PREPRE8.md](PREPRE8.md), "Functions vs PAL". All absent from PAL, JP re
 Not found (2026-10-30, do not re-search): no dialogue line or room record starts events 20 (5つの箱の忘れもの) or 22
 (地下ロウの大ドロボウ), or any id outside 1-4, 6, 9-11, 13; DATA003/DATA004 spawn no object type absent from the village;
 no debug room select in TOMBA.EXE; area 1 has no load list. Details: PREPRE8.md "Event ids from data, and the rooms".
+
+## Code hunt, 2 November 2026 (Flower Tower, versions, unused animation scripts)
+
+Static analysis only: throw-away scanners and Ghidra-free disassembly (capstone), not committed. **[V]** verified in the
+binaries, **[I]** inferred. Nothing here is restored in the port.
+
+### The Flower Tower area (community question: "is there more code for it?")
+- **The inside of the Flower Tower is AREA13 section 0** [V]. PAL X001 `updateAreaScroll` (0x80116990), section 4
+  (Charity Square, AREA01 s4) case: while `GAME.playerAP > 999999` **and** `GCD.bce48 != 0` (= event 164 "The Flower Tower"
+  started, flag byte 0x8009CDA4 + 0xA4), Tombi standing at x 0xB5C..0xB7B is walked into the depth (x 0xB6C, depth >= 0x8D1);
+  after 60 frames the code sets `nextArea 0x0D / section 0 / spawn 0`. That is the only write of `nextArea = 13` in the game
+  (every other `nextArea` store in src/ was checked). The AP check is the constant 999999 (`lui 0xF` + `0x423F`), so you
+  need **1,000,000 AP**. JP X01 has the same constant (0x80116238) [V]. The keeper's line MFNT010 (2,126) "If you wanna get in
+  the tower, you're gonna need lots of AP!!" is the in-game hint.
+- **The room holds a single object** [V] (`tools/objects.py list --area 13`): an item object, layer 5 type 4, subtype 132 at
+  (160, -470). Reward handler 1 = `rewardItem`, so this is item 0x84 **Sacred Fish** (MFNT #135). No NPC, no enemy, no event.
+  X013 `updateAreaScroll` (0x80115FB4) in s0 only waits for Tombi to walk into the exit at x 0xA0 and drops him back into
+  AREA01 s4, spawn point 4.
+- **No more tower code exists** [V]. X013's area part is 27 functions, 10 KB in all (scroll, carry-player step, backdrop sprites,
+  Mighty Fish Food, the s1 scene sequence and the ending stats). Our dead-function scan of X013 finds only the
+  helper `func_801174C4`, which every overlay carries, unreferenced. `MFNT130` has 208 lines: group 0 (system/item text) plus one
+  `..........???` placeholder (#207), with no dialogue at all. Section 1 is the ending (event 0 "Grandpa's Bracelet",
+  `S_END`). The `AREA13_PIGISLAND` name in the sources comes from the psx_tomba constants. In the data the area is
+  "Flower Tower top + ending".
+- Restorable: nothing is missing. The beta's title for the event, "The Million Tower" (docs/BETA_980203.md), refers to this
+  million-AP gate [I].
+
+### Builds: code present in one build only
+- **USA (SCUS-94236) vs PAL** [V]: `tools/xmatch.py` + `tools/fn_vs_pal.py` over the USA exe and all 17 `SYSTEM/Xnn.BIN`
+  (base 0x800E8028, the same as PAL). Every gap piece of >= 300 B with similarity < 40 is a data block (the shared handler
+  tables at 0x800E8028 / 0x80114A38 and the tail data). **No USA-only code in the area overlays.** The INFO/DSPSUB/GOVER/OPTSUB
+  overlays were not compared (xmatch has no PAL index for them).
+- **JP retail draws the ending stats with the debug font** [V]: JP `X13.BIN` `updateSceneSequence` (0x801162DC) calls
+  `sprintf` + `drawDebugText` with `TIME  %3d:%2d`, `AP    %8ld`, `EVENT %3d / %3d` (file +0x2B718). PAL/USA X013 have no
+  format string; they draw the same numbers with glyph sprites (`drawGameStats` 0x801179B4 and helpers). The JP exe also prints
+  `TRY AGAIN...`, ` GAME OVER ` and `NOW LOADING` with `drawDebugText` (0x8001A1D8, 0x8001C0C4, 0x8001B864). PAL draws those
+  from graphics. PAL MAIN0 keeps only the build stamp (`98/8/26 14:10`, 0x80019448) and the area select. Follow-up: "The debug font" below.
+- **JP retail per-area code** [V for the method, I for the verdict]: `fn_vs_pal.py` over JP X01..X19 (area part from 0x80115178).
+  The low-similarity pieces we read (X04 0x80117938, X03 0x8011D630, X10 0x8011C81C, X09 0x8011F65C, X01 0x80123014, X06 0x80117AB4)
+  are rewritten player / collision / model-block code with the same callees. No JP-only feature apart from the X13 stats above.
+- **Correction to docs/BETA_980203.md ("Glyph scene object", beta 0x8002F084):** the function is in PAL. It is MAIN0
+  0x8002CF40..0x8002DC50 (3344 B), slot 0x80079C14 of the object pool table (right after `dispatchMsgBoxHandler`). It calls
+  `loadMessageGlyph`, `freeMessageGlyphs` x4, `GetClut`, `openMenuScreen`, `SfxPlay2` x3 and the matrix calls [V]. USA has it at
+  0x8002FA24 (table slot 0x8007C718). It was missed because `notes/functions_main0.csv` and the symbol table skip it
+  (`clearTalkPose` ends at 0x8002CF40), so it has no name. It is not cut code.
+
+### Dead functions and handlers (second pass)
+Our call graph over MAIN0, every X0nn, I0NFO 1-3, D0SPSUB 1-3, G0OVER and O0PTSUB0 (jal/j, data words, lui/addiu pairs, MAIN0 words into
+overlay space; closure over dead callers) reproduces the zombie sweep above. Of the area-part functions of >= 150 B it lists, 66 are not
+mentioned in this file. All but one are step-switch copies with a live twin (e.g. X005 `mansionKeyHintTalk` = the
+same (2,0x33) line as the live `stepBacoTownNpcTalk`; X016 `stepJuiceSellerTalk` and `stepBrokenStoneGearsTalk`; X004
+`stepBigKeyPainting`; X001 `stepRaceEvent`) or helpers / D0SPSUB3 copies of D0SPSUB code. The exception:
+- **X001 `segmentedCrawlerWander` (0x801334DC, 1352 B)** [V]: an older, simpler copy of the green caterpillar's movement routine.
+  It is unreferenced in PAL, USA and JP. Details, renders and a port experiment are in "Unused patrol routes" below.
+
+### Unreferenced animation scripts
+Scan of the area-part data of every X0nn for 8-byte animation entries (tools/anim.py format) ending in 0x8000 or a backward
+0x4000 jump, kept only when no data word and no lui/addiu points into them. All of these sit **between referenced scripts of the
+same object's tables** (owners from `tools/anim.py list --owner all`). **Rendered (follow-up):** the port was run headless into the
+owner's room from the debug select, the VRAM was dumped raw (a temporary port-only hook, not committed) and the SPR parts were cut from
+that VRAM with the owner's tpage offset (`w1e`) and CLUT (throw-away renderer, not committed). The decoder shows that every one of these
+scripts ends in 0x8000 (play once and hold the last frame); none loops. Images: see "Images" at the end of this section.
+
+| Overlay | Address(es) | Frames | What it shows (render) |
+|---|---|---|---|
+| X009 / X011 | 0x8012F144, 0x8012F164, 0x8012F17C / 0x8011C6E4, 0x8011C704, 0x8011C71C | 43 44 45 44 / 46 47 48 / 49 50 (50 held for 255 ticks) | **Jellyfish (AREA09 s0) and flying octopus (AREA11 s1), one shared SPR table** (kind 0x3A, base 4 resp. 9, CLUT 30930 resp. 31058). It is one sequence: the body curls its tentacles under and squashes flat twice (43-45), springs up with the tentacles thrown down (46-48), then stands upright on curled tentacles (49-50, held). Frame 42 (tentacles curling in) is in no script. It looks like a landing / "stand on the ground" pose set, not an attack [I]. The AREA11 room does not even load the page area of frames 37-50 (the octopus's sideways swim 37-41, which its live table uses, is garbage there), so the octopus render takes the pixels from AREA09 and the CLUT from AREA11 |
+| X003 | 0x80139130 | 12-15 | swaying hop plant table: a grass / reed tuft swaying (decor) |
+| X003 | 0x8013A074, 0x8013A0A4, 0x8013A0E4, 0x8013A114; 0x8013A194, 0x8013A1A4, 0x8013A1B4 | 29-32-30, 33-35, 38-41-39, 42-44 (ping-pong); 24-25, 26-27, 46-47 | wind-blown villager table (AREA03 s0, SPR 0x32): talk / gesture loops of the **brown-hat dwarf** (29-35) and the **sombrero dwarf** (38-44), and three two-frame moves of the **bundled-up old dwarf with the red scarf** (24-27, 46-47). Talk animations nobody selects |
+| X004 (also AREA12) | 0x80134E7C, 0x80134E9C | 16-19 forward / 19-16 backward | a **stone slab turning** (rotating wall / door panel opening and closing) in the biting-plant / smoke table area |
+| X004 | 0x801354E4 (single frame 185, missed by the first scan), 0x801354EC, 0x8013551C, 0x8013554C | 185; 195 187 188 196 188 187; 186-189-187; 190-192-185 | AREA04 s4 SPR 0x32 base 1: the **sombrero dwarf** again (three talk / nod gestures). **Follow-up:** the four scripts are a copy of the town-hall-worker / painting-hint NPC set (table 0x8013540C = 0x80135430 frame 173, 0x80135438, 0x8013546C, 0x801354A0, read through `D_801311B8[subtype]` and `D_801311D0[subtype]`) with every frame number +12 and the loop jumps replaced by stops. The table that would select this second character does not exist |
+| X008 | 0x80118504, 0x8011853C | 26-29-26, 30-33 | not rendered. **Owner found (follow-up): the Pipe item.** The block 0x801184DC.. is a run of item scripts drawn from `SPR_DATA[3]` (frames 2-4, 24-35, 13-15, 0-5). 0x801184C8 is not unreferenced: MAIN0 item descriptor 81 (0x8007AF44, item 64 = Pipe through `DAT_8007b084[64]`) points at it, and `initItemObject` takes `anims[0]` (descriptor byte 7 = 0) = 0x801184DC, the wooden wheel (frame 2) seen in AREA08 s1. The other words of 0x801184C8 are not pointers, so nothing selects the rest of the block |
+| X010 | 0x80131DFC, 0x80131E14 | 5-7, 8-10 | AREA10 s0 decor (base 12): jungle bush frames and waterfall / foam strips |
+| X014 | 0x8012A090; 19 scripts in 0x8012A58C..0x8012A780 | 12-20; 9-33, 47-62 | not rendered: in the boss room (s7) and s2 the page areas of those frames are not resident at the bases the room uses (only frames 0-8, 18-21, 26-29 are) |
+| X002 = X019 | 0x8011F2BC, 0x8011F2CC (X019 0x80116178/88) | 6-7, 8-9 | not rendered: not resident in AREA02 s1 at base 4 or 10 |
+
+Restorable only as decoration or extra talk poses: no code selects them. The jellyfish/octopus sequence is the most complete one.
+
+#### Runtime check (port `--log-anim`), 2 November 2026
+Question: could a computed selection (table base + offset) reach these scripts, which a static search cannot see? **No: none of them
+is ever selected, either at run time or by any code path.** [V]
+
+- **Tool (port-only, off by default):** `--log-anim [FILE]` (port2/runtime/animlog.c, hooks in port/fixes.txt). It reads TObj +0x24 after every
+  main-pool object update, inside `AnimLoadDuration` (the call after each `o->anim = script`), `AnimJump`, `AnimAdvance`,
+  `AnimAdvanceWithBox` (all four copies) and `tickAnimationFixedRate`, and records the frame each visible object shows in `drawObject`.
+  Any pointer inside the windows below, or a jellyfish/octopus script showing frames 42-50, prints `[anim] HIT`. The summary at exit lists
+  every script address and frame per overlay, room, category and type. `--log-anim-force CAT:TYPE,...` also puts every object of those types
+  through b04 1..3 x step 0..11 (state 0), one combination every 110 frames, so each branch of its update switch runs whether or not the
+  player triggers it. Windows: the table above, with X004 widened to 0x801354E4..0x8013558C and the 19 X014 scripts as four ranges.
+- **Runs (headless, debug area select):** every section of AREA02, 03, 04, 08, 09, 10, 11 (s1, s2) and 14 (62 rooms x 3600 frames, generic
+  walk / jump / attack / run script), plus 19 owner rooms twice (5800 frames each): once with Tombi teleported (`--poke` of his position)
+  next to each owner type in turn, attacking, jumping and pressing Circle; once with `--log-anim-force` on the owner types (8451 forced state
+  changes). 447,200 frames in all. **0 HIT lines; frames 42-50 never drawn.**
+- **What the owners did meanwhile:** the jellyfish (cat 2 type 0x21) used 16 of the 19 scripts of its table (float, swim, grab, hit, hurt fall,
+  child follow, defeat); the flying octopus (type 0x2A) used one, because `flyingOctopusMove` only ever selects `D_8011C420[0]` (its table is
+  the jellyfish table copied, so its 43-50 scripts are doubly dead); the AREA04 s17/s18 town hall worker (type 0x32) ran 0x80135430 and the
+  0x801354A0 loop, whose jump at 0x801354DC goes back to 0x801354A0, the script right before the window; the AREA08 Pipe item showed only
+  0x801184DC; hop plants, wind-blown villagers, biting plants, smoke, and the AREA10/14/02 decor objects ran their tables normally.
+
+| Script(s) | Verdict | Evidence |
+|---|---|---|
+| X009 0x8012F144/164/17C (jellyfish 43-50) | never hit | AREA09 all sections; s0 natural + forced (2 objects); frames 42-50 never drawn |
+| X011 0x8011C6E4/704/71C (octopus copy) | never hit | AREA11 s1/s2; code selects only entry 0 of its table |
+| X003 0x80139130 (hop plant 12-15) | never hit | AREA03 all sections; types 2:24, 3:28, 3:29, 2:1D natural + forced in s0/s1/s4/s5 |
+| X003 0x8013A074..0x8013A1B4 (villager talk poses) | never hit | types 2:32, 2:37 natural (Circle pressed next to them) + forced in s0/s1/s4/s5 |
+| X004 0x80134E7C/9C (stone slab) | never hit | AREA04 all 20 sections; biting plant 2:07, smoke 3:2A/2B, collectible 2:29 forced in s0/s9 |
+| X004 0x801354E4..0x8013554C (+12 NPC set) | never hit | town hall worker 2:32 in s17/s18 natural + forced; 2:35/3:3C in s15 |
+| X008 0x80118504/3C (Pipe item block) | never hit | AREA08 all sections; the Pipe item shows 0x801184DC only (descriptor uses `anims[0]`) |
+| X010 0x80131DFC/E14 (decor) | never hit | AREA10 all 9 sections; decor 3:3F, 4:35, biting plant 2:07 forced in s0/s4 |
+| X014 0x8012A090, 0x8012A58C..0x8012A780 | never hit | AREA14 all 8 sections; decor 2:4B, 3:50/51/52/23/61, 4:3A/3C forced in s2/s3/s7 |
+| X002 0x8011F2BC/CC | never hit | AREA02 all sections; decor 2:18, 3:2C forced in s1/s2 |
+| X019 0x80116178/88 (copy of X002's) | not run | the debug select poke for area 19 lands in AREA02; static only |
+
+**Computed selection, re-checked statically** (capstone over the nine owner overlays and MAIN0, throw-away scripts):
+- **Every store to TObj +0x24** was traced back to its source register: a word loaded from a table (`lw`) or a lui/addiu constant. The only
+  arithmetic sources are the animation advance routines (`AnimAdvance`, `AnimAdvanceWithBox`, `tickAnimationFixedRate`, the X003/X004
+  `komaPigAnimAdvance` copies: +8 to the next entry, or the pointer word after a 0x4000 entry), which follow a script to its end and never cross
+  a 0x8000 terminator. (X009 0x8011A3E0 stores to +0x24 of a camera struct, not an object.) Counts of `sw rX, 0x24(obj)`: X002 59 load / 73 const,
+  X003 221 / 73 (+3 advance), X004 217 / 73 (+3), X008 35 / 73, X009 125 / 78, X010 133 / 78, X011 73 / 73, X014 76 / 74, X019 35 / 73.
+- **`AnimJump(o, n)` is the only base + index arithmetic on a script** (`o->anim += n` entries, MAIN0 0x8001FE94). In the area code of the nine
+  overlays every call passes n = 0, directly or through the NPC wrappers `npcSetAnim` / `sevenFriendsSetAnim` / `sevenFriendsMemberSetAnim`
+  (all callers pass k = 0); the X004 / X010 wrappers (`mermaidSetAnim`, `townHallWorkerSetAnim`, `scaredGoldVolunteerSetAnim`,
+  `paintingSlotHintNpcSetAnim`, `tenThousandYearElderSetAnim`) have no callers. The non-zero constants (2, 3, 4, 0xF, `lbu` from a table)
+  are in the shared player code and move Tombi's MAIN0 scripts.
+- **Table indexing** (`table[n]`, `D_x[subtype].anims[n]`, the item descriptors' `anims[b0c]`) loads a word, and no word holds an address in
+  any window: not in the owner overlay, not in MAIN0, and not in any file on the disc read in the same overlay (scan of all 2287 files; the
+  only raw hits are inside STR movies and GAM image data).
+
+**Images** (scratchpad of the session, not in the repo): per script a GIF `<prefix>_<address>.gif`, per owner a sheet
+`<prefix>_sheet.png` (one row per script, frame numbers on top) and an atlas `<prefix>_spr.png` (all SPR frames of the table):
+prefixes `x009_jellyfish`, `x011_octopus` (plus `x009_jellyfish_sequence.gif`, `x011_octopus_sequence.gif`: the three scripts
+played in a row), `x003_monkey`, `x003_hopplant`, `x004_bitingplant`, `x004_sombrero`, `x010_decor`, `x014_bossdecor`.
+
+### Checked, nothing new
+- **Read-only save variables:** of every GCD byte (0x8009CD00..0x8009D100) that some code reads and none stores by absolute address, every
+  one is an element of the event array (0x8009CDA4 + event) or of the item count array (0x8009D0A4 + item, `subScreenDrawItemNames`),
+  which are written by index. No forgotten flag.
+- Music: `tools/music_refs.py` already shows every sound set and SOUND file reached (docs/CIVILIZATION.md).
+
+### Not checked
+SFX ids never played (the id comes from data and animation tables as well as from immediates; needs a census of
+`playSFX`/`SfxPlay2` arguments plus `D_800780C4`); the pixels of the X002/X008/X014 unreferenced frames (see above);
+the beta's `X01..X19`, `INFO*` and `DSPSUB*` (not on the local disc); the USA/JP system overlays vs PAL.
+
+## The debug font (drawDebugText): follow-up, 2 November 2026
+
+Question: JP draws the ending stats and TRY AGAIN / GAME OVER / NOW LOADING as debug text, so is there a font we can write
+anything with? **Yes, in every build, PAL included, and the port can already call it.** [V unless marked]
+
+- **Not Psy-Q's FntPrint.** No `FntLoad` / `FntOpen` / `FntPrint` / `KanjiFntPrint` is identified in the PAL, USA, JP or beta symbol
+  maps. The game has its own printer, `drawDebugText(x, y, colour, string)` (PAL MAIN0 0x80020F14, 572 B, matched C in
+  `src/drawDebugText.c`; USA 0x80023AA4, JP 0x80021E5C, beta 0x800233A4, same code). Each character becomes one 8x8 `SPRT_8`
+  (code 0x75) with u = (c & 15) * 8, v = (c >> 4) * 8 on texture page 0x15 (4 bpp, VRAM x 320, y 256) and CLUT (368, 496 + colour). A `DR_MODE`
+  follows every call. It goes into the debug primitive buffer, 0x780 bytes per frame buffer. That is about 115-120 characters per frame in
+  total; further characters are dropped (seen in the port: a fifth line did not appear).
+- **The glyphs are part of the system texture page** `SYSTEM/A00000.GAM` (loaded at (320, 256) at boot and resident in every
+  frame we dumped: title, area select, rooms of AREA00/01; the menus draw other cells of the same page). The font area (128 x 128 px,
+  the left half of the page) is **byte-identical in PAL, USA and JP**. Cells: 0x10-0x1F = hex digits `0-9A-F`; 0x20-0x7E = printable
+  ASCII **with lower case**, except that 0x40 is **`©`** instead of `@` (hence JP's `@1997 WHOOPEE CAMP Co.,Ltd.` shows a ©);
+  0x80-0x89 = dim digits 0-9. Everything from 0x90 up is HUD / effect art of the same page, not font. No accents, no kana. The glyphs
+  are shaded (gradient plus shadow, about 10 colours). The 4 CLUT rows give white, blue, orange and green.
+- **Who calls it.** PAL / USA: `bootStartupTask` states 2-3 (build stamp `98/8/26` `14:10` in PAL, `98/3/22` in USA; unreachable, state 1
+  jumps to 4) and the debug area select `displayDebugScreen` (live with the debug flag `0x1F8001B4`, the port's
+  `--title-debug` / sweep pokes). JP adds, all live in retail: the title's `@1997 WHOOPEE CAMP Co.,Ltd.` and `PUSH [START] BUTTON`,
+  `TRY AGAIN...`, `NOW LOADING`, ` GAME OVER ` at (96, 96), the X13 ending stats at (32, 64/88/112) (`TIME` from two X13 counters,
+  `AP` = playerAP, `EVENT` = the number of event bytes equal to 0xFF over 256 ids / a total), and a collision readout
+  `flag= %01d`, `hit pos x/y= %04d`, `no hit`, `pos x/y= %04d`, `dir = %01d` (JP 0x8002FB98..0x8002FCF4, at x 8). PAL / USA replaced
+  all of the JP uses with graphics and removed the readout strings.
+- **Port.** `drawDebugText` is native code in the port and the page is resident, so port code can call it from any per-frame game hook
+  (tested with a throw-away hook in `drawHudIfShown`: the JP stats and a test text drew in-game in all 4 colours; the text goes into the
+  game's own ordering table, behind the message box, over the scene). Uses: debug / research overlays (positions, flags), an
+  in-picture FPS counter (the current `--show-fps` overlay is drawn at window resolution with its own 3x5 digits, which is sharper at high
+  internal resolution), new short texts. Limits: 8x8 fixed width, ASCII plus ©, 4 colours, about 115-120 characters per frame shared by all callers,
+  and screen-space only (no scaling).
+- Images: font page in the 4 CLUTs, a code chart, the JP screens rebuilt from data (font + JP coordinates + JP format strings with
+  sample values), and port screenshots (PAL area select; the JP stats and a test text drawn in-game by the port). Paths in the
+  session report.
+
+## Unused patrol routes
+
+Sweep (2 November 2026): every X0nn function list (notes CSV plus the `// FUNC` headers) against jal/j targets, raw pointers and lui/addiu
+pairs of the overlay and of MAIN0 (the MAIN0 handler tables point into overlay space). The dead functions were then searched for
+movement code (position += velocity, hard-coded position limits, `COS_TABLE` steering, waypoint tables) and for subtype cases that no
+placement reaches. The I0NFO2 NPC sets (top-down patrol boxes) were dumped with `tools/topdown.py npcs`. MAIN0 / X000 / I0NFO dead
+functions are those of the zombie sweep above (none moves an object along a route). [V] unless marked.
+
+### X001 segmentedCrawlerWander: the caterpillar's first route
+- **The owner is the green caterpillar of Wobbly Wharf** (render: a head with an orange underside and a dark mouth, plus 3 or 5
+  round green segments with a red spike and a pink spot). It is not the spider. Layer 2 type 0x13, handler `updateSegmentedCrawler` 0x80134C00.
+  No APD record places it. It is spawned by the unlayered object type 7 `updateSegmentedCrawlerSpawner` (0x8013C028, MAIN0 unlayered
+  table D_8007BF34 index 7). That object comes from the per-section unlayered list `PTR_8007bee4[area][section]` = {2, 1, 7}, found only in
+  **AREA01 section 2 (Wobbly Wharf)**. The same list pointer is also reached as AREA07 s2 (the AREA01 copy that is not on the disc) and as AREA00 index 8
+  (past AREA00's 6 sections).
+- Spawner: the first crawler after 600 frames, then one every 480 / 600 / 360 / 440 frames (random), at most 2 alive. It starts at one of four
+  points D_8013CA10 (h, y) = (525, -510), (710, -580), (940, -630), (1130, -570), at the player's depth. Subtype = frame parity & 1:
+  **0 = head + 5 segments, 1 = head + 3**. Subtypes 2 and 3 exist in the update switch but are never spawned.
+- In this room the horizontal axis is the TObj `b` field (Tombi enters at 215). The limits 0x118 (280) and 0x551 (1361) span the rope-bridge
+  stretch of the room [I], and the crawler walks in the tree canopy above it (y about -400 .. -630; Tombi on the bridge is at -229 .. -259).
+  Off screen its y is clamped to at most -0x190 (`updateSegmentedCrawler`).
+- **Live route (`segmentedCrawlerMove`, 0x80132B64)**: down for 110 frames (JP: 60), turn to face right, run right until h >= 0x551 *or*
+  `segmentedCrawlerCheckWall` hits, turn back (through below or above, chosen by y < -0x140), run left until h < 0x118 or a wall,
+  turn, and **loop forever** on two lanes.
+- **`segmentedCrawlerWander` (0x801334DC, 1352 B)**, no reference in X001, MAIN0 or any table: the same init (but 60 frames down, as
+  JP's Move), **no wall check, no lane choice, no loop**: right until h >= 0x551, U-turn to angle 0x80 (state 7; state 9 is a
+  no-op), left until h < 0x118, turn up and round to face right (state 13), and then **state 14 has no case: the head stops for good**,
+  facing right at h 280, and the body stays behind it. So it is a one-way patrol, a first draft of Move (Move = Wander + wall checks + lanes + loop).
+  It **shares** the animation tables with Move and `segmentedCrawlerGrabbed` (D_8013F034: 12 directional head scripts, frames 57/58,
+  152/153, 150/151, 148/149 and 124-131; D_8013F064; the body uses D_8013F1BC, frames 0-15). The earlier note "own animation table" and
+  "heads up" were wrong (angle 0xC0 is +y, down).
+- Which room fits: only Wobbly Wharf. Its limits are the same constants as the live routine, so the patrol was written for this room.
+  The four duplicate subtype cases of `updateSegmentedCrawler` (0/1, 2, 3 each call Move) are where one subtype once called Wander [I].
+- Builds: **unreferenced in all three retail builds**. JP X01 has it at 0x80131DB8 (masked twin, overlay base 0x800E9AF8) and its
+  `updateSegmentedCrawler` (one call, 0x80133618) only calls Move. USA X01 has it at 0x80132814 (the USA X01 file maps to base 0x800E7388) with no reference.
+  The beta's X01 is not on the local disc. **PrePre Vol. 8 (follow-up):** its single TOMBA.EXE does have the caterpillar, as class 2 type
+  0x13 (the PAL type id), with its own movers per subtype; neither Wander nor Move is in it (masked-shingle similarity <= 17 %), and the object is
+  never placed or spawned in the demo (docs/PREPRE8.md "The segmented caterpillar").
+- **Port: `--crawler-patrol`** (port/fixes.txt, off by default) makes the head run Wander instead of Move. Recorded: both
+  caterpillars come down, run right to 1361, turn, run left and park one above the other at h 280, facing right, for good. Retail keeps
+  looping. GIF side by side (retail | patrol); the patrol stays higher than the retail lanes. For the recording the camera was lifted by holding Tombi's y (throw-away hook), because the crawlers walk above the top of the normal view.
+
+### Other unused movement
+| Function | Owner / room | Route | Builds | Verdict |
+|---|---|---|---|---|
+| X009 `flowerTearsSeekerWalkOff` 0x80128B4C (248 B) | flower tears seeker NPC (MFNT090S "came for Flower tears to revive the Charity fountain") | walks left at 1 px a frame until off screen, then hides (b04 2). It is the live `flowerTearsSeekerPace` (paces h 0x708..0x780, with gravity and tile collision) without the turn and the collision | unreferenced in PAL, JP (X09 0x80127CD4) and USA (0x80127E94) | a leave-the-scene walk nobody calls; the live NPC is freed off screen once event 0x28 is done |
+| X002 `sevenFriendsMemberFlyUp` 0x80119088 (240 B) | a member of the Seven Friends (AREA02) | waits for its timer, then rises with velocity -0x10 per frame down to -0x600, switches to anim 1 at -0x80 and is freed off screen | unreferenced in PAL, JP (X02 0x801182E4) and USA (0x801183D8) | a fly-away exit; the live scene steps do their own exit [I] |
+| X001 `komaPigCheckWall` 0x8012BC84 | koma pig, AREA01 | (wall probe, not a route) | the X003 / X004 copies are live | AREA01's koma pigs never test walls |
+
+Live, for the record: X010 `spearPigWanderB` (subtype 1 of the spear pig, placed in AREA10 s0), X009 `flowerTearsSeekerPace`.
+
+### Top-down patrol boxes (I0NFO2 NPC sets)
+Record fields (docs/CIVILIZATION.md): behaviour 1 vertical, 2 horizontal, 3 / 4 diagonal, box = limits. **The only patrol that runs
+in retail is AREA19 s2 (set 11) actor 4** (vertical, y 268..304). All the others are in the cut Civilization towns and never run:
+set 0D (AREA11 s0) actors 3 (diagonal), 4, 5, 8 (horizontal), 7, 9 (vertical); set 0E (AREA16 s0, boxes relative to the actor) 2, 7 (diagonal),
+4 (vertical), 5 (diagonal); set 0F (AREA17 s0) 6, 9, 12 (horizontal), 8, 13, 14, 15 (diagonal); sets 0C (AREA08) and 10 (AREA18) have no patrols.
+Diagram: all four sets on one sheet.
+
+### Not checked
+Waypoint tables read by live code but with entries no path reaches (e.g. AREA09 `updateWaypointRide`). Unreachable states inside
+live movement routines other than the crawler's.
+
+## Tunnel glyph sheet (AREA02/B301): layout, code and text, 2 November 2026
+
+Follow-up to the B301.000 row in "Lost" (community questions: are these separate floor tiles, is any placement code
+left, does the Japanese text mention them). Images are not committed (game pixels).
+
+### Layout
+- **Grid:** the block is exactly 10 x 3 cells of 24 x 24 px, no gutters (u 0..239, v 72..143). Row 0 (v 72..95):
+  Maya numerals 1, 2, 3, 4 (dots), 5 (bar), 6..9 (bar + dots), 0 (shell). Row 1 (v 96..119): **ten** symbols, not
+  eleven: sun, bird, crescent moon, framed star, bow and arrow, crossed arrows, gear/cog, ten small rings around a bar,
+  grid, mound with an arc. Row 2 (v 120..143): u 0..71 plain stone, u 72..95 "=" (two bars = Maya 10), u 96..239
+  index 0 (empty).
+- **One stone tile under every glyph:** all 21 glyph cells (numerals, symbols, "=") are the same 24 x 24 stone tile
+  with the glyph painted on it (median 97 % of the non-glyph pixels identical to the per-pixel mode; 62 % for the
+  framed star, whose inner box covers more). The tile wraps only roughly: mean luminance step at the wrap seams 17.4
+  (left/right) and 17.2 (top/bottom) against 11.9/15.7 inside the tile and 21.5 between random columns.
+- **The frames are a strip, not plaques:** in row 1 the 1-px frame (CLUT index 4) is the top and bottom row of each
+  cell and the **right** column (u = 24k + 23); only the first cell also has a left column (u 0). Cut out alone,
+  cells 1..9 are framed on three sides, so the symbols were drawn as one continuous row of boxes (or meant to be
+  placed side by side in that order). The numerals have no frame at all.
+- **Row 2 u 0..71 is one 72 x 24 piece of stone,** not three tiles: the seams between its cells (7.8, 9.2) are no
+  bigger than its interior steps (8.4), while its wrap seams (18.1 / 19.3) are as large as random (17.3).
+- **Not a font strip:** cells are 24 x 24, glyphs centred in them (numeral dots/bars in rows 7..17), no 8x8 or 16x16
+  sub-grid.
+- **Not cut from the tunnel floor:** the grey (CLUT 0x7D8F, neutral greys 80..184) matches no 24 x 24 window of
+  pages 12..15 of B301 (best 18 % identical indices, chance level); the tunnel floors are the light cobble of page 14
+  (CLUT 0x784F, greys 168..224), sand and dirt. 0x7D8F is row 502, the one free row between the page-13 backdrop
+  CLUTs 0x7D4F (501) and 0x7DCF (503).
+- **The tunnels have no floor tiles:** the I0NFO3 backdrop is free polygons (see below) with ~1 texel per world
+  unit on the floors (median world/texel 1.11 for the cobble, 1.06 for the dirt), and the only grid is the 8 x 8
+  collision map. A 24 px glyph cell would cover 3 x 3 collision cells.
+
+### Code (I0NFO3, AREA02 section 3): no placement path
+- **Backdrop format (corrects the "882 polys" above):** the kind 0x50 block (D306 + 968) is 24 piece offsets, and
+  each piece is groups of `u32 count` + polys in the order FT3, FT4, GT3, GT4 (textured: CLUT, tpage, 1 or 3/4
+  colour words, then x, y, z, u, v per vertex), then the untextured groups. 2,506 textured polys; page 13 only at
+  v 0..69 (pieces 0x5C/0x60, the alternative sets, CLUT 0x7C0F) and v 146..157 (CLUT 0x7DCF, the small cairn
+  stones); no CLUT 0x7D8F; nothing samples v 72..143. Rendering all pieces gives the whole tunnel network at 1:1
+  (sand, cobble, a cracked stone dais, a ring of seven small pyramid stones on the sand at about x 385..445,
+  y -992..-940).
+- **No tile-to-UV formula exists:** `tunnelCollideMapTile` / `tunnelCheckTileTrigger` read `TUNNEL_MAP_TILES`
+  (D303, 240 x 168 cells of 8 px, copied to 0x80124000) as collision only. Its values are 0..9 (shape) plus bit 7
+  (trigger) and nothing else (no unused values that could select graphics).
+- **Trigger cells:** 17 clusters. Five sit on the five exits of `tunnelSectionStep`; two are the backdrop-switch
+  zones: on a trigger cell `tunnelPlayerMainStep` stores 1 + the index of the `TUNNEL_TRIGGER_RECTS` rect that holds
+  the player into `PLAYER.b6b` = `D_800A60A3`, the value `tunnelSelectBackdropPieces` reads (rect 0 -> set 1,
+  rect 1 = (0,0,0,0) placeholder, rect 2 -> set 3). The other ten (5 x 5 cells at x 408..447 y -1184..-1145 and
+  592..631 y -1144..-1105, irregular ones at 864..903 / -1048..-1017 and 992..1023 / -968..-929, six single cells)
+  have no reader: nothing in I0NFO3 uses the player's trigger bit outside the rects, and the one MAIN0 reader of
+  `PLAYER.b68` (script opcode 0x93) calls the side-view overlay address 0x800ECB40, which is inside
+  `tunnelItemSpotHandler` in I0NFO3. None of them is 3 x 3 cells.
+- **No puzzle logic:** all 55 I0NFO3 functions are decompiled and named; none counts steps, compares a sequence or
+  keeps digit counters. Placement (kind 0x83): 20 type-7 records (paired gates) and 2 type-0x3F; the actor spawn
+  table: 11 type-0x45 actors; talk spots all show (1, 0) (the save prompt). Object tpage offsets are 0 (player),
+  2..4 (actors), 0xF (item spots, i.e. the time chests), 0x15 (talk spots); no sprite table of the section samples
+  page 13 v 72..143.
+- **Versions:** US I0NFO3 has the same rects and dialogue choices; JP INFO3 too (rects at file 0x67A4). The JP
+  collision map (`AREA02/D304.000` on the JP disc) differs from PAL/US in 136 wall cells, never in a trigger bit.
+  The JP B301 differs from PAL only at y 144..246 (words 64..175); the glyph block is identical. 0x7D8F occurs in no
+  JP/US INFO3 or X02. The beta 980203 and PrePre 8 builds have no AREA02 data.
+
+### The text: a cut "graffiti" puzzle with Maya numerals
+- **The digger's hint, skipped by the code.** AREA02 tunnel dialogue group 6 (`tunnelActorOpenDialogue`, the digger
+  of case 8): the code shows dx 0xF, starts event 161 "Underground Treasure", then shows dx 0x11; **dx 0x10 is never
+  shown** (same constants in PAL, US and JP). PAL #439 = dx 0x10 is `···???`; the JP line (AREA02 A003 #433) is:
+  言い伝えだと・・・宝物庫へ行くには仕掛けをクリアしないとダメらしい・・・ でも オレはさぁ 宝物庫を掘り当ててやるんだ！
+  ん・・・仕掛けを解く方法？ それは仕掛けをつくったヤツが残した岩のらくがきを 調べてみろよ たしか・・・地上に６コあるハズだから
+  見つければ やくに立つかもな・・・
+  "According to the legend... to get to the treasure vault you have to clear a contraption... But me, I'm going to
+  dig my way into the vault! Hm... how to solve the contraption? Go and study the rock graffiti left by whoever built
+  it. I think there are six of them up on the surface, so if you find them they might help..."
+  In retail, event 161 is completed by opening time chest subtype 7 in the tunnels (300,000 AP,
+  `tunnelItemSpotCheckStep`); no contraption exists.
+- **The six rocks use dots and bars in base 20.** AREA16 group 2 dx 3/4 (PAL #211/#212, JP AREA16 A003 #188/#189),
+  with no reference in X016:
+  キミ、いろんなところを旅してるんだって？ だったら、へんな点とか線がきざんである らくがき岩・・・見たことないかなぁ・・・
+  おれ、ずーっとまえに木人の加工場で 見たことがあるんだけど、どうも気になってなぁ・・・
+  "You travel all over the place, right? Then have you ever seen a graffiti rock with strange dots and lines carved
+  in it...? I saw one ages ago at the wood people's workshop and it's been bugging me..."
+  ウワサじゃ 全部で６つのらくがき岩があって、そこに書かれてあるナゾをとけば たくさんの お宝が 手に入るらしいんだけど
+  ・・・なんかむずかしそうだなぁ ・・・が１・・・ーが５の・・・ ２０進数とかなんとか・・・ おれにはとても わかんないよ・・・
+  "Rumour has it there are six graffiti rocks in all, and if you solve the riddle written on them you get lots of
+  treasure... but it sounds hard... '·' is 1... '–' is 5... base twenty or something... I just don't get it..."
+  (the "·" and "ー" are the same glyphs as the ellipsis dots and the long-vowel bar, so the line reads as a mumble).
+  PAL kept the lines but lost the notation: "1 is...by 5...to the 20th power..." (all languages say "power"). Dot = 1,
+  bar = 5 and base 20 are the Maya numerals of the sheet. **Correction:** the rocks are not cut; their plaques are
+  on the room texture pages and two are placed in retail (see "Graffiti rocks (らくがき岩): the plaques exist" below).
+  What is cut is everything around them: event 67 解読？らくがき岩 "Decipher? The Graffiti Rock" has a JP title (and a
+  JP hint, DSPSUB#1 #67 らくがき岩の　もじを　かいどくする "decipher the writing of the graffiti rocks") but no start,
+  completion or flag read anywhere (notes/secrets.md).
+- **PrePre 8 names the floor.** The PrePre 8 event-title table (`tools/prepre8_text.py`, string at 0x800AB038,
+  glyphs checked on `SYS008.000`) has らくがき床のナゾ "The Riddle of the Graffiti Floor", followed by かくされた入口
+  "The Hidden Entrance"; it also has 解読?らくがき岩 and 森の地下には何がある? "What is under the forest?" (retail
+  "What's Under the Forest?" is the tunnels' own event). No retail build has a "graffiti floor" title.
+- **Other hits, unrelated:** 数字玉１..１０ / "Math Bead 1-10" are retail items of the 10,000 Year Old Man's quest
+  (JP item text: "a ball with N written on it that the 10,000 Year Old Man asked for"), collected under water in the
+  Trick Village; they are numbered 1..10 like the numerals but nothing ties them to the sheet. The other tunnel
+  `···???` lines are the mine cart (PAL #436/#437 = JP #430/#431 "it needs water... burning water", "see, it ran on
+  water!"; #457 = JP #448 "the cart started moving!") and the gate scene (PAL #406, #414..#418 = JP #400, #408..#412).
+  No dialogue in JP retail, the JP demo or PrePre 8 uses 太陽, 鳥, 弓, 矢, 石板, パネル, 記号, 暗号 or パスワード for this.
+
+**Reading:** the sheet is most likely the tile set of the cut "graffiti floor" contraption that guarded the
+Underground Maze treasure vault: a row of ten framed symbols and numeral plates in dot-and-bar, base-20 notation,
+whose code was to be found on six graffiti rocks on the surface. The floor and any code for it are gone; the rocks
+partly survive (five plaque textures, two of them placed as plain decoration, below); the retail game kept the
+treasure (event 161, a time chest) and two hint lines, one of them unused.
+
+## Graffiti rocks (らくがき岩): the plaques exist, 2 November 2026
+
+Correction to the section above, which said the six rocks were never built. A community rip shows five stone
+plaques with dot-and-bar numerals; they are in the game data. Images are not committed (game pixels).
+
+### Where they are
+All five use one and the same 42 x 51 px plaque tile (frame, stone grain, 4 bpp indices identical outside the marks;
+only the marks differ), so the whole disc was searched for that index pattern (raw nibble scan of every file,
+GAM files unpacked, PAL, US and JP): five distinct plaques, every hit listed.
+
+| Number | File (PAL) | VRAM (4 bpp page, u, v) | Room | Drawn in retail |
+|---|---|---|---|---|
+| 2 | `AREA01/A003.GAM` (area page, at word (768,0)) x 102, y 64 | page 12 (768,0), u 102..143, v 64..114 | AREA01 (Forest of 100 Flowers / Dwarf Forest), every section | **yes**: object model #22 of the s0/s1 model table (#10 in s3), CLUT 0x7849 (144,481), placed by a layer-4 type 0x13 record (`updateStaticDecorModel`) at (4110, -399, z 48) in s1 and s3, just left of the exit at the right end of s1. Same in AREA07 (copy of AREA01's lists). |
+| 5 | `AREA04/A003.GAM` (area page, word (832,0)) x 654, y 192 | page 15 (960,0), u 142..183, v 192..242 | AREA04 (Haunted Mansion), every section | **yes**: model #22 of the s0..s3 tables, CLUT 0x7ACF (240,491), type 0x13 decor record at (1080, -675, z 940) in s0 and s1: a stone block with the plaque on the terrace right of the mansion's face door. Same in AREA12 (copy of AREA04). |
+| 18 | `AREA03/A002.GAM` (area page, word (0,256)) x 398, y 24 | page 17 (64,256), u 142..183, v 24..74 | AREA03 (Stormy Mountain / Lava Caves / Phoenix's Nest), every section | no |
+| 139 | `AREA10/B004, B104, B203, B302, B404, B504, B603, B702` x 266, y 176 | page 17 (64,256), u 10..51, v 176..226 | AREA10 (Jungle), sections 0..7 | no |
+| 59 | `AREA11/B100.GAM` (room page, word (512,0)) x 10, y 136 | page 8 (512,0), u 10..51, v 136..186 | AREA11 section 1 | no |
+| (2) | `AREA09/B002.GAM` x 870, y 64 | page 15 (960,0), u 102..143, v 64..114 | AREA09 (Mushroom Forest) section 0 | no; pixel-identical to the AREA01 "2" |
+
+- **US and JP** have the same plaques at the same offsets (US AREA04/A004, AREA09/B004; JP likewise). **JP only:** the
+  "59" plaque is also on six JP AREA10 room pages (B003, B102, B203, B403, B502, B603, at y 136), i.e. the Japanese
+  jungle carried the 59 rock's texture as well; PAL/US keep it only in AREA11.
+- **How "drawn" was decided:** every textured polygon of every room model (kind 0x50, also the WHM-first containers of
+  AREA01/09) and of every object-model table (kind 0x51..0x5F pieces) of AREA01/03/04/07/09/10/11/12 was tested against
+  the plaque UV boxes: only the two models above sample a plaque. For the other three, no room polygon, no object model
+  and no SPR part (only whole-page sub-screen maps) samples the plaque. The layer-4 spawner (`spawnObjectFromRecord`)
+  takes the model from record byte 14 (`be`) when byte 12 has bit 0x10: be = 22 (AREA04) and 22 / 10 (AREA01).
+- **Checked in the port:** with the fly mode of the port debug menu (`--debug-menu`, L1+R1+Select), AREA04 s0 at player (978, -716) shows the "5" rock right of
+  Tombi on the mansion terrace (`--dump-draws`: CLUT (240,491), page (960,0), uv 129..197 x 186..248, frames 1809+);
+  AREA01 s1 at (4252, -521) shows the small "2" plaque on the stone wall before the exit (CLUT (144,481), page (768,0)).
+- **No code uses them:** `updateStaticDecorModel` (X001 = X004, 0x800EE18C) only sets the draw flags and draws; no
+  talk, flag, event or check. Event 67 has no start/complete/read (above). The Stonetown villager says he saw one
+  "at the wood people's workshop" (木人の加工場, AREA16 #188): that fits the "59" texture on the AREA11 page. No other
+  JP line names a rock, a number, an order or a symbol.
+
+### Reading the numbers (Maya base 20)
+Dot = 1, bar = 5, levels read bottom (x1) to top (x20); within a level the dots sit above the bars.
+- AREA01: two dots, one level: **2**.
+- AREA04: one bar: **5**.
+- AREA03: three dots over three bars, evenly spaced, one level: 3 + 15 = **18**.
+- AREA10: upper level a dot over a bar (6), clear gap, lower level four dots over three bars (19): 6 x 20 + 19 = **139**.
+- AREA11: upper level two dots (2), gap, lower level 19: 2 x 20 + 19 = **59**.
+(Read naively as one level the last two would be 6+19 = 25 and 2+19 = 21; the gap and the villager's "base 20" make the
+two-level reading the intended one.) The sixth rock is not on any disc (PAL, US, JP); the AREA09 copy of "2" is the only
+extra plaque.
+
+**Against the B301 sheet:** the sheet has single numeral tiles 0 (shell), 1..9 and "=" (two bars, 10), 24 x 24 each,
+plus ten framed symbols. The rocks need digits up to 19 (18, and 19 in two of them), which the sheet does not have, and
+their marks are drawn larger and on a different, framed 42 x 51 stone plaque, so the rocks are not the floor tiles.
+
+**Possible puzzle (inference, nothing in code or text says it):** six rocks spread over the surface areas (forest,
+mountain, mansion, jungle, Civilization) each gave one number; the vault "contraption" was a floor of numeral and symbol
+tiles where the player had to step on or set the right ones. With digit tiles only up to 10 and an "=" tile, the most
+consistent design is an equation or a sequence: e.g. the six numbers in rock order (or summed/combined, the five
+known sum to 223) give the tiles to step on, or each rock's number picks one of the ten symbols. The known values 2, 5,
+18, 59, 139 do not form an obvious series, and with one rock missing the intended answer cannot be recovered.

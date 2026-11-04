@@ -1,26 +1,26 @@
 {
   "repository": "https://github.com/afsenovilla/Tombi-Decomp",
-  "revision": "b8fe30a1ad2660451c0b6c69b625bb18dac48403",
-  "checked_date": "2026-11-01",
+  "revision": "7f2cd4fe048b06cdefa1f686c3eb669494acb651",
+  "checked_date": "2026-11-04",
   "scope": "Cut-village and related retail/build/format/port research; not a game-code import",
   "files": [
     {
       "label": "Civilization: complete cut-town evidence",
       "path": "docs/CIVILIZATION.md",
-      "bytes": 109794,
-      "sha256": "10e9331ec47624dccd8fe1b5625ad3b161fc7095b32ae9c650d8c5a2add1dfa3"
+      "bytes": 115937,
+      "sha256": "c90f04256860a30c5cb2884e132d92052488c82d72352dca535534dfe626face"
     },
     {
       "label": "Cut-content inventory and status",
       "path": "docs/CUT_CONTENT.md",
-      "bytes": 41578,
-      "sha256": "3ee4794e6e996c9bbddb5ca2ffe19e1d0601f58e4eb669b3061a32202c8b8c9a"
+      "bytes": 91547,
+      "sha256": "52eb16c18032e363b9442dd24392c4bfc08e66dace09706a94a2bea28baf4e82"
     },
     {
       "label": "Japanese retail build",
       "path": "docs/JP.md",
-      "bytes": 6823,
-      "sha256": "bced2f1d4d870b570cd1037dd1bbcf4223b6a67e492f1c68439e26d3d4fb5e15"
+      "bytes": 26593,
+      "sha256": "8206f6e270147f6d1eda0f5e4a63b1c6edbc18599ac06c6753138406222a2b76"
     },
     {
       "label": "Known builds and disc versions",
@@ -47,10 +47,28 @@
       "sha256": "95507fe0dd0685eae15646d028caf2b38e32ecd46a7c914dc6fdd9ab9a9a356f"
     },
     {
+      "label": "Event locations (PAL research)",
+      "path": "docs/EVENTS_MAP.md",
+      "bytes": 17911,
+      "sha256": "fa7afa049f9e44771540c8f8679c0a9b79a117a3c73083362402c29afceae56e"
+    },
+    {
+      "label": "Memory card save format",
+      "path": "docs/SAVE_FORMAT.md",
+      "bytes": 5845,
+      "sha256": "263d220ffba15c21f109d4c461028c6b18d4c899c047f9e985628e665704b56c"
+    },
+    {
+      "label": "Upstream save editor",
+      "path": "docs/SAVE_EDITOR.md",
+      "bytes": 6383,
+      "sha256": "c73ef00d3daa33666ebad5c4cf2c8992b1440b11219f766674e918eaa637d99b"
+    },
+    {
       "label": "Native port and authored reconstruction",
       "path": "docs/PORT.md",
-      "bytes": 258680,
-      "sha256": "9c011dd9c7cceedef7a574903bd84c728c2b198a719492350927a0f96c452c92"
+      "bytes": 341492,
+      "sha256": "7905b134fda7abb23b6edf1213430b5f5681677c480c30ccb7cdd6abc3e656ab"
     },
     {
       "label": "Upstream license",
