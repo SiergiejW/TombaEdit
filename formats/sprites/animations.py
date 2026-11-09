@@ -24,7 +24,6 @@ import numpy as np
 
 HOLD, JUMP = 0x8000, 0x4000
 MAX_STEPS = 256
-MAX_TICKS = 20000
 
 
 @dataclass
@@ -67,6 +66,75 @@ class Script:
         if self.loop is not None:
             return f'loops to step {self.loop + 1}'
         return 'holds its last frame'
+
+
+@dataclass
+class AnimationCursor:
+    """One call to tick() is one native AnimAdvance call.
+
+    The cursor preserves completion pulses as well as frame changes. An END
+    entry keeps reloading its timer and reporting completion; JUMP_END reports
+    completion while moving to its target. A stored timer of zero wraps through
+    65535 and therefore takes 65536 calls, rather than advancing immediately.
+    The object's handler determines when the game calls this service.
+    """
+    script: Script
+    step: int = 0
+    left: int = field(init=False)
+
+    def __post_init__(self):
+        self.reset(self.step)
+
+    def reset(self, step=0):
+        self.step = step
+        self.left = self.script.steps[step].duration
+
+    def advance(self):
+        current = self.script.steps[self.step]
+        if current.flags != HOLD:
+            if self.step + 1 < len(self.script.steps):
+                self.step += 1
+            elif self.script.loop is not None:
+                self.step = self.script.loop
+        self.left = self.script.steps[self.step].duration
+        return bool(current.flags & HOLD)
+
+    def tick(self):
+        self.left -= 1
+        return self.advance() if self.left == 0 else False
+
+
+def gif_timing(script, rate):
+    """GIF's approximate millisecond delays and whole-animation loop option.
+
+    GIF stores centiseconds and can only loop the entire file. A suffix loop
+    is exported as one finite pass so its introduction is never repeated
+    incorrectly. Exact native ticks belong in the strip's JSON sidecar.
+    """
+    if rate <= 0:
+        raise ValueError('Animation rate must be positive')
+    elapsed, written, delays = 0, 0, []
+    for step in script.steps:
+        elapsed += step.duration
+        boundary = max(written + 1, round(elapsed * 100 / rate))
+        if boundary - written > 65535:
+            raise ValueError('This script has a delay longer than GIF can store. '
+                             'Use PNG strip + JSON to preserve its native timer.')
+        delays.append((boundary - written) * 10)
+        written = boundary
+    return delays, script.loop == 0
+
+
+def timing_document(script, rate):
+    """Lossless script controls for an exported PNG strip (one cell per step)."""
+    return dict(format='tomba-animation-strip-v1', script=f'0x{script.address:08X}',
+                preview_updates_per_second=rate,
+                cadence='One tick is one call to AnimAdvance; the game handler controls its cadence.',
+                loop_step=script.loop, ending=script.ending,
+                steps=[dict(cell=index, address=f'0x{s.address:08X}', frame=s.frame, box=s.box,
+                            argument=s.arg, argument_word=s.arg & 0xFFFF,
+                            timer_word=s.ticks, calls_per_step=s.duration, flags=f'0x{s.flags:04X}')
+                       for index, s in enumerate(script.steps)])
 
 
 class Memory:
@@ -136,30 +204,31 @@ PLAYER_ANIMATIONS = {
 
 
 def player_scripts(regions, frame_count):
-    """The player's retail (90) or early demo (56) animation pointer table.
+    """The player's PAL/US (90), JP retail (74), or demo (56) table.
 
     ObjSetAnimFromTable indexes this table; its scripts live in the engine.
-    Find it by validated pointers, rather than a regional absolute address.
+    JP retail uses its documented address and count; older builds locate a
+    bounded table by validated pointers. This lookup does not simulate the
+    player state machine that chooses an animation ID.
     """
     memory = Memory(regions)
     for name, base, data in memory.regions:
         if name != 'overlay':
             continue
-        for count in (90, 56):
-            for at in range(0, min(0x1000, len(data) - count * 4 + 1), 4):
+        # SLPS-01144's 74-entry table is explicitly declared by the matched
+        # ObjSetAnimFromTable branch and retained at overlay +0x348. Do not
+        # continue through adjacent pointer-shaped data looking for more IDs.
+        known_jp = base == 0x800E9AF8
+        for count in ((74,) if known_jp else (90, 74, 56)):
+            offsets = (0x348,) if known_jp else range(0, min(0x1000, len(data) - count * 4 + 1), 4)
+            for at in offsets:
+                if at + count * 4 > len(data):
+                    continue
                 pointers = struct.unpack_from(f'<{count}I', data, at)
                 if not all(memory.region(p) == 'executable' for p in pointers):
                     continue
                 decoded = [read_script(memory, p, frame_count) for p in pointers]
                 if all(decoded):
-                    # A later build has a longer table than the demo's: take
-                    # every script that follows the 56 in the same list.
-                    if count == 56:
-                        while at + 4 * len(pointers) + 4 <= len(data):
-                            more = struct.unpack_from('<I', data, at + 4 * len(pointers))[0]
-                            if memory.region(more) != 'executable' or not read_script(memory, more, frame_count):
-                                break
-                            pointers = pointers + (more,)
                     found = {}
                     for index, pointer in enumerate(pointers):
                         name = PLAYER_ANIMATIONS.get(index) if count == 90 else None
@@ -168,20 +237,23 @@ def player_scripts(regions, frame_count):
     return {}
 
 
-def read_script(memory, address, frame_count=None):
+def read_script(memory, address, frame_count=None, max_steps=None):
     """The script that starts at `address`, or None where the bytes are not
     one: a step past the bank's frames, a jump outside the code, no end
-    within MAX_STEPS steps."""
+    within the mapped images. Candidate searches can supply a smaller bound;
+    native durations and box words are not validity heuristics."""
     steps, seen, loop = [], {}, None
+    if max_steps is None:
+        max_steps = sum(len(data) // 4 for _, _, data in memory.regions)
     at = address
     while True:
-        if at & 3 or not memory.inside(at, 8) or len(steps) >= MAX_STEPS:
+        if at & 3 or not memory.inside(at, 8) or len(steps) >= max_steps:
             return None
         if at in seen:
             loop = seen[at]
             break
         frame, box, arg, control = struct.unpack('<HHhH', memory.read(at, 8))
-        if (frame_count is not None and frame >= frame_count) or frame >= 0x1000 or box >= 0x100:
+        if frame_count is not None and frame >= frame_count:
             return None
         seen[at] = len(steps)
         steps.append(Step(frame, box, arg, control & 0x3FFF, control & 0xC000, at))
@@ -197,9 +269,6 @@ def read_script(memory, address, frame_count=None):
             loop = seen[target]
             break
         at = target
-    total = sum(step.ticks for step in steps)
-    if not total or total > MAX_TICKS:
-        return None
     return Script(address, steps, loop)
 
 
@@ -324,7 +393,7 @@ def sniff(memory, frame_count=None, code=()):
         return {routine_of(starts, at) for at in built.get(address, ())}
     scripts = {}
     for address in set(pointers) | set(built):
-        script = read_script(memory, address, frame_count)
+        script = read_script(memory, address, frame_count, max_steps=MAX_STEPS)
         if script is not None:
             scripts[address] = script
             if address in built:

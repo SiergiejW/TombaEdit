@@ -7,6 +7,7 @@ import struct
 
 REPORT = Path(__file__).resolve().parents[2] / 'docs' / 'cut-villages-jp-research.md'
 UNUSED_REPORT = REPORT.parent / 'jp-retail-unused-research.md'
+OVERVIEW = REPORT.parent / 'cut-content-overview.md'
 REFERENCES = REPORT.parent / 'decomp'
 JP_EXE = '07d577698ad31ec1a69b9d7b80a7c3f90b650888'
 STOPS = ((55, 375), (231, 367), (390, 375), (111, 159), (230, 151), (334, 159))
@@ -78,18 +79,46 @@ def view(project, jump=None, area=None):
     from PyQt6.QtWidgets import (QWidget, QVBoxLayout, QHBoxLayout, QLabel, QLineEdit,
                                 QPushButton, QSplitter, QListWidget, QTextBrowser,
                                 QTabWidget, QTableWidget, QTableWidgetItem, QComboBox,
-                                QDialog, QMessageBox)
+                                QDialog, QMessageBox, QSpinBox)
+    if not supported(project):
+        # The research is still useful with another disc open, but its JP asset
+        # links and decoded pictures must not silently point into another build.
+        page = QWidget()
+        layout = QVBoxLayout(page)
+        note = QLabel('This research describes Japanese retail (SLPS-01144), except where another build is named. '
+                      'Open that audited disc to see its pictures and jump to its files.')
+        note.setWordWrap(True)
+        layout.addWidget(note)
+        chooser = QComboBox()
+        for label, path in (('Explore cut content', OVERVIEW),
+                            ('Detailed research: cut villages (JP retail)', REPORT),
+                            ('Detailed research: other unused content (JP retail)', UNUSED_REPORT)):
+            chooser.addItem(label, path)
+        layout.addWidget(chooser)
+        browser = QTextBrowser()
+        browser.setOpenExternalLinks(True)
+        layout.addWidget(browser, 1)
+        def show_report():
+            try:
+                content = chooser.currentData().read_text(encoding='utf8')
+            except OSError as exc:
+                content = f'Research document unavailable: {exc}'
+            content = re.sub(r'!\[[^\]]*\]\(fig:[^)]+\)', '*Open Japanese retail to view this image.*', content)
+            content = re.sub(r'\[([^\]]+)\]\(tomba://[^)]+\)', r'\1', content)
+            browser.setMarkdown(content)
+        chooser.currentIndexChanged.connect(show_report)
+        show_report()
+        return page
     widget = QWidget()
     layout = QVBoxLayout(widget)
     try:
         manifest = reference_manifest()
-        sync = f"Upstream snapshot {manifest['revision'][:12]} • checked {manifest['checked_date']} • file hashes verified"
+        sync = 'Findings and illustrations: Japanese retail (Ore! Tomba, SLPS-01144).'
     except (OSError,ValueError,KeyError,TypeError) as exc:
         manifest = None
-        sync = f'Upstream reference snapshot unavailable: {exc}'
+        sync = f'Some reference documents are unavailable: {exc}'
     note = QLabel(sync + '\n'
-                  'Choose a report below for cut villages or other JP remnants, including the eel, items and animations. '
-                  'Native findings, incomplete connections and unverified leads are identified in each report.')
+                  'Explore surviving art, dialogue, animations and locations; research from other builds is labelled.')
     note.setWordWrap(True)
     layout.addWidget(note)
     tabs = QTabWidget()
@@ -97,8 +126,9 @@ def view(project, jump=None, area=None):
     article = QWidget()
     body = QVBoxLayout(article)
     documents = QComboBox()
-    documents.addItem('TombaEdit: JP findings, corrections and upstream recalibration', (REPORT, None))
-    documents.addItem('TombaEdit: JP unused content beyond cut villages', (UNUSED_REPORT, None))
+    documents.addItem('Explore cut content', (OVERVIEW, None))
+    documents.addItem('Detailed research: cut villages (JP retail)', (REPORT, None))
+    documents.addItem('Detailed research: other unused content (JP retail)', (UNUSED_REPORT, None))
     if manifest:
         for entry in manifest['files']:
             url = f"{manifest['repository']}/blob/{manifest['revision']}/{entry['path']}"
@@ -181,6 +211,7 @@ def view(project, jump=None, area=None):
                 show_frame(figure, state[0])
                 changed = True
         if changed:
+            text.document().markContentsDirty(0, text.document().characterCount())
             text.viewport().update()
     clock = QTimer(widget)
     clock.timeout.connect(animate)
@@ -195,6 +226,13 @@ def view(project, jump=None, area=None):
             return
         if url.host() == 'file':
             jump('file', target)
+        elif url.host() == 'village' and target in ('11', '16', '17', '18'):
+            jump('village', (f'SYS/LDAR{target}.BIN', 1))
+        elif url.host() == 'asset' and target == 'chief-alt':
+            from formats.level.scene import loaded_resources
+            asset = loaded_resources(project, 'SYS/LDAR10.BIN', 1).get(('SPR', 7))
+            if asset is not None:
+                jump('asset', asset)
         elif url.host() == 'asset' and target in by_key and by_key[target].asset is not None:
             jump('asset', by_key[target].asset)
     text.anchorClicked.connect(open_link)
@@ -207,7 +245,14 @@ def view(project, jump=None, area=None):
             report = f'Document unavailable: {exc}'
         text.document().setBaseUrl(QUrl(url or ''))
         shown = report
-        if path.parent == REPORT.parent:
+        if path == OVERVIEW:
+            shown = re.sub(r'!\[[^\]]*\]\(fig:([^)]+)\)',
+                           lambda m: m.group(0) if m.group(1) in by_key else '*Image unavailable for this disc.*', shown)
+            shown = re.sub(r'\[([^\]]+)\]\(tomba://asset/([^)]+)\)',
+                           lambda m: m.group(0) if m.group(2) in by_key or m.group(2) == 'chief-alt' else m.group(1) + ' (unavailable)', shown)
+            if not jump:
+                shown = re.sub(r'\[([^\]]+)\]\(tomba://[^)]+\)', r'\1', shown)
+        elif path.parent == REPORT.parent:
             shown = research_figures.decorate(report, path.name, figures, project if jump else None)
             if not jump:                                   # no tree to jump in: the pictures stay, the buttons go
                 shown = re.sub(r'\s+—\s+\[[^\]]+\]\(tomba://asset/[^)]*\)', '', shown)
@@ -231,7 +276,7 @@ def view(project, jump=None, area=None):
     chief = QPushButton('Masakari Chief dialogue and sprites')
     chief.setToolTip('Open the JP Chief research, including the complete recovered dialogue.')
     def show_chief():
-        documents.setCurrentIndex(1)
+        documents.setCurrentIndex(2)
         index = next((i for i, heading in enumerate(headings) if heading.startswith('Masakari Chief —')), -1)
         if index >= 0:
             outline.setCurrentRow(index)
@@ -240,12 +285,18 @@ def view(project, jump=None, area=None):
     if jump:
         from formats.level.scene import loaded_resources
         jungle = project.ldars.get('SYS/LDAR10.BIN', [])
-        chief_bank = loaded_resources(project, 'SYS/LDAR10.BIN', 1).get(('SPR', 7)) if len(jungle) > 1 else None
+        resources = loaded_resources(project, 'SYS/LDAR10.BIN', 1) if len(jungle) > 1 else {}
+        chief_bank = resources.get(('SPR', 2))
         if chief_bank is not None:
             inspect_chief = QPushButton('Open Chief sprite bank')
-            inspect_chief.setToolTip('Open Jungle SPR slot 7. JP chief frame definitions and texture pixels match PAL; the intended runtime palette is unconfirmed.')
+            inspect_chief.setToolTip('Open the JP Jungle SPR slot 2 chief bank. Slot 7 also contains related chief frames; the intended runtime palette is unconfirmed.')
             inspect_chief.clicked.connect(lambda checked=False: jump('asset', chief_bank))
             bar.addWidget(inspect_chief)
+            if ('SPR', 7) in resources:
+                alternate = QPushButton('Open related SPR 7')
+                alternate.setToolTip('Open the other Jungle bank containing matching chief texture rectangles.')
+                alternate.clicked.connect(lambda checked=False: jump('asset', resources['SPR', 7]))
+                bar.addWidget(alternate)
             preview_chief = QPushButton('Preview JP Chief')
             preview_chief.setToolTip('Preview the recovered JP texture and candidate frames with a stored palette; the runtime palette is not established.')
             def show_chief_preview():
@@ -259,7 +310,7 @@ def view(project, jump=None, area=None):
                     group = project.ldars['SYS/LDSYS.BIN'][57]
                     page = next(a for a in group.assets if a.kind == 'GRPX')
                     pixels = project.asset_data(page)
-                    if (hashlib.sha1(bank).hexdigest() != 'e3dc39e7c1eed97e3fbc487d0d69d2557cbaa787' or
+                    if (hashlib.sha1(bank).hexdigest() != 'c5139a5d72fd81abdda6f281007541cfaba05b10' or
                             hashlib.sha1(pixels).hexdigest() != 'f48629510d5b7838647d23b6d90d21e616ec8cdc'):
                         raise ValueError('The sprite bank or system texture differs from the audited JP retail data.')
                     frames = sprite_frames(bank)
@@ -270,23 +321,30 @@ def view(project, jump=None, area=None):
                     dialog.setWindowTitle('JP Masakari Chief — recovered sprite candidates')
                     dialog.resize(620, 650)
                     content = QVBoxLayout(dialog)
-                    explanation = QLabel('JP sprite definitions and texture pixels match the PAL candidates. '
-                                         'This preview uses stored CLUT 780A; the intended runtime palette is unknown. '
-                                         'Frame 53 is an unrelated mis-cut atlas block.')
+                    explanation = QLabel('JP SPR 2 frames 0–13 use the chief texture. Choose a CLUT to explore the colours. '
+                                         'The stored 780A row is only a starting point; the intended runtime palette is unknown.')
                     explanation.setWordWrap(True)
                     content.addWidget(explanation)
                     choices = QComboBox()
-                    for frame in (31, 47, 48, 49, 50, 51, 52, 54, 55, 56, 57, 58):
+                    for frame in range(14):
                         choices.addItem(f'Frame {frame}', frame)
                     content.addWidget(choices)
+                    palette = QSpinBox()
+                    palette.setRange(0, 65535)
+                    palette.setDisplayIntegerBase(16)
+                    palette.setPrefix('CLUT 0x')
+                    palette.setValue(0x780a)
+                    palette.setToolTip('Any 16-colour VRAM row; changing this is exploratory and does not establish the original palette.')
+                    content.addWidget(palette)
                     picture = ImageView()
                     picture.zoom.setCurrentIndex(0)
                     content.addWidget(picture, 1)
                     def update_preview():
                         frame = choices.currentData()
-                        picture.export_name = f'JP Chief frame {frame} - CLUT 780A'
-                        picture.set_image(render_sprite(frames[frame], vram, tpage=1, clut=0x780a), subject='chief')
+                        picture.export_name = f'JP Chief frame {frame} - CLUT {palette.value():04X}'
+                        picture.set_image(render_sprite(frames[frame], vram, tpage=3, clut=palette.value()), subject='chief')
                     choices.currentIndexChanged.connect(update_preview)
+                    palette.valueChanged.connect(update_preview)
                     update_preview()
                     dialog.show()
                 except (KeyError, IndexError, StopIteration, ValueError, OSError) as exc:
@@ -296,7 +354,7 @@ def view(project, jump=None, area=None):
     search.returnPressed.connect(find)
     next_button.clicked.connect(lambda: find(False))
     previous.clicked.connect(lambda: find(True))
-    tabs.addTab(article, 'Research and sources')
+    tabs.addTab(article, 'Explore discoveries')
 
     def table(headers, rows):
         result = QTableWidget(len(rows), len(headers))
@@ -482,8 +540,8 @@ def view(project, jump=None, area=None):
     tabs.addTab(rocks, 'Doodle Rocks · research')
     recent = QWidget()
     recent_layout = QVBoxLayout(recent)
-    recent_note = QLabel('Recent Tombi-Decomp findings: regional addresses and unreferenced-code conclusions '
-                         'are attributed to upstream research. Open the research report for details and limits.')
+    recent_note = QLabel('More surviving code and graphics in Japanese retail. '
+                         'Double-click a row to inspect its source; unreferenced code is not proof against every possible caller.')
     recent_note.setWordWrap(True)
     recent_layout.addWidget(recent_note)
     recent_layout.addWidget(activate(table(['Finding', 'JP location', 'Research result'], [
@@ -502,12 +560,12 @@ def view(project, jump=None, area=None):
             button.setToolTip('The 8 × 8 debug font is on the resident system texture; palette rows begin at VRAM (368, 496).')
             button.clicked.connect(lambda checked=False: jump('asset', font))
             recent_layout.addWidget(button)
-    tabs.addTab(recent, 'Recent upstream findings')
+    tabs.addTab(recent, 'More discoveries · JP')
     if manifest and any(item['path'] == 'docs/EVENTS_MAP.md' for item in manifest['files']):
         event_page = QWidget()
         event_layout = QVBoxLayout(event_page)
-        event_note = QLabel('Upstream PAL event-location research, including script and shared-overlay references. '
-                            'Locations and unknown entries are research leads; JP equivalence is not assumed.')
+        event_note = QLabel('PAL retail event-location research, including script and shared-overlay references. '
+                            'These are PAL leads; they do not link to Japanese locations without verification.')
         event_note.setWordWrap(True)
         event_layout.addWidget(event_note)
         event_filter = QLineEdit()
@@ -520,7 +578,7 @@ def view(project, jump=None, area=None):
             cells = [part.strip() for part in line.strip().strip('|').split('|', 3)]
             if len(cells) == 4:
                 event_rows.append(cells)
-        event_table = activate(table(['Event ID', 'Location', 'Kind', 'Evidence'], event_rows), event_place)
+        event_table = table(['Event ID', 'Location', 'Kind', 'Evidence'], event_rows)
         for row in range(event_table.rowCount()):
             for column in range(event_table.columnCount()):
                 event_table.item(row, column).setToolTip(event_table.item(row, column).text())
@@ -546,6 +604,7 @@ def view(project, jump=None, area=None):
             links.addWidget(button)
         layout.addLayout(links)
     if area:
+        documents.setCurrentIndex(1)
         terms = {11: 'Lumberjack Town has a conditional', 16: 'Confirmed correction:',
                  17: "Iron Town's iron-lump", 18: 'Upstream recalibration'}
         wanted = terms.get(area, '')
@@ -560,7 +619,7 @@ def show_dialog(project, parent=None, jump=None, area=None):
     from PyQt6.QtCore import Qt
     dialog = QDialog(parent)
     dialog.setAttribute(Qt.WidgetAttribute.WA_DeleteOnClose)
-    dialog.setWindowTitle('JP retail research')
+    dialog.setWindowTitle('Cut Content Research')
     dialog.resize(1200, 800)
     QVBoxLayout(dialog).addWidget(view(project, jump, area))
     dialog.show()

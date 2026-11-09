@@ -191,22 +191,22 @@ def executable_header(data):
             + (f'Marker: {region}\n' if region else ''))
 
 
-def prepare_preview(project, node, context=None):
+def prepare_preview(project, node, context=None, *, reconstructed=False):
     """Reuse expensive sprite context traces while browsing the same disc."""
     if not isinstance(node, Asset) or node.kind != 'SPR':
         return _prepare_preview(project, node, context)
     from collections import OrderedDict
     cache = project.__dict__.setdefault('sprite_preview_cache', OrderedDict())
-    key = (node.ldar, node.group, node.record_offset, context)
+    key = (node.ldar, node.group, node.record_offset, context, reconstructed)
     if key not in cache:
         from formats.sprites import preview_cache
         try:
-            saved = preview_cache.cache_path(project, node, context)
+            saved = preview_cache.cache_path(project, node, (context, reconstructed))
         except OSError:
             saved = None
         result = preview_cache.load(saved, node) if saved else None
         if result is None:
-            result = _prepare_preview(project, node, context)
+            result = _prepare_preview(project, node, context, reconstructed=reconstructed)
             if saved:
                 preview_cache.save(saved, result)
         cache[key] = result
@@ -217,7 +217,7 @@ def prepare_preview(project, node, context=None):
     return result
 
 
-def _prepare_preview(project, node, context=None, delegated=False):
+def _prepare_preview(project, node, context=None, delegated=False, *, reconstructed=False):
     result = {"node": node, "notes": [], "data": None, "preview_context": context}
     if isinstance(node, tuple):
         _, path, index = node
@@ -233,6 +233,21 @@ def _prepare_preview(project, node, context=None, delegated=False):
         data = project.asset_data(node)
         result["data"] = data
         result["size"] = len(data)
+        if node.kind == 'SPR' and not reconstructed:
+            from formats.sprites.native_context import prepare_native_bank
+            groups = project.ldars[node.ldar]
+            screen = None
+            if context is not None and context >= len(groups):
+                screens, _ = bank_screens(project, node.ldar, node.slot)
+                screen = screens[context - len(groups)]
+                index = 0
+            else:
+                index = context if context is not None else node.group or (1 if len(groups) > 1 else 0)
+            frames = result['sprites'] = sprite_frames(data)
+            result.update(prepare_native_bank(project, node, index, frames, screen=screen))
+            result['native_sprite_mode'] = True
+            result['notes'].extend(result.pop('native_notes', []))
+            return result
         if node.kind in ('VH', 'WVD') and node.source and node.source.path.endswith(('.VH', '.VA', '.VB')):
             stock_preview(project, node.source, data, result)
         if node.kind in ("SPR", "WMD", "GRPX", "WPP"):
@@ -444,7 +459,7 @@ def _prepare_preview(project, node, context=None, delegated=False):
                     delegate = found[:2]
             if delegate is not None:
                 other, section = delegate
-                shown = _prepare_preview(project, other, section, delegated=True)
+                shown = _prepare_preview(project, other, section, delegated=True, reconstructed=True)
                 shown.update(node=node, data=data, size=len(data), preview_context=context)
                 shown['notes'].insert(0, f'Nothing in this area shows this bank. It is drawn as '
                                          f'{other.ldar} section {section - 1:02d}, which loads the same bank, '
@@ -960,6 +975,13 @@ class MainWindow(QMainWindow):
         self.context.currentIndexChanged.connect(self.context_changed)
         self.context.hide()
         rl.addWidget(self.context)
+        self.sprite_mode = QComboBox()
+        self.sprite_mode.addItems(['Native draw trace (no guesses)', 'Reconstructed previews (advanced)'])
+        self.sprite_mode.setToolTip('Native mode captures the original draw routine in the selected load context. '
+                                    'Unresolved frames stay blank. Reconstructed mode also uses inferred pages and borrowed palettes.')
+        self.sprite_mode.currentIndexChanged.connect(self.context_changed)
+        self.sprite_mode.hide()
+        rl.addWidget(self.sprite_mode)
         self.tabs = QTabWidget()
         rl.addWidget(self.tabs)
         # A stable GL child exists before the top-level window is shown.
@@ -1229,15 +1251,13 @@ class MainWindow(QMainWindow):
             summary += "\nDiagnostics\n" + "\n".join(project.warnings)
         summary += "\nSelect a file or expand an area/section to open its resources."
         self.tabs.addTab(text_view(summary), "Disc overview")
-        from formats.level.cut_research import supported as research_supported
         if not hasattr(self, 'cut_research_action'):
-            self.cut_research_action = self.menuBar().addAction('JP retail research')
+            self.cut_research_action = self.menuBar().addAction('Cut Content Research')
             self.cut_research_action.triggered.connect(self.open_cut_research)
-        self.cut_research_action.setEnabled(research_supported(project))
-        if research_supported(project):
-            from formats.level.cut_research import view as research_view
-            self.tabs.addTab(research_view(project, lambda kind, payload:
-                self.cut_village_jump(kind, payload) if self.project is project else None), 'JP retail research')
+        self.cut_research_action.setEnabled(True)
+        from formats.level.cut_research import view as research_view
+        self.tabs.addTab(research_view(project, lambda kind, payload:
+            self.cut_village_jump(kind, payload) if self.project is project else None), 'Cut Content Research')
         self.refresh_labels()
         self.refresh_review_status()
         if self.labels.entries:
@@ -1347,6 +1367,7 @@ class MainWindow(QMainWindow):
         if isinstance(node, DiscEntry) and not node.directory and item.childCount():
             item.setExpanded(True)
         self.current_node = node
+        self.sprite_mode.setVisible(isinstance(node, Asset) and node.kind == 'SPR')
         self.context.blockSignals(True)
         self.context.clear()
         has_context = isinstance(node, Asset) and node.kind in ("SPR", "WMD", "GRPX", "WPP", "APD")
@@ -1403,7 +1424,8 @@ class MainWindow(QMainWindow):
         project = self.project
         context = self.context.currentIndex() if self.context.isVisible() else None
         # The viewer on screen stays until its replacement is ready.
-        self.submit(lambda: prepare_preview(project, node, context), self.preview_ready)
+        reconstructed = self.sprite_mode.currentIndex() == 1
+        self.submit(lambda: prepare_preview(project, node, context, reconstructed=reconstructed), self.preview_ready)
     def preview_ready(self, generation, result, error):
         if generation != self.generation:
             return
@@ -1488,6 +1510,9 @@ class MainWindow(QMainWindow):
                 self.tabs.addTab(self.model_view, "Geometry")
             if "sprites" in result:
                 renderer = None
+                if result.get('native_sprite_mode'):
+                    from formats.sprites.native_render import packet_renderer
+                    renderer = packet_renderer(result.get('sprite_primitives', {}), result['vram'])
                 if 'pictures' in result:
                     from formats.sprites.wpp import renderer as picture_renderer
                     renderer = picture_renderer(result['sprites'], result['pictures'], result['vram'],
@@ -1495,7 +1520,9 @@ class MainWindow(QMainWindow):
                 view = SpriteView(result['sprites'], result['vram'], result.get('sprite_pages'), renderer,
                                   result.get('sprite_default'), result.get('sprite_cluts'),
                                   styles=result.get('sprite_styles'), origins=result.get('sprite_origins'),
-                                  frame_vrams=result.get('sprite_vrams'), unavailable=result.get('sprite_unavailable'))
+                                  frame_vrams=result.get('sprite_vrams'), unavailable=result.get('sprite_unavailable'),
+                                  native=result.get('native_sprite_mode', False), evidence=result.get('sprite_evidence'),
+                                  provenance=result.get('native_build'))
                 view.set_names(result.get('sprite_names', {}))
                 view.set_labels(self.labels, self.persist_labels)
                 if node.kind == 'SPR':
@@ -1508,6 +1535,15 @@ class MainWindow(QMainWindow):
                 view.restore_state(self.sprite_states.get(key, []))
                 view.selection_changed.connect(lambda state, k=key: self.sprite_states.__setitem__(k, state))
                 self.tabs.addTab(view, 'Sprites')
+                if result.get('native_sprite_mode'):
+                    from formats.sprites.native_render import command_records
+                    rows = [(f'{frame:02X}', status, source, str(number), f'{p["tpage"]:03X}', f'{p["clut"]:04X}',
+                             str(p['corners']), str(p['uv']), str(p['colour']),
+                             str(p['blend']), str(p['mode']), str(p['raw']))
+                            for frame, status, source, number, p in command_records(
+                                result.get('sprite_primitives', {}), result.get('sprite_evidence', {}))]
+                    self.add_table(rows, ['Frame', 'Image status', 'Object source', 'Command', 'Page', 'CLUT', 'Corners', 'UV', 'Colour',
+                                          'Blend', 'Blend mode', 'Raw texture'], 'Native draw commands')
                 if 'animation_code' in result:
                     from formats.sprites.anim_viewer import AnimationView
                     frames = result['sprites']
@@ -1516,6 +1552,8 @@ class MainWindow(QMainWindow):
                         """A frame as the Sprites tab draws it, with its offset."""
                         if not 0 <= frame < len(frames) or not frames[frame]:
                             return None
+                        if view.native:
+                            return view.renderer.picture(frame)
                         view.frame_image(frame)
                         image = view.cache.get(frame)
                         if image is None or image.width <= 1:
@@ -2271,7 +2309,7 @@ class MainWindow(QMainWindow):
             nodes = [a for groups in project.ldars.values() for group in groups for a in group.assets if a.source]
             nodes += [e for e in project.disc.files if e.size <= 4 * 1024 * 1024]
             nodes.sort(key=lambda n: n.source.lba if isinstance(n, Asset) else n.lba)
-            for number, node in enumerate(nodes):
+            for node in nodes:
                 if epoch != self.label_index_epoch or project is not self.project:
                     return None
                 key = self.node_key(node)
@@ -2286,8 +2324,8 @@ class MainWindow(QMainWindow):
                         out[key] = seen[identity]
                     except ValueError:
                         continue
-                if number % 64 == 0:
-                    self.labels_indexed.emit(epoch, project, dict(out))
+                # Apply the finished index on the GUI thread. Repeatedly
+                # refreshing the resource tree while a WFM opens can crash Qt.
             return out
         def ready(generation, result, error):
             if epoch == self.label_index_epoch and project is self.project:

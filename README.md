@@ -486,11 +486,42 @@ drawn from its pictures; the game uploads only the frame on screen to VRAM.
 
 ### Sprites
 
+SPR banks open in **Native draw trace (no guesses)** mode. The selected load
+context supplies its original executable, overlay and placement records.
+Completed initialization traces supply the animation pointer and object
+fields; the original drawing routine then produces the GPU commands for
+each genuine script entry. **Native draw commands** lists their pages,
+CLUTs, UVs, shading, mirroring geometry and blend flags. The pieces table
+shows the stored SPR data, whose embedded CLUT may differ from a command's
+object override.
+
+Native mode never borrows another section's textures or palettes, guesses a
+page, substitutes grey, or uses nearby byte patterns as animation links.
+Conflicting object variants stay **ambiguous**, and missing initialization,
+texture uploads or drawing context stay **unresolved**. Only explicit LDAR
+VRAM uploads are accepted; uploaded zero words remain genuine transparent
+data. Palette editing is available in reconstructed mode. PNG exports carry
+JSON with source hashes, the pinned decomp reference, frame evidence and GPU
+commands; individual exports omit unresolved frames and record their status.
+
+This is a bounded initialization-state trace with documented emulator stubs,
+followed by the editor's software rasterizer. It does not establish complete
+PlayStation framebuffer fidelity. Later AI changes, palette cycles, WPP
+frame uploads, system-screen initialization, and event-created objects still
+need their complete runtime context. Base-only groups without a section
+also stay unresolved. A fully matched decompilation makes those paths
+available for further implementation; it does not make an incomplete viewer
+fully accurate. See [the scope and validation notes](docs/native-sprite-viewing.md).
+
+**Reconstructed previews (advanced)** retains the broader research preview
+described below. Its inferred pages, palette lending and manual edits are
+inspection aids and do not carry the native trace's provenance.
+
 A sprite frame is a list of parts, each a rectangle of a texture page with an
 offset from the object's origin. Parts store their texture page relative to a
 base that the drawing object supplies, so the same bank can be used with
 different pages. With *Texture page base* on Auto the viewer works the base
-out for each sprite, and the **Page from** column says how:
+out for each sprite, and the **Source** column says how:
 
 | Page from | The page base comes from |
 | --- | --- |
@@ -663,24 +694,27 @@ their words and are exported that way.
 
 #### Animations
 
-The **Animations** tab of a sprite bank lists the animation scripts that can
-play it: the eight-byte steps (frame, hit box, argument, duration) an
-object's routine walks through, found in the area overlay and the
-executable loaded with the bank. A script is found through a table of
-pointers, an address built in the code, or any other pointer to a run of
-steps whose frames all exist in the bank. Scripts that objects of the
-section start on are listed first with the classes that use them, followed
-by the rest of the object's animation list: the pointers the overlay keeps
-right before the scripts they point at, when one of them is a script an
-object starts on (**Found by** reads *Same list as* that script). *Show*
-widens the list to every script that fits the bank. A script only names
-frame numbers, so one found without an object may belong to another bank
-of the same size.
+The **Animations** tab decodes the original eight-byte entries: frame,
+hit box, argument and timer/flags. Native mode lists only animation starts
+assigned by completed initialization traces. In reconstructed mode,
+**Linked animation starts** uses handler/table links, while **Inferred scripts
+(advanced)** additionally exposes adjacent lists and byte-pattern matches.
+Those inferred entries may belong to another bank. Manual addresses and
+candidate searches are disabled in native mode.
 
-Any address can be typed in and read as a script. Selecting one plays it
-at the game's rate, which can be changed, or step by step; each step shows
-its frame, duration, hit box and argument. **GIF** and **Strip** save one
-pass.
+Playback follows `AnimAdvance`: NEXT, JUMP, END and JUMP_END keep their
+native transitions and completion pulses. A zero timer takes 65,536 calls.
+The Japanese retail player's table has 74 entries; PAL/USA has 90. The
+preview rate controls calls per second; the actual game handler controls
+when the service runs and may replace scripts.
+
+**Strip** saves PNG pixels plus JSON preserving exact timer words, flags,
+arguments and loop targets. **GIF** is approximate: centisecond delays,
+quantized colours, and no format support for a looping suffix after a
+one-time introduction. Such a script exports its introduction and one loop
+pass; held scripts do not loop the whole GIF. Native exports containing
+unresolved frames are blocked. Native animation sidecars include source
+hashes and draw evidence.
 
 **CLUTs...** opens a window on the frame on screen: its pieces, with the
 palette each is drawn through, and the section's VRAM. Putting the crosshair

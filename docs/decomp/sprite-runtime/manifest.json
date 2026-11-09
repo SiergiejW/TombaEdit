@@ -1,0 +1,43 @@
+{
+  "repository": "https://github.com/afsenovilla/Tombi-Decomp",
+  "revision": "51e0f8a3d5d3b79eb42fea1d074a43ac3798db31",
+  "checked_date": "2026-11-09",
+  "scope": "Matched sprite draw and animation reference; original executable instructions drive native traces.",
+  "files": [
+    {
+      "path": "src/AnimAdvance.c",
+      "bytes": 817,
+      "sha256": "27ed85d20ca359ec06d61f108fd2e9ca07ff18c6db219cddb575179aa2afcaf4"
+    },
+    {
+      "path": "src/AnimLoadDuration.c",
+      "bytes": 252,
+      "sha256": "44a35bf373d1c4fe1827bd1c71b2192185ed30ec02ed3c47e0cb2391ce056385"
+    },
+    {
+      "path": "src/ObjSetAnimFromTable.c",
+      "bytes": 2062,
+      "sha256": "6e54fbcdb55d0bb70f99e01b94f24d5776b4ea93b26074c949349cf550e6a0c4"
+    },
+    {
+      "path": "src/drawObjectSprite.c",
+      "bytes": 12621,
+      "sha256": "d7dd1747c0690d660958418136bec34ddb129bd3823d3f8802c01b8902c75f13"
+    },
+    {
+      "path": "src/drawPlayerSpriteDefault.c",
+      "bytes": 12530,
+      "sha256": "13185ad7aa939dbd7e373148f92a66b838cfd380239b503eae22599017261789"
+    },
+    {
+      "path": "include/tomba/anim.h",
+      "bytes": 2924,
+      "sha256": "c66be5c07a9c71009e212cd99083b625addb711dc32cca569b695dcb8fe89eee"
+    },
+    {
+      "path": "LICENSE",
+      "bytes": 1098,
+      "sha256": "1fdd43ae229932b6836e1e81e7d59a1a4950803fa99701c2a3facd4ebdf0df2c"
+    }
+  ]
+}

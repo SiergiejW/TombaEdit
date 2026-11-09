@@ -77,17 +77,19 @@ def main():
         assert research_tabs.tabText(1) == 'Community palettes, residents and props'
         search = next(field for field in widget.findChildren(QLineEdit)
                       if field.placeholderText().startswith('Find in the complete research report'))
+        documents = widget.findChild(QComboBox)
+        assert documents.count() == 15
+        assert 'Electric eel and rubber gloves' in widget.findChild(QTextBrowser).toPlainText()
+        documents.setCurrentIndex(1)
         search.setText('0x801047F4')
         search.returnPressed.emit()
         assert widget.findChild(QTextBrowser).textCursor().selectedText() == '0x801047F4'
-        documents = widget.findChild(QComboBox)
-        assert documents.count() == 14
-        documents.setCurrentIndex(1)
+        documents.setCurrentIndex(2)
         assert 'Electric eel: graphics and script survive together' in widget.findChild(QTextBrowser).toPlainText()
         search.setText('8012DEB8')
         search.returnPressed.emit()
         assert widget.findChild(QTextBrowser).textCursor().selectedText() == '8012DEB8'
-        documents.setCurrentIndex(2)
+        documents.setCurrentIndex(3)
         assert "SiergiejW" in widget.findChild(QTextBrowser).toPlainText()
         outline = widget.findChild(QListWidget)
         port = next(i for i in range(outline.count()) if outline.item(i).text().startswith('Port test'))

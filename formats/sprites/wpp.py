@@ -189,23 +189,25 @@ def tomba_palettes(vram):
 
 
 def part_palettes(vram, parts, tomba, clut=None, player_clut=None):
-    """{part number: palette} for the parts of a frame whose palette is
-    known: Tomba's parts the hair and shorts rows of the first outfit as his
-    draw routine hands them out, other parts the row their CLUT word (or
-    `clut`) names when VRAM holds it."""
+    """{part number: palette} read by the sprite drawing routines.
+
+    Tomba's default draw routine chooses his hair or shorts row by the
+    remaining part count; ordinary sprites use each part's CLUT, unless
+    the object supplies `clut`. An all-zero row is still that palette: it
+    makes the part transparent and must not be replaced by another row.
+    """
     if tomba and player_clut is not None:
         row = vram[(player_clut >> 6) & 511, (player_clut & 63) * 16:(player_clut & 63) * 16 + 16]
         return {n: row for n in range(len(parts))}
     x, y = TOMBA_CLUT
     hair, shorts = (vram[y + row, x:x + 16] for row in TOMBA_OUTFIT)
-    if tomba and hair.any() and shorts.any():
+    if tomba:
         return {n: hair if (len(parts) - n) & 2 else shorts for n in range(len(parts))}
     rows = {}
     for n, part in enumerate(parts):
         word = (part[2] if clut is None else clut) & 0x7FFF
         row = vram[(word >> 6) & 511, (word & 63) * 16:(word & 63) * 16 + 16]
-        if row.any():
-            rows[n] = row
+        rows[n] = row
     return rows
 
 
@@ -247,24 +249,21 @@ def bank_palettes(vram, frames=None, tomba=True, player_clut=None):
             row = vram[y, x:x + 16]
             if len(row) == 16 and row.any():
                 found.append((f'CLUT 0x{clut:04X}', row))
-    if tomba or not found:
+    if tomba:
         found += [(f'Tomba palette {i}', row) for i, row in enumerate(tomba_palettes(vram))]
     return found
 
 
 def renderer(frames, pictures, vram, tomba, player_clut=None):
     """Frame drawing callback for a SPR bank whose pixels live in `pictures`,
-    using the first palette bank_palettes() offers; Tomba's parts take the
-    palettes his draw routine gives them (part_palettes())."""
-    palettes = bank_palettes(vram, frames, tomba, player_clut)
-    palette = palettes[0][1] if palettes else None
+    with the per-part palettes selected by the sprite drawing routines."""
 
     def render(index, overrides=None):
         parts = frames[index]
         if not parts or index >= len(pictures):
             return Image.new('RGBA', (1, 1))
-        rows = part_palettes(vram, parts, True, player_clut=player_clut) if tomba else {}
+        rows = part_palettes(vram, parts, tomba, player_clut=player_clut)
         rows.update({part: vram[(clut >> 6) & 511, (clut & 63) * 16:(clut & 63) * 16 + 16]
                      for part, clut in (overrides or {}).items()})
-        return frame_image(pictures[index], parts, palette, rows)
+        return frame_image(pictures[index], parts, None, rows)
     return render

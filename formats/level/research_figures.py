@@ -15,8 +15,11 @@ TICKS_PER_SECOND = 30        # display rate for the update ticks of an animation
 GROUP = ('SYS/LDAR10.BIN', 1)
 BACKGROUND = (44, 44, 54, 255)
 CHIEF_BANK_SHA1 = 'e3dc39e7c1eed97e3fbc487d0d69d2557cbaa787'
+CHIEF_JP_BANK_SHA1 = 'c5139a5d72fd81abdda6f281007541cfaba05b10'
 CHIEF_TEXTURE_SHA1 = 'f48629510d5b7838647d23b6d90d21e616ec8cdc'
 EEL_BANK_SHA1 = '53c337d8a72ac14b0386dd7702e16b0da821f02e'
+EEL_INPUTS = {'AREA10/B003.GAM': '648fac83861c8018bbf3556d619a2d1410c8e865',
+              'AREA10/CLUT01.GAM': 'c3a9f7e76057f4e7cfa41ed511e49f0faf915124'}
 
 
 @dataclass
@@ -41,6 +44,13 @@ def _digest(data):
     return hashlib.sha1(bytes(data)).hexdigest()
 
 
+def _eel_inputs_match(project):
+    assets = {a.source.path: a for g in project.ldars[GROUP[0]][:2] for a in g.assets
+              if a.source and a.source.path in EEL_INPUTS}
+    return all(name in assets and _digest(project.asset_data(assets[name])) == digest
+               for name, digest in EEL_INPUTS.items())
+
+
 def _scaled(image, size=None, scale=SCALE):
     image = image.convert('RGBA')
     big = image.resize((image.width * scale, image.height * scale), Image.Resampling.NEAREST)
@@ -54,7 +64,8 @@ def _scaled(image, size=None, scale=SCALE):
 def _labelled(cells, labels, scale=SCALE):
     """Pictures side by side on one dark strip, each with a small label beneath it."""
     cells = [_scaled(c, scale=scale) for c in cells]
-    width = max(c.width for c in cells)
+    measure = ImageDraw.Draw(Image.new('RGB', (1, 1)))
+    width = max(max(c.width for c in cells), *(measure.textbbox((0, 0), label)[2] for label in labels))
     height = max(c.height for c in cells)
     strip = Image.new('RGBA', ((width + 12) * len(cells) + 12, height + 32), BACKGROUND)
     draw = ImageDraw.Draw(strip)
@@ -70,7 +81,7 @@ def eel(project):
     from psx.graphics import render_sprite, sprite_frames
     asset = _resources(project)['SPR', 3]
     data = bytes(project.asset_data(asset))
-    if _digest(data) != EEL_BANK_SHA1:
+    if _digest(data) != EEL_BANK_SHA1 or not _eel_inputs_match(project):
         return None
     frames = sprite_frames(data)
     vram = project.vram(*GROUP)
@@ -88,26 +99,26 @@ def chief(project):
     """The frames of the Masakari Chief that the research matched with the PAL candidates, in the stored palette."""
     import numpy as np
     from psx.graphics import render_sprite, sprite_frames
-    asset = _resources(project)['SPR', 7]
+    asset = _resources(project)['SPR', 2]
     bank = bytes(project.asset_data(asset))
     page = next(a for a in project.ldars['SYS/LDSYS.BIN'][57].assets if a.kind == 'GRPX')
     pixels = bytes(project.asset_data(page))
-    if _digest(bank) != CHIEF_BANK_SHA1 or _digest(pixels) != CHIEF_TEXTURE_SHA1:
+    if _digest(bank) != CHIEF_JP_BANK_SHA1 or _digest(pixels) != CHIEF_TEXTURE_SHA1:
         return None
     frames = sprite_frames(bank)
     vram = project.vram(*GROUP).copy()
     vram[0:256, 64:256] = np.frombuffer(pixels, '<u2').reshape(256, 192)
-    numbers = (31, 47, 48, 49, 50, 51, 52, 54, 55, 56, 57, 58)
-    pictures = [render_sprite(frames[n], vram, tpage=1, clut=0x780A) for n in numbers]
-    caption = ('Frames 31, 47-52 and 54-58 of the Jungle SPR slot 7, drawn with the stored CLUT 780A. The runtime palette is not '
-               'established. Frame 53 is a mis-cut atlas block and is left out.')
-    rows = [pictures[:6], pictures[6:]]
-    strips = [_labelled(row, [f'frame {n}' for n in numbers[i * 6:i * 6 + 6]], scale=2) for i, row in enumerate(rows)]
+    numbers = tuple(range(14))
+    pictures = [render_sprite(frames[n], vram, tpage=3) for n in numbers]
+    caption = ('JP Jungle SPR slot 2 frames 0–13 use the chief texture; the related slot 7 also has chief frames. '
+               'The colours shown are from stored CLUT data, not a verified runtime palette.')
+    rows = [pictures[:7], pictures[7:]]
+    strips = [_labelled(row, [f'frame {n}' for n in numbers[i * 7:i * 7 + 7]], scale=2) for i, row in enumerate(rows)]
     sheet = Image.new('RGBA', (max(s.width for s in strips), sum(s.height for s in strips)), BACKGROUND)
     sheet.alpha_composite(strips[0], (0, 0))
     sheet.alpha_composite(strips[1], (0, strips[0].height))
     return Figure('chief', 'jp-retail-unused-research.md', 'Masakari Chief — sprites, judgement dialogue and nearby text',
-                  caption, [sheet], None, asset, 'Open the Chief sprite bank (SPR 7)')
+                  caption, [sheet], None, asset, 'Open the Chief sprite bank (SPR 2)')
 
 
 # item, name, SPR slot, frame, page word, CLUT (None keeps the palette of the sprite's parts)
@@ -128,9 +139,10 @@ def funga(project):
             banks[slot] = sprite_frames(bytes(project.asset_data(resources['SPR', slot])))
         picture = render_sprite(banks[slot][frame], vram, tpage=page, clut=clut)
         cells.append(picture)
-        labels.append(f'{name} {item}' + ('' if picture.getbbox() else ' (draws nothing)'))
+        labels.append(f'{name} {item}' + ('' if picture.getbbox() else ' (blank)'))
     caption = ('World sprites chosen by the native item initializer: SPR 3 frames 38, 111, 37 and 93, SPR 4 frame 0 for Leather '
-               '(the generic berry graphic) and SPR 4 frame 197, CLUT 7D12, for both drums. The two drums are the same picture; a frame that draws nothing in the stored palette is marked.')
+               '(the generic berry graphic) and SPR 4 frame 197, CLUT 7D12, for both drums. A blank frame is marked. '
+               'These selections do not establish that every shown texture and palette is the intended item appearance.')
     return Figure('funga', 'jp-retail-unused-research.md', 'Funga materials and the drum', caption,
                   [_labelled(cells, labels)], None, resources['SPR', 3], 'Open the Jungle sprite bank (SPR 3)')
 
@@ -177,14 +189,40 @@ def debug_font(project):
     box = (0, 0, 256, 72)            # the 8 x 8 font is the top of the page; the rest is effects and numerals
     if page.crop(box).getbbox() is None:
         return None
-    caption = ('SYSTEM/A00000.GAM at VRAM page 21 in the first of the four CLUT rows that begin at (368,496): the 8 x 8 font of the '
-               'debug printer MAIN 80021E5C, used for the ending statistics and some game-over text.')
+    caption = ('SYSTEM/A00000.GAM at VRAM page 21: the debug font and adjacent non-font graphics. '
+               'The debug printer is used for ending statistics and some game-over text.')
     return Figure('debugfont', 'jp-retail-unused-research.md', 'Doodle Rocks — upstream research', caption,
                   [_scaled(page.crop(box), scale=3)], None, asset, 'Open the system font texture',
                   'The JP debug printer is MAIN')
 
 
-BUILDERS = (eel, chief, funga, math_beads, tunnel, debug_font)
+def palettes(project):
+    """Display the actual disc palette words used for the two Jungle previews."""
+    from psx.graphics import rgba
+    if not _eel_inputs_match(project):
+        return None
+    vram = project.vram(*GROUP)
+    sheet = Image.new('RGBA', (16 * 28 + 16, 112), BACKGROUND)
+    draw = ImageDraw.Draw(sheet)
+    for row, (label, clut) in enumerate((('Eel: native CLUT 7B0C', 0x7B0C),
+                                          ('Chief: stored CLUT 780A, provisional', 0x780A))):
+        x, y = (clut & 63) * 16, (clut >> 6) & 511
+        words = vram[y, x:x + 16]
+        if len(words) != 16 or not words.any():
+            return None
+        colours = rgba(words)
+        top = row * 54
+        draw.text((8, top + 3), label, fill=(235, 235, 240, 255))
+        for i, colour in enumerate(colours):
+            px = 8 + i * 28
+            fill = tuple(int(c) for c in colour[:3]) if words[i] else (70, 70, 78)
+            draw.rectangle((px, top + 20, px + 24, top + 43), fill=fill, outline=(120, 120, 130))
+    return Figure('palettes', 'cut-content-overview.md', '',
+                  'Colours are read from the opened Japanese retail disc. The chief palette is a preview, not a confirmed runtime palette.',
+                  [sheet])
+
+
+BUILDERS = (eel, chief, funga, math_beads, tunnel, debug_font, palettes)
 
 
 def build(project):

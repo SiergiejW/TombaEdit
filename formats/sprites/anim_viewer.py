@@ -1,6 +1,6 @@
-"""Animations of a sprite bank: the scripts that step an object through its
-frames (formats.sprites.animations), found in the code loaded with the bank,
-listed and played at the game's own rate."""
+"""Stored animation scripts, their bank links, and an explicit preview cadence."""
+import json
+from pathlib import Path
 from PIL import Image, ImageDraw
 from PyQt6.QtCore import Qt, QTimer
 from PyQt6.QtWidgets import (QWidget, QVBoxLayout, QHBoxLayout, QLabel, QComboBox, QLineEdit, QPushButton,
@@ -8,9 +8,10 @@ from PyQt6.QtWidgets import (QWidget, QVBoxLayout, QHBoxLayout, QLabel, QComboBo
                              QAbstractItemView, QMessageBox, QInputDialog)
 from gui.widgets.image_view import ImageView, file_stem
 from gui.widgets.columns import adjustable
-from formats.sprites.animations import Memory, sniff, read_script, table_siblings
+from formats.sprites.animations import (Memory, sniff, read_script, table_siblings,
+                                       AnimationCursor, gif_timing, timing_document)
 
-FILTERS = ('Verified animations', 'Unverified candidates (advanced)', 'Verified in the overlay', 'Verified in the executable')
+FILTERS = ('Linked animation starts', 'Inferred scripts (advanced)', 'Linked in the overlay', 'Linked in the executable')
 BACKGROUND = (40, 40, 56, 255)
 ORIGIN = (255, 80, 80, 255)
 
@@ -43,6 +44,7 @@ class AnimationView(QWidget):
         self.scripts, self.shown = None, []
         self.listed = {}                # list neighbour -> the linked start it shares a list with
         self.script, self.step, self.left = None, 0, 0
+        self.cursor = None
         self.pictures = {}
         self.entry_flags = None
         self.label_set, self.save_labels, self.bank_key = None, None, ''
@@ -56,7 +58,7 @@ class AnimationView(QWidget):
         self.address.setPlaceholderText('Script address, e.g. 800F22C8')
         self.address.setMaximumWidth(200)
         self.address.returnPressed.connect(self.read_address)
-        read = QPushButton('Read')
+        self.read_button = read = QPushButton('Read')
         read.setToolTip('Decode the script at this address with this bank.')
         read.clicked.connect(self.read_address)
         tools.addWidget(QLabel('Show:'))
@@ -95,7 +97,8 @@ class AnimationView(QWidget):
         self.speed.setRange(1, 240)
         self.speed.setValue(rate)
         self.speed.setSuffix(' updates/s')
-        self.speed.setToolTip(f'The game steps animations once per update, {rate} a second on this disc.')
+        self.speed.setToolTip(f'Preview calls to AnimAdvance per second (default {rate}). '
+                              'The game object handler controls its actual cadence and transitions.')
         self.marker = QCheckBox('Origin')
         self.marker.setToolTip('Mark the object\'s position.')
         self.marker.toggled.connect(self.redraw)
@@ -105,6 +108,9 @@ class AnimationView(QWidget):
         self.cluts.clicked.connect(self.open_cluts)
         self.cluts.setVisible(False)
         gif, strip = QPushButton('GIF...'), QPushButton('Strip...')
+        gif.setToolTip('GIF approximates timing to centiseconds and quantizes colours. '
+                       'A loop with an introduction is exported as one pass.')
+        strip.setToolTip('Save lossless PNG cells and a JSON sidecar with native timers, flags and loop target.')
         gif.clicked.connect(self.save_gif)
         strip.clicked.connect(self.save_strip)
         for widget in (self.play, back, forward, self.speed, self.marker, self.cluts):
@@ -151,7 +157,9 @@ class AnimationView(QWidget):
                 script.found.add('object')
         # The other animations of an object whose list holds a linked start.
         self.listed = {}
-        for address, start in table_siblings(self.memory, set(self.scripts), self.count).items():
+        native = self.palette_source is not None and getattr(self.palette_source, 'native', False)
+        siblings = {} if native else table_siblings(self.memory, set(self.scripts), self.count)
+        for address, start in siblings.items():
             script = read_script(self.memory, address, self.count)
             if script is not None:
                 script.found.add('list')
@@ -159,19 +167,26 @@ class AnimationView(QWidget):
                 self.listed[address] = start
         self.inherit_sprite_labels()
         self.relist()
-        self.note.setText(f'{len(self.users)} animation starts linked to this bank by object handlers or '
+        self.note.setText('Native view uses only supplied draw-context animation links. '
+                          'Candidate searches and manual addresses are disabled. '
+                          'Playback follows stored script controls; the game handler controls its cadence '
+                          'and transitions.' if native else
+                          f'{len(self.users)} animation starts linked to this bank by object handlers or '
                           f'loaded animation tables, and {len(self.listed)} more from the same animation lists. '
-                          'Other byte patterns are excluded from normal playback. '
-                          'Advanced candidates and manually entered addresses are not verified bank links.')
+                          'Same-list scripts, other byte patterns and manually entered addresses are inferred '
+                          'and excluded from the default list. Playback follows the stored script; '
+                          'the game handler controls when it advances or changes scripts.')
 
     def related(self):
-        """Scripts in use here and those sharing an object's list with one."""
-        return (set(self.users) | set(self.listed)) & set(self.scripts)
+        """Only supplied bank links; adjacent animation tables are inferred."""
+        return set(self.users) & set(self.scripts)
 
     def relist(self):
         if self.scripts is None:
             return
         mode = self.filter.currentIndex()
+        if mode == 1 and self.palette_source is not None and getattr(self.palette_source, 'native', False):
+            mode = 0
         if mode == 0:
             chosen = self.related()
         elif mode == 1:
@@ -190,8 +205,8 @@ class AnimationView(QWidget):
         for row, address in enumerate(self.shown):
             script = self.scripts[address]
             start = self.listed.get(address) if address not in self.users else None
-            found = ('Verified: handler/table' if address in self.users else
-                     f'Same list as {start:08X}' if start is not None else 'Unverified')
+            found = ('Handler/table link' if address in self.users else
+                     f'Inferred: same list as {start:08X}' if start is not None else 'Inferred')
             users = self.users.get(address, ()) if start is None else self.users.get(start, ())
             cells = (f'{address:08X}', self.memory.region(address), found, str(len(script.steps)),
                      str(script.ticks), script.ending, frames_text(script.frames),
@@ -207,9 +222,12 @@ class AnimationView(QWidget):
         else:
             self.play.setChecked(False)
             self.script = None
-            self.status.setText('No verified animations for this bank and load context.')
+            self.status.setText('No linked animation starts for this bank and load context.')
 
     def read_address(self):
+        if self.palette_source is not None and getattr(self.palette_source, 'native', False):
+            self.status.setText('Manual script addresses are disabled in the native draw view.')
+            return
         try:
             address = int(self.address.text().strip().lower().removeprefix('0x'), 16)
         except ValueError:
@@ -234,7 +252,8 @@ class AnimationView(QWidget):
         if not 0 <= row < len(self.shown):
             return
         self.script = self.scripts[self.shown[row]]
-        self.step, self.left = 0, self.script.steps[0].duration
+        self.cursor = AnimationCursor(self.script)
+        self.step, self.left = self.cursor.step, self.cursor.left
         self.box = self.bounds(self.script)
         self.redraw()
         if self.isVisible():
@@ -299,7 +318,17 @@ class AnimationView(QWidget):
     def set_palette_source(self, sprites):
         """The SpriteView whose palette overrides the frames are drawn with."""
         self.palette_source = sprites
-        if self.scripts is None:
+        native = sprites is not None and getattr(sprites, 'native', False)
+        self.filter.model().item(1).setEnabled(not native)
+        self.address.setEnabled(not native)
+        self.read_button.setEnabled(not native)
+        if native:
+            self.marker.setChecked(False)
+        self.marker.setEnabled(not native)
+        if native and self.filter.currentIndex() == 1:
+            self.filter.setCurrentIndex(0)
+        self.pictures.clear()
+        if self.scripts is None or native:
             self.search()
         else:
             self.inherit_sprite_labels()
@@ -327,6 +356,28 @@ class AnimationView(QWidget):
         if frame not in self.pictures:
             self.pictures[frame] = self.picture(frame)
         return self.pictures[frame]
+
+    def unresolved_frames(self):
+        sprites = self.palette_source
+        if self.script is None or sprites is None or not getattr(sprites, 'native', False):
+            return []
+        return sorted(set(self.script.frames) & sprites.unavailable)
+
+    def export_ready(self):
+        unresolved = self.unresolved_frames()
+        if not unresolved:
+            return True
+        self.status.setText('Export unavailable: no native draw trace for frame(s) ' +
+                            ', '.join(f'{frame:02X}' for frame in unresolved) +
+                            '. Choose a load context with those frames resolved.')
+        return False
+
+    def export_document(self):
+        document = timing_document(self.script, self.speed.value())
+        sprites = self.palette_source
+        if sprites is not None and getattr(sprites, 'native', False):
+            document['render_evidence'] = sprites.export_evidence(sorted(set(self.script.frames)))
+        return document
 
     def bounds(self, script):
         """The box every frame of the script fits in, about the origin."""
@@ -359,8 +410,9 @@ class AnimationView(QWidget):
             self.clut_window.follow(step.frame)
         flags = {0: '', 0x8000: ', end', 0x4000: ', then jumps', 0xC000: ', then jumps and reports the end'}[step.flags]
         self.status.setText(f'Step {self.step + 1}/{len(self.script.steps)}: frame {step.frame:02X}, '
-                            f'{step.ticks} updates, box {step.box}, argument {step.arg}{flags} '
-                            f'| {self.script.ticks} updates a pass, {self.script.ending}')
+                            f'{step.duration} calls, box {step.box}, argument {step.arg}{flags} '
+                            f'| {self.script.ticks} calls a pass, {self.script.ending}' +
+                            (' | Unresolved native draw state' if step.frame in self.unresolved_frames() else ''))
 
     def toggle(self, on):
         self.play.setText('Pause' if on else 'Play')
@@ -373,25 +425,21 @@ class AnimationView(QWidget):
         if self.script is None:
             return
         self.timer.setInterval(max(1, round(1000 / self.speed.value())))
-        self.left -= 1
-        if self.left > 0:
-            return
-        self.advance()
-        self.redraw()
+        previous = self.cursor.step
+        self.cursor.tick()
+        self.step, self.left = self.cursor.step, self.cursor.left
+        if self.step != previous:
+            self.redraw()
 
     def advance(self):
-        script = self.script
-        if self.step + 1 < len(script.steps):
-            self.step += 1
-        elif script.loop is not None:
-            self.step = script.loop
-        self.left = script.steps[self.step].duration
+        self.cursor.advance()
+        self.step, self.left = self.cursor.step, self.cursor.left
 
     def go(self, direction):
         if self.script is None:
             return
-        self.step = (self.step + direction) % len(self.script.steps)
-        self.left = self.script.steps[self.step].duration
+        self.cursor.reset((self.step + direction) % len(self.script.steps))
+        self.step, self.left = self.cursor.step, self.cursor.left
         self.redraw()
 
     def hideEvent(self, event):
@@ -403,18 +451,30 @@ class AnimationView(QWidget):
         return file_stem(f'{self.export_name} {self.script.address:08X}', 'animation')
 
     def save_gif(self):
-        if self.script is None:
+        if self.script is None or not self.export_ready():
             return
         path, _ = QFileDialog.getSaveFileName(self, 'Save GIF', self.stem() + '.gif', 'GIF (*.gif)')
         if not path:
             return
         images = [self.compose(step, (0, 0, 0, 0)) for step in self.script.steps]
         rate = self.speed.value()
-        images[0].save(path, save_all=True, append_images=images[1:], loop=0, disposal=2,
-                       duration=[max(20, round(s.duration * 1000 / rate)) for s in self.script.steps])
+        try:
+            delays, repeat = gif_timing(self.script, rate)
+        except ValueError as exc:
+            QMessageBox.information(self, 'GIF timing limit', str(exc))
+            return
+        options = dict(loop=0) if repeat else {}
+        images[0].save(path, save_all=True, append_images=images[1:], disposal=2,
+                       duration=delays, **options)
+        document = self.export_document()
+        document.update(media='GIF', approximate=True, gif_delays_ms=delays, gif_repeats=repeat)
+        Path(path).with_suffix('.json').write_text(json.dumps(document, indent=2) + '\n', encoding='utf8')
+        suffix = ' Intro plus one loop pass exported.' if self.script.loop not in (None, 0) else ''
+        self.status.setText('Saved GIF with centisecond timing and quantized colours.' + suffix +
+                            ' PNG strip + JSON preserves native timing controls.')
 
     def save_strip(self):
-        if self.script is None:
+        if self.script is None or not self.export_ready():
             return
         path, _ = QFileDialog.getSaveFileName(self, 'Save strip', self.stem() + '.png', 'PNG (*.png)')
         if not path:
@@ -425,3 +485,8 @@ class AnimationView(QWidget):
         for k, cell in enumerate(cells):
             strip.alpha_composite(cell, (k * (width + 2), 0))
         strip.save(path)
+        document = self.export_document()
+        document.update(cell_width=width, cell_height=height, cell_spacing=2,
+                        origin_in_cell=[-self.box[0], -self.box[1]])
+        Path(path).with_suffix('.json').write_text(json.dumps(document, indent=2) + '\n', encoding='utf8')
+        self.status.setText('Saved PNG strip and JSON with native timers, flags and loop target.')

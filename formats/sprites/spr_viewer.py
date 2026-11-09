@@ -43,13 +43,16 @@ class SpriteView(QWidget):
     pane_sizes = {}
 
     def __init__(self, frames, vram, pages=None, renderer=None, default=None, cluts=None, *,
-                 styles=None, origins=None, frame_vrams=None, unavailable=None):
+                 styles=None, origins=None, frame_vrams=None, unavailable=None, native=False, evidence=None,
+                 provenance=None):
         """`pages` maps frame numbers to the texture page base of an object
         that shows them; frames nobody places borrow the nearest known one,
         or `default` when the bank is not placed at all. `renderer` draws
         frames whose pixels are not in VRAM."""
         super().__init__()
         self.frames, self.vram, self.renderer = frames, vram, renderer
+        self.native, self.evidence = native, dict(evidence or {})
+        self.provenance = dict(provenance or {})
         self.pages = dict(pages or {})
         self.cluts = dict(cluts or {})  # CLUTs supplied by a custom drawing object
         self.styles = dict(styles or {})
@@ -89,7 +92,7 @@ class SpriteView(QWidget):
             button.clicked.connect(callback)
             bar.addWidget(button)
         self.origin = QCheckBox('Origin')
-        self.origin.setChecked(True)
+        self.origin.setChecked(not native)
         self.origin.toggled.connect(self.refresh)
         bar.addWidget(self.origin)
         self.frame_bounds = QCheckBox('Bounds')
@@ -103,8 +106,11 @@ class SpriteView(QWidget):
                                'Saved pictures include the outlines while this is ticked.')
         self.bounds.toggled.connect(self.refresh)
         bar.addWidget(self.bounds)
+        if native:
+            for control in (self.origin, self.frame_bounds, self.bounds):
+                control.setEnabled(False)
         self.grey = QCheckBox('Grey without palette')
-        self.grey.setChecked(True)
+        self.grey.setChecked(not native)
         self.grey.setToolTip('Draw parts whose palette row is empty in this VRAM in shades of grey, '
                              'so art the game colours while it runs can still be seen.')
         self.grey.toggled.connect(self.rebuild)
@@ -144,7 +150,7 @@ class SpriteView(QWidget):
         ll = QVBoxLayout(left)
         ll.addWidget(QLabel('Sprites'))
         self.bank = QTableWidget(len(frames), 9)
-        self.bank.setHorizontalHeaderLabels(['Sprite', '#', 'Parts', 'W', 'H', 'Pages', 'Label', 'Page from', 'Looks off'])
+        self.bank.setHorizontalHeaderLabels(['Sprite', '#', 'Parts', 'W', 'H', 'Pages', 'Label', 'Source', 'Looks off'])
         self.bank.horizontalHeaderItem(ORIGIN).setToolTip(
             'How the texture page a sprite is drawn from is known: from an object placed in this section, '
             'from one placed in another section (the sprite is then drawn with that section\'s textures), '
@@ -183,10 +189,12 @@ class SpriteView(QWidget):
         right.addWidget(self.image)
         pieces = QWidget()
         pl = QVBoxLayout(pieces)
-        pl.addWidget(QLabel('Pieces'))
+        pl.addWidget(QLabel('Pieces (stored SPR data)' if native else 'Pieces'))
         self.parts = QTableWidget(0, 12)
         elide_at_view_edge(self.parts)
         self.parts.setHorizontalHeaderLabels(['#', 'U', 'V', 'W', 'H', 'Page', 'CLUT', 'Drawn page', 'X', 'Y', 'UV 1', 'UV 2'])
+        if native:
+            self.parts.horizontalHeaderItem(6).setText('Embedded CLUT')
         self.parts.verticalHeader().hide()
         self.parts.setEditTriggers(QAbstractItemView.EditTrigger.NoEditTriggers)
         self.parts.setSelectionBehavior(QAbstractItemView.SelectionBehavior.SelectRows)
@@ -209,8 +217,12 @@ class SpriteView(QWidget):
         reset_palettes = QPushButton('Reset CLUTs')
         reset_palettes.setToolTip('Draw every piece through its own palette again.')
         reset_palettes.clicked.connect(self.reset_palettes)
-        self.vram_view.add_controls(QLabel('Crosshair recolours:'), self.palette_scope, reset_palettes)
-        self.vram_view.clut_picked.connect(self.override_palette)
+        self.vram_view.add_controls(QLabel('Palette inspection:' if native else 'Crosshair recolours:'), self.palette_scope, reset_palettes)
+        if native:
+            self.palette_scope.hide()
+            reset_palettes.hide()
+        else:
+            self.vram_view.clut_picked.connect(self.override_palette)
         stack = QSplitter(Qt.Orientation.Vertical)
         stack.setChildrenCollapsible(False)
         stack.addWidget(splitter)
@@ -317,6 +329,8 @@ class SpriteView(QWidget):
 
     def origin_of(self, index):
         """How the page a frame is drawn from is known."""
+        if self.native:
+            return self.evidence.get(index, {}).get('status', 'unresolved')
         if self.renderer:
             return 'picture bank'
         if self.page_base.value() >= 0:
@@ -367,7 +381,7 @@ class SpriteView(QWidget):
         if index not in self.cache:
             try:
                 overrides = {part: clut for (sprite, part), clut in self.clut_overrides.items() if sprite == index}
-                if index in self.unavailable and self.page_base.value() < 0 and not overrides:
+                if index in self.unavailable and (self.native or self.page_base.value() < 0 and not overrides):
                     return Image.new('RGBA', (1, 1))
                 base = None if self.renderer else self.base_for(index)
                 # A frame that borrows its page is drawn with the same
@@ -405,9 +419,9 @@ class SpriteView(QWidget):
             except FormatError:
                 self.cache[index] = Image.new('RGBA', (1, 1))
         image, border = self.cache[index], 0
-        if self.bounds.isChecked() and self.frames[index]:
+        if not self.native and self.bounds.isChecked() and self.frames[index]:
             image = self.outlined(image, self.frames[index])
-        if self.frame_bounds.isChecked() and self.frames[index]:
+        if not self.native and self.frame_bounds.isChecked() and self.frames[index]:
             # The box goes round the sprite, one pixel outside its own.
             framed = Image.new('RGBA', (image.width + 2, image.height + 2))
             framed.alpha_composite(image, (1, 1))
@@ -423,7 +437,7 @@ class SpriteView(QWidget):
                 draw.point([(x, 0), (x, bottom)], fill=ORIGIN_COLOUR)
             if 0 < y < bottom:
                 draw.point([(0, y), (right, y)], fill=ORIGIN_COLOUR)
-        if not origin or not self.frames[index]:
+        if self.native or not origin or not self.frames[index]:
             return image
         bounds = [part for frame in self.frames for part in frame]
         left = min([part[13] for part in bounds] + [0])
@@ -456,7 +470,8 @@ class SpriteView(QWidget):
                 y = min(p[14] for p in frame)
                 width = max(p[13]+p[9] for p in frame)-x
                 height = max(p[14]+p[10] for p in frame)-y
-                pages = ('picture bank' if self.renderer else
+                pages = ('native packets' if self.native and i not in self.unavailable else
+                         'unresolved' if self.native else 'picture bank' if self.renderer else
                          ', '.join(sorted({f'{part_page(p, self.base_for(i)) & 31:02X}' for p in frame})))
             else:
                 width = height = 0
@@ -477,7 +492,7 @@ class SpriteView(QWidget):
         self.whole.setChecked(False)
         self.refresh()
         frame = self.frames[row]
-        if row in self.unavailable and self.page_base.value() < 0:
+        if not self.native and row in self.unavailable and self.page_base.value() < 0:
             self.info.setText(self.info.text() + ' | This screen does not initialize this frame. Choose another screen or set a page and CLUT manually.')
         palettes = [self.part_clut(row, n) for n in range(len(frame))]
         vram = self.frame_vrams.get(row, self.vram)
@@ -508,6 +523,10 @@ class SpriteView(QWidget):
 
     def part_clut(self, sprite, part):
         """The palette a piece is drawn through at the moment."""
+        if self.native:
+            # This table inspects stored SPR parts; actual draw command CLUTs
+            # are exposed separately, including custom drawing routines.
+            return self.frames[sprite][part][2] & 0x7FFF
         return self.clut_overrides.get((sprite, part), self.cluts.get(sprite, self.frames[sprite][part][2])) & 0x7FFF
 
     def show_in_vram(self):
@@ -558,6 +577,8 @@ class SpriteView(QWidget):
 
     def recolour(self, targets, value):
         """Draw these (sprite, piece) pairs through palette `value`."""
+        if self.native:
+            return
         for sprite, part in targets:
             self.clut_overrides[sprite, part] = value
         self.palettes_changed()
@@ -604,7 +625,8 @@ class SpriteView(QWidget):
         for index, image, (x, y) in zip(indices, images, places):
             out.alpha_composite(image, (x, y))
 
-            records.append(dict(sprite=index, x=x, y=y, width=image.width, height=image.height))
+            records.append(dict(sprite=index, x=x, y=y, width=image.width, height=image.height,
+                                **({'evidence': self.evidence.get(index, {})} if self.native else {})))
         return out, records
 
     def fit_sheet(self):
@@ -623,7 +645,7 @@ class SpriteView(QWidget):
             image, _ = self.sheet(list(range(len(self.frames))))
             self.parts.setRowCount(0)
             self.info.setText(f'Whole bank | {len(self.frames)} sprites')
-            if image.getbbox() is None and any(self.frames):
+            if not self.native and image.getbbox() is None and any(self.frames):
                 self.info.setText(self.info.text() + ' | Nothing to draw: the texture page these parts '
                                   'name is empty in this VRAM. Try another texture page base or section.')
         elif len(self.selected_indices()) > 1:
@@ -646,7 +668,7 @@ class SpriteView(QWidget):
             for row, part in enumerate(frame):
                 values = [str(row), str(part[0]), str(part[1]), str(part[9]), str(part[10]),
                           f'0x{part[5] | part[6] << 8:04X}',
-                          f'0x{self.clut_overrides.get((index, row), self.cluts.get(index, part[2])):04X}',
+                          f'0x{(part[2] if self.native else self.clut_overrides.get((index, row), self.cluts.get(index, part[2]))):04X}',
                           '' if self.renderer else f'0x{part_page(part, self.base_for(index)):03X}', str(part[13]),
                           str(part[14]), str((part[3], part[4])), str((part[7], part[8]))]
                 for col, value in enumerate(values):
@@ -660,6 +682,12 @@ class SpriteView(QWidget):
             self.info.setText(f'{index:02X} | {len(frame)} pieces | {image.width} x {image.height}')
         if self.clut_overrides:
             self.info.setText(self.info.text() + ' | Recoloured from the crosshair; PNG exports include it')
+        if self.native:
+            traced = sum(e.get('status') == 'traced' for e in self.evidence.values())
+            reason = self.evidence.get(self.frame_index, {}).get('reason', '')
+            self.info.setText(self.info.text() + f' | Native draw trace: {traced}/{len(self.frames)} frames available'
+                              + (f' | {reason}' if not self.whole.isChecked() and reason else '')
+                              + ' | Selected initialization state; software rasterization')
         self.image.set_image(image, subject=subject)
 
     def zoom_mode_changed(self, index):
@@ -675,9 +703,14 @@ class SpriteView(QWidget):
     def save_current(self):
         if not self.frames:
             return
+        if self.native and self.frame_index in self.unavailable:
+            QMessageBox.information(self, 'Unresolved sprite', self.evidence.get(self.frame_index, {}).get(
+                'reason', 'No native draw trace for this frame in the selected context.'))
+            return
         path, _ = QFileDialog.getSaveFileName(self, 'Save sprite', f'{file_stem(self.export_name)} sprite {self.frame_index:02X}.png', 'PNG (*.png)')
         if path:
             self.frame_image(self.frame_index, self.origin.isChecked()).save(path)
+            self.save_evidence(Path(path).with_suffix('.json'), [self.frame_index])
 
     def save_bank(self):
         if not self.frames:
@@ -686,7 +719,10 @@ class SpriteView(QWidget):
         if path:
             image, records = self.sheet(list(range(len(self.frames))))
             image.save(path)
-            Path(path).with_suffix('.json').write_text(json.dumps({'sprites': records}, indent=2), 'utf8')
+            payload = {'sprites': records}
+            if self.native:
+                payload.update(self.export_evidence(range(len(self.frames))))
+            Path(path).with_suffix('.json').write_text(json.dumps(payload, indent=2), 'utf8')
 
     def save_selected(self):
         indices = self.selected_indices()
@@ -699,7 +735,23 @@ class SpriteView(QWidget):
         self.save_batch(range(len(self.frames)))
 
     def save_batch(self, indices):
+        indices = list(indices)
         folder = QFileDialog.getExistingDirectory(self, 'Save PNG sprites')
         if folder:
             for index in indices:
+                if self.native and index in self.unavailable:
+                    continue
                 self.frame_image(index, self.origin.isChecked()).save(Path(folder)/f'{file_stem(self.export_name)} sprite {index:02X}.png')
+            self.save_evidence(Path(folder) / f'{file_stem(self.export_name)} evidence.json', indices)
+
+    def export_evidence(self, indices):
+        indices = list(indices)
+        return dict(mode='native_draw_trace', scope='Selected initialization state; editor software rasterization. '
+                    'Gameplay updates and scene framebuffer blending are not reproduced.',
+                    provenance=self.provenance,
+                    frames={str(i): self.evidence.get(i, {'status': 'empty' if not self.frames[i] else 'unresolved'}) for i in indices},
+                    draw_commands={str(i): self.renderer.packets[i] for i in indices if i in self.renderer.packets})
+
+    def save_evidence(self, path, indices):
+        if self.native:
+            path.write_text(json.dumps(self.export_evidence(indices), indent=2), 'utf8')
